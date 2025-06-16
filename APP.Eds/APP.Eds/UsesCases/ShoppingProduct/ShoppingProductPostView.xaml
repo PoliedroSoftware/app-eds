@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.ShoppingProduct.ShoppingProductPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion ShoppingProduct">
+    <ScrollView>
+        <AbsoluteLayout>
+        <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+            <Picker Title="Seleccione un Shopping"
+                    ItemsSource="{Binding ShoppingList}"
+                    ItemDisplayBinding="{Binding Invoice}"
+                    SelectedItem="{Binding SelectedShopping, Mode=TwoWay}"/>
+
+            <Picker Title="Seleccione un Product"
+                    ItemsSource="{Binding ProductList}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"/>
+
+            <Label FontSize="16" Text="Quantity"/>
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="Ingrese la Quantity"
+                Text="{Binding Quantity, Mode=TwoWay}"/>
+
+            <Label FontSize="16" Text="Price"/>
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="Ingrese el Price"
+                Text="{Binding Price, Mode=TwoWay}"/>
+
+            <Picker Title="Seleccione un Compartiment"
+                    ItemsSource="{Binding CompartimentList}"
+                    ItemDisplayBinding="{Binding Number}"
+                    SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"/>
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="Button_Clicked_1"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White"/>
+
+            <Label FontSize="18" Text="Lista de shopping-product"/>
+
+            <CollectionView ItemsSource="{Binding ShoppingProductList}" Margin="0,20"
+                            HeightRequest="400">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
+                            <Label Text="{Binding IdShopping}" FontSize="14" Grid.Row="1" />
+                            <Label Text="{Binding IdProduct}" FontSize="14" Grid.Row="2" />
+                            <Label Text="{Binding Quantity}" FontSize="14" Grid.Row="3" />
+                            <Label Text="{Binding Price}" FontSize="14" Grid.Row="4" />
+                            <Label Text="{Binding IdCompartment}" FontSize="14" Grid.Row="5" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+    </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ScrollView>
+</ContentPage>

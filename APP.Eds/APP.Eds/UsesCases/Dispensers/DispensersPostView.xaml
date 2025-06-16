@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Dispensers.DispensersPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Dispensers">
+    <ScrollView>
+       <AbsoluteLayout>
+        <VerticalStackLayout 
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+        <Label FontSize="16" Text="Code"/>
+        <Entry
+            Keyboard="Text"
+            Placeholder="Enter Dispensers"
+            Text="{Binding Code, Mode=TwoWay}" />
+        
+        <Label FontSize="16" Text="Number"/>
+        <Entry
+            Keyboard="Numeric"
+            Placeholder="Enter Number"
+            Text="{Binding Number, Mode=TwoWay}" />    
+        
+        <Picker Title="Seleccione un DispenserType"
+            ItemsSource="{Binding DispenserTypeList}"
+            ItemDisplayBinding="{Binding Description}"
+            SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" />
+
+        <Picker Title="Seleccione un EDS"
+            ItemsSource="{Binding EdsList}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"/>
+
+        <Picker Title="Seleccione una Island"
+            ItemsSource="{Binding IslandList}"
+            ItemDisplayBinding="{Binding Description}"
+            SelectedItem="{Binding SelectedIsland, Mode=TwoWay}" />
+
+        <Label FontSize="16" Text="Hose Number"/>
+        <Entry
+            Keyboard="Numeric"
+            Placeholder="Enter Hose Number"
+            Text="{Binding HoseNumber, Mode=TwoWay}"/>
+
+        <Button
+            BackgroundColor="Green"
+            Clicked="Button_Clicked_1"
+            CornerRadius="10"
+            Text="Enviar Datos"
+            TextColor="White" />
+
+            <Label FontSize="18" Text="Lista de dispensers"/>
+
+            <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
+                            HeightRequest="400">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
+                            <Label Text="{Binding Code}" FontSize="14" Grid.Row="1" />
+                            <Label Text="{Binding Number}" FontSize="14" Grid.Row="2" />
+                            <Label Text="{Binding DispenserTypeId}" FontSize="14" Grid.Row="3" />
+                            <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="4" />
+                            <Label Text="{Binding Description}" FontSize="14" Grid.Row="5" />
+                            <Label Text="{Binding HoseNumber}" FontSize="14" Grid.Row="5" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+    </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+ </ScrollView>
+</ContentPage>

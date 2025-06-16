@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.ProductCompartiment.ProductCompartimentPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="ProductCompartimentPostView"
+             BackgroundColor="Transparent">
+
+    <ScrollView>
+      <AbsoluteLayout>
+        <VerticalStackLayout 
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20">
+
+            <Frame  
+                BorderColor="Transparent"
+                CornerRadius="15"
+                HasShadow="False"
+                Padding="20"
+                BackgroundColor="Transparent">
+
+                <VerticalStackLayout>
+
+                    <Label FontSize="16" Text="ProductCompartiment" Margin="0,11,0,11"/>
+
+                    <Picker Title="Seleccione Un Product"
+                            ItemsSource="{Binding ProductList}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectProduct, Mode=TwoWay}"
+                            Margin="0,6,0,6"/>
+
+                    <Picker Title="Seleccione Un Compartiment"
+                            ItemsSource="{Binding CompartimentList}"
+                            ItemDisplayBinding="{Binding Number}"
+                            SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}" 
+                            Margin="0,6,0,6"/>
+
+                    <Entry                       
+                        Keyboard="Text"
+                        Placeholder="Enter Stock"
+                        Text="{Binding Stock, Mode=TwoWay}"
+                        Margin="0,6,0,6"/>
+
+                    <Button
+                        BackgroundColor="Green"
+                        Clicked="Button_Clicked"
+                        CornerRadius="10"
+                        Text="Enviar Datos"
+                        TextColor="White"
+                        Margin="0,11,0,11"/>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ScrollView>
+</ContentPage>

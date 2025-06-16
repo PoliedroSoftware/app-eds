@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Shopping.ShoppingPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Shopping">
+    
+    <ScrollView>
+        <AbsoluteLayout>
+            <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+            <Label FontSize="16" Text="Invoice"/>
+            <Entry
+                Keyboard="Text"
+                Placeholder="Enter Invoice"
+                Text="{Binding Invoice, Mode=TwoWay}" />
+
+            <Label FontSize="16" Text="Date"/>
+            <DatePicker
+                Date="{Binding Date, Mode=TwoWay}"
+                Format="dd/MM/yyyy"
+                MinimumDate="2000-01-01"
+                MaximumDate="2100-12-31"/>
+
+            <Label FontSize="16" Text="Amount"/>
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="Enter Amount"
+                Text="{Binding Amount, Mode=TwoWay}" />
+
+            <Label FontSize="16" Text="ID Provider" />
+            <Picker Title="Seleccione un Proveedor"
+                ItemsSource="{Binding ProviderList}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedProvider, Mode=TwoWay}" />
+
+            <Label FontSize="16" Text="ID Category" />
+            <Picker Title="Seleccione una Categoria"
+                ItemsSource="{Binding CategoryList}"
+                ItemDisplayBinding="{Binding Description}"
+                SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
+
+
+            <Frame Padding="10" BorderColor="Gray" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label FontAttributes="Bold" FontSize="18" Text="TotalPurchases"/>
+
+                    <!-- Mostrar los totales acumulados -->
+                    <HorizontalStackLayout Spacing="30">
+                        <VerticalStackLayout>
+                            <Label Text="TotalQuantity" FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="TotalPrice" FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="TotalAmount" FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+
+            <Grid ColumnDefinitions="*, Auto">
+                <Label 
+                Text="{Binding AddeShopping}" 
+                FontAttributes="Bold" 
+                FontSize="18"
+                Grid.Column="0"
+                VerticalOptions="Center" />
+                <Button 
+                Text="👁️" 
+                Command="{Binding HideProductList}"
+                WidthRequest="46" 
+                HeightRequest="46" 
+                BackgroundColor="Transparent"
+                HorizontalOptions="End"
+                Grid.Column="1"/>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding ShoppingProduct}" IsVisible="{Binding VisibleReceipts}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="5" ColumnSpacing="10">
+
+                                <Label Text="Name" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" />
+                                <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="1" VerticalOptions="Center" />
+
+                                <Label Text="Price" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" />
+                                <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="1" VerticalOptions="Center" />
+
+                                <Label Text="Quantity" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" />
+                                <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="1" VerticalOptions="Center" />
+
+                                <!-- Botón eliminar -->
+                                <Button Text="X" 
+                            Grid.Column="2"
+                            Grid.RowSpan="3"
+                            WidthRequest="30"
+                            HeightRequest="30"
+                            BackgroundColor="Transparent"
+                            TextColor="#6A1B9A"
+                            CornerRadius="0"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}"
+                            CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+            <VerticalStackLayout Spacing="10">
+                <Button Clicked="OpenShoppingPopUp" Text="NewProduct" />
+            </VerticalStackLayout>
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="Button_Clicked_1"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                          AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ScrollView>
+</ContentPage>

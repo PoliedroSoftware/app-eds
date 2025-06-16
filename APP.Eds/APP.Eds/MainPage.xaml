@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.MainPage"
+             Title="Login">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label Text="Login" 
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            <Entry x:Name="UsernameEntry" 
+                   Placeholder="Username"
+                   Keyboard="Text" />
+            <Entry x:Name="PasswordEntry" 
+                   Placeholder="Password"
+                   IsPassword="True" />
+            <Button Text="Login"
+                    Clicked="OnLoginClicked"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    HeightRequest="50" />
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#512BD4"
+                               HorizontalOptions="Center" />
+            <!-- Error display -->
+            <Label x:Name="ErrorLabel"
+                   TextColor="Red"
+                   IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

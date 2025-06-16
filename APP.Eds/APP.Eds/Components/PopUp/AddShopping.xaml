@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="APP.Eds.Components.PopUp.AddShopping"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+    <Frame
+        Padding="24"
+        BackgroundColor="White"
+        BorderColor="#6200E8"
+        CornerRadius="15"
+        HasShadow="True"
+        HeightRequest="400"
+        WidthRequest="380">
+        <VerticalStackLayout Spacing="22">
+            <Grid>
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Start"
+                    Text="Nuevo Egreso"
+                    TextColor="Black"
+                    Margin="0,0,0,8" />
+                <Button
+                    HorizontalOptions="End"
+                    BackgroundColor="Transparent"
+                    Clicked="OnCloseTapped"
+                    FontSize="18"
+                    Text="✖"
+                    TextColor="#6200E8" />
+            </Grid>
+
+            <!-- Selector de Categoría de Egreso -->
+            <Frame
+                Padding="14"
+                BackgroundColor="#F5F5F5"
+                CornerRadius="10">
+                <VerticalStackLayout Spacing="20" Padding="24">
+                    <Button Text="Inicio" Margin="0,0,0,0" />
+                    <Button Text="Egresos" Margin="0,0,0,0" />
+                    <Button Text="Ingresos" Margin="0,0,0,0" />
+                    <Button Text="Reportes" Margin="0,0,0,0" />
+                    <!-- Agrega más opciones según tu menú -->
+                    <HorizontalStackLayout Spacing="16">
+                        <Label Text="Categoría de egreso" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Picker
+                            x:Name="ShopingProductPicker"
+                            Title="Seleccione una categoría"
+                            BackgroundColor="#F5F5F5"
+                            ItemDisplayBinding="{Binding Name}"
+                            ItemsSource="{Binding ProductList}"
+                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                            SelectedIndexChanged="ShopingProductSelected"
+                            Margin="0,0,0,0"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Monto -->
+            <Frame
+                Padding="14"
+                BackgroundColor="#F5F5F5"
+                CornerRadius="10">
+                <HorizontalStackLayout Spacing="16">
+                    <Label Text="Monto" VerticalOptions="Center" Margin="0,0,8,0"/>
+                    <Entry
+                        x:Name="FirstEntry"
+                        BackgroundColor="#F5F5F5"
+                        Keyboard="Numeric"
+                        Placeholder="Ingrese el monto"
+                        Text="{Binding Price, Mode=TwoWay}"
+                        Completed="EntryPriceCompleted"
+                        Margin="0,0,0,0"/>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <!-- Cantidad -->
+            <Frame
+                Padding="14"
+                BackgroundColor="#F5F5F5"
+                CornerRadius="10">
+                <HorizontalStackLayout Spacing="16">
+                    <Label Text="Cantidad" VerticalOptions="Center" Margin="0,0,8,0"/>
+                    <Entry
+                        x:Name="SecondEntry"
+                        BackgroundColor="#F5F5F5"
+                        Keyboard="Numeric"
+                        Placeholder="Ingrese la cantidad"
+                        Text="{Binding Quantity, Mode=TwoWay}"
+                        Completed="EntryQuantityCompleted"
+                        Margin="0,0,0,0"/>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <!-- Botón de agregar -->
+            <Button
+                x:Name="AddButton"
+                BackgroundColor="#6200E8"
+                Clicked="Add_Product"
+                CornerRadius="10"
+                FontSize="18"
+                Text="Agregar Egreso"
+                TextColor="White"
+                Margin="0,8,0,0"/>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Tank.TankPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Tank">
+    <ScrollView>
+        <AbsoluteLayout>
+            <VerticalStackLayout
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                Padding="20" Spacing="15">
+                <Label FontSize="16" Text="Number"/>
+                <Entry
+                Keyboard="Text"
+                Placeholder="Enter Number"
+                Text="{Binding Number, Mode=TwoWay}" />
+
+                <Label FontSize="16" Text="Compartment"/>
+                <Entry
+	            Keyboard="Text"
+	            Placeholder="Ingrese el Compartment"
+	            Text="{Binding Compartment, Mode=TwoWay}" />
+
+                <Label FontSize="16" Text="Ability"/>
+                <Entry
+                Keyboard="Text"
+                Placeholder="Ingrese Ability"
+                Text="{Binding Ability, Mode=TwoWay}" />
+
+                <Label FontSize="16" Text="Stock"/>
+                <Entry
+                Keyboard="Text"
+                Placeholder="Ingrese el Stock"
+                Text="{Binding Stock, Mode=TwoWay}" />
+
+                <Button
+                BackgroundColor="Green"
+                Clicked="Button_Clicked_1"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White" />
+
+                <Label FontSize="18" Text="Lista de Tank" />
+                <CollectionView ItemsSource="{Binding TankList}" Margin="0,20">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
+                                <Label Text="{Binding Nmber}" FontSize="14" Grid.Row="1" />
+                                <Label Text="{Binding Compartment}" FontSize="14" Grid.Row="2" />
+                                <Label Text="{Binding Ability}" FontSize="14" Grid.Row="3" />
+                                <Label Text="{Binding Stock}" FontSize="14" Grid.Row="4" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ScrollView>
+</ContentPage>

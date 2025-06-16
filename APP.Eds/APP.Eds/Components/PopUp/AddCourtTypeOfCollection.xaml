@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+	x:Class="APP.Eds.Components.PopUp.AddCourtTypeOfCollection"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+	<Frame
+		Padding="20"
+		BackgroundColor="White"
+		BorderColor="#6200E8"
+		CornerRadius="15"
+		HasShadow="True"
+		HeightRequest="400"
+		WidthRequest="380">
+        
+        
+        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *">
+                <Label Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="22"
+                       Text="{Binding AddCollectionType}"
+                       TextColor="Black"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        FontSize="18"
+                        Text="✖"
+                        TextColor="#6200E8"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Padding="5,0"/>
+            </Grid>
+
+            <!--  Campos de Entrada  -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="0,10">
+                <Frame Padding="10"
+                       BackgroundColor="#F5F5F5"
+                       CornerRadius="10"
+                       Margin="0,0,0,10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="{Binding TypeofCollectionTranslation}" VerticalOptions="Center" />
+                        <Picker
+                        x:Name="TypeOfCollentionPicker"
+						Title="{Binding Select}"
+						BackgroundColor="#F5F5F5"
+						ItemDisplayBinding="{Binding Description}"
+						ItemsSource="{Binding TypeOfCollectionList}"
+						SelectedItem="{Binding SelectedTypeOfCollection, Mode=TwoWay}"
+                        SelectedIndexChanged="TypeOfCollentionSelected"/>
+                    </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="10"
+                       BackgroundColor="#F5F5F5"
+                       CornerRadius="10"
+                       Margin="0,0,0,10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" />
+                            <Entry
+                        x:Name="FirstEntry"
+						BackgroundColor="#F5F5F5"
+						Keyboard="Numeric"
+						Placeholder="Ingrese el monto"
+						Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay, StringFormat='{0:N0}'}"
+                        Margin="2"
+                        Completed="EntryAmountCompleted"
+                        TextChanged="FirstEntry_TextChanged"
+                        IsEnabled="False"/>
+                        </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="10"
+                       BackgroundColor="#F5F5F5"
+                       CornerRadius="10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="{Binding DescriptionTranslation}" VerticalOptions="Center" />
+                        <Entry
+                        x:Name="SecondEntry"
+						BackgroundColor="#F5F5F5"
+						Placeholder="{Binding EnterthedescriptionTranslations}"
+						Text="{Binding CourtTypeOfCollectionDescription, Mode=TwoWay}"
+                        Completed="EntryDescriptionCompleted"
+                        IsEnabled="False"/>
+                    </HorizontalStackLayout>
+                </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!--  Botón Agregar  -->
+            <Button Grid.Row="2"
+                    x:Name="AddButton"
+                    BackgroundColor="#6200E8"
+                    Clicked="Add_Dispenser"
+                    CornerRadius="10"
+                    FontSize="18"
+                    Text="{Binding Add}"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="30" />
+        </Grid>
+    </Frame>
+</mct:Popup>

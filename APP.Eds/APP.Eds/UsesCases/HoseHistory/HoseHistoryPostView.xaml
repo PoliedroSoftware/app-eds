@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion HoseHistory">
+    <ScrollView>
+        <AbsoluteLayout>
+        <VerticalStackLayout 
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+            <Label FontSize="16" Text="Date"/>
+            <DatePicker
+                Date="{Binding Date, Mode=TwoWay}"
+                Format="dd/MM/yyyy"/>
+
+            <Label FontSize="16" Text="AccumulatedAmount"/>
+            <Entry
+                Keyboard="Text"
+                Placeholder="Enter AccumulatedAmount"
+                Text="{Binding AccumulatedAmount, Mode=TwoWay}" />
+
+            <Label FontSize="16" Text="AccumulatedGallons"/>
+            <Entry
+                Keyboard="Text"
+                Placeholder="Enter AccumulatedGallons"
+                Text="{Binding AccumulatedGallons, Mode=TwoWay}" />
+
+            <Picker Title="Seleccione un Dispensers"
+                ItemsSource="{Binding DispensersList}"
+                ItemDisplayBinding="{Binding DisplayName}"
+                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}" />
+
+            <Picker Title="Seleccione un Hose"
+                ItemsSource="{Binding HoseList}"
+                ItemDisplayBinding="{Binding Number}"
+                SelectedItem="{Binding SelectHose, Mode=TwoWay}" />
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="Button_Clicked_1"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White" />
+
+            <Label FontSize="18" Text="Lista de hose-history" />
+
+            <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20"
+                            HeightRequest="400">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
+                            <Label Text="{Binding Date}" FontSize="14" Grid.Row="1" />
+                            <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
+                            <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
+                            <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />
+                            <Label Text="{Binding IdHose}" FontSize="14" Grid.Row="5" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ScrollView>
+</ContentPage>

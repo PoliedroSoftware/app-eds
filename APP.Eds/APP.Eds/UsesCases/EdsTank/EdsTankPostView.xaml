@@ -1,0 +1,39 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.EdsTank.EdsTankPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="EdsTankPostView">
+
+    <!-- Borde envolvente -->
+    <Frame BorderColor="Transparent" Padding="10" CornerRadius="12" Margin="10" HasShadow="False">
+        <AbsoluteLayout>
+            <VerticalStackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                 AbsoluteLayout.LayoutFlags="All">
+            <Label FontSize="16" Text="EdsTank" Margin="0,11,0,11"/>
+
+            <Picker Title="Seleccione Una Eds "
+                    ItemsSource="{Binding EdsList}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectEds, Mode=TwoWay}"
+                    Margin="0,6,0,6"/>
+
+            <Picker Title="Seleccione Un Tank "
+                    ItemsSource="{Binding TankList}"
+                    ItemDisplayBinding="{Binding Number}"
+                    SelectedItem="{Binding SelectTank, Mode=TwoWay}"
+                    Margin="0,6,0,6"/>
+
+            <Button BackgroundColor="Green"
+                    Clicked="Button_Clicked"
+                    CornerRadius="10"
+                    Text="Enviar Datos"
+                    TextColor="White"
+                    Margin="0,11,0,11" />
+            </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </Frame>
+
+</ContentPage>

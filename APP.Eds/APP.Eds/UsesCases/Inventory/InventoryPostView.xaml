@@ -1,0 +1,106 @@
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:APP.Eds.Converters"
+    x:Class="APP.Eds.UsesCases.Inventory.InventoryPostView"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    x:Name="ThisPage"
+    Title="Inventario">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:BoolToSignConverter x:Key="BoolToSignConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+  <AbsoluteLayout>
+    <CollectionView ItemsSource="{Binding Businesses}" Margin="10">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Frame Padding="15" Margin="5" CornerRadius="10" HasShadow="True" BackgroundColor="White">
+                    <StackLayout Spacing="10">
+                                              
+                        <!-- Expander for EDS -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label Text="{Binding BusinessName}" FontAttributes="Bold" FontSize="20" />
+                            </toolkit:Expander.Header>
+
+                            <StackLayout Padding="10,5,0,0" Spacing="8">
+                                <CollectionView ItemsSource="{Binding Eds}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" CornerRadius="8" BackgroundColor="#F0F0F0" HasShadow="False" Margin="0,0,0,5">
+                                                <StackLayout>
+                                                                                                       
+                                                    <!-- Expander for Tanks -->
+                                                    <toolkit:Expander>
+                                                        <toolkit:Expander.Header>
+                                                            <Label Text="{Binding EdsName}" FontAttributes="Bold" FontSize="16"/>
+                                                        </toolkit:Expander.Header>
+
+                                                        <StackLayout Padding="10,5,0,0" Spacing="5">
+                                                            <CollectionView ItemsSource="{Binding Tanks}">
+                                                                <CollectionView.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Frame Padding="8" CornerRadius="6" BackgroundColor="White" HasShadow="True" Margin="0,5,0,0">
+                                                                            <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
+                                                                                <!-- Tank icon -->
+                                                                                <Image Source="tank_icon.png" WidthRequest="24" HeightRequest="24" />
+
+                                                                                <StackLayout Padding="10,0,0,0">
+                                                                                    <Label Text="{Binding TankName}" FontAttributes="Bold" />
+                                                                                    <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" />
+                                                                                    <Label Text="{Binding CompartmentsCount, StringFormat='Compartimentos: {0}'}" />
+                                                                                </StackLayout>
+                                                                            </Grid>
+
+                                                                            <!-- Expander for Compartments -->
+                                                                            <toolkit:Expander>
+                                                                                <toolkit:Expander.Header>
+                                                                                    <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
+                                                                                        <Label Text="Tanque " FontAttributes="Italic" FontSize="14" TextColor="Gray" Margin="0,5,0,0"/>
+                                                                                        <Label Text="{Binding TankNumber}" FontAttributes="Italic" FontSize="14" TextColor="Gray" Margin="0,5,0,0"/>
+                                                                                    </StackLayout>
+
+                                                                                </toolkit:Expander.Header>
+
+                                                                                <StackLayout Padding="10,5,0,0" Spacing="3">
+                                                                                    <CollectionView ItemsSource="{Binding Compartments}">
+                                                                                        <CollectionView.ItemTemplate>
+                                                                                            <DataTemplate>
+                                                                                                <Frame Padding="5" BackgroundColor="LightYellow" CornerRadius="4" Margin="0,2,0,2">
+                                                                                                    <StackLayout>
+                                                                                                        <Label Text="{Binding Product}" FontAttributes="Bold" />
+                                                                                                        <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" />
+                                                                                                        <Label Text="{Binding CompartmentNumber, StringFormat='Compartimento: {0}'}" />
+                                                                                                    </StackLayout>
+                                                                                                </Frame>
+                                                                                            </DataTemplate>
+                                                                                        </CollectionView.ItemTemplate>
+                                                                                    </CollectionView>
+                                                                                </StackLayout>
+                                                                            </toolkit:Expander>
+                                                                        </Frame>
+                                                                    </DataTemplate>
+                                                                </CollectionView.ItemTemplate>
+                                                            </CollectionView>
+                                                        </StackLayout>
+                                                    </toolkit:Expander>
+                                                </StackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
+                        </toolkit:Expander>
+                    </StackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>
