@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+	x:Class="APP.Eds.Components.PopUp.AddDispenser"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+    
+    <Frame
+		Padding="20"
+		BackgroundColor="White"
+		BorderColor="#6200E8"
+		CornerRadius="15"
+		HasShadow="True"
+        WidthRequest="400"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        MaximumHeightRequest="600"
+        x:Name="Frame">
+
+        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+                <Label Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="22"
+                       Text="Agregar Dispensador"
+                       TextColor="Black"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        FontSize="18"
+                        Text="✖"
+                        TextColor="#6200E8"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"/>
+            </Grid>
+            
+            <!--  Campos de Entrada  -->
+            <ScrollView Grid.Row="1" MaximumHeightRequest="500" Margin="0,0,0,10">
+                <VerticalStackLayout>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10"
+                           HasShadow="True"
+                           Margin="0,0,0,10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding HoseTranslation}" VerticalOptions="Center" TextColor="Black"/>
+                            <Picker
+                                x:Name="HosePicker"
+                                Title="{Binding SelectAHose}"
+                                BackgroundColor="#F5F5F5"
+                                ItemDisplayBinding="{Binding DisplayText}"
+                                ItemsSource="{Binding HoseDispenserList}"
+                                SelectedItem="{Binding SelectedHose, Mode=TwoWay}"
+                                SelectedIndexChanged="HoseSelected"
+                                TextColor="Black"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10"
+                           HasShadow="True"
+                           Margin="0,0,0,10">
+                        <HorizontalStackLayout Spacing="15">
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{Binding LastAccumulatedAmountTranslation, StringFormat='  {0:N0}'}" VerticalOptions="Center" TextColor="Black"/>
+                                    <Label Text="{Binding LastAccumulatedAmount}" VerticalOptions="Center" TextColor="Black"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" TextColor="Black"/>
+                                    <Grid>
+                                        <BoxView x:Name="AmountBoxView" Color="Transparent" CornerRadius="5"/>
+                                        <Entry x:Name="FirstEntry"
+                                               BackgroundColor="#F5F5F5"
+                                               TextColor="Black"
+                                               Keyboard="Numeric"
+                                               Placeholder="Ingrese el monto"
+                                               Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                               Margin="2"
+                                               Unfocused="OnEntryUnfocused"
+                                               Completed="EntryAccumulatedCompleted"
+                                    TextChanged="FirstEntry_TextChanged"
+                                               IsEnabled="False"/>
+                                    </Grid>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding AmountDifferenceResult, StringFormat=' Amount: $ {0:N0}'}"  HorizontalOptions="Center" TextColor="Black"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10"
+                           HasShadow="True">
+                        <HorizontalStackLayout Spacing="15">
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{Binding LastAccumulatedGallonsTranslation, StringFormat='{0:N0}'}" VerticalOptions="Center" TextColor="Black"/>
+                                    <Label Text="{Binding LastAccumulatedGallons}" VerticalOptions="Center" TextColor="Black"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" TextColor="Black"/>
+                                    <Grid>
+                                        <BoxView x:Name="GallonBoxView" Color="Transparent" CornerRadius="5"/>
+                                        <Entry x:Name="SecondEntry"
+                                               BackgroundColor="#F5F5F5"
+                                               TextColor="Black"
+                                               Keyboard="Numeric"
+                                               Placeholder="Ingrese los galones"
+                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                               Margin="2"
+                                               Unfocused="OnEntryUnfocused"
+                                               Completed="EntryGallonsCompleted"
+                                    TextChanged="FirstEntry_TextChanged"
+                                               IsEnabled="False"/>
+                                    </Grid>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='Gallons: {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="Black"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+            
+            <!--  Botón Agregar  -->
+            <Button Grid.Row="2"
+                    x:Name="AddButton"
+                    BackgroundColor="#6200E8"
+                    Clicked="Add_Dispenser"
+                    CornerRadius="10"
+                    FontSize="18"
+                    Text="Add"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="40"/>
+        </Grid>
+    </Frame>
+</mct:Popup>

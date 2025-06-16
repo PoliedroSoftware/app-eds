@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
+             x:Class="APP.Eds.UsesCases.Capacity.CapacityPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Capacity">
+    <AbsoluteLayout>
+        <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+        <Label FontSize="16" Text="Capacity"/>
+        <Entry
+            Keyboard="Text"
+            Placeholder="Enter Code"
+            Text="{Binding Code, Mode=TwoWay}" />
+        <Entry
+            Keyboard="Numeric"
+            Placeholder="Enter Height"
+            Text="{Binding Height, Mode=TwoWay}" />
+        <Entry
+            Keyboard="Numeric"
+            Placeholder="Enter Gallon"
+            Text="{Binding Gallon, Mode=TwoWay}" />
+        <Entry
+            Keyboard="Numeric"
+            Placeholder="Enter Liters"
+            Text="{Binding Liters, Mode=TwoWay}" />
+
+        <Button
+            BackgroundColor="Green"
+            Clicked="Button_Clicked_1"
+            CornerRadius="10"
+            Text="Enviar Datos"
+            TextColor="White" />
+    </VerticalStackLayout>
+        <controls:LoadingView x:Name="LoadingOverlay"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"/>
+  </AbsoluteLayout>
+</ContentPage>

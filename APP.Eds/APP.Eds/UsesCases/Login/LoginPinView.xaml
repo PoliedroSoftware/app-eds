@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+	x:Class="APP.Eds.UsesCases.Login.LoginPinView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:custom="clr-namespace:APP.Eds.Resources.Custom">
+	<VerticalStackLayout
+		Margin="0,0,0,0"
+		Padding="0,0,0,0"
+		BackgroundColor="WhiteSmoke"
+		HorizontalOptions="FillAndExpand"
+		VerticalOptions="FillAndExpand">
+		<Frame
+			x:Name="LeftarrowFrame"
+			Margin="0"
+			Padding="0"
+			BackgroundColor="WhiteSmoke"
+			BorderColor="Transparent">
+			<ImageButton
+				Margin="10"
+				Clicked="BackToLoginClicked"
+				HeightRequest="28"
+				HorizontalOptions="Start"
+				Source="leftarrow.png"
+				VerticalOptions="StartAndExpand"
+				WidthRequest="28" />
+		</Frame>
+		<StackLayout>
+			<Image
+				HeightRequest="118"
+				Source="password"
+				WidthRequest="120" />
+			<Label
+				Margin="5,20"
+				FontSize="24"
+				HorizontalOptions="Center"
+				Text="Confirm your PIN"
+				TextColor="Black"
+				VerticalOptions="Start" />
+			<Label
+				Margin="50,0,0,0"
+				FontSize="14"
+				HorizontalOptions="Center"
+				Text="{Binding Phone, StringFormat='Enter the 4-digit code associated with the number {0}'}"
+				TextColor="Gray"
+				VerticalOptions="Start" />
+			<Frame
+				x:Name="PinEntryFrame"
+				Margin="0,0,0,10"
+				Padding="0"
+				BackgroundColor="Transparent"
+				BorderColor="Transparent"
+				HasShadow="False"
+				HeightRequest="55"
+				WidthRequest="288">
+				<Grid
+					ColumnDefinitions="*, *, *, *"
+					HorizontalOptions="Center"
+					VerticalOptions="Center">
+					<!--  Primer Entry  -->
+					<custom:CustomEntryPin
+						x:Name="PinEntry1"
+						Grid.Column="0"
+						FontSize="36"
+						HeightRequest="55"
+						HorizontalTextAlignment="Center"
+						IsPassword="True"
+						KeyBoardType="Numeric"
+						MaxLength="1"
+						PinTextChanged="OnPinTextChanged"
+						Text="{Binding PinEntry1}"
+						WidthRequest="60" />
+					<!--  Segundo Entry  -->
+					<custom:CustomEntryPin
+						x:Name="PinEntry2"
+						Grid.Column="1"
+						Margin="5"
+						FontSize="36"
+						HeightRequest="55"
+						HorizontalTextAlignment="Center"
+						IsPassword="True"
+						KeyBoardType="Numeric"
+						MaxLength="1"
+						PinTextChanged="OnPinTextChanged"
+						Text="{Binding PinEntry2}"
+						WidthRequest="60" />
+					<!--  Tercer Entry  -->
+					<custom:CustomEntryPin
+						x:Name="PinEntry3"
+						Grid.Column="2"
+						Margin="5"
+						FontSize="36"
+						HeightRequest="55"
+						HorizontalTextAlignment="Center"
+						IsPassword="True"
+						KeyBoardType="Numeric"
+						MaxLength="1"
+						PinTextChanged="OnPinTextChanged"
+						Text="{Binding PinEntry3}"
+						WidthRequest="60" />
+					<!--  Cuarto Entry  -->
+					<custom:CustomEntryPin
+						x:Name="PinEntry4"
+						Grid.Column="3"
+						Margin="5"
+						FontSize="36"
+						HeightRequest="55"
+						HorizontalTextAlignment="Center"
+						IsPassword="True"
+						KeyBoardType="Numeric"
+						MaxLength="1"
+						PinTextChanged="OnPinTextChanged"
+						Text="{Binding PinEntry4}"
+						WidthRequest="60" />
+				</Grid>
+			</Frame>
+			<HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+				<Label
+					FontSize="14"
+					Text="Forgot your PIN?"
+					TextColor="Gray" />
+				<Label
+					FontSize="14"
+					Text=" Click here to reset it"
+					TextColor="Blue" />
+			</HorizontalStackLayout>
+		</StackLayout>
+	</VerticalStackLayout>
+</ContentView>

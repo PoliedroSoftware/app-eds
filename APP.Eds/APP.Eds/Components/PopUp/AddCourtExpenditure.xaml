@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+	x:Class="APP.Eds.Components.PopUp.AddCourtExpenditure"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+	<Frame
+		Padding="20"
+		BackgroundColor="White"
+		BorderColor="#6200E8"
+		CornerRadius="15"
+		HasShadow="True"
+		HeightRequest="400"
+		WidthRequest="380">
+
+        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+                <Label Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="22"
+                       Text="{Binding AddExpense}"
+                       TextColor="Black"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        FontSize="18"
+                        Text="✖"
+                        TextColor="#6200E8"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"/>
+            </Grid>
+
+            <!--  Campos de Entrada  -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10"
+                           Margin="0,0,0,10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding Expenditures}" VerticalOptions="Center" />
+                            <Picker x:Name="ExpenditurePicker"
+                                    Title="{Binding Select}"
+                                    BackgroundColor="#F5F5F5"
+                                    ItemDisplayBinding="{Binding Description}"
+                                    ItemsSource="{Binding ExpenditureList}"
+                                    SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"
+                                    SelectedIndexChanged="ExpenditureSelected"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10"
+                           Margin="0,0,0,10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" />
+                            <Entry x:Name="FirstEntry"
+                                   BackgroundColor="#F5F5F5"
+                                   Keyboard="Numeric"
+                                   Placeholder="Ingrese monto"
+                                   Text="{Binding CourtExpenditureAmount, StringFormat='{0:N0}', Mode=TwoWay}"
+                                   Completed="EntryAmountCompleted"
+                                   TextChanged="FirstEntry_TextChanged"
+                                   IsEnabled="False"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame Padding="10"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="Descripción:" VerticalOptions="Center" />
+                            <Entry x:Name="SecondEntry"
+                                   BackgroundColor="#F5F5F5"
+                                   Placeholder="{Binding Description}"
+                                   Text="{Binding ExpenditureDescription, Mode=TwoWay}"
+                                   Completed="EntryDescriptionCompleted"
+                                   IsEnabled="False"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!--  Botón Agregar  -->
+            <Button Grid.Row="2"
+                    x:Name="AddButton"
+                    BackgroundColor="#6200E8"
+                    Clicked="Add_Dispenser"
+                    CornerRadius="10"
+                    FontSize="18"
+                    Text="{Binding Add}"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="30"/>
+		</Grid>
+	</Frame>
+</mct:Popup>

@@ -1,0 +1,40 @@
+using APP.Eds.Services.Category;
+
+namespace APP.Eds.UsesCases.Category;
+
+public partial class CategoryPostView : ContentPage
+{
+    private CategoryService _categoryService;
+    public CategoryPostView()
+	{
+		InitializeComponent();
+        _categoryService = new CategoryService();
+        BindingContext = _categoryService;
+    }
+
+    private async void Button_Clicked_1(object sender, EventArgs e)
+    {
+        try
+        {
+            LoadingOverlay.ShowLoading();
+            await _categoryService.SaveCategoryDataAsync();
+        }
+        finally
+        {
+            LoadingOverlay.HideLoading();
+
+            Description = string.Empty;
+        }
+        
+    }
+
+    public string Description
+    {
+        get => _categoryService.Description;
+        set
+        {
+            _categoryService.Description = value;
+            OnPropertyChanged();
+        }
+    }
+}

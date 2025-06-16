@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="CompartimentCapacityPostView">
+
+    <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
+      <AbsoluteLayout>
+            <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All">
+
+                <Label FontSize="16" Text="CompartimentCapacity" Margin="0,11,0,11"/>
+
+            <Picker Title="Seleccione Un Capacity"
+                    ItemsSource="{Binding CapacityList}"
+                    ItemDisplayBinding="{Binding Code}"
+                    SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
+                    Margin="0,6,0,6"/>
+
+            <Picker Title="Seleccione Un Compartiment"
+                    ItemsSource="{Binding CompartimentList}"
+                    ItemDisplayBinding="{Binding Number}"
+                    SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
+                    Margin="0,6,0,6"/>
+
+            <Entry Keyboard="Text"
+                   Placeholder="Enter Default"
+                   Text="{Binding Default, Mode=TwoWay}" />
+
+            <Button BackgroundColor="Green"
+                    Clicked="Button_Clicked"
+                    CornerRadius="10"
+                    Text="Enviar Datos"
+                    TextColor="White"
+                    Margin="0,11,0,11"/>
+
+        </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </Frame>
+</ContentPage>

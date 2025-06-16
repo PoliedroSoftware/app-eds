@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="APP.Eds.Views.Popups.CategoryPopup"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent"
+    VerticalOptions="Center"
+    HorizontalOptions="Center">
+
+    <Frame BackgroundColor="White"
+           BorderColor="#6200E8"
+           WidthRequest="400"
+           VerticalOptions="Center"
+           HorizontalOptions="Center"
+           CornerRadius="15"
+           HasShadow="True"
+           x:Name="Frame">
+
+        <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
+
+            <!-- Encabezado fijo -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+                <Label Grid.Column="1"
+                       x:Name="CategoryTitle"
+                       FontAttributes="Bold"
+                       FontSize="22"
+                       TextColor="Black"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        FontSize="18"
+                        Text="✖"
+                        TextColor="#6200E8"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"/>
+            </Grid>
+            
+            <!-- Menu -->
+            <CollectionView Grid.Row="1"
+                            x:Name="MenuItemsList"
+                            ItemSizingStrategy="MeasureAllItems"
+                            MaximumHeightRequest="550"
+                            Margin="0,20,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Text="{Binding Name}" Command="{Binding NavigateCommand}" Margin="0,0,0,10"  Clicked="OnMenuItemClicked"/>
+                        </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Frame>
+
+</toolkit:Popup>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             x:Class="APP.Eds.UsesCases.Product.ProductPostView"
+             Title="ProductPostView">
+
+    <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
+        <AbsoluteLayout>
+        <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All">
+            <Label FontSize="16" Text="Product" />
+
+            <Entry
+                Keyboard="Text"
+                Placeholder="Enter ProductT"
+                Text="{Binding Name, Mode=TwoWay}" />
+
+            <Picker 
+                Title="Seleccione un Product Type"
+                ItemsSource="{Binding ProductTypeList}"
+                ItemDisplayBinding="{Binding Description}"
+                SelectedItem="{Binding SelectProductType, Mode=TwoWay}" />
+
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="Enter Price"
+                Text="{Binding Price, Mode=TwoWay}" />
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="Button_Clicked"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White" />
+        </VerticalStackLayout>
+            <controls:LoadingView x:Name="LoadingOverlay"
+                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                  AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </Frame>
+</ContentPage>

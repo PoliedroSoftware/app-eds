@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Expenditures.ExpendituresPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Expenditures">
+    <AbsoluteLayout>
+        <VerticalStackLayout 
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+            <Label FontSize="16" Text="Expenditures"/>
+            <Entry
+            Keyboard="Text"
+            Placeholder="Enter Expenditures"
+            Text="{Binding Description, Mode=TwoWay}" />
+            <Button
+            BackgroundColor="Green"
+            Clicked="Button_Clicked_1"
+            CornerRadius="10"
+            Text="Enviar Datos"
+            TextColor="White" />
+        </VerticalStackLayout>
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>

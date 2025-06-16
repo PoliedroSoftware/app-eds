@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Island.IslandPostView"
+             Title="Gestión Island">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label FontSize="16" Text="Descripción" />
+            <Entry
+                Keyboard="Text"
+                Placeholder="Ingrese la descripción"
+                Text="{Binding Description, Mode=TwoWay}" />
+
+            <Button
+                BackgroundColor="Green"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                TextColor="White"
+                Command="{Binding SaveIslandDataCommand}" />
+
+            <Label FontSize="18" Text="Lista de Islas" />
+
+            <CollectionView ItemsSource="{Binding IslandList}" Margin="0,20">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="ID:" FontSize="14" Grid.Row="0" />
+                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" Margin="40,0,0,0"/>
+                            <Label Text="Descripción:" FontSize="14" Grid.Row="1" />
+                            <Label Text="{Binding Description}" FontSize="14" Grid.Row="1" Margin="40,0,0,0"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

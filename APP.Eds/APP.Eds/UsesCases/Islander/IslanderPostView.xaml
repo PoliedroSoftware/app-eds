@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Eds.UsesCases.Islander.IslanderPostView"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             Title="Gestion Islander">
+    <AbsoluteLayout>
+        <VerticalStackLayout
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Padding="20" Spacing="15">
+            <Label FontSize="16" Text="Name"/>
+            <Entry
+            Keyboard="Text"
+            Placeholder="Enter Isleño"
+            Text="{Binding Name, Mode=TwoWay}" />
+        
+        <Label FontSize="16" Text="Email"/>
+        <Entry
+            Keyboard="Text"
+            Placeholder="Enter Correo Electrónico"
+            Text="{Binding Email, Mode=TwoWay}" />
+
+        <Label FontSize="16" Text="First name"/>
+        <Entry
+            Keyboard="Text"
+            Placeholder="Enter Nombre De Pila"
+            Text="{Binding FirstName, Mode=TwoWay}" />
+
+        <Label FontSize="16" Text="Last name"/>
+        <Entry
+            Keyboard="Text"
+            Placeholder="Enter Apellido"
+            Text="{Binding LastName, Mode=TwoWay}" />
+
+
+            <Label FontSize="16" Text="ID Eds" />
+            <Picker Title="Seleccione un EDS"
+            ItemsSource="{Binding EdsList}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedEds, Mode=TwoWay}" />
+
+            <Label FontSize="16" Text="Password" />
+            <Entry
+               Placeholder="Ingrese contraseña"
+               Text="{Binding Password, Mode=TwoWay}"
+               IsPassword="True" />
+
+            <Button
+            BackgroundColor="Green"
+            Clicked="Button_Clicked_1"
+            CornerRadius="10"
+            Text="Enviar Datos"
+            TextColor="White" />
+
+            <Label FontSize="18" Text="Lista de Islander" />
+            <CollectionView ItemsSource="{Binding IslanderList}" Margin="0,20">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
+                            <Label Text="{Binding Name}" FontSize="14" Grid.Row="1" />
+                        <Label Text="{Binding Email}" FontSize="14" Grid.Row="2" />
+                        <Label Text="{Binding Firstname}" FontSize="14" Grid.Row="3" />
+                        <Label Text="{Binding Lastname}" FontSize="14" Grid.Row="4" />
+                        <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="5" />
+                        <Label Text="{Binding Password}" FontSize="14" Grid.Row="6" />
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+        <controls:LoadingView x:Name="LoadingOverlay"
+                          AbsoluteLayout.LayoutBounds="0,0,1,1"
+                          AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>

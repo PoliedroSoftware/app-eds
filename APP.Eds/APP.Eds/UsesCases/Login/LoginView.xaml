@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="APP.Eds.UsesCases.Login.LoginView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:custom="clr-namespace:APP.Eds.Resources.Custom"
+	Title="LoginView"
+	BackgroundColor="WhiteSmoke"
+	NavigationPage.HasNavigationBar="False">
+	<VerticalStackLayout
+		x:Name="LoginContent"
+		Margin="0"
+		Padding="0"
+		HorizontalOptions="FillAndExpand"
+		VerticalOptions="FillAndExpand">
+		<Image
+			x:Name="HeaderLogin"
+			Aspect="AspectFill"
+			HorizontalOptions="FillAndExpand"
+			IsVisible="True"
+			Source="header_login"
+			VerticalOptions="FillAndExpand" />
+		<StackLayout
+			x:Name="ContentLogin"
+			Padding="10"
+			IsVisible="True">
+			<Label
+				Margin="5,20"
+				FontSize="32"
+				HorizontalOptions="Center"
+				Text="Welcome to PSR!"
+				TextColor="Black"
+				VerticalOptions="Start" />
+			<Label
+				Margin="5,20"
+				FontSize="20"
+				HorizontalOptions="Center"
+				Text="Sign in"
+				TextColor="Gray"
+				VerticalOptions="Start" />
+			<HorizontalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+				<VerticalStackLayout
+					Padding="10"
+					HeightRequest="86"
+					VerticalOptions="Center">
+					<Image
+						Aspect="AspectFit"
+						HeightRequest="30"
+						Source="{Binding SelectedCountry.Flag}"
+						WidthRequest="50" />
+					<Picker
+						IsVisible="False"
+						ItemDisplayBinding="{Binding Name}"
+						ItemsSource="{Binding Countries}"
+						SelectedItem="{Binding SelectedCountry}" />
+				</VerticalStackLayout>
+				<Frame
+					x:Name="PhoneEntryFrame"
+					Margin="0,0,0,10"
+					Padding="10"
+					BackgroundColor="White"
+					BorderColor="LightGray"
+					CornerRadius="10"
+					HasShadow="False"
+					HeightRequest="55"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="Center"
+					WidthRequest="271">
+					<custom:CustomEntry
+						BackgroundColor="Transparent"
+						FontSize="16"
+						KeyBoardType="Numeric"
+						MaxLength="10"
+						Placeholder="Phone number"
+						Text="{Binding Phone}" />
+				</Frame>
+			</HorizontalStackLayout>
+			<Button
+				x:Name="LoginButton"
+				Margin="0,20,0,10"
+				BackgroundColor="#6200E8"
+				Command="{Binding ValidationCommand}"
+				CornerRadius="25"
+				FontAttributes="Bold"
+				HeightRequest="55"
+				HorizontalOptions="FillAndExpand"
+				Text="Login"
+				TextColor="White"
+				VerticalOptions="CenterAndExpand" />
+			<HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+				<Label
+					FontSize="14"
+					Text="¿No tienes cuenta?"
+					TextColor="Gray" />
+				<Label
+					FontSize="14"
+					Text=" Regístrate"
+					TextColor="Black" />
+			</HorizontalStackLayout>
+		</StackLayout>
+		<!--  ContentView LoginPin  -->
+		<ContentView
+			x:Name="LoginPinContentView"
+			Padding="0"
+			BackgroundColor="White"
+			HorizontalOptions="FillAndExpand"
+			IsVisible="{Binding GotoLoginPinView}"
+			VerticalOptions="FillAndExpand" />
+	</VerticalStackLayout>
+</ContentPage>

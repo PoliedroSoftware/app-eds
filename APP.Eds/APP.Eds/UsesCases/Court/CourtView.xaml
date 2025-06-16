@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="APP.Eds.UsesCases.CourtView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:vm="clr-namespace:APP.Eds.Services.Court"
+	Title="CourtView">
+	<ScrollView>
+		<StackLayout Padding="10">
+			<Label
+				FontAttributes="Bold"
+				FontSize="20"
+				Text="Court Details" />
+			<Label FontAttributes="Bold" Text="Descripcion:" />
+			<Label Text="{Binding Court.Descripcion}" />
+			<Label FontAttributes="Bold" Text="Start Time:" />
+			<Label Text="{Binding Court.StartTime}" />
+			<Label FontAttributes="Bold" Text="End Time:" />
+			<Label Text="{Binding Court.EndTime}" />
+			<Label FontAttributes="Bold" Text="Dispensers:" />
+			<CollectionView ItemsSource="{Binding Court.CourtDispensers}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<StackLayout>
+							<Label Text="Accumulated Amount:" />
+							<Label Text="{Binding AccumulatedAmount}" />
+						</StackLayout>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			<Label FontAttributes="Bold" Text="Documents:" />
+			<CollectionView ItemsSource="{Binding Court.CourtDocuments}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<StackLayout>
+							<Label Text="Description:" />
+							<Label Text="{Binding Descripcion}" />
+						</StackLayout>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			<Label FontAttributes="Bold" Text="Expenditures:" />
+			<CollectionView ItemsSource="{Binding Court.CourtExpenditures}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<StackLayout>
+							<Label Text="Amount:" />
+							<Label Text="{Binding Amount}" />
+							<Label Text="Description:" />
+							<Label Text="{Binding Description}" />
+						</StackLayout>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			<Label FontAttributes="Bold" Text="Type of Collections:" />
+			<CollectionView ItemsSource="{Binding Court.CourtTypeOfCollections}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<StackLayout>
+							<Label Text="Amount:" />
+							<Label Text="{Binding Amount}" />
+							<Label Text="Description:" />
+							<Label Text="{Binding Description}" />
+							<Label Text="Type of Collection:" />
+							<Label Text="{Binding TypeOfCollection.Description}" />
+						</StackLayout>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			<Entry
+				x:Name="CourtIdEntry"
+				Keyboard="Numeric"
+				Placeholder="Enter Court ID" />
+			<Button Text="Load Court Data" Clicked="Button_Clicked"/>
+		</StackLayout>
+	</ScrollView>
+</ContentPage>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Grid
+	x:Class="APP.Eds.Resources.Custom.CustomEntry"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:custom="clr-namespace:APP.Eds.Resources.Custom"
+	x:Name="this"
+	HeightRequest="55">
+	<Border
+		x:Name="EntryBorder"
+		Grid.Row="0"
+		Padding="0"
+		HeightRequest="55"
+		Stroke="Transparent"
+		StrokeShape="RoundRectangle 6">
+		<custom:CustomClassEmpty
+			x:Name="txtEntry"
+			ClearButtonVisibility="WhileEditing"
+			Focused="TxtEntry_Focused"
+			FontSize="{Binding Source={x:Reference this}, Path=FontSize}"
+			HorizontalTextAlignment="{Binding Source={x:Reference this}, Path=HorizontalTextAlignment}"
+			IsPassword="{Binding Source={x:Reference this}, Path=IsPassword}"
+			Keyboard="{Binding Source={x:Reference this}, Path=KeyBoardType}"
+			MaxLength="{Binding Source={x:Reference this}, Path=MaxLength}"
+			Placeholder="{Binding Source={x:Reference this}, Path=Placeholder}"
+			ReturnType="{Binding Source={x:Reference this}, Path=ReturnType}"
+			Style="{StaticResource CustomEntryStyle}"
+			Text="{Binding Source={x:Reference this}, Path=Text}"
+			Unfocused="TxtEntry_Unfocused" />
+	</Border>
+</Grid>
