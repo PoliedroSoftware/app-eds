@@ -9,6 +9,7 @@ using APP.Eds.Models.Eds;
 using BusinessModel = APP.Eds.Models.Business.BusinessModel;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using Microsoft.Maui.Controls; 
 
 namespace APP.Eds.Services.Business;
 
@@ -19,17 +20,16 @@ public class BusinessService : INotifyPropertyChanged
     public ObservableCollection<BusinessModel> BusinessList { get; set; } = [];
     private BusinessRequest Request { get; set; }
     private BusinessModel _business;
-        public BusinessModel Business
+    public BusinessModel Business
+    {
+        get => _business;
+        set
         {
-            get => _business;
-            set
-            {
             _business = value;
             OnPropertyChanged(nameof(Business));
         }
     }
 
-   
     private string _name;
     public string Name
     {
@@ -50,7 +50,6 @@ public class BusinessService : INotifyPropertyChanged
         GetByIdBusinessDataCommand = new Command<int>(async (businessId) => await GetByIdBusinessDataAsync(businessId));
         SaveBusinessDataCommand = new Command(async () => await SaveBusinessDataAsync());
     }
-
 
     public async Task GetByIdBusinessDataAsync(int businessId)
     {
@@ -79,6 +78,14 @@ public class BusinessService : INotifyPropertyChanged
 
     public async Task SaveBusinessDataAsync()
     {
+        
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+
+            await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo de nombre.", "Aceptar");
+            return; 
+        }
+
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
@@ -117,7 +124,6 @@ public class BusinessService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
         }
     }
-
 
     protected void OnPropertyChanged(string propertyName)
     {
