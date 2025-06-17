@@ -25,18 +25,29 @@ public partial class AddCourtTypeOfCollection : Popup
         if (BindingContext is CourtService vm && vm.SelectedTypeOfCollection is not null)
         {
             var selectedExpenditure = vm.SelectedTypeOfCollection.IdTypeOfCollection;
-            await courtService.AddCourtTypeOfCollectionFromPopup();
+            
         }
         else
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un Tipo de Recaudo", "OK");
         }
+        if (courtService.CourtTypeOfCollectionAmount <= 0)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(courtService.CourtTypeOfCollectionDescription))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripcion", "OK");
+            return;
+        }
+        await courtService.AddCourtTypeOfCollectionFromPopup();
 
         TypeOfCollentionPicker.SelectedItem = null;
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
 
-        Close();
+        //Close();
     }
 
     private void TypeOfCollentionSelected(object sender, EventArgs e)
@@ -65,22 +76,33 @@ public partial class AddCourtTypeOfCollection : Popup
                 entry.Text = e.OldTextValue;
             }
         }
-    }   
-    private void EntryAmountCompleted(object sender, EventArgs e)
+    }
+    private async void EntryAmountCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService)
         {
+            if (courtService.CourtTypeOfCollectionAmount <= 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
+                return;
+
+            }
             SecondEntry.Focus();
         }
     }
     
     
-    private void EntryDescriptionCompleted(object sender, EventArgs e)
+    private async void EntryDescriptionCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService)
         {
-            AddButton.Focus();
+            if (string.IsNullOrWhiteSpace(courtService.CourtTypeOfCollectionDescription))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripcion", "OK");
+                return;
+            }  
         }
+        AddButton.Focus();
     }
 
 
