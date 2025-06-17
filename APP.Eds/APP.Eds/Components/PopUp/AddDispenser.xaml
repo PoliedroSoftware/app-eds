@@ -116,14 +116,21 @@
                                                TextColor="Black"
                                                Keyboard="Numeric"
                                                Placeholder="Ingrese los galones"
-                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
                                                Margin="2"
                                                Unfocused="OnEntryUnfocused"
                                                Completed="EntryGallonsCompleted"
-                                    TextChanged="FirstEntry_TextChanged"
+                                               TextChanged="FirstEntry_TextChanged"
                                                IsEnabled="False"/>
                                     </Grid>
+                                    <Button Text="✎"
+                                            Clicked="EditGallonsButton_Clicked"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="30"
+                                            HeightRequest="30"
+                                            VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
+
                                 <Label Text="{Binding GallonsDifferenceResult, StringFormat='Gallons: {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="Black"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
