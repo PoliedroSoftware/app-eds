@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using APP.Eds.Models.Court;
 using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
 
@@ -25,18 +27,29 @@ public partial class AddCourtExpenditure : Popup
         if (BindingContext is CourtService vm && vm.SelectedExpenditure is not null)
         {
             var selectedExpenditure = vm.SelectedExpenditure.IdCourtExpenditure;
-            await courtService.AddCourtExpenditureFromPopup();
+            
         }
         else
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de Egreso", "OK");
         }
+        if (courtService.CourtExpenditureAmount <= 0)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(courtService.ExpenditureDescription))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, Ingrese una descripcion", "OK");
+            return;
+        }
+        await courtService.AddCourtExpenditureFromPopup();
 
         ExpenditurePicker.SelectedItem = null;
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
 
-        Close();
+        //Close();
     }
 
     private void ExpenditureSelected(object sender, EventArgs e)
@@ -48,14 +61,21 @@ public partial class AddCourtExpenditure : Popup
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
         }
+        
     }
 
-    private void EntryAmountCompleted(object sender, EventArgs e)
+    private async void EntryAmountCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService)
         {
-            SecondEntry.Focus();
+            if (courtService.CourtExpenditureAmount <= 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
+                return;
+            }
+            
         }
+        
     }
 
     private void EntryDescriptionCompleted(object sender, EventArgs e)
