@@ -2390,16 +2390,23 @@ GetAllEdsData()
 
         public void LoadHoseByEds(int edsId)
         {
-            var filteredIsHoseByEds = HoseList.Where(x => x.EdsEntity.IdEds == edsId).ToList();
+            var filteredIsHoseByEds = HoseList
+                .Where(x => x.EdsEntity.IdEds == edsId)
+                .OrderBy(x => x.IdDispensers)
+                .ThenBy(x => x.Number) 
+                .ToList();
+
             HoseDispenserList.Clear();
-            foreach (var islander in filteredIsHoseByEds)
+            foreach (var hose in filteredIsHoseByEds)
             {
-                HoseDispenserList.Add(islander);
+                HoseDispenserList.Add(hose);
             }
             OnPropertyChanged(nameof(HoseDispenserList));
             OnPropertyChanged(nameof(AreAvailableHoses));
             OnPropertyChanged(nameof(NewSaleEnabled));
         }
+
+
 
         public void AddSelectedHose(HoseCourtModel hose)
         {
