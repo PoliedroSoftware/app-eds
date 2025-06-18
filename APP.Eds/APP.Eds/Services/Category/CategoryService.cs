@@ -7,6 +7,7 @@ using APP.Eds.Models.Category;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using System.Xml.Linq;
 
 namespace APP.Eds.Services.Category
 {
@@ -96,15 +97,13 @@ namespace APP.Eds.Services.Category
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/category", content);
 
-                if (response.IsSuccessStatusCode)
+
+                if (string.IsNullOrWhiteSpace(Description))
                 {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo categoria.", "Aceptar");
+                    return; 
                 }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
-                }
+
             }
             catch (Exception ex)
             {
