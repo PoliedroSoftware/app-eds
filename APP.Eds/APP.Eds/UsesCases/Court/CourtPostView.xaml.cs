@@ -118,7 +118,7 @@ public partial class CourtPostView : ContentPage
 
                 var selectedId = vm.SelectedEds.IdEds;
                 await vm.SendCourtDataAsync();
-                CourtService.ResetInstance();
+                CourtService.ResetInstanceFields();
                 _service = CourtService.Instance;
                 BindingContext = _service;
 
