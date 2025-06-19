@@ -1,13 +1,12 @@
-using APP.Eds.Models.ProductType;
-using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using APP.Eds.Models.Category;
-using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
+using APP.Eds.Models.Category;
+using APP.Eds.Models.Translations;
+using APP.Eds.Services.Config;
+using System.ComponentModel;
 using System.Net.Http.Headers;
-using System.Xml.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
 
 namespace APP.Eds.Services.Category
 {
@@ -39,14 +38,54 @@ namespace APP.Eds.Services.Category
         }
         public ICommand GetByIdCategoryDataCommand { get; }
         public ICommand SaveCategoryDataCommand { get; }
+        private string _CategoryTranslation = string.Empty;
 
-        public CategoryService()
+        public string CategoryTranslation
+        {
+            get => _CategoryTranslation;
+            set
+            {
+                if (_CategoryTranslation != value)
+                {
+                    _CategoryTranslation = value;
+                    OnPropertyChanged(nameof(CategoryTranslation));
+                }
+            }
+        }
+        public  CategoryService()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetByIdCategoryDataCommand = new Command<int>(async (CategoryId) => await GetByIdDispenserTypeDataAsync(CategoryId));
             SaveCategoryDataCommand = new Command(async () => await SaveCategoryDataAsync());
+            LoadTranslationsAsync();
         }
+        public async Task LoadTranslationsAsync()
+        {
+            var result = await GetTranslationsByLanguageAsync("es-CO");
+            GlobalTranslations.SetTranslations(result ?? []);
+            CategoryTranslation = GlobalTranslations.Get("Category");
 
+        }
+        public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return new Dictionary<string, string>();
+            }
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/translations");
+            var data = JsonSerializer.Deserialize<TranslationsResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return data.Translations.TryGetValue(languageTag, out var translations)
+                ? translations
+                : new Dictionary<string, string>();
+
+        }
         public async Task GetByIdDispenserTypeDataAsync(int CategoryId)
         {
             if (string.IsNullOrEmpty(_authToken))
