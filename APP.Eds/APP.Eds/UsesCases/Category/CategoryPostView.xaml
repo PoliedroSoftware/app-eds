@@ -3,17 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Category.CategoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Category">
+             Title="Gestión Categoría">
     <AbsoluteLayout>
         <VerticalStackLayout
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
         Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Category"/>
+            <Label FontSize="16" Text="Categoría"/>
             <Entry
+            x:Name="CategoryEntry"
             Keyboard="Text"
-            Placeholder="Enter Category"
-            Text="{Binding Description, Mode=TwoWay}" />
+            Placeholder="Ingresar la categoría"
+            Text="{Binding Description, Mode=TwoWay}"
+            TextChanged="CategoryEntry_TextChanged"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
