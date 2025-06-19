@@ -3,24 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Category.CategoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestión Categoría">
+             Title="Gestión Categoria">
     <AbsoluteLayout>
         <VerticalStackLayout
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
         Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Categoría"/>
+            <Label FontSize="16" Text="{Binding CategoryTranslation, Mode=TwoWay}"/>
             <Entry
             x:Name="CategoryEntry"
             Keyboard="Text"
-            Placeholder="Ingresar la categoría"
+            Placeholder="{Binding EnterCategory, Mode=TwoWay}"
             Text="{Binding Description, Mode=TwoWay}"
             TextChanged="CategoryEntry_TextChanged"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
-            Text="Enviar Datos"
+            Text="Send Data"
             TextColor="White" />
         </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
