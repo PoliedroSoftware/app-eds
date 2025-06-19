@@ -21,4 +21,7 @@ public class HoseResponse
 
     [JsonProperty("idProductType")]
     public int IdProductType { get; set; }
+
+    [JsonProperty("price")]
+    public double Price { get; set; }
 }

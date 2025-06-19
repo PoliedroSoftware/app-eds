@@ -25,6 +25,9 @@ public class HoseCourtModel
     [JsonPropertyName("idProductType")]
     public int IdProductType { get; set; }
 
+    [JsonPropertyName("price")]
+    public double Price { get; set; }
+
     [JsonPropertyName("dispensersEntity")]
     public DispenserCourtModel DispensersEntity { get; set; }
 
@@ -33,6 +36,8 @@ public class HoseCourtModel
 
     [JsonPropertyName("edsEntity")]
     public EdsResponse EdsEntity { get; set; }
+
+   
 
     public string ProductName => ProductTypeEntity?.Description ?? "Unknown";
     public int DispensersNumber => DispensersEntity?.Number ?? 0;
