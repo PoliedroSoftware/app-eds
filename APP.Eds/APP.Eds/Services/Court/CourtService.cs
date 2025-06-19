@@ -30,9 +30,24 @@ namespace APP.Eds.Services.Court
         public static CourtService Instance => _instance ??= new CourtService();
         private string? _authToken;
 
-        public static void ResetInstance()
+        public static void ResetInstanceFields()
         {
-            _instance = null;
+            _instance._authToken = null;
+            _instance.SelectedBusiness = null;
+            _instance.SelectedEds = null;
+            _instance.SelectedIslander = null;
+            _instance.TotalAmount = 0;
+            _instance.TotalGallons = 0;
+            _instance.TotalExpenditure = 0;
+            _instance.TotalTypeOfCollection = 0;
+            _instance.TotalSales = 0;
+            _instance.Distintic = 0;
+            _instance.CourtDispensers = null;
+            _instance.CourtDocuments = null;
+            _instance.CourtExpenditures = null;
+            _instance.CourtTypeOfCollections = null;
+            _instance.AdditionalInformation = null;
+            
         }
 
 
