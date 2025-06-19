@@ -94,8 +94,7 @@ public partial class AddDispenser : Popup
             
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                double diferenciaMonto = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (diferenciaMonto / vm.SelectedHose.Price);
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
             }
 
             SecondEntry.Focus();
@@ -121,14 +120,30 @@ public partial class AddDispenser : Popup
 
     private void HoseSelected(object sender, EventArgs e)
     {
-        if(HosePicker.SelectedIndex != -1)
+        if (HosePicker.SelectedIndex != -1)
         {
             FirstEntry.IsEnabled = true;
             SecondEntry.IsEnabled = true;
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
+
+            // Mostrar el precio directamente desde el modelo seleccionado
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null)
+            {
+                double price = vm.SelectedHose.Price;
+                PricePerGallonLabel.Text = $"Precio por galón: {price:C2}";
+            }
+            else
+            {
+                PricePerGallonLabel.Text = "Precio por galón: -";
+            }
+        }
+        else
+        {
+            PricePerGallonLabel.Text = "Precio por galón: -";
         }
     }
+
     private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (sender is Entry entry)
