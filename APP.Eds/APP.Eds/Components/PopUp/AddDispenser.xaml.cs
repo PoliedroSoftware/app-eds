@@ -84,19 +84,18 @@ public partial class AddDispenser : Popup
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione una Manguera", "OK");
         }
     }
-    private const double PricePerGallon = 5000.0;
+
     private void EntryAccumulatedCompleted(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm)
         {
             AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
             GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-
-            // Cálculo automático de galones
+            
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
                 double diferenciaMonto = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (diferenciaMonto / PricePerGallon);
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (diferenciaMonto / vm.SelectedHose.Price);
             }
 
             SecondEntry.Focus();
