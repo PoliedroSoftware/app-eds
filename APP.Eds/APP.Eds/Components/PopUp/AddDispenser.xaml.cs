@@ -3,17 +3,28 @@ using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
 
+
 public partial class AddDispenser : Popup
 {
     private readonly CourtService courtService;
+    private bool isGallonsEditable = false;
 
     public AddDispenser(CourtService courtService)
     {
         InitializeComponent();
         this.courtService = courtService;
-
+        SecondEntry.IsEnabled = isGallonsEditable;
     }
-
+    private void EditGallonsButton_Clicked(object sender, EventArgs e)
+    {
+        isGallonsEditable = !isGallonsEditable;
+        SecondEntry.IsEnabled = isGallonsEditable;
+        if (isGallonsEditable)
+        {
+            SecondEntry.Focus();
+            SecondEntry.CursorPosition = SecondEntry.Text?.Length ?? 0;
+        }
+    }
     private void OnCloseTapped(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm)
@@ -73,26 +84,29 @@ public partial class AddDispenser : Popup
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione una Manguera", "OK");
         }
     }
-    
-    private void OnEntryUnfocused(object sender, FocusEventArgs e)
-    {
-        if (BindingContext is CourtService vm)
-        {
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-        }
-    }
+
     private void EntryAccumulatedCompleted(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm)
         {
             AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
             GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
+            
+            if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+            {
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+            }
+
             SecondEntry.Focus();
             SecondEntry.CursorPosition = SecondEntry.Text.Length;
-
         }
     }
+   
+    private void OnEntryUnfocused(object sender, FocusEventArgs e)
+    {
+
+    }
+
 
     private void EntryGallonsCompleted(object sender, EventArgs e)
     {
@@ -106,14 +120,30 @@ public partial class AddDispenser : Popup
 
     private void HoseSelected(object sender, EventArgs e)
     {
-        if(HosePicker.SelectedIndex != -1)
+        if (HosePicker.SelectedIndex != -1)
         {
             FirstEntry.IsEnabled = true;
             SecondEntry.IsEnabled = true;
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
+
+            // Mostrar el precio directamente desde el modelo seleccionado
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null)
+            {
+                double price = vm.SelectedHose.Price;
+                PricePerGallonLabel.Text = $"Precio por galón: {price:C2}";
+            }
+            else
+            {
+                PricePerGallonLabel.Text = "Precio por galón: -";
+            }
+        }
+        else
+        {
+            PricePerGallonLabel.Text = "Precio por galón: -";
         }
     }
+
     private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (sender is Entry entry)
