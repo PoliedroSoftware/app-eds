@@ -6,7 +6,7 @@
 	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
 	CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
-    
+
     <Frame
 		Padding="20"
 		BackgroundColor="White"
@@ -43,7 +43,7 @@
                         HorizontalOptions="End"
                         VerticalOptions="Center"/>
             </Grid>
-            
+
             <!--  Campos de Entrada  -->
             <ScrollView Grid.Row="1" MaximumHeightRequest="500" Margin="0,0,0,10">
                 <VerticalStackLayout>
@@ -65,6 +65,13 @@
                                 TextColor="Black"/>
                         </HorizontalStackLayout>
                     </Frame>
+                    <Label
+                        x:Name="PricePerGallonLabel"
+                        Text="Precio por galón: -"
+                        FontAttributes="Bold"
+                        Margin="0,0,0,10"
+                        TextColor="Black"
+                        HorizontalOptions="Start" />
                     <Frame Padding="10"
                            BackgroundColor="#F5F5F5"
                            CornerRadius="10"
@@ -89,7 +96,7 @@
                                                Margin="2"
                                                Unfocused="OnEntryUnfocused"
                                                Completed="EntryAccumulatedCompleted"
-                                    TextChanged="FirstEntry_TextChanged"
+                                               TextChanged="FirstEntry_TextChanged"
                                                IsEnabled="False"/>
                                     </Grid>
                                 </HorizontalStackLayout>
@@ -116,21 +123,28 @@
                                                TextColor="Black"
                                                Keyboard="Numeric"
                                                Placeholder="Ingrese los galones"
-                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
                                                Margin="2"
                                                Unfocused="OnEntryUnfocused"
                                                Completed="EntryGallonsCompleted"
-                                    TextChanged="FirstEntry_TextChanged"
+                                               TextChanged="FirstEntry_TextChanged"
                                                IsEnabled="False"/>
                                     </Grid>
+                                    <Button Text="✎"
+                                            Clicked="EditGallonsButton_Clicked"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="30"
+                                            HeightRequest="30"
+                                            VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
-                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='Gallons: {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="Black"/>
+
+                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='Gallons: {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="Black"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
                     </Frame>
                 </VerticalStackLayout>
             </ScrollView>
-            
+
             <!--  Botón Agregar  -->
             <Button Grid.Row="2"
                     x:Name="AddButton"
