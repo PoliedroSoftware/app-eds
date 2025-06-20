@@ -354,15 +354,15 @@
                         FontSize="Medium"
                         Text="💬"
                         BackgroundColor="Transparent"
-                        Clicked="OpenAditionalInfoPopUp"/>
+                        Clicked="OpenAdditionalInfoPopUp"/>
                 </Grid>
                 <Frame x:Name="AdditionalInfo"
                        Padding="10"
                        BackgroundColor="White"
                        BorderColor="Gray"
                        CornerRadius="10"
-                       IsVisible="{Binding AditionalInfoEnabled}">
-                    <Label Text="{Binding AditionalInfoDescription, Mode=TwoWay}" TextColor="Black"/>
+                       IsVisible="{Binding AdditionalInfoEnabled}">
+                    <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" TextColor="Black"/>
                 </Frame>
 
                 <!-- Botones -->
