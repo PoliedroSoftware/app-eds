@@ -7,16 +7,6 @@ using MauiButton = Microsoft.Maui.Controls.Button;
 using System.Runtime.InteropServices;
 using MauiApp = Microsoft.Maui.Controls.Application;
 
-#if WINDOWS
-using Microsoft.Maui.Handlers;
-using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.Maui.Platform;
-using WinRT.Interop;
-using Microsoft.UI.Xaml;
-#endif
-
 namespace APP.Eds.Controls
 {
     public class HoverButton : MauiButton
@@ -26,16 +16,6 @@ namespace APP.Eds.Controls
         public Color HoverColor { get; set; } = Colors.DarkGreen;
         public Color PressedColor { get; set; } = Colors.LimeGreen;
 
-#if WINDOWS
-        [DllImport("user32.dll")]
-        private static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetCursor(IntPtr hCursor);
-
-        private const int IDC_ARROW = 32512;
-        private const int IDC_HAND = 32649;
-#endif
 
         public HoverButton()
         {
@@ -44,37 +24,37 @@ namespace APP.Eds.Controls
             Pressed += OnPressed;
             Released += OnReleased;
 
+#if WINDOWS
             var pointerGesture = new PointerGestureRecognizer();
             pointerGesture.PointerEntered += OnPointerEntered;
             pointerGesture.PointerExited += OnPointerExited;
             GestureRecognizers.Add(pointerGesture);
+#endif
+
         }
 
         private async void OnPressed(object sender, EventArgs e)
         {
-            await AnimateColorAsync(PressedColor);
+            _= AnimateColorAsync(PressedColor);
         }
 
         private async void OnReleased(object sender, EventArgs e)
         {
-            await AnimateColorAsync(NormalColor);
+            _= AnimateColorAsync(NormalColor);
         }
 
+#if WINDOWS
         private async void OnPointerEntered(object sender, EventArgs e)
         {
-            await AnimateColorAsync(HoverColor);
-#if WINDOWS
-            ChangeCursorToHand(true);
-#endif
+            _= AnimateColorAsync(HoverColor);
+
         }
 
         private async void OnPointerExited(object sender, EventArgs e)
         {
-            await AnimateColorAsync(NormalColor);
-#if WINDOWS
-            ChangeCursorToHand(false);
-#endif
+            _= AnimateColorAsync(NormalColor);
         }
+#endif
 
         private async Task AnimateColorAsync(Color targetColor)
         {
@@ -101,18 +81,6 @@ namespace APP.Eds.Controls
                 from.Alpha + (to.Alpha - from.Alpha) * t);
         }
 
-#if WINDOWS
-        private void ChangeCursorToHand (bool isHand)
-        {
-             var mauiWindow = MauiApp.Current.Windows.FirstOrDefault();
-             if (mauiWindow?.Handler?.PlatformView is Microsoft.UI.Xaml.Window window)
-             {
-                IntPtr hwnd = WindowNative.GetWindowHandle(window);
-                IntPtr hCursor = LoadCursor(IntPtr.Zero, isHand ? IDC_HAND : IDC_ARROW);
-                SetCursor(hCursor);
-             }
-}
-#endif
     }
 }
 
