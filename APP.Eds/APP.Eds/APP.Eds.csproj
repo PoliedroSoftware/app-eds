@@ -61,12 +61,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="NewFolder\**" />
 	  <AndroidResource Remove="Services\ClearFields\**" />
+	  <AndroidResource Remove="UsesCases\Behaviors\**" />
+	  <Compile Remove="NewFolder\**" />
 	  <Compile Remove="Services\ClearFields\**" />
+	  <Compile Remove="UsesCases\Behaviors\**" />
+	  <EmbeddedResource Remove="NewFolder\**" />
 	  <EmbeddedResource Remove="Services\ClearFields\**" />
+	  <EmbeddedResource Remove="UsesCases\Behaviors\**" />
+	  <MauiCss Remove="NewFolder\**" />
 	  <MauiCss Remove="Services\ClearFields\**" />
+	  <MauiCss Remove="UsesCases\Behaviors\**" />
+	  <MauiXaml Remove="NewFolder\**" />
 	  <MauiXaml Remove="Services\ClearFields\**" />
+	  <MauiXaml Remove="UsesCases\Behaviors\**" />
+	  <None Remove="NewFolder\**" />
 	  <None Remove="Services\ClearFields\**" />
+	  <None Remove="UsesCases\Behaviors\**" />
 	</ItemGroup>
 
 	<ItemGroup>

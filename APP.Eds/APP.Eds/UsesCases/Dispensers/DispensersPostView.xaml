@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Dispensers.DispensersPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestion Dispensers">
     <ScrollView>
        <AbsoluteLayout>
@@ -43,14 +44,18 @@
             Placeholder="Enter Hose Number"
             Text="{Binding HoseNumber, Mode=TwoWay}"/>
 
-        <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="Enviar Datos"
-            TextColor="White" />
+                <button:HoverButton
+                    BackgroundColor="Green"
+                    Clicked="Button_Clicked_1"
+                    WidthRequest="200"
+                    HeightRequest="60"
+                    CornerRadius="10"
+                    Text="Enviar Datos"
+                    HoverColor="Gray"
+                    PressedColor="AliceBlue"
+                    TextColor="White" />
 
-            <Label FontSize="18" Text="Lista de dispensers"/>
+                <Label FontSize="18" Text="Lista de dispensers"/>
 
             <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
                             HeightRequest="400">
