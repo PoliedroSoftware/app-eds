@@ -52,6 +52,50 @@ namespace APP.Eds.Services.Category
                 }
             }
         }
+
+        private string _SendData = string.Empty;
+        public string SendData
+        {
+            get => _SendData;
+            set
+            {
+                if (_SendData != value)
+                {
+                    _SendData = value;
+                    OnPropertyChanged(nameof(SendData));
+                }
+            }
+        }
+
+        private string _EnterCategory = string.Empty;
+
+        public string EnterCategory
+        {
+            get => _EnterCategory;
+            set
+            {
+                if (_EnterCategory != value)
+                {
+                    _EnterCategory = value;
+                    OnPropertyChanged(nameof(EnterCategory));
+                }
+            }
+        }    
+
+        private string _CategoryManagement = string.Empty;
+
+        public string CategoryManagement
+        {
+            get => _CategoryManagement;
+            set
+            {
+                if (_CategoryManagement != value)
+                {
+                    _CategoryManagement = value;
+                    OnPropertyChanged(nameof(CategoryManagement));
+                }
+            }
+        }
         public  CategoryService()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
@@ -64,6 +108,9 @@ namespace APP.Eds.Services.Category
             var result = await GetTranslationsByLanguageAsync("es-CO");
             GlobalTranslations.SetTranslations(result ?? []);
             CategoryTranslation = GlobalTranslations.Get("Category");
+            SendData = GlobalTranslations.Get("SendData");
+            EnterCategory = GlobalTranslations.Get("EnterCategory");
+            CategoryManagement = GlobalTranslations.Get("CategoryManagement");
 
         }
         public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
