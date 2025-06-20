@@ -346,15 +346,24 @@
                 </CollectionView>
 
                 <!-- Informacion Adicional -->
-                <HorizontalStackLayout x:Name="AdditionalInformation" HorizontalOptions="End">
-                    <Label VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
+                <Grid ColumnDefinitions="*, auto" x:Name="AdditionalInformation">
+                    <Label Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
                     <Button
-                    FontSize="Medium"
-                    Text="💬"
-                    BackgroundColor="Transparent"
-                    Margin="0,0,10,0"
-                    Clicked="OpenAditionalInfoPopUp"/>
-                </HorizontalStackLayout>
+                        Grid.Column="1"
+                        HorizontalOptions="End"
+                        FontSize="Medium"
+                        Text="💬"
+                        BackgroundColor="Transparent"
+                        Clicked="OpenAdditionalInfoPopUp"/>
+                </Grid>
+                <Frame x:Name="AdditionalInfo"
+                       Padding="10"
+                       BackgroundColor="White"
+                       BorderColor="Gray"
+                       CornerRadius="10"
+                       IsVisible="{Binding AdditionalInfoEnabled}">
+                    <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" TextColor="Black"/>
+                </Frame>
 
                 <!-- Botones -->
                 <VerticalStackLayout Spacing="10"  x:Name="Button">
