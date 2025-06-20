@@ -4,20 +4,17 @@ using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtPostView : ContentPage
 {
-	private CourtService _service;
+    private CourtService _service;
     public string UserRole { get; set; } = string.Empty;
     public CourtPostView()
-	{
+    {
 
         InitializeComponent();
         _service = CourtService.Instance;
@@ -75,7 +72,7 @@ public partial class CourtPostView : ContentPage
     {
         this.ShowPopup(new AddDispenser(_service));
     }
-    private void OpenAditionalInfoPopUp(object sender, EventArgs e)
+    private void OpenAdditionalInfoPopUp(object sender, EventArgs e)
     {
         this.ShowPopup(new AddInfo(_service));
     }
@@ -93,8 +90,8 @@ public partial class CourtPostView : ContentPage
     }
 
     private async void OnShowCourtListClicked(object sender, EventArgs e)
-    { 
-            await Navigation.PushAsync(new CourtListView());       
+    {
+        await Navigation.PushAsync(new CourtListView());
     }
     private async void Button_Clicked(object sender, EventArgs e)
     {
@@ -116,16 +113,16 @@ public partial class CourtPostView : ContentPage
                 return;
             }
 
-                var selectedId = vm.SelectedEds.IdEds;
-                await vm.SendCourtDataAsync();
-                CourtService.ResetInstanceFields();
-                _service = CourtService.Instance;
-                BindingContext = _service;
+            var selectedId = vm.SelectedEds.IdEds;
+            await vm.SendCourtDataAsync();
+            CourtService.ResetInstanceFields();
+            _service = CourtService.Instance;
+            BindingContext = _service;
 
-        }  
-     }
-        
-    
+        }
+    }
+
+
     private void OnBusinessSelected(object sender, EventArgs e)
     {
         var picker = sender as Picker;

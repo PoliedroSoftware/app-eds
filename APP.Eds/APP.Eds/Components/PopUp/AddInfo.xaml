@@ -50,7 +50,7 @@
                         HeightRequest="300"
                         AutoSize="Disabled"
                         Placeholder="{Binding EnterADescription}"
-                        Text="{Binding Description, Mode=TwoWay}" />
+                        Text="{Binding AditionalInfoDescription, Mode=TwoWay}" />
                 </VerticalStackLayout>
             </Frame>
         </Grid>
