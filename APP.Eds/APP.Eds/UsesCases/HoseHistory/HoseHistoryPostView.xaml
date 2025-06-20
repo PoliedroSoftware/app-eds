@@ -4,36 +4,36 @@
              x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestion HoseHistory">
+             Title="Gestión Historial de Mangueras">
     <ScrollView>
         <AbsoluteLayout>
         <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Date"/>
+            <Label FontSize="16" Text="Fecha"/>
             <DatePicker
                 Date="{Binding Date, Mode=TwoWay}"
                 Format="dd/MM/yyyy"/>
 
-            <Label FontSize="16" Text="AccumulatedAmount"/>
+            <Label FontSize="16" Text="Monto Acumulado"/>
             <Entry
                 Keyboard="Text"
-                Placeholder="Enter AccumulatedAmount"
+                Placeholder="Ingrese Monto Acumulado"
                 Text="{Binding AccumulatedAmount, Mode=TwoWay}" />
 
-            <Label FontSize="16" Text="AccumulatedGallons"/>
+            <Label FontSize="16" Text="Galones Acumulados"/>
             <Entry
                 Keyboard="Text"
                 Placeholder="Enter AccumulatedGallons"
                 Text="{Binding AccumulatedGallons, Mode=TwoWay}" />
 
-            <Picker Title="Seleccione un Dispensers"
+            <Picker Title="Seleccione un Dispensador"
                 ItemsSource="{Binding DispensersList}"
                 ItemDisplayBinding="{Binding DisplayName}"
                 SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}" />
 
-            <Picker Title="Seleccione un Hose"
+            <Picker Title="Seleccione una Manguera"
                 ItemsSource="{Binding HoseList}"
                 ItemDisplayBinding="{Binding Number}"
                 SelectedItem="{Binding SelectHose, Mode=TwoWay}" />
@@ -49,7 +49,7 @@
                     PressedColor="AliceBlue"
                     TextColor="White" />
 
-                <Label FontSize="18" Text="Lista de hose-history" />
+                <Label FontSize="18" Text="Historial de Mangueras" />
 
             <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20"
                             HeightRequest="400">
