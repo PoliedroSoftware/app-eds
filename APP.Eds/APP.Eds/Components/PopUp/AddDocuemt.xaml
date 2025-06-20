@@ -23,7 +23,7 @@
                 <Label Grid.Column="1"
                        FontAttributes="Bold"
                        FontSize="22"
-                       Text="AddDocumentTranslation"           
+                       Text="{Binding AddDocumentTranslation}"           
                        TextColor="Black"
                        HorizontalTextAlignment="Center"
                        HorizontalOptions="Center"
@@ -52,12 +52,12 @@
 						BackgroundColor="#6200E8"
 						Clicked="OnSelectFileClicked"
 						CornerRadius="10"
-						Text="Select File"
+						Text="{Binding SelectFile}"
 						TextColor="White" />
 					<Label
 						FontAttributes="Bold"
 						IsVisible="{Binding IsFileSelected}"
-						Text="Selected File:" />
+						Text="{Binding SelectedFile}" />
 					<Label
 						FontAttributes="Italic"
 						Text="{Binding SelectedFileName}"
@@ -71,7 +71,7 @@
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
                     FontSize="18"
-                    Text="Add"
+                    Text="{Binding Add}"
                     TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="30"/>
