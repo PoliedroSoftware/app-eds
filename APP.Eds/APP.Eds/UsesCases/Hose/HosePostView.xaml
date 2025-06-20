@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Hose.HosePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestion Hose">
     <ScrollView>
         <AbsoluteLayout>
@@ -38,14 +39,18 @@
                 ItemDisplayBinding="{Binding Description}"
                 SelectedItem="{Binding SelectProductType, Mode=TwoWay}" />
 
-            <Button
-                BackgroundColor="Green"
-                Clicked="Button_Clicked_1"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White" />
+                <button:HoverButton
+                    BackgroundColor="Green"
+                    Clicked="Button_Clicked_1"
+                    WidthRequest="200"
+                    HeightRequest="60"
+                    CornerRadius="10"
+                    Text="Enviar Datos"
+                    HoverColor="Gray"
+                    PressedColor="AliceBlue"
+                    TextColor="White" />
 
-            <Label FontSize="18" Text="Lista de hose"/>
+                <Label FontSize="18" Text="Lista de hose"/>
 
             <CollectionView ItemsSource="{Binding HoseList}" Margin="0,20"
                             HeightRequest="400">

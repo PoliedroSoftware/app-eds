@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestion HoseHistory">
     <ScrollView>
         <AbsoluteLayout>
@@ -37,14 +38,18 @@
                 ItemDisplayBinding="{Binding Number}"
                 SelectedItem="{Binding SelectHose, Mode=TwoWay}" />
 
-            <Button
-                BackgroundColor="Green"
-                Clicked="Button_Clicked_1"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White" />
+                <button:HoverButton
+                    BackgroundColor="Green"
+                    Clicked="Button_Clicked_1"
+                    WidthRequest="200"
+                    HeightRequest="60"
+                    CornerRadius="10"
+                    Text="Enviar Datos"
+                    HoverColor="Gray"
+                    PressedColor="AliceBlue"
+                    TextColor="White" />
 
-            <Label FontSize="18" Text="Lista de hose-history" />
+                <Label FontSize="18" Text="Lista de hose-history" />
 
             <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20"
                             HeightRequest="400">
