@@ -46,7 +46,7 @@ namespace APP.Eds.Services.Court
             _instance.CourtDocuments = null;
             _instance.CourtExpenditures = null;
             _instance.CourtTypeOfCollections = null;
-            _instance.AdditionalInformation = null;
+            _instance.AditionalInfoDescription = null;
             
         }
 
@@ -68,6 +68,7 @@ namespace APP.Eds.Services.Court
         public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
         public bool AreAvailableHoses => HoseDispenserList != null && HoseDispenserList.Count > 0;
         public bool NewSaleEnabled => IsEdsSelected && AreAvailableHoses;
+        public bool AditionalInfoEnabled => !string.IsNullOrEmpty(AditionalInfoDescription) && AditionalInfoDescription.Length > 0;
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
@@ -178,14 +179,15 @@ namespace APP.Eds.Services.Court
             }
         }
 
-        private string _description;
-        public string Description
+        private string _aditionalInfoDescription;
+        public string AditionalInfoDescription
         {
-            get => _description;
+            get => _aditionalInfoDescription;
             set
             {
-                _description = value;
-                OnPropertyChanged(nameof(Description));
+                _aditionalInfoDescription = value;
+                OnPropertyChanged(nameof(AditionalInfoDescription));
+                OnPropertyChanged(nameof(AditionalInfoEnabled));
             }
         }
 
@@ -2321,7 +2323,7 @@ GetAllEdsData()
                 Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
                 Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
                 Court.Endtime = Endtime.ToString(@"hh\:mm\:ss");
-                Court.Descripcion = Description;
+                Court.Descripcion = AditionalInfoDescription;
                 Court.Distintic = Distintic;
                 Court.CourtDocuments = CourtDocuments?.ToList();
 
