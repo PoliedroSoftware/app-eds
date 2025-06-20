@@ -4,37 +4,37 @@
              x:Class="APP.Eds.UsesCases.Hose.HosePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestion Hose">
+             Title="Gestión de Mangueras">
     <ScrollView>
         <AbsoluteLayout>
         <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Number"/>
+            <Label FontSize="16" Text="Numero"/>
             <Entry
                 Keyboard="Text"
-                Placeholder="Enter Number"
+                Placeholder="Ingrese Numero"
                 Text="{Binding Number, Mode=TwoWay}" />
 
-            <Label FontSize="16" Text="AccumulatedAmount"/>
+            <Label FontSize="16" Text="Monto Acumulado"/>
             <Entry
                 Keyboard="Text"
-                Placeholder="Enter AccumulatedAmount"
+                Placeholder="Ingresar Monto Acumulado"
                 Text="{Binding AccumulatedAmount, Mode=TwoWay}" />
 
-            <Label FontSize="16" Text="AccumulatedGallons"/>
+            <Label FontSize="16" Text="Galones Acumulados"/>
             <Entry
                 Keyboard="Text"
-                Placeholder="Enter AccumulatedGallons"
+                Placeholder="Ingrese Galones Acumulados"
                 Text="{Binding AccumulatedGallons, Mode=TwoWay}" />
 
-            <Picker Title="Seleccione un Dispensers"
+            <Picker Title="Seleccione un Dispensador"
                 ItemsSource="{Binding DispensersList}"
                 ItemDisplayBinding="{Binding DisplayName}"
                 SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}" />
 
-            <Picker Title="Seleccione un Product Type"
+            <Picker Title="Seleccione un Tipo de Producto"
                 ItemsSource="{Binding ProductTypeList}"
                 ItemDisplayBinding="{Binding Description}"
                 SelectedItem="{Binding SelectProductType, Mode=TwoWay}" />
@@ -50,7 +50,7 @@
                     PressedColor="AliceBlue"
                     TextColor="White" />
 
-                <Label FontSize="18" Text="Lista de hose"/>
+                <Label FontSize="18" Text="Lista de Mangueras"/>
 
             <CollectionView ItemsSource="{Binding HoseList}" Margin="0,20"
                             HeightRequest="400">

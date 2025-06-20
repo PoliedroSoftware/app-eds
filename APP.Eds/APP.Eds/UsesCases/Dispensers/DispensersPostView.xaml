@@ -4,26 +4,26 @@
              x:Class="APP.Eds.UsesCases.Dispensers.DispensersPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestion Dispensers">
+             Title="Gestión de Dispensadores">
     <ScrollView>
        <AbsoluteLayout>
             <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-                <Label FontSize="16" Text="Code"/>
+                <Label FontSize="16" Text="Código"/>
                 <Entry
             Keyboard="Text"
-            Placeholder="Enter Dispensers"
+            Placeholder="Ingresar Dispensador"
             Text="{Binding Code, Mode=TwoWay}" />
 
-                <Label FontSize="16" Text="Number"/>
+                <Label FontSize="16" Text="Numero"/>
                 <Entry
             Keyboard="Numeric"
-            Placeholder="Enter Number"
+            Placeholder="Digite Numero"
             Text="{Binding Number, Mode=TwoWay}" />
 
-                <Picker Title="Seleccione un DispenserType"
+                <Picker Title="Seleccione un Dispensador"
             ItemsSource="{Binding DispenserTypeList}"
             ItemDisplayBinding="{Binding Description}"
             SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" />
@@ -33,12 +33,12 @@
             ItemDisplayBinding="{Binding Name}"
             SelectedItem="{Binding SelectedEds, Mode=TwoWay}"/>
 
-                <Picker Title="Seleccione una Island"
+                <Picker Title="Seleccione una Isla"
             ItemsSource="{Binding IslandList}"
             ItemDisplayBinding="{Binding Description}"
             SelectedItem="{Binding SelectedIsland, Mode=TwoWay}" />
 
-                <Label FontSize="16" Text="Hose Number"/>
+                <Label FontSize="16" Text="Numero de Manguera"/>
                 <Entry
             Keyboard="Numeric"
             Placeholder="Enter Hose Number"
@@ -55,7 +55,7 @@
                     PressedColor="AliceBlue"
                     TextColor="White" />
                 
-                <Label FontSize="18" Text="Lista de dispensers"/>
+                <Label FontSize="18" Text="Lista de Dispensadores"/>
 
                 <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
                             HeightRequest="400">

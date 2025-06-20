@@ -4,16 +4,16 @@
              x:Class="APP.Eds.UsesCases.DispenserType.DispenserTypePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestion DispenserType">
+             Title="Gestión Tipo de Dispensadores">
     <AbsoluteLayout>
         <VerticalStackLayout
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
         Padding="20" Spacing="15">
-            <Label FontSize="16" Text="DispenserType"/>
+            <Label FontSize="16" Text="Tipo de Dispensador"/>
             <Entry
             Keyboard="Text"
-            Placeholder="Enter DispenserType"
+            Placeholder="Ingresar Tipo de Dispensador"
             Text="{Binding Description, Mode=TwoWay}" />
             <button:HoverButton
                 BackgroundColor="Green"
