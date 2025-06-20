@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.DispenserType.DispenserTypePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestion DispenserType">
     <AbsoluteLayout>
         <VerticalStackLayout
@@ -14,12 +15,16 @@
             Keyboard="Text"
             Placeholder="Enter DispenserType"
             Text="{Binding Description, Mode=TwoWay}" />
-            <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="Enviar Datos"
-            TextColor="White" />
+            <button:HoverButton
+                BackgroundColor="Green"
+                Clicked="Button_Clicked_1"
+                WidthRequest="200"
+                HeightRequest="60"
+                CornerRadius="10"
+                Text="Enviar Datos"
+                HoverColor="Gray"
+                PressedColor="AliceBlue"
+                TextColor="White" />
         </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
