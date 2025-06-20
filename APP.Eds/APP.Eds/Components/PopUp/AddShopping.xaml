@@ -19,7 +19,7 @@
                     FontAttributes="Bold"
                     FontSize="22"
                     HorizontalOptions="Start"
-                    Text="Nuevo Egreso"
+                    Text="{Binding NewEgress}"
                     TextColor="Black"
                     Margin="0,0,0,8" />
                 <Button
@@ -37,13 +37,13 @@
                 BackgroundColor="#F5F5F5"
                 CornerRadius="10">
                 <VerticalStackLayout Spacing="20" Padding="24">
-                    <Button Text="Inicio" Margin="0,0,0,0" />
-                    <Button Text="Egresos" Margin="0,0,0,0" />
-                    <Button Text="Ingresos" Margin="0,0,0,0" />
-                    <Button Text="Reportes" Margin="0,0,0,0" />
+                    <Button Text="{Binding HomeTranslation}" Margin="0,0,0,0" />
+                    <Button Text="{Binding Expenses}" Margin="0,0,0,0" />
+                    <Button Text="{Binding IncomeTranslation}" Margin="0,0,0,0" />
+                    <Button Text="{Binding eportsTranslation}" Margin="0,0,0,0" />
                     <!-- Agrega más opciones según tu menú -->
                     <HorizontalStackLayout Spacing="16">
-                        <Label Text="Categoría de egreso" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Label Text="{Binding CategoryTheEgressTranslation}" VerticalOptions="Center" Margin="0,0,8,0"/>
                         <Picker
                             x:Name="ShopingProductPicker"
                             Title="Seleccione una categoría"
@@ -81,7 +81,7 @@
                 BackgroundColor="#F5F5F5"
                 CornerRadius="10">
                 <HorizontalStackLayout Spacing="16">
-                    <Label Text="Cantidad" VerticalOptions="Center" Margin="0,0,8,0"/>
+                    <Label Text="{Binding AmountTranslation}" VerticalOptions="Center" Margin="0,0,8,0"/>
                     <Entry
                         x:Name="SecondEntry"
                         BackgroundColor="#F5F5F5"
@@ -100,7 +100,7 @@
                 Clicked="Add_Product"
                 CornerRadius="10"
                 FontSize="18"
-                Text="Agregar Egreso"
+                Text="{Binding AddEgressTranslation}"
                 TextColor="White"
                 Margin="0,8,0,0"/>
         </VerticalStackLayout>

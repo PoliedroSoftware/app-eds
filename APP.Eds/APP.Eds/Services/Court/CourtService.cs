@@ -1509,7 +1509,126 @@ namespace APP.Eds.Services.Court
                     OnPropertyChanged(nameof(TypeofCollectionTranslation));
                 }
             }
-        }        
+        }
+        private string _AddButtonTranslation = string.Empty;
+        public string AddButtonTranslation
+        {
+            get => _AddButtonTranslation;
+            set
+            {
+                if (_AddButtonTranslation != value)
+                {
+                    _AddButtonTranslation = value;
+                    OnPropertyChanged(nameof(AddButtonTranslation));
+                }
+            }
+        }
+        private string _PricepergallonTranslation = string.Empty;
+        public string PricepergallonTranslation
+        {
+            get => _PricepergallonTranslation;
+            set
+            {
+                if (_PricepergallonTranslation != value)
+                {
+                    _PricepergallonTranslation = value;
+                    OnPropertyChanged(nameof(PricepergallonTranslation));
+                }
+            }
+        }
+        private string _AddExtraInformationTranslation = string.Empty;
+        public string AddExtraInformationTranslation
+        {
+            get => _AddExtraInformationTranslation;
+            set
+            {
+                if (_AddExtraInformationTranslation != value)
+                {
+                    _AddExtraInformationTranslation = value;
+                    OnPropertyChanged(nameof(AddExtraInformationTranslation));
+                }
+            }
+        }
+        private string _CategoryTheEgressTranslation = string.Empty;
+        public string CategoryTheEgressTranslation
+        {
+            get => _CategoryTheEgressTranslation;
+            set
+            {
+                if (_CategoryTheEgressTranslation != value)
+                {
+                    _CategoryTheEgressTranslation = value;
+                    OnPropertyChanged(nameof(CategoryTheEgressTranslation));
+                }
+            }
+        }
+        private string _HomeTranslation = string.Empty;
+        public string HomeTranslation
+        {
+            get => _HomeTranslation;
+            set
+            {
+                if (_HomeTranslation != value)
+                {
+                    _HomeTranslation = value;
+                    OnPropertyChanged(nameof(HomeTranslation));
+                }
+            }
+        }
+        private string _IncomeTranslation = string.Empty;
+        public string IncomeTranslation
+        {
+            get => _IncomeTranslation;
+            set
+            {
+                if (_IncomeTranslation != value)
+                {
+                    _IncomeTranslation = value;
+                    OnPropertyChanged(nameof(IncomeTranslation));
+                }
+            }
+        }
+        private string _ReportsTranslation = string.Empty;
+        public string ReportsTranslation
+        {
+            get => _ReportsTranslation;
+            set
+            {
+                if (_ReportsTranslation != value)
+                {
+                    _ReportsTranslation = value;
+                    OnPropertyChanged(nameof(ReportsTranslation));
+                }
+            }
+        }
+        private string _AddEgressTranslation = string.Empty;
+        public string AddEgressTranslation
+        {
+            get => _AddEgressTranslation;
+            set
+            {
+                if (_AddEgressTranslation != value)
+                {
+                    _AddEgressTranslation = value;
+                    OnPropertyChanged(nameof(AddEgressTranslation));
+                }
+            }
+        }
+        private string _CourtDetailTranslation = string.Empty;
+        public string CourtDetailTranslation
+        {
+            get => _CourtDetailTranslation;
+            set
+            {
+                if (_CourtDetailTranslation != value)
+                {
+                    _CourtDetailTranslation = value;
+                    OnPropertyChanged(nameof(CourtDetailTranslation));
+                }
+            }
+        }
+
+
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -1792,6 +1911,17 @@ namespace APP.Eds.Services.Court
                 TypeofCollectionTranslation = GlobalTranslations.Get("TypeofCollection");
                 LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
                 LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
+                AddButtonTranslation = GlobalTranslations.Get("AddButton");
+                PricepergallonTranslation = GlobalTranslations.Get("Pricepergallon");
+                AddExtraInformationTranslation = GlobalTranslations.Get("AddExtraInformation");
+                CategoryTheEgressTranslation = GlobalTranslations.Get("CategoryTheEgress");
+                HomeTranslation = GlobalTranslations.Get("Home");
+                IncomeTranslation = GlobalTranslations.Get("Income");
+                ReportsTranslation = GlobalTranslations.Get("Reports");
+                AddEgressTranslation = GlobalTranslations.Get("AddEgress");
+                CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
+
+
             }
             catch (Exception ex)
             {

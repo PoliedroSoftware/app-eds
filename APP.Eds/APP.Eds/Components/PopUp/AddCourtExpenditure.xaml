@@ -78,7 +78,7 @@
                            BackgroundColor="#F5F5F5"
                            CornerRadius="10">
                         <HorizontalStackLayout Spacing="10">
-                            <Label Text="Descripción:" VerticalOptions="Center" />
+                            <Label Text="{Binding DescriptionTranslation}" VerticalOptions="Center" />
                             <Entry x:Name="SecondEntry"
                                    BackgroundColor="#F5F5F5"
                                    Placeholder="{Binding Description}"

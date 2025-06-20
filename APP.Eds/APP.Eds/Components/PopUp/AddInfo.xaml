@@ -22,7 +22,7 @@
                 <Label Grid.Column="1"
                        FontAttributes="Bold"
                        FontSize="22"
-                       Text="Agregar Informacion Extra"
+                       Text="{Binding AddExtraInformationTranslation}"
                        TextColor="Black"
                        HorizontalTextAlignment="Center"
                        HorizontalOptions="Center"

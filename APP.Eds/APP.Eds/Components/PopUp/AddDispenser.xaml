@@ -26,7 +26,7 @@
                 <Label Grid.Column="1"
                        FontAttributes="Bold"
                        FontSize="22"
-                       Text="Agregar Dispensador"
+                       Text="{Binding AddDispenser}"
                        TextColor="Black"
                        HorizontalTextAlignment="Center"
                        HorizontalOptions="Center"
@@ -67,7 +67,7 @@
                     </Frame>
                     <Label
                         x:Name="PricePerGallonLabel"
-                        Text="Precio por galón: -"
+                        Text="{Binding PricepergallonTranslation}"
                         FontAttributes="Bold"
                         Margin="0,0,0,10"
                         TextColor="Black"
@@ -152,7 +152,7 @@
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
                     FontSize="18"
-                    Text="Add"
+                    Text="{Binding Add}"
                     TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>
