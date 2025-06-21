@@ -38,11 +38,11 @@ public partial class AddCourtExpenditure : Popup
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
             return;
         }
-        if (string.IsNullOrWhiteSpace(courtService.ExpenditureDescription))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, Ingrese una descripcion", "OK");
-            return;
-        }
+        //if (string.IsNullOrWhiteSpace(courtService.ExpenditureDescription))
+        //{
+        //    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, Ingrese una descripcion", "OK");
+        //    return;
+        //}
         await courtService.AddCourtExpenditureFromPopup();
 
         ExpenditurePicker.SelectedItem = null;
