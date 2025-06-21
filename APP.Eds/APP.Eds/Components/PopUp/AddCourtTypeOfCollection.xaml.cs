@@ -36,11 +36,11 @@ public partial class AddCourtTypeOfCollection : Popup
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
             return;
         }
-        if (string.IsNullOrWhiteSpace(courtService.CourtTypeOfCollectionDescription))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripcion", "OK");
-            return;
-        }
+        //if (string.IsNullOrWhiteSpace(courtService.CourtTypeOfCollectionDescription))
+        //{
+        //    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripcion", "OK");
+        //    return;
+        //}
         await courtService.AddCourtTypeOfCollectionFromPopup();
 
         TypeOfCollentionPicker.SelectedItem = null;
