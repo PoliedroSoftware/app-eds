@@ -49,7 +49,7 @@ public partial class AddCourtExpenditure : Popup
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
 
-        //Close();
+        Close();
     }
 
     private void ExpenditureSelected(object sender, EventArgs e)
