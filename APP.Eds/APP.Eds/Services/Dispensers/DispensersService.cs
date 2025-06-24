@@ -332,7 +332,7 @@ namespace APP.Eds.Services.Dispensers
             {
                 if (string.IsNullOrWhiteSpace(Code))
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Code' no puede estar vacío", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Código' no puede estar vacío", "OK");
                     return;
                 }
 
@@ -344,7 +344,7 @@ namespace APP.Eds.Services.Dispensers
 
                 if (SelectedDispenserType is null)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un DispenderType", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de dispensador", "OK");
                     return;
                 }
 
@@ -372,7 +372,7 @@ namespace APP.Eds.Services.Dispensers
                     DispenserTypeId = SelectedDispenserType.IdType,
                     HoseNumber = HoseNumber,
                     EdsId = SelectedEds.IdEds,
-                    Description = SelectedIsland.Description,
+                    IdIsland = SelectedIsland.Idisland,
                     
                 };
 
@@ -400,7 +400,7 @@ namespace APP.Eds.Services.Dispensers
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos, Status: {ex.Message}", "OK");
             }
         }
 
