@@ -77,7 +77,8 @@ public partial class AddDispenser : Popup
             vm.LastAccumulatedAmount = 0;
             vm.LastAccumulatedGallons = 0;
 
-            Close();
+            await CloseAsync();
+
         }
         else
         {
