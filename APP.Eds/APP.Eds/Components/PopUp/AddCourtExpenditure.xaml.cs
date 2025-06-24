@@ -43,9 +43,7 @@ public partial class AddCourtExpenditure : Popup
         ExpenditurePicker.SelectedItem = null;
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
-
         await CloseAsync();
-
     }
 
     private void ExpenditureSelected(object sender, EventArgs e)
