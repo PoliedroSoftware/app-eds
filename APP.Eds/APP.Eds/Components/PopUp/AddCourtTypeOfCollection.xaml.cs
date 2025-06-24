@@ -41,9 +41,7 @@ public partial class AddCourtTypeOfCollection : Popup
         TypeOfCollentionPicker.SelectedItem = null;
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
-
         await CloseAsync();
-
     }
 
     private void TypeOfCollentionSelected(object sender, EventArgs e)
