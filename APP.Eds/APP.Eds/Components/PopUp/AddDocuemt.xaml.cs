@@ -80,7 +80,8 @@ namespace APP.Eds.Components.PopUp
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al guardar el documento: {ex.Message}", "Ok");
             }
-            Close();
+            await CloseAsync();
+
         }
     }
 }
