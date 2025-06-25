@@ -2341,7 +2341,7 @@ GetAllEdsData()
                         string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
 
                         using var client = new HttpClient();
-
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                         foreach (var doc in CourtDocuments)
                         {
                             try
