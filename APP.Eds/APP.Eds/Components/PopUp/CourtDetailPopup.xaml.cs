@@ -1,24 +1,52 @@
+using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Windows.Input;
+
+using APP.Eds.Helpers;
 using APP.Eds.Models.Court;
+using APP.Eds.Models.Translations;
+using APP.Eds.Services.Config;
+using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
 
 public partial class CourtDetailPopup : Popup
 {
-    public CourtDetailPopup(CourtListItemModel court)
+    private readonly CourtService courtService;
+    private string? _authToken;
+    private string _DateTranslation = string.Empty;
+    public string DateTranslation
+    {
+        get => _DateTranslation;
+        set
+        {
+            if (_DateTranslation != value)
+            {
+                _DateTranslation = value;
+                OnPropertyChanged(nameof(DateTranslation));
+            }
+        }
+    }
+
+    public CourtDetailPopup(
+        CourtListItemModel court, 
+        CourtService courtService)
     {
         InitializeComponent();
+        this.courtService = courtService;
         BindingContext = court;
-
+        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         AdjustSize();
 
         Application.Current.MainPage.Window.SizeChanged += (s, e) =>
         {
             AdjustSize();
         };
+        
+        DateTranslation = GlobalTranslations.Get("Date");
     }
-
+       
     private void AdjustSize()
     {
         var window = Application.Current.MainPage.Window;

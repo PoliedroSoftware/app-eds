@@ -5,8 +5,8 @@ namespace APP.Eds.Components.PopUp
 {
     public partial class AddDocuemt : Popup
     {
-        private readonly CourtService _courtService;
-
+        private readonly CourtService courtService;
+       
         public string SelectedFileName { get; private set; }
         public string FileBase64 { get; private set; }
         public bool IsFileSelected => !string.IsNullOrEmpty(SelectedFileName);
@@ -14,9 +14,7 @@ namespace APP.Eds.Components.PopUp
         public AddDocuemt(CourtService courtService)
         {
             InitializeComponent();
-            _courtService = courtService;
-            BindingContext = this;
-
+            this.courtService = courtService;
         }
 
         private void OnCloseTapped(object sender, EventArgs e)
@@ -68,7 +66,7 @@ namespace APP.Eds.Components.PopUp
                     List<string> nombresDocuments = new List<string> { SelectedFileName };
 
                     // Llamar al método que maneja múltiples documentos
-                     _courtService.AddDocumentsFromPopup(filesBase64, nombresDocuments);
+                     this.courtService.AddDocumentsFromPopup(filesBase64, nombresDocuments);
                     // close
                 }
                 else

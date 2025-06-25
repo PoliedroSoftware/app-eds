@@ -2297,7 +2297,7 @@ GetAllEdsData()
         {
             if (selectedCourt == null) return;
 
-            Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
+            Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt, this));
         }
 
 
