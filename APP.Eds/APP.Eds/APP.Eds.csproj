@@ -38,6 +38,16 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		
@@ -61,12 +71,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="NewFolder\**" />
 	  <AndroidResource Remove="Services\ClearFields\**" />
+	  <AndroidResource Remove="UsesCases\Behaviors\**" />
+	  <Compile Remove="NewFolder\**" />
 	  <Compile Remove="Services\ClearFields\**" />
+	  <Compile Remove="UsesCases\Behaviors\**" />
+	  <EmbeddedResource Remove="NewFolder\**" />
 	  <EmbeddedResource Remove="Services\ClearFields\**" />
+	  <EmbeddedResource Remove="UsesCases\Behaviors\**" />
+	  <MauiCss Remove="NewFolder\**" />
 	  <MauiCss Remove="Services\ClearFields\**" />
+	  <MauiCss Remove="UsesCases\Behaviors\**" />
+	  <MauiXaml Remove="NewFolder\**" />
 	  <MauiXaml Remove="Services\ClearFields\**" />
+	  <MauiXaml Remove="UsesCases\Behaviors\**" />
+	  <None Remove="NewFolder\**" />
 	  <None Remove="Services\ClearFields\**" />
+	  <None Remove="UsesCases\Behaviors\**" />
 	</ItemGroup>
 
 	<ItemGroup>

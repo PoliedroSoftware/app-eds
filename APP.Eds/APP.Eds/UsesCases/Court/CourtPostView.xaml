@@ -145,8 +145,8 @@
                                     <Button Text="X" 
                                         Grid.Column="3"
                                         Grid.RowSpan="3"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -161,20 +161,15 @@
 
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
-                    <Label 
-                    Text="AddedDocuments" 
-                    FontAttributes="Bold" 
-                    FontSize="18"
-                    Grid.Column="0"
-                    VerticalOptions="Center" />
+                    <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.Column="0" VerticalOptions="Center" />
                     <Button 
-                    Text="�️" 
-                    Command="{Binding HideDocumentList}"
-                    WidthRequest="46" 
-                    HeightRequest="46" 
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="End"
-                    Grid.Column="1">
+                        Text="�️"
+                        Command="{Binding HideDocumentList}"
+                        WidthRequest="46" 
+                        HeightRequest="46" 
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="End"
+                        Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger
                                 TargetType="Button"
@@ -196,15 +191,15 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto">
+                                <Grid ColumnDefinitions="*, *, *, Auto" RowDefinitions="Auto, Auto">
                                     <Label Grid.Row="1" Grid.Column="0" Text="Document" FontAttributes="Bold"/>
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding DocumentName}"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="2"
+                                        Grid.Column="3"
                                         Grid.RowSpan="2"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -265,10 +260,10 @@
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="2"
+                                        Grid.Column="3"
                                         Grid.RowSpan="3"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -329,10 +324,10 @@
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="2"
+                                        Grid.Column="3"
                                         Grid.RowSpan="3"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -346,15 +341,24 @@
                 </CollectionView>
 
                 <!-- Informacion Adicional -->
-                <HorizontalStackLayout x:Name="AdditionalInformation" HorizontalOptions="End">
-                    <Label VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
+                <Grid ColumnDefinitions="*, auto" x:Name="AdditionalInformation">
+                    <Label Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
                     <Button
-                    FontSize="Medium"
-                    Text="💬"
-                    BackgroundColor="Transparent"
-                    Margin="0,0,10,0"
-                    Clicked="OpenAditionalInfoPopUp"/>
-                </HorizontalStackLayout>
+                        Grid.Column="1"
+                        HorizontalOptions="End"
+                        FontSize="Medium"
+                        Text="💬"
+                        BackgroundColor="Transparent"
+                        Clicked="OpenAdditionalInfoPopUp"/>
+                </Grid>
+                <Frame x:Name="AdditionalInfo"
+                       Padding="10"
+                       BackgroundColor="White"
+                       BorderColor="Gray"
+                       CornerRadius="10"
+                       IsVisible="{Binding AdditionalInfoEnabled}">
+                    <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" TextColor="Black"/>
+                </Frame>
 
                 <!-- Botones -->
                 <VerticalStackLayout Spacing="10"  x:Name="Button">

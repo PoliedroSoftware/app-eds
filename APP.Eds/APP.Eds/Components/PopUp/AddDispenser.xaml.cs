@@ -77,7 +77,8 @@ public partial class AddDispenser : Popup
             vm.LastAccumulatedAmount = 0;
             vm.LastAccumulatedGallons = 0;
 
-            Close();
+            await CloseAsync();
+
         }
         else
         {
@@ -96,7 +97,6 @@ public partial class AddDispenser : Popup
             {
                 vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
             }
-
             SecondEntry.Focus();
             SecondEntry.CursorPosition = SecondEntry.Text.Length;
         }
@@ -104,7 +104,16 @@ public partial class AddDispenser : Popup
    
     private void OnEntryUnfocused(object sender, FocusEventArgs e)
     {
+        if (BindingContext is CourtService vm)
+        {
+            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
+            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
 
+            if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+            {
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+            }
+        }
     }
 
 
