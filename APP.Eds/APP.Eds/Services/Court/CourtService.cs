@@ -1511,7 +1511,52 @@ namespace APP.Eds.Services.Court
                     OnPropertyChanged(nameof(TypeofCollectionTranslation));
                 }
             }
-        }        
+        } 
+        
+        private string _CategoryTranslation = string.Empty;
+
+        public string CategoryTranslation
+        {
+            get => _CategoryTranslation;
+            set
+            {
+                if (_CategoryTranslation != value)
+                {
+                    _CategoryTranslation = value;
+                    OnPropertyChanged(nameof(CategoryTranslation));
+                }
+            }
+        }
+
+        private string _EnterCategory = string.Empty;
+
+        public string EnterCategory
+        {
+            get => _EnterCategory;
+            set
+            {
+                if (_EnterCategory != value)
+                {
+                    _EnterCategory = value;
+                    OnPropertyChanged(nameof(EnterCategory));
+                }
+            }
+        }
+
+        private string _CategoryManagement = string.Empty;
+
+        public string CategoryManagement
+        {
+            get => _CategoryManagement;
+            set
+            {
+                if (_CategoryManagement != value)
+                {
+                    _CategoryManagement = value;
+                    OnPropertyChanged(nameof(CategoryManagement));
+                }
+            }
+        }
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -1794,6 +1839,7 @@ namespace APP.Eds.Services.Court
                 TypeofCollectionTranslation = GlobalTranslations.Get("TypeofCollection");
                 LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
                 LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
+
             }
             catch (Exception ex)
             {
