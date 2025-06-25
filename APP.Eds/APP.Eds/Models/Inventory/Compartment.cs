@@ -34,7 +34,7 @@ namespace APP.Eds.Models.Inventory
         public string Product { get; set; }
 
         [JsonPropertyName("stock")]
-        public int Stock { get; set; }
+        public double Stock { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
