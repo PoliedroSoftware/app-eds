@@ -1511,7 +1511,7 @@ namespace APP.Eds.Services.Court
                     OnPropertyChanged(nameof(TypeofCollectionTranslation));
                 }
             }
-        }
+        } 
         private string _AddButtonTranslation = string.Empty;
         public string AddButtonTranslation
         {
@@ -1631,6 +1631,51 @@ namespace APP.Eds.Services.Court
         }
 
 
+        
+        private string _CategoryTranslation = string.Empty;
+
+        public string CategoryTranslation
+        {
+            get => _CategoryTranslation;
+            set
+            {
+                if (_CategoryTranslation != value)
+                {
+                    _CategoryTranslation = value;
+                    OnPropertyChanged(nameof(CategoryTranslation));
+                }
+            }
+        }
+
+        private string _EnterCategory = string.Empty;
+
+        public string EnterCategory
+        {
+            get => _EnterCategory;
+            set
+            {
+                if (_EnterCategory != value)
+                {
+                    _EnterCategory = value;
+                    OnPropertyChanged(nameof(EnterCategory));
+                }
+            }
+        }
+
+        private string _CategoryManagement = string.Empty;
+
+        public string CategoryManagement
+        {
+            get => _CategoryManagement;
+            set
+            {
+                if (_CategoryManagement != value)
+                {
+                    _CategoryManagement = value;
+                    OnPropertyChanged(nameof(CategoryManagement));
+                }
+            }
+        }
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -2471,7 +2516,7 @@ GetAllEdsData()
                         string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
 
                         using var client = new HttpClient();
-
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                         foreach (var doc in CourtDocuments)
                         {
                             try

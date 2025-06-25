@@ -52,4 +52,5 @@ public partial class CategoryPostView : ContentPage
             OnPropertyChanged();
         }
     }
+
 }
