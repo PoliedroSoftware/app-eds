@@ -38,8 +38,9 @@ namespace APP.Eds.Services.Category
         }
         public ICommand GetByIdCategoryDataCommand { get; }
         public ICommand SaveCategoryDataCommand { get; }
-        private string _CategoryTranslation = string.Empty;
 
+
+        private string _CategoryTranslation = string.Empty;
         public string CategoryTranslation
         {
             get => _CategoryTranslation;
