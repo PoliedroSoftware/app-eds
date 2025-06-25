@@ -1,6 +1,8 @@
-﻿using APP.Eds.Models.Inventory;
+﻿using APP.Eds.Helpers;
+using APP.Eds.Models.Inventory;
 using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Windows.Input;
 
@@ -8,6 +10,7 @@ namespace APP.Eds.UsesCases.Inventory
 {
     public class InventoryViewModel
     {
+        private string? _authToken;
         public ObservableCollection<Models.Inventory.Business> Businesses { get; } = new();
 
         public ICommand ToggleExpandBusinessCommand { get; }
@@ -17,6 +20,8 @@ namespace APP.Eds.UsesCases.Inventory
 
         public InventoryViewModel()
         {
+            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+
             ToggleExpandBusinessCommand = new Command<Models.Inventory.Business>(b =>
             {
                 if (b != null)
@@ -49,6 +54,7 @@ namespace APP.Eds.UsesCases.Inventory
             try
             {
                 using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/inventory?PageNumber=1&PageSize=100");
                 var inventories = JsonSerializer.Deserialize<List<InventoryModel>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
