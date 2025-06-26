@@ -74,21 +74,6 @@ namespace APP.Eds.Services.Court
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
 
-        public string? AuthToken
-{
-    get => _authToken;
-    set
-    {
-        if (_authToken != value)
-        {
-            _authToken = value;
-            Preferences.Set("AuthToken", value);
-            OnPropertyChanged(nameof(AuthToken));
-        }
-    }
-}
-
-
         private CourtModel _court;
         public CourtModel Court
         {
