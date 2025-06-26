@@ -22,6 +22,10 @@ public class CourtListItemModel
     public string DateTranslation { get; set; }
     public string ConsecutiveTranslation { get; set; }
     public string IslanderTranslation { get; set; }
+    public string CourtDetailTranslation { get; set; }
+    public string ShiftTranslation { get; set; }
+    public string TotalsTranslation { get; set; }
+
 }
 
 public class Translation

@@ -1701,6 +1701,32 @@ namespace APP.Eds.Services.Court
                 }
             }
         }
+        private string _ShiftTranslation = string.Empty;
+        public string ShiftTranslation
+        {
+            get => _ShiftTranslation;
+            set
+            {
+                if (_ShiftTranslation != value)
+                {
+                    _ShiftTranslation = value;
+                    OnPropertyChanged(nameof(ShiftTranslation));
+                }
+            }
+        }
+        private string _TotalsTranslation = string.Empty;
+        public string TotalsTranslation
+        {
+            get => _TotalsTranslation;
+            set
+            {
+                if (_TotalsTranslation != value)
+                {
+                    _TotalsTranslation = value;
+                    OnPropertyChanged(nameof(TotalsTranslation));
+                }
+            }
+        }
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -1994,7 +2020,10 @@ namespace APP.Eds.Services.Court
                 CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
                 ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
                 IslanderTranslation = GlobalTranslations.Get("Islander");
+                ShiftTranslation = GlobalTranslations.Get("Shift");
+                TotalsTranslation = GlobalTranslations.Get("Totals");
 
+                
 
             }
             catch (Exception ex)
@@ -2327,6 +2356,10 @@ GetAllEdsData()
             selectedCourt.DateTranslation = GlobalTranslations.Get("Date");
             selectedCourt.ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
             selectedCourt.IslanderTranslation = GlobalTranslations.Get("Islander");
+            selectedCourt.CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
+            selectedCourt.ShiftTranslation = GlobalTranslations.Get("Shift");
+            selectedCourt.TotalsTranslation = GlobalTranslations.Get("Totals");
+            
             Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
 
