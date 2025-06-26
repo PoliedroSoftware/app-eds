@@ -4,12 +4,10 @@
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.Eds.EdsPostView"
              Title="Gestion Eds">
-    <ScrollView>
-        <AbsoluteLayout>
-            <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
+
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <VerticalStackLayout Padding="20" Spacing="15">
                 <Label FontSize="16" Text="Name"/>
                 <Entry
                 Keyboard="Text"
@@ -66,9 +64,11 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
+
+        </ScrollView>
+        <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
                                   AbsoluteLayout.LayoutFlags="All"/>
-        </AbsoluteLayout>
-    </ScrollView>
+    </AbsoluteLayout>
+
 </ContentPage>

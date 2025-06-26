@@ -11,7 +11,7 @@
         BorderColor="#6200E8"
         CornerRadius="15"
         HasShadow="True"
-        HeightRequest="400"
+        HeightRequest="800"
         WidthRequest="380">
         <VerticalStackLayout Spacing="22">
             <Grid>

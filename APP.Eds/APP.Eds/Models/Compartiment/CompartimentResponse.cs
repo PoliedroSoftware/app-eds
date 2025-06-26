@@ -12,16 +12,16 @@ public class CompartimentResponse
     public int Number { get; set; }
 
     [JsonPropertyName("nominal")]
-    public int Nominal { get; set; }
+    public double Nominal { get; set; }
 
     [JsonPropertyName("operative")]
-    public int Operative { get; set; }
+    public double Operative { get; set; }
 
     [JsonPropertyName("stock")]
-    public int Stock { get; set; }
+    public double Stock { get; set; }
 
     [JsonPropertyName("height")]
-    public int Height { get; set; }
+    public double Height { get; set; }
 
     [JsonPropertyName("idTank")]
     public int IdTank { get; set; }
