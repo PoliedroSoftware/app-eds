@@ -50,7 +50,7 @@ public partial class ShoppingProductPostView : ContentPage
                     return;
                 }
 
-                await vm.SaveShoppingProductDataAsync();
+                //await vm.SaveShoppingProductDataAsync();
             }
             finally
             {
