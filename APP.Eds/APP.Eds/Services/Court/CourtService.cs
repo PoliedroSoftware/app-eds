@@ -4,13 +4,10 @@ using APP.Eds.Models.Court;
 using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Hose;
-using APP.Eds.Models.Inventory;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
-using APP.Eds.UsesCases.Court;
 using CommunityToolkit.Maui.Views;
-using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -2296,8 +2293,9 @@ GetAllEdsData()
         private void OpenCourtDetail(CourtListItemModel selectedCourt)
         {
             if (selectedCourt == null) return;
-
-            Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt, this));
+            
+            selectedCourt.DateTranslation = GlobalTranslations.Get("Date");
+            Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
 
 

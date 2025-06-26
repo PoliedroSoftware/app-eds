@@ -15,26 +15,11 @@ public partial class CourtDetailPopup : Popup
 {
     private readonly CourtService courtService;
     private string? _authToken;
-    private string _DateTranslation = string.Empty;
-    public string DateTranslation
-    {
-        get => _DateTranslation;
-        set
-        {
-            if (_DateTranslation != value)
-            {
-                _DateTranslation = value;
-                OnPropertyChanged(nameof(DateTranslation));
-            }
-        }
-    }
-
+   
     public CourtDetailPopup(
-        CourtListItemModel court, 
-        CourtService courtService)
+        CourtListItemModel court)
     {
         InitializeComponent();
-        this.courtService = courtService;
         BindingContext = court;
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         AdjustSize();
@@ -43,8 +28,6 @@ public partial class CourtDetailPopup : Popup
         {
             AdjustSize();
         };
-        
-        DateTranslation = GlobalTranslations.Get("Date");
     }
        
     private void AdjustSize()

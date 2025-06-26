@@ -19,6 +19,12 @@ public class CourtListItemModel
     public List<DispenserItem> Dispensers { get; set; }
     public List<DocumentItem> Documents { get; set; }
     public List<ExpenditureItem> Expenditures { get; set; }
+    public string DateTranslation { get; set; } 
+}
+
+public class Translation
+{
+    public string DateTranslation { get; set; }
 }
 
 public class CollectionItem
