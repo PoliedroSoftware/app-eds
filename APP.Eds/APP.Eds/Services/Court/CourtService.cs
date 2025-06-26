@@ -1674,6 +1674,34 @@ namespace APP.Eds.Services.Court
             }
         }
 
+        private string _ConsecutiveTranslation = string.Empty;
+        public string ConsecutiveTranslation
+        {
+            get => _ConsecutiveTranslation;
+            set
+            {
+                if (_ConsecutiveTranslation != value)
+                {
+                    _ConsecutiveTranslation = value;
+                    OnPropertyChanged(nameof(ConsecutiveTranslation));
+                }
+            }
+        }
+
+        private string _IslanderTranslation = string.Empty;
+        public string IslanderTranslation
+        {
+            get => _IslanderTranslation;
+            set
+            {
+                if (_IslanderTranslation != value)
+                {
+                    _IslanderTranslation = value;
+                    OnPropertyChanged(nameof(IslanderTranslation));
+                }
+            }
+        }
+
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
         {
@@ -1964,6 +1992,8 @@ namespace APP.Eds.Services.Court
                 ReportsTranslation = GlobalTranslations.Get("Reports");
                 AddEgressTranslation = GlobalTranslations.Get("AddEgress");
                 CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
+                ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
+                IslanderTranslation = GlobalTranslations.Get("Islander");
 
 
             }
@@ -2295,6 +2325,8 @@ GetAllEdsData()
             if (selectedCourt == null) return;
             
             selectedCourt.DateTranslation = GlobalTranslations.Get("Date");
+            selectedCourt.ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
+            selectedCourt.IslanderTranslation = GlobalTranslations.Get("Islander");
             Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
 

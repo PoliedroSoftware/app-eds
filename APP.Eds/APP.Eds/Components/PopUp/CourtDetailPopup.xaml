@@ -45,13 +45,13 @@
 
                     <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*" ColumnDefinitions="*,*">
                         <!-- Identidication -->
-                        <Label Text="Consecutive:" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                        <Label Text="{Binding ConsecutiveTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                         <Label Text="{Binding Consecutive}" TextColor="Black" Grid.Row="0" Grid.Column="1"/>
 
                         <Label Text="{Binding DateTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
                         <Label Text="{Binding DateStarttime}" TextColor="Black" Grid.Row="1" Grid.Column="1"/>
 
-                        <Label Text="Islander:" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
+                        <Label Text="{Binding IslanderTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
                         <Label Text="{Binding Islander}" TextColor="Black" Grid.Row="2" Grid.Column="1"/>
 
                         <Label Text="Shift:" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0" Margin="0,10,0,0"/>
