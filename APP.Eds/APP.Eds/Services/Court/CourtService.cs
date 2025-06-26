@@ -25,7 +25,8 @@ namespace APP.Eds.Services.Court
     public class CourtService : INotifyPropertyChanged
 
     {
-        
+        public bool LastSendWasSuccessful { get; private set; }
+
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
         private string? _authToken;
@@ -71,6 +72,21 @@ namespace APP.Eds.Services.Court
         public bool AdditionalInfoEnabled => !string.IsNullOrEmpty(AdditionalInfoDescription);
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
+
+
+        public string? AuthToken
+{
+    get => _authToken;
+    set
+    {
+        if (_authToken != value)
+        {
+            _authToken = value;
+            Preferences.Set("AuthToken", value);
+            OnPropertyChanged(nameof(AuthToken));
+        }
+    }
+}
 
 
         private CourtModel _court;
@@ -2382,6 +2398,8 @@ GetAllEdsData()
 
                 if (response.IsSuccessStatusCode)
                 {
+                    LastSendWasSuccessful = true;
+
                     if (CourtDocuments?.Any() == true)
                     {
                         string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
@@ -2408,6 +2426,8 @@ GetAllEdsData()
                             }
                             catch (Exception ex)
                             {
+                                LastSendWasSuccessful = false;
+
                                 Console.WriteLine($"Error subiendo {doc.DocumentName}: {ex.Message}");
                             }
                         }
@@ -2417,12 +2437,17 @@ GetAllEdsData()
                 }
                 else
                 {
+                    LastSendWasSuccessful = false;
+
                     var error = await response.Content.ReadAsStringAsync();
                     await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
                 }
             }
             catch (Exception ex)
             {
+
+                LastSendWasSuccessful = false;
+
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
             }
         }
