@@ -1727,6 +1727,32 @@ namespace APP.Eds.Services.Court
                 }
             }
         }
+        private string _DistincTranslation = string.Empty;
+        public string DistincTranslation
+        {
+            get => _DistincTranslation;
+            set
+            {
+                if (_DistincTranslation != value)
+                {
+                    _DistincTranslation = value;
+                    OnPropertyChanged(nameof(DistincTranslation));
+                }
+            }
+        }
+        private string _CollectionsTranslation = string.Empty;
+        public string CollectionsTranslation
+        {
+            get => _CollectionsTranslation;
+            set
+            {
+                if (_CollectionsTranslation != value)
+                {
+                    _CollectionsTranslation = value;
+                    OnPropertyChanged(nameof(CollectionsTranslation));
+                }
+            }
+        }
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -2022,8 +2048,10 @@ namespace APP.Eds.Services.Court
                 IslanderTranslation = GlobalTranslations.Get("Islander");
                 ShiftTranslation = GlobalTranslations.Get("Shift");
                 TotalsTranslation = GlobalTranslations.Get("Totals");
-
+                DistincTranslation = GlobalTranslations.Get("Distinc");
+                CollectionsTranslation = GlobalTranslations.Get("Collections");
                 
+
 
             }
             catch (Exception ex)
@@ -2359,7 +2387,15 @@ GetAllEdsData()
             selectedCourt.CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
             selectedCourt.ShiftTranslation = GlobalTranslations.Get("Shift");
             selectedCourt.TotalsTranslation = GlobalTranslations.Get("Totals");
+            selectedCourt.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
+            selectedCourt.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
+            selectedCourt.DistincTranslation = GlobalTranslations.Get("Distinc");
+            selectedCourt.CollectionsTranslation = GlobalTranslations.Get("Collections");
             
+
+
+
+
             Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
 

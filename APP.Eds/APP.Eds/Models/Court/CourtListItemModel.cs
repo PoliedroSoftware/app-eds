@@ -25,7 +25,13 @@ public class CourtListItemModel
     public string CourtDetailTranslation { get; set; }
     public string ShiftTranslation { get; set; }
     public string TotalsTranslation { get; set; }
+    public string AccumulatedAmountTranslation { get; set; }
+    public string AccumulatedGallonsTranslations { get; set; }
+    public string DistincTranslation { get; set; }
+    public string CollectionsTranslation { get; set; }
+    
 
+    
 }
 
 public class Translation
