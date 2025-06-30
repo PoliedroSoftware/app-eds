@@ -1,0 +1,67 @@
+name: Build Android APK and Upload to S3
+
+on:
+  push:
+    branches:
+      - main
+      - feature/pipelines
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - 'release/*'          
+      - 'releasecandidate/*'
+
+jobs:
+  build_android:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Android dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O tools.zip
+          unzip tools.zip -d $HOME/cmdline-tools
+          yes | $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk --licenses
+          $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+          echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
+          echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
+
+      - name: Restore NuGet packages
+        run: dotnet restore
+
+      - name: Build Android project
+        run: |
+          dotnet publish APP.Eds/APP.Eds.csproj \
+            -f:net8.0-android \
+            -c:Release \
+            -o:./output
+
+      - name: Find APK
+        id: locate_apk
+        run: |
+          APK_PATH=$(find ./output -name "*.apk" | head -n 1)
+          echo "APK path: $APK_PATH"
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload APK to S3
+        run: |
+          aws s3 cp ${{ steps.locate_apk.outputs.apk_path }} s3://${{ secrets.S3_BUCKET_NAME }}/builds/APP.Eds.apk --acl public-read
