@@ -38,12 +38,15 @@ jobs:
           echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
-      - name: Restore NuGet packages
-        run: dotnet restore
+      - name: Restore solution
+        run: dotnet restore APP.Eds/APP.Eds.sln
 
-      - name: Build Android project
+      - name: Build solution
+        run: dotnet build APP.Eds/APP.Eds.sln --configuration Release
+
+      - name: Publish Android project
         run: |
-          dotnet publish APP.Eds/APP.Eds.csproj \
+          dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj \
             -f:net8.0-android \
             -c:Release \
             -o:./output
