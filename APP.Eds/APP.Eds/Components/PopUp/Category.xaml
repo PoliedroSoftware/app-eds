@@ -9,39 +9,27 @@
     VerticalOptions="Center"
     HorizontalOptions="Center">
 
-    <Frame BackgroundColor="White"
+    <Frame x:Name="Frame"
            BorderColor="#6200E8"
            WidthRequest="400"
-           VerticalOptions="Center"
-           HorizontalOptions="Center"
+           VerticalOptions="Center" HorizontalOptions="Center"
            CornerRadius="15"
-           HasShadow="True"
-           x:Name="Frame">
+           HasShadow="True">
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
             <!-- Encabezado fijo -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1"
-                       x:Name="CategoryTitle"
-                       FontAttributes="Bold"
-                       FontSize="22"
-                       TextColor="Black"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                <Label Grid.Column="1" x:Name="CategoryTitle"
+                       FontAttributes="Bold" FontSize="22"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
 
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
-                        FontSize="18"
-                        Text="✖"
-                        TextColor="#6200E8"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        Padding="0"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
+                        FontSize="18" Text="✖" TextColor="#6200E8"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
             </Grid>
             
             <!-- Menu -->

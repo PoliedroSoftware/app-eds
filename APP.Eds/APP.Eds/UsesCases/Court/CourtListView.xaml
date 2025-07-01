@@ -6,51 +6,45 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Courts">
     <AbsoluteLayout>
-        <CollectionView ItemsSource="{Binding CourtList}" SelectionChanged="OnCourtSelected">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <!-- Frame invisible que funciona como "borde" exterior (espacio) -->
-                <Frame Padding="8" Margin="20,5" BackgroundColor="Transparent" BorderColor="Transparent" HasShadow="False" CornerRadius="15">
-                    <!-- Frame con borde visible -->
-                    <Frame Padding="10" BorderColor="Black" CornerRadius="10" HasShadow="False" BackgroundColor="White" Margin="10,10,10,10">
-                        <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="60,80,*,Auto">
-                            <Label Text="{Binding Islander}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0" Margin="0,0,0,10"/>
+        <CollectionView ItemsSource="{Binding CourtList}" SelectionChanged="OnCourtSelected" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="0" CornerRadius="10" HasShadow="False" Margin="20,20,20,20">
+                        <Grid RowDefinitions="10,*,*,*,*,*,*,10" ColumnDefinitions="10,Auto,20,*,Auto,10">
+                            <Label Text="{Binding Islander}" FontAttributes="Bold"  Grid.Row="1" Grid.ColumnSpan="6" Margin="10,0,0,10"/>
 
-                            <Label Text="Date" TextColor="Black" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                            <Label Text="{Binding DateStarttime}" TextColor="Black" Grid.Row="1" Grid.Column="1"/>
+                            <Label Text="Date"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
+                            <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
 
-                            <Label Text="Start" TextColor="Black" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                            <Label Text="{Binding Starttime}" TextColor="Black" Grid.Row="2" Grid.Column="1"/>
-                            
-                            <Label Text="End" TextColor="Black" FontAttributes="Bold" Grid.Row="3" Grid.Column="0"/>
-                            <Label Text="{Binding Endtime}" TextColor="Black" Grid.Row="3" Grid.Column="1"/>
-                            
-                            <Label Text="Total" TextColor="Black" FontAttributes="Bold" Grid.Row="4" Grid.Column="0"/>
-                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="4" Grid.Column="1"/>
-                            
-                            <Label Text="Gallons" TextColor="Black" FontAttributes="Bold" Grid.Row="5" Grid.Column="0"/>
-                            <Label Text="{Binding TotalAccumulatedGallons}" TextColor="Black" Grid.Row="5" Grid.Column="1"/>
-                            
+                            <Label Text="Start" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
+                            <Label Text="{Binding Starttime}"  Grid.Row="3" Grid.Column="3"/>
+                            <BoxView Grid.Row="3" Grid.ColumnSpan="6" ZIndex="-1"/>
+
+                            <Label Text="End"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
+                            <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="3"/>
+
+                            <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
+                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}"  Grid.Row="5" Grid.Column="3"/>
+                            <BoxView Grid.Row="5" Grid.ColumnSpan="6" ZIndex="-1"/>
+
+                            <Label Text="Gallons"  FontAttributes="Bold" Grid.Row="6" Grid.Column="1"/>
+                            <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N2}'}"  Grid.Row="6" Grid.Column="3"/>
+
                             <Button Text="ℹ️"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
                                     CommandParameter="{Binding}"
                                     BackgroundColor="Transparent"
                                     FontSize="30"
-                                    WidthRequest="40"
-                                    HeightRequest="40"
-                                    Padding="0"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="Center"
-                                    Grid.RowSpan="6"
-                                    Grid.Column="3"/>
+                                    WidthRequest="40" HeightRequest="40" Padding="0"
+                                    HorizontalOptions="End" VerticalOptions="Center"
+                                    Grid.RowSpan="8" Grid.Column="3"/>
                         </Grid>
                     </Frame>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
-    <!-- Loading after of sendButton-->
-    <controls:LoadingView x:Name="LoadingOverlay"
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <!-- Loading after of sendButton-->
+        <controls:LoadingView x:Name="LoadingOverlay"
                       AbsoluteLayout.LayoutBounds="0,0,1,1"
                       AbsoluteLayout.LayoutFlags="All"/>
     </AbsoluteLayout>

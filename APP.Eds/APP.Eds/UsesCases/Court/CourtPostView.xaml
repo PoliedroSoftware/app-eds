@@ -11,60 +11,43 @@
             <VerticalStackLayout Padding="20" Spacing="20">
                 <!-- Identificación -->
                 <Frame x:Name="Business"
-                      Padding="10"
-                      BackgroundColor="White"
-                      BorderColor="Gray"
-                      CornerRadius="10"
-                      IsVisible="{Binding IsNotIslanderLogin}">
+                       Padding="10"
+                       CornerRadius="10"
+                       IsVisible="{Binding IsNotIslanderLogin}">
                     <VerticalStackLayout Spacing="10">
-                        <Label FontAttributes="Bold" FontSize="18" Text="{Binding Business}" TextColor="Black"/>
-                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Business}" TextColor="Black"/>
-                            <Picker Title="{Binding SelectaBusiness}" Grid.Row="0" Grid.Column="1"
-                                    ItemDisplayBinding="{Binding Name}"
-                                    ItemsSource="{Binding BusinessList}"
-                                    SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
-                                    SelectedIndexChanged="OnBusinessSelected"
-                                    TextColor="Black"/>
-                            
-                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding Eds}" TextColor="Black"/>
-                            <Picker Title="{Binding SelectaEds}" Grid.Row="1" Grid.Column="1"
-                                    ItemDisplayBinding="{Binding Name}"
-                                    ItemsSource="{Binding EdsSelectList}"
-                                    SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
-                                    SelectedIndexChanged="OnEdsSelected" 
-                                    TextColor="Black"
+                        <Label FontAttributes="Bold" Text="{Binding Business}" FontSize="18" HorizontalOptions="Center"/>
+                        <Grid ColumnDefinitions="Auto,20, *" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                            <Label Text="{Binding Business}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            <Picker Title="{Binding SelectaBusiness}" Grid.Row="0" Grid.Column="2"
+                                    ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding BusinessList}"
+                                    SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" SelectedIndexChanged="OnBusinessSelected"/>
+                            <Label Text="{Binding Eds}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
+                            <Picker Title="{Binding SelectaEds}" Grid.Row="1" Grid.Column="2"
+                                    ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding EdsSelectList}"
+                                    SelectedItem="{Binding SelectedEds, Mode=TwoWay}" SelectedIndexChanged="OnEdsSelected" 
                                     IsEnabled="{Binding IsBusinessSelected}"/>
-
-                            <Label Grid.Row="2" Grid.Column="0" Text="{Binding Islander}" TextColor="Black"/>
-                            <Picker Title="{Binding SelectAnIslander}" Grid.Row="2" Grid.Column="1"
-                                    ItemDisplayBinding="{Binding Name}"
-                                    ItemsSource="{Binding IslanderSelectList}"
-                                    SelectedItem="{Binding SelectedIslander, Mode=TwoWay}"
-                                    SelectedIndexChanged="OnIslanderSelected"
-                                    TextColor="Black"
+                            <Label Text="{Binding Islander}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+                            <Picker Title="{Binding SelectAnIslander}" Grid.Row="2" Grid.Column="2"
+                                    ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding IslanderSelectList}"
+                                    SelectedItem="{Binding SelectedIslander, Mode=TwoWay}" SelectedIndexChanged="OnIslanderSelected"
                                     IsEnabled="{Binding IsEdsSelected}"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Fechas y Horas -->
-                <Frame x:Name="Time"
-                      Padding="10"
-                      BackgroundColor="White"
-                      BorderColor="Gray"
-                      CornerRadius="10">
+                <Frame x:Name="Time" Padding="10" CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
-                        <Label FontAttributes="Bold" FontSize="18" Text="{Binding Time}" TextColor="Black"/>
-                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
-                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding DateTranslation}" TextColor="Black"/>
-                            <DatePicker x:Name="datePicker" Grid.Row="0" Grid.Column="1" Date="{Binding DateStarttime, Mode=TwoWay}" MinimumDate="1900-01-01" TextColor="Black"/>
+                        <Label FontAttributes="Bold" FontSize="18" Text="{Binding Time}" HorizontalOptions="Center"/>
+                        <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*,*">
+                            <Label Text="{Binding DateTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                            <DatePicker x:Name="datePicker" Date="{Binding DateStarttime, Mode=TwoWay}" MinimumDate="1900-01-01" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center"/>
 
-                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding StartTime}" TextColor="Black"/>
-                            <TimePicker Grid.Row="1" Grid.Column="1" Time="{Binding Starttime, Mode=TwoWay}" TextColor="Black"/>
+                            <Label Text="{Binding StartTime}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <TimePicker Time="{Binding Starttime, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center"/>
 
-                            <Label Grid.Row="2" Grid.Column="0" Text="{Binding EndTime }" TextColor="Black"/>
-                            <TimePicker Grid.Row="2" Grid.Column="1" Time="{Binding Endtime, Mode=TwoWay}" TextColor="Black"/>
+                            <Label Text="{Binding EndTime }" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                            <TimePicker Time="{Binding Endtime, Mode=TwoWay}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
@@ -72,51 +55,42 @@
                 <!-- Arqueo de caja -->
                 <Frame  x:Name="CashCount"
                        Padding="10"
-                       BackgroundColor="White"
-                       BorderColor="Gray"
-                       CornerRadius="10">
+                        CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
-                        <Label FontAttributes="Bold" FontSize="18" Text="{Binding CashCount}" TextColor="Black"/>
-                        <StackLayout Padding="10">
-                            <HorizontalStackLayout>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding SalesInMoney}" FontAttributes="Bold" TextColor="Black"/>
-                                    <Label Text="{Binding TotalAmount, StringFormat='$ {0:N0}'}" TextColor="Black"/>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding SalesInGallons}" FontAttributes="Bold" Margin="50,0,0,0" TextColor="Black"/>
-                                    <Label Text="{Binding TotalGallons, StringFormat='{0:N0}'}" Margin="50,0,0,0" TextColor="Black"/>
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding Expenses}" FontAttributes="Bold" Margin="0,10,0,0" TextColor="Black"/>
-                                    <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N0}'}" TextColor="Black"/>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding Collections}" FontAttributes="Bold" Margin="110,10,0,0" TextColor="Black"/>
-                                    <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N0}'}" Margin="110,0,0,0" TextColor="Black"/>
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                            <Label Text="{Binding TotalForTheDay}" FontAttributes="Bold" Margin="100,10,0,0" TextColor="Black"/>
-                            <Label Text="{Binding TotalSales, StringFormat='$ {0:N0}'}" Margin="100,0,0,0" TextColor="Black"/>
-                            <Label Text="{Binding DistinticDescription}" Margin="0,10,0,0"/>
-                            <Entry Keyboard="Numeric" Placeholder="Ingrese el distintic" Text="{Binding Distintic, Mode=TwoWay}" TextColor="Black"/>
-                        </StackLayout>
+                        <Label FontAttributes="Bold" FontSize="18" Text="{Binding CashCount}" HorizontalOptions="Center"/>
+                        <Grid RowDefinitions="20,20,20,20,20,*" ColumnDefinitions="20,*,*,20" RowSpacing="10">
+                            <Label Text="{Binding SalesInMoney}" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center"/>
+                            <Label Text="{Binding TotalAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
+
+                            <Label Text="{Binding SalesInGallons}" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalGallons, StringFormat='{0:N0}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
+
+                            
+                            <Label Text="{Binding Expenses}" FontAttributes="Bold" VerticalOptions="End" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" />
+
+                            <Label Text="{Binding Collections}" FontAttributes="Bold" Grid.Row="2" Grid.Column="2" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" />
+
+                            
+                            <Label Text="{Binding TotalForTheDay}" FontAttributes="Bold" Grid.Row="4" Grid.Column="1" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalSales, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="5" Grid.Column="1" HorizontalOptions="Center" />
+                 
+                            <Label Text="{Binding DistinticDescription}" Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" />
+                            <Entry Keyboard="Numeric" Placeholder="Ingrese el distintic (traducir)" Text="{Binding Distintic, Mode=TwoWay}" Grid.Row="5" Grid.Column="2" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Dispensers con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedDispensers">
-                    <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.Column="0" VerticalOptions="Center" TextColor="Black"/>
-                    <Button 
-                    Text="�️" 
-                    Command="{Binding HideListDispenser}"
-                    WidthRequest="46" 
-                    HeightRequest="46" 
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="End"
-                    Grid.Column="1">
+                    <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button  Text="�️" 
+                             Command="{Binding HideListDispenser}"
+                             WidthRequest="46" HeightRequest="46" 
+                             BackgroundColor="Transparent"
+                             HorizontalOptions="End"
+                             Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding VisibleDispenser}" Value="True">
                                 <Setter Property="Text" Value="➖" />
@@ -133,20 +107,18 @@
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto,Auto,Auto">
-                                    <Label Text="Number" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="Number(traducir)" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding NumberName}" Grid.Row="0" Grid.Column="1"/>
 
-                                    <Label Text="Accumulated Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="Accumulated Amount(traducir" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
 
-                                    <Label Text="Gallons Accumulated" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="Gallons Accumulated(traducir)" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
                                     <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N0}'}" Grid.Row="2" Grid.Column="1"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="3"
-                                        Grid.RowSpan="3"
-                                        WidthRequest="50"
-                                        HeightRequest="50"
+                                        Grid.Column="3" Grid.RowSpan="3"
+                                        WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -161,15 +133,12 @@
 
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
-                    <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.Column="0" VerticalOptions="Center" />
-                    <Button 
-                        Text="�️"
-                        Command="{Binding HideDocumentList}"
-                        WidthRequest="46" 
-                        HeightRequest="46" 
-                        BackgroundColor="Transparent"
-                        HorizontalOptions="End"
-                        Grid.Column="1">
+                    <Label Text="AddedDocuments(traducir)" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button  Text="�️"
+                             Command="{Binding HideDocumentList}"
+                             WidthRequest="46"  HeightRequest="46"
+                             BackgroundColor="Transparent" HorizontalOptions="End"
+                             Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger
                                 TargetType="Button"
@@ -196,10 +165,8 @@
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding DocumentName}"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="3"
-                                        Grid.RowSpan="2"
-                                        WidthRequest="50"
-                                        HeightRequest="50"
+                                        Grid.Column="3" Grid.RowSpan="2"
+                                        WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -214,20 +181,13 @@
 
                 <!-- Expenses con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedExpenses">
-                    <Label 
-                    Text="{Binding AddedExpenses}" 
-                    FontAttributes="Bold" 
-                    FontSize="18"
-                    Grid.Column="0"
-                    VerticalOptions="Center" />
-                    <Button 
-                    Text="�️" 
-                    Command="{Binding HideExpenseList}"
-                    WidthRequest="46" 
-                    HeightRequest="46" 
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="End"
-                    Grid.Column="1">
+                    <Label  Text="{Binding AddedExpenses}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button  Text="�️"  
+                             Command="{Binding HideExpenseList}"
+                             WidthRequest="46" HeightRequest="46" 
+                             BackgroundColor="Transparent"
+                             HorizontalOptions="End"
+                             Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger
                                 TargetType="Button"
@@ -249,21 +209,19 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto, Auto, Auto">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*, Auto, Auto">
                                     <Label Text="Expenditures" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="1"/>
+                                    <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2"/>
 
                                     <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
+                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="3"
-                                        Grid.RowSpan="3"
-                                        WidthRequest="50"
-                                        HeightRequest="50"
+                                        Grid.Column="3" Grid.RowSpan="3"
+                                        WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -278,20 +236,13 @@
 
                 <!-- Collections con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
-                    <Label 
-                    Text="{Binding TypesofAggregateCollections}" 
-                    FontAttributes="Bold" 
-                    FontSize="18"
-                    Grid.Column="0"
-                    VerticalOptions="Center" />
-                    <Button 
-                    Text="💬"
-                    Command="{Binding HideCollectionList}"
-                    WidthRequest="46" 
-                    HeightRequest="46" 
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="End"
-                    Grid.Column="1">
+                    <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button Text="💬"
+                            Command="{Binding HideCollectionList}"
+                            WidthRequest="46"  HeightRequest="46" 
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="End"
+                            Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger
                                 TargetType="Button"
@@ -313,21 +264,19 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto, Auto, Auto">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto">
                                     <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="1"/>
+                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
 
                                     <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
+                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
-                                        Grid.Column="3"
-                                        Grid.RowSpan="3"
-                                        WidthRequest="50"
-                                        HeightRequest="50"
+                                        Grid.Column="3" Grid.RowSpan="3"
+                                        WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
@@ -342,22 +291,19 @@
 
                 <!-- Informacion Adicional -->
                 <Grid ColumnDefinitions="*, auto" x:Name="AdditionalInformation">
-                    <Label Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
-                    <Button
-                        Grid.Column="1"
-                        HorizontalOptions="End"
-                        FontSize="Medium"
-                        Text="💬"
-                        BackgroundColor="Transparent"
-                        Clicked="OpenAdditionalInfoPopUp"/>
+                    <Label Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" />
+                    <Button Grid.Column="1"
+                            HorizontalOptions="End"
+                            FontSize="Medium"
+                            Text="💬"
+                            BackgroundColor="Transparent"
+                            Clicked="OpenAdditionalInfoPopUp"/>
                 </Grid>
                 <Frame x:Name="AdditionalInfo"
                        Padding="10"
-                       BackgroundColor="White"
-                       BorderColor="Gray"
                        CornerRadius="10"
                        IsVisible="{Binding AdditionalInfoEnabled}">
-                    <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" TextColor="Black"/>
+                    <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" />
                 </Frame>
 
                 <!-- Botones -->
@@ -369,13 +315,11 @@
                 </VerticalStackLayout>
 
                 <!-- Botón de envío -->
-                <Button  x:Name="SendData"
-                BackgroundColor="Green"
-                Clicked="Button_Clicked"
-                CornerRadius="10"
-                HeightRequest="50"
-                Text="{Binding SendData}"
-                TextColor="White">
+                <Button  x:Name="SendData" Text="{Binding SendData}"
+                         TextColor="White" BackgroundColor="Green"
+                         Clicked="Button_Clicked"
+                         CornerRadius="10"
+                         HeightRequest="50">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                             <Setter Property="IsEnabled" Value="False" />
@@ -385,17 +329,13 @@
                 </Button>
             </VerticalStackLayout>
         </ScrollView>
-        <Button x:Name="Questions"
-            Text="📜"
-            FontSize="30"
-            WidthRequest="50"
-            HeightRequest="50"
-            BackgroundColor="#6A1B9A"
-            CornerRadius="10"
-            Padding="0"
-            AbsoluteLayout.LayoutBounds="1,1,90,90"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            Clicked="OnShowCourtListClicked">
+        <Button x:Name="Questions" Text="📜"
+                FontSize="30"
+                WidthRequest="50" HeightRequest="50"
+                CornerRadius="10" Padding="0"
+                AbsoluteLayout.LayoutBounds="1,1,90,90"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Clicked="OnShowCourtListClicked">
             <Button.Shadow>
                 <Shadow Brush="Black" Opacity="1" Offset="5,8" />
             </Button.Shadow>

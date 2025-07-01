@@ -9,12 +9,14 @@
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
-            <Entry x:Name="UsernameEntry" 
+            <Entry x:Name="UsernameEntry"
                    Placeholder="Username"
-                   Keyboard="Text" />
+                   Keyboard="Text"
+                   Completed="UsernameEntry_Completed"/>
             <Entry x:Name="PasswordEntry" 
                    Placeholder="Password"
-                   IsPassword="True" />
+                   IsPassword="True" 
+                   Completed="OnLoginClicked"/>
             <Button Text="Login"
                     Clicked="OnLoginClicked"
                     BackgroundColor="#512BD4"

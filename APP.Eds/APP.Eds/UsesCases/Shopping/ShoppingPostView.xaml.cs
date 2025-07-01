@@ -76,7 +76,7 @@ public partial class ShoppingPostView : ContentPage
         }
     }
 
-    public double Amount
+    public double? Amount
     {
         get => _shoppingService.Amount;
         set
