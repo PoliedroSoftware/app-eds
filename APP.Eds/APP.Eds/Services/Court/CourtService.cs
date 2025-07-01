@@ -2578,8 +2578,11 @@ GetAllEdsData()
             selectedCourt.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
             selectedCourt.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
             selectedCourt.DistincTranslation = GlobalTranslations.Get("Distinc");
-            selectedCourt.CollectionsTranslation = GlobalTranslations.Get("Collections");
-            selectedCourt.CollectionTranslation = GlobalTranslations.Get("Collection");
+            
+            foreach (var collection in selectedCourt.Collections)
+            {
+                collection.DateTranslation = GlobalTranslations.Get("Date");
+            }
             selectedCourt.AmountTranslation = GlobalTranslations.Get("Amount");
             selectedCourt.DescriptionTranslation = GlobalTranslations.Get("Description");
             selectedCourt.DispensersTranslation = GlobalTranslations.Get("Dispensers");
@@ -2596,7 +2599,7 @@ GetAllEdsData()
             selectedCourt.CourtTranslation = GlobalTranslations.Get("Court");
             selectedCourt.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
             selectedCourt.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
-
+           
 
             Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
