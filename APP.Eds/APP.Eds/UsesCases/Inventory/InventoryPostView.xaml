@@ -50,7 +50,7 @@
 
                                                                                 <StackLayout Padding="10,0,0,0">
                                                                                     <Label Text="{Binding TankName}" FontAttributes="Bold" />
-                                                                                    <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" />
+                                                                                        <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" />
                                                                                     <Label Text="{Binding CompartmentsCount, StringFormat='Compartimentos: {0}'}" />
                                                                                 </StackLayout>
                                                                             </Grid>
@@ -72,7 +72,7 @@
                                                                                                 <Frame Padding="5" BackgroundColor="LightYellow" CornerRadius="4" Margin="0,2,0,2">
                                                                                                     <StackLayout>
                                                                                                         <Label Text="{Binding Product}" FontAttributes="Bold" />
-                                                                                                        <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" />
+                                                                                                            <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" />
                                                                                                         <Label Text="{Binding CompartmentNumber, StringFormat='Compartimento: {0}'}" />
                                                                                                     </StackLayout>
                                                                                                 </Frame>

@@ -8,84 +8,58 @@
     Color="Transparent">
 	<Frame
 		Padding="20"
-		BackgroundColor="White"
 		BorderColor="#6200E8"
 		CornerRadius="15"
 		HasShadow="True"
-		HeightRequest="400"
+		HeightRequest="450"
 		WidthRequest="380">
 
         <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1"
-                       FontAttributes="Bold"
-                       FontSize="22"
-                       Text="{Binding AddExpense}"
-                       TextColor="Black"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="{Binding AddExpense}" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
-                        FontSize="18"
-                        Text="✖"
-                        TextColor="#6200E8"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        Padding="0"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
+                        FontSize="18" Text="✖" TextColor="#6200E8"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
             </Grid>
 
             <!--  Campos de Entrada  -->
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout>
                     <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
                            CornerRadius="10"
                            Margin="0,0,0,10">
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="{Binding Expenditures}" VerticalOptions="Center" />
-                            <Picker x:Name="ExpenditurePicker"
-                                    Title="{Binding Select}"
-                                    BackgroundColor="#F5F5F5"
-                                    ItemDisplayBinding="{Binding Description}"
-                                    ItemsSource="{Binding ExpenditureList}"
-                                    SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"
-                                    SelectedIndexChanged="ExpenditureSelected"/>
-                        </HorizontalStackLayout>
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto,*">
+                            <Label Text="{Binding Expenditures}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Picker x:Name="ExpenditurePicker" Title="{Binding Select}" Grid.Row="2" Grid.Column="1"
+                                    ItemDisplayBinding="{Binding Description}" ItemsSource="{Binding ExpenditureList}"
+                                    SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"  SelectedIndexChanged="ExpenditureSelected"
+                                    HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </Frame>
                     <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
                            CornerRadius="10"
                            Margin="0,0,0,10">
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" />
-                            <Entry x:Name="FirstEntry"
-                                   BackgroundColor="#F5F5F5"
-                                   Keyboard="Numeric"
-                                   Placeholder="Ingrese monto"
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto,*">
+                            <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Entry x:Name="FirstEntry" Placeholder="Ingrese monto(traducir)" Grid.Row="1" Grid.Column="1"
                                    Text="{Binding CourtExpenditureAmount, StringFormat='{0:N0}', Mode=TwoWay}"
-                                   Completed="EntryAmountCompleted"
-                                   TextChanged="FirstEntry_TextChanged"
-                                   IsEnabled="False"/>
-                        </HorizontalStackLayout>
+                                   Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
+                                   IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </Frame>
                     <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
                            CornerRadius="10">
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="Descripción:" VerticalOptions="Center" />
-                            <Entry x:Name="SecondEntry"
-                                   BackgroundColor="#F5F5F5"
-                                   Placeholder="{Binding Description}"
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto,*">
+                            <Label Text="Descripción:" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Entry x:Name="SecondEntry" Placeholder="{Binding Description}" Grid.Row="1" Grid.Column="1"
                                    Text="{Binding ExpenditureDescription, Mode=TwoWay}"
-                                   Completed="EntryDescriptionCompleted"
-                                   IsEnabled="False"/>
-                        </HorizontalStackLayout>
+                                   Completed="Add_Expenditure" IsEnabled="False" HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </Frame>
                 </VerticalStackLayout>
             </ScrollView>
@@ -94,13 +68,11 @@
             <Button Grid.Row="2"
                     x:Name="AddButton"
                     BackgroundColor="#6200E8"
-                    Clicked="Add_Dispenser"
+                    Clicked="Add_Expenditure"
                     CornerRadius="10"
-                    FontSize="18"
-                    Text="{Binding Add}"
-                    TextColor="White"
+                    FontSize="18" Text="{Binding Add}" TextColor="White"
                     VerticalOptions="Center"
-                    HeightRequest="40"/>
+                    HeightRequest="50"/>
 		</Grid>
 	</Frame>
 </mct:Popup>
