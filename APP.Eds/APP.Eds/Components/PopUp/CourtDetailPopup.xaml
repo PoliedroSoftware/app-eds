@@ -79,19 +79,19 @@
                                 <DataTemplate>
                                 <Frame Padding="10" Margin="0,10" BackgroundColor="White" BorderColor="Black" CornerRadius="9">
                                     <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
-                                        <Label Text="Date:" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Text="{Binding DateTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                                         <Label Text="{Binding Date}" TextColor="Black" Grid.Row="0" Grid.Column="1"/>
                                         <!--<BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,0" Color="Black" Grid.Row="1" Grid.ColumnSpan="2"/>-->
-                                        
-                                        <Label Text="Collection:" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
+
+                                        <Label Text="{Binding CollectionTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
                                         <Label Text="{Binding Collection}" TextColor="Black" Grid.Row="1" Grid.Column="1"/>
                                         <!--<BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,0" Color="Black" Grid.Row="2" Grid.ColumnSpan="2"/>-->
 
-                                        <Label Text="Amount:" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
+                                        <Label Text="{Binding AmountTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
                                         <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="2" Grid.Column="1"/>
                                         <!--<BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,0" Color="Black" Grid.Row="3" Grid.ColumnSpan="2"/>-->
 
-                                        <Label Text="Description:" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
+                                        <Label Text="{Binding DescriptionTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
                                         <Label Text="{Binding Description}" TextColor="Black" Grid.Row="3" Grid.Column="1"/>
                                     </Grid>
                                 </Frame>
@@ -100,43 +100,43 @@
                         </CollectionView>
 
                         <!--Dispensers-->
-                    <Label Text="Dispensers" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
+                    <Label Text="{Binding DispensersTranslation}" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
                     <CollectionView ItemsSource="{Binding Dispensers}" Margin="0,0,0,10" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame Padding="10" Margin="0,10" BackgroundColor="White" BorderColor="Black" CornerRadius="9">
                                     <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*,*" ColumnDefinitions="*,*">
-                                        <Label Text="Dispenser:" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Text="{Binding DispenserTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                                         <Label Text="{Binding Dispenser}" TextColor="Black" Grid.Row="0" Grid.Column="1"/>
 
-                                        <Label Text="NumberHose:" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
+                                        <Label Text="{Binding NumberHoseTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
                                         <Label Text="{Binding NumberHose}" TextColor="Black" Grid.Row="1" Grid.Column="1"/>
 
-                                        <Label Text="Product:" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
+                                        <Label Text="{Binding ProductTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
                                         <Label Text="{Binding Product}" TextColor="Black" Grid.Row="2" Grid.Column="1"/>
 
-                                        <Label Text="Price:" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
+                                        <Label Text="{Binding PriceTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
                                         <Label Text="{Binding Price, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="3" Grid.Column="1"/>
 
-                                        <Label Text="Starttime:" FontAttributes="Bold" TextColor="Black" Grid.Row="4" Grid.Column="0"/>
+                                        <Label Text="{Binding StarttimeTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="4" Grid.Column="0"/>
                                         <Label Text="{Binding Starttime}" TextColor="Black" Grid.Row="4" Grid.Column="1"/>
 
-                                        <Label Text="Endtime:" FontAttributes="Bold" TextColor="Black" Grid.Row="5" Grid.Column="0"/>
+                                        <Label Text="{Binding EndtimeTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="5" Grid.Column="0"/>
                                         <Label Text="{Binding Endtime}" TextColor="Black" Grid.Row="5" Grid.Column="1"/>
 
-                                        <Label Text="AccumulatedAmount:" FontAttributes="Bold" TextColor="Black" Grid.Row="6" Grid.Column="0"/>
+                                        <Label Text="{Binding AccumulatedAmountTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="6" Grid.Column="0"/>
                                         <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="6" Grid.Column="1"/>
 
-                                        <Label Text="AccumulatedGallons:" FontAttributes="Bold" TextColor="Black" Grid.Row="7" Grid.Column="0"/>
+                                        <Label Text="{Binding AccumulatedGallonsTranslations}" FontAttributes="Bold" TextColor="Black" Grid.Row="7" Grid.Column="0"/>
                                         <Label Text="{Binding AccumulatedGallons}" TextColor="Black" Margin="13,0,0,0" Grid.Row="7" Grid.Column="1"/>
 
-                                        <Label Text="LastAccumulatedAmount:" FontAttributes="Bold" TextColor="Black" Grid.Row="8" Grid.Column="0"/>
+                                        <Label Text="{Binding LastAccumulatedAmountTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="8" Grid.Column="0"/>
                                         <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="8" Grid.Column="1"/>
 
-                                        <Label Text="LastAccumulatedGallons:" FontAttributes="Bold" TextColor="Black" Grid.Row="9" Grid.Column="0"/>
+                                        <Label Text="{Binding LastAccumulatedGallonsTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="9" Grid.Column="0"/>
                                         <Label Text="{Binding LastAccumulatedGallons}" TextColor="Black" Margin="13,0,0,0" Grid.Row="9" Grid.Column="1"/>
 
-                                        <Label Text="Distinc:" FontAttributes="Bold" TextColor="Black" Grid.Row="10" Grid.Column="0"/>
+                                        <Label Text="{Binding DistincTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="10" Grid.Column="0"/>
                                         <Label Text="{Binding Distinc, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="10" Grid.Column="1"/>
                                     </Grid>
                                 </Frame>
@@ -145,17 +145,17 @@
                     </CollectionView>
 
                     <!--Documents-->
-                    <Label Text="Documents" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
+                    <Label Text="{Binding DocumentsTranslation}" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
                     <CollectionView ItemsSource="{Binding Documents}" Margin="0,0,0,10" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame Padding="10" Margin="0,5" BackgroundColor="White" BorderColor="Black" CornerRadius="9">
                                     <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
-                                        <Label Text="Court:" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Text="{Binding CourtTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                                         <Label Text="{Binding Court}" TextColor="Black" Grid.Row="0" Grid.Column="1"/>
                                         <Grid HeightRequest="120" Margin="0,10,0,0" Grid.Row="1" Grid.Column="0">
                                             <Image HorizontalOptions="Start" Aspect="AspectFit" Source="{Binding ImageSource}" IsVisible="{Binding HasImage}" />
-                                            <Label Text="No hay Imagen" HorizontalOptions="Start" VerticalOptions="Center" TextColor="Gray" FontAttributes="Italic" IsVisible="{Binding NoImage}"/>
+                                            <Label Text="{Binding ThereIsNoImageTranslation}" HorizontalOptions="Start" VerticalOptions="Center" TextColor="Gray" FontAttributes="Italic" IsVisible="{Binding NoImage}"/>
                                         </Grid>
                                     </Grid>
                                 </Frame>
@@ -164,22 +164,22 @@
                     </CollectionView>
 
                     <!--Expenditures-->
-                    <Label Text="Expenditures" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
+                    <Label Text="{Binding ExpendituresTranslation}" FontAttributes="Bold" FontSize="18" TextColor="Black" Margin="0,10,0,5"/>
                     <CollectionView ItemsSource="{Binding Expenditures}" Margin="0,0,0,10" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame Padding="10" Margin="0,5" BackgroundColor="White" BorderColor="Black" CornerRadius="9">
                                     <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
-                                        <Label Text="Date:" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Text="{Binding DateTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                                         <Label Text="{Binding Date}" TextColor="Black" Grid.Row="0" Grid.Column="1"/>
 
-                                        <Label Text="Expenditure:" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
+                                        <Label Text="{Binding ExpenditureTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="1" Grid.Column="0"/>
                                         <Label Text="{Binding Expenditure}" TextColor="Black" Grid.Row="1" Grid.Column="1"/>
 
-                                        <Label Text="Amount:" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
+                                        <Label Text="{Binding AmountTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="2" Grid.Column="0"/>
                                         <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" TextColor="Black" Grid.Row="2" Grid.Column="1"/>
 
-                                        <Label Text="Description:" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
+                                        <Label Text="{Binding DescriptionTranslation}" FontAttributes="Bold" TextColor="Black" Grid.Row="3" Grid.Column="0"/>
                                         <Label Text="{Binding Description}" TextColor="Black" Grid.Row="3" Grid.Column="1"/>
                                     </Grid>
                                 </Frame>
