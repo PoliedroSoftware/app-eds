@@ -42,16 +42,16 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
                             <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento(traducir)" Grid.Row="1"
-                                    ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding Number}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
+                                    ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding DisplayCompartiment}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
                                     IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"/>
                         </Grid>
                     </Frame>
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de compra(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el monto(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de compra por galon(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding Price, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    Completed="EntryPriceCompleted"
                                    IsEnabled="False"/>
@@ -62,7 +62,7 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese la cantidad(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese la cantidad de galones(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding Quantity, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="EntryQuantityCompleted"/>
                         </Grid>
@@ -70,9 +70,9 @@
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de venta(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de venta(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de venta por galon(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding SellPrice, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="Add_Product"/>
                         </Grid>

@@ -23,9 +23,9 @@ public class ShoppingService : INotifyPropertyChanged
     public ObservableCollection<CategoryModel> CategoryList { get; set; } = [];
     public ObservableCollection<ShoppingProductResponse> ShoppingProductList { get; set; } = [];
     public ObservableCollection<ProductResponse> ProductList { get; set; } = [];
-    private ShoppingRequest Request { get; set; }
     public ObservableCollection<ShoppingResponse> ShoppingList { get; set; } = [];
     public ObservableCollection<CompartimentResponse> CompartimentList { get; set; } = [];
+    private ShoppingRequest Request { get; set; }
 
 
     private double? _quantity;

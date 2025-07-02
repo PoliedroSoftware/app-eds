@@ -10,14 +10,14 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:BoolToSignConverter x:Key="BoolToSignConverter" />
+            <local:BoolToSignConverter x:Key="BoolToSignConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
   <AbsoluteLayout>
     <CollectionView ItemsSource="{Binding Businesses}" Margin="10">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <Frame Padding="15" Margin="5" CornerRadius="10" HasShadow="True" BackgroundColor="White">
+                <Frame Padding="15" Margin="5" CornerRadius="10" HasShadow="True">
                     <StackLayout Spacing="10">
                                               
                         <!-- Expander for EDS -->
@@ -30,7 +30,7 @@
                                 <CollectionView ItemsSource="{Binding Eds}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
-                                            <Frame Padding="10" CornerRadius="8" BackgroundColor="#F0F0F0" HasShadow="False" Margin="0,0,0,5">
+                                            <Frame Padding="10" CornerRadius="8" HasShadow="False" Margin="0,0,0,5">
                                                 <StackLayout>
                                                                                                        
                                                     <!-- Expander for Tanks -->
@@ -43,7 +43,7 @@
                                                             <CollectionView ItemsSource="{Binding Tanks}">
                                                                 <CollectionView.ItemTemplate>
                                                                     <DataTemplate>
-                                                                        <Frame Padding="8" CornerRadius="6" BackgroundColor="White" HasShadow="True" Margin="0,5,0,0">
+                                                                        <Frame Padding="8" CornerRadius="6" HasShadow="True" Margin="0,5,0,0">
                                                                             <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
                                                                                 <!-- Tank icon -->
                                                                                 <Image Source="tank_icon.png" WidthRequest="24" HeightRequest="24" />
@@ -59,8 +59,8 @@
                                                                             <toolkit:Expander>
                                                                                 <toolkit:Expander.Header>
                                                                                     <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                                                                                        <Label Text="Tanque " FontAttributes="Italic" FontSize="14" TextColor="Gray" Margin="0,5,0,0"/>
-                                                                                        <Label Text="{Binding TankNumber}" FontAttributes="Italic" FontSize="14" TextColor="Gray" Margin="0,5,0,0"/>
+                                                                                        <Label Text="Tanque " FontAttributes="Italic" FontSize="14" Margin="0,5,0,0"/>
+                                                                                        <Label Text="{Binding TankNumber}" FontAttributes="Italic" FontSize="14" Margin="0,5,0,0"/>
                                                                                     </StackLayout>
 
                                                                                 </toolkit:Expander.Header>
@@ -69,7 +69,7 @@
                                                                                     <CollectionView ItemsSource="{Binding Compartments}">
                                                                                         <CollectionView.ItemTemplate>
                                                                                             <DataTemplate>
-                                                                                                <Frame Padding="5" BackgroundColor="LightYellow" CornerRadius="4" Margin="0,2,0,2">
+                                                                                                <Frame Padding="5" CornerRadius="4" Margin="0,2,0,2">
                                                                                                     <StackLayout>
                                                                                                         <Label Text="{Binding Product}" FontAttributes="Bold" />
                                                                                                             <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" />
