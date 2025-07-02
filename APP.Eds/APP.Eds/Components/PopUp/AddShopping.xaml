@@ -1,108 +1,91 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup
+<mct:Popup
     x:Class="APP.Eds.Components.PopUp.AddShopping"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    CanBeDismissedByTappingOutsideOfPopup="False">
-    <Frame
-        Padding="24"
-        BackgroundColor="White"
-        BorderColor="#6200E8"
-        CornerRadius="15"
-        HasShadow="True"
-        HeightRequest="400"
-        WidthRequest="380">
-        <VerticalStackLayout Spacing="22">
-            <Grid>
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    HorizontalOptions="Start"
-                    Text="Nuevo Egreso"
-                    TextColor="Black"
-                    Margin="0,0,0,8" />
-                <Button
-                    HorizontalOptions="End"
-                    BackgroundColor="Transparent"
-                    Clicked="OnCloseTapped"
-                    FontSize="18"
-                    Text="✖"
-                    TextColor="#6200E8" />
+    xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+
+    <Frame Padding="20"
+           BorderColor="#6200E8"
+           CornerRadius="15"
+           HasShadow="True"
+           HeightRequest="600" WidthRequest="380">
+
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*" Padding="0,0,0,10">
+                <Label Text="Nuevo Producto(traducir)" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
+                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        FontSize="18" Text="✖" TextColor="#6200E8"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
             </Grid>
 
-            <!-- Selector de Categoría de Egreso -->
-            <Frame
-                Padding="14"
-                BackgroundColor="#F5F5F5"
-                CornerRadius="10">
-                <VerticalStackLayout Spacing="20" Padding="24">
-                    <Button Text="Inicio" Margin="0,0,0,0" />
-                    <Button Text="Egresos" Margin="0,0,0,0" />
-                    <Button Text="Ingresos" Margin="0,0,0,0" />
-                    <Button Text="Reportes" Margin="0,0,0,0" />
-                    <!-- Agrega más opciones según tu menú -->
-                    <HorizontalStackLayout Spacing="16">
-                        <Label Text="Categoría de egreso" VerticalOptions="Center" Margin="0,0,8,0"/>
-                        <Picker
-                            x:Name="ShopingProductPicker"
-                            Title="Seleccione una categoría"
-                            BackgroundColor="#F5F5F5"
-                            ItemDisplayBinding="{Binding Name}"
-                            ItemsSource="{Binding ProductList}"
-                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-                            SelectedIndexChanged="ShopingProductSelected"
-                            Margin="0,0,0,0"/>
-                    </HorizontalStackLayout>
+            <ScrollView Grid.Row="1" MaximumHeightRequest="500">
+                <VerticalStackLayout>
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label FontSize="16" Text="Producto(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="ProductPicker" Title="Seleccione un producto(traducir)"  Grid.Row="1"
+                                    ItemsSource="{Binding ProductList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                    SelectedIndexChanged="ProductSelected" HorizontalTextAlignment="Center"/>
+                        </Grid>
+                    </Frame>
+
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento(traducir)" Grid.Row="1"
+                                    ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding DisplayCompartiment}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
+                                    IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"/>
+                        </Grid>
+                    </Frame>
+
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
+                                   Placeholder="Ingrese el precio de compra por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Text="{Binding Price, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                   Completed="EntryPriceCompleted"
+                                   IsEnabled="False"/>
+                        </Grid>
+                    </Frame>
+
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
+                                   Placeholder="Ingrese la cantidad de galones(traducir)" HorizontalTextAlignment="Center"
+                                   Text="{Binding Quantity, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                   IsEnabled="False" Completed="EntryQuantityCompleted"/>
+                        </Grid>
+                    </Frame>
+
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
+                                   Placeholder="Ingrese el precio de venta por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Text="{Binding SellPrice, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                   IsEnabled="False" Completed="Add_Product"/>
+                        </Grid>
+                    </Frame>
                 </VerticalStackLayout>
-            </Frame>
-
-            <!-- Monto -->
-            <Frame
-                Padding="14"
-                BackgroundColor="#F5F5F5"
-                CornerRadius="10">
-                <HorizontalStackLayout Spacing="16">
-                    <Label Text="Monto" VerticalOptions="Center" Margin="0,0,8,0"/>
-                    <Entry
-                        x:Name="FirstEntry"
-                        BackgroundColor="#F5F5F5"
-                        Keyboard="Numeric"
-                        Placeholder="Ingrese el monto"
-                        Text="{Binding Price, Mode=TwoWay}"
-                        Completed="EntryPriceCompleted"
-                        Margin="0,0,0,0"/>
-                </HorizontalStackLayout>
-            </Frame>
-
-            <!-- Cantidad -->
-            <Frame
-                Padding="14"
-                BackgroundColor="#F5F5F5"
-                CornerRadius="10">
-                <HorizontalStackLayout Spacing="16">
-                    <Label Text="Cantidad" VerticalOptions="Center" Margin="0,0,8,0"/>
-                    <Entry
-                        x:Name="SecondEntry"
-                        BackgroundColor="#F5F5F5"
-                        Keyboard="Numeric"
-                        Placeholder="Ingrese la cantidad"
-                        Text="{Binding Quantity, Mode=TwoWay}"
-                        Completed="EntryQuantityCompleted"
-                        Margin="0,0,0,0"/>
-                </HorizontalStackLayout>
-            </Frame>
+            </ScrollView>
 
             <!-- Botón de agregar -->
-            <Button
-                x:Name="AddButton"
-                BackgroundColor="#6200E8"
-                Clicked="Add_Product"
-                CornerRadius="10"
-                FontSize="18"
-                Text="Agregar Egreso"
-                TextColor="White"
-                Margin="0,8,0,0"/>
-        </VerticalStackLayout>
+            <Button Grid.Row="2" x:Name="AddButton" 
+                    BackgroundColor="#6200E8"
+                    Clicked="Add_Product"
+                    CornerRadius="10"
+                    FontSize="18" Text="Agregar Egreso(traducir)" TextColor="White"/>
+        </Grid>
     </Frame>
-</toolkit:Popup>
+</mct:Popup>

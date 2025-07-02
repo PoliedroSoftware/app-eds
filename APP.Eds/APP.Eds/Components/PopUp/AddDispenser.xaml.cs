@@ -95,7 +95,7 @@ public partial class AddDispenser : Popup
             
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
             }
             SecondEntry.Focus();
             SecondEntry.CursorPosition = SecondEntry.Text.Length;
@@ -111,7 +111,7 @@ public partial class AddDispenser : Popup
 
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
             }
         }
     }
@@ -132,7 +132,6 @@ public partial class AddDispenser : Popup
         if (HosePicker.SelectedIndex != -1)
         {
             FirstEntry.IsEnabled = true;
-            SecondEntry.IsEnabled = true;
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
 
@@ -140,16 +139,16 @@ public partial class AddDispenser : Popup
             if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
                 double price = vm.SelectedHose.Price;
-                PricePerGallonLabel.Text = $"Precio por galón: {price:C2}";
+                PricePerGallonLabel.Text = $"{price:C2}";
             }
             else
             {
-                PricePerGallonLabel.Text = "Precio por galón: -";
+                PricePerGallonLabel.Text = "##.###";
             }
         }
         else
         {
-            PricePerGallonLabel.Text = "Precio por galón: -";
+            PricePerGallonLabel.Text = "##.###";
         }
     }
 

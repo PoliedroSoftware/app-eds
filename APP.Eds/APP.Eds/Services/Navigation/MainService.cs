@@ -64,7 +64,6 @@ namespace APP.Eds.Services.Navigation
                     new("Product", typeof(ProductPostView)),
                     new("Product Type", typeof(ProductTypePostView)),
                     new("Shopping", typeof(ShoppingPostView)),
-                    new("ShoppingProduct", typeof(ShoppingProductPostView))
                 }),
                 new("EDS y Otros", new List<MenuItemModel>
                 {
