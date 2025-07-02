@@ -3,35 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
              x:Class="APP.Eds.UsesCases.Capacity.CapacityPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Capacity">
+             Title="{Binding GestionCapacityLabel}">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-        <Label FontSize="16" Text="Capacity"/>
+        <Label FontSize="16" Text="{Binding CodeLabel}"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter Code"
+            Placeholder="{Binding CodePlaceholder}"
             Text="{Binding Code, Mode=TwoWay}" />
+        <Label FontSize="16" Text="{Binding HeightLabel}"/>
         <Entry
             Keyboard="Numeric"
-            Placeholder="Enter Height"
+            Placeholder="{Binding HeightPlaceholder}"
             Text="{Binding Height, Mode=TwoWay}" />
+        <Label FontSize="16" Text="{Binding GallonLabel}"/>
         <Entry
             Keyboard="Numeric"
-            Placeholder="Enter Gallon"
+            Placeholder="{Binding GallonPlaceholder}"
             Text="{Binding Gallon, Mode=TwoWay}" />
+        <Label FontSize="16" Text="{Binding LitersLabel}"/>
         <Entry
             Keyboard="Numeric"
-            Placeholder="Enter Liters"
+            Placeholder="{Binding LitersPlaceholder}"
             Text="{Binding Liters, Mode=TwoWay}" />
 
         <Button
             BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
+            Clicked="SendCapacityButton"
             CornerRadius="10"
-            Text="Enviar Datos"
+            Text="{Binding SendData}"
             TextColor="White" />
     </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
