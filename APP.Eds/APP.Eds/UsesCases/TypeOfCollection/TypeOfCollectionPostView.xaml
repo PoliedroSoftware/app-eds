@@ -4,16 +4,16 @@
              x:Class="APP.Eds.UsesCases.TypeOfCollection.TypeOfCollectionPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestión de Tipo de Colección">
+             Title="{Binding DescriptionTitle}">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-        <Label FontSize="16" Text="Tipo de Colección"/>
+        <Label FontSize="16" Text="{Binding DescriptionLabel}"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Ingrese Tipo de Colección"
+            Placeholder="{Binding DescriptionPlaceholder}"
             Text="{Binding Description, Mode=TwoWay}" />
         <button:HoverButton
             BackgroundColor="Green"
@@ -23,7 +23,7 @@
             CornerRadius="10"
             HoverColor="Gray"
             PressedColor="AliceBlue"
-            Text="Enviar Datos"
+            Text="{Binding SendData}"
             TextColor="White" />
     </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
