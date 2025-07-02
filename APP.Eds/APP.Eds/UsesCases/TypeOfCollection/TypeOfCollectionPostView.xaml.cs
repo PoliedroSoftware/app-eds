@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using APP.Eds.Services.TypeOfCollection;
 
 namespace APP.Eds.UsesCases.TypeOfCollection;
@@ -17,6 +18,16 @@ public partial class TypeOfCollectionPostView : ContentPage
         try
         {
             LoadingOverlay.ShowLoading();
+            if (string.IsNullOrWhiteSpace(Description))
+            {
+                await DisplayAlert("Error", $"El tipo de colección {Description} no puede estar vacio !", "OK");
+                return;
+            }
+            if (!Regex.IsMatch(Description, @"^\p{L}+$"))
+            {
+                await DisplayAlert("Error", $"El tipo de colección {Description} no debe contener caracteres especiales !", "OK");
+                return;
+            }
             await _typeOfCollectionService.SaveTypeOfCollectionDataAsync();
         }
         finally
