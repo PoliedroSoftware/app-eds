@@ -3,21 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.TypeOfCollection.TypeOfCollectionPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion TypeOfCollection">
+             xmlns:button="clr-namespace:APP.Eds.Controls"
+             Title="Gestión de Tipo de Colección">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-        <Label FontSize="16" Text="TypeOfCollection"/>
+        <Label FontSize="16" Text="Tipo de Colección"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter TypeOfCollection"
+            Placeholder="Ingrese Tipo de Colección"
             Text="{Binding Description, Mode=TwoWay}" />
-        <Button
+        <button:HoverButton
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
+            WidthRequest="200"
+            HeightRequest="60"
             CornerRadius="10"
+            HoverColor="Gray"
+            PressedColor="AliceBlue"
             Text="Enviar Datos"
             TextColor="White" />
     </VerticalStackLayout>
