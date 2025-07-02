@@ -106,15 +106,15 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
                                     <Label Text="Number(traducir)" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding NumberName}" Grid.Row="0" Grid.Column="1"/>
+                                    <Label Text="{Binding NumberName}" Grid.Row="0" Grid.Column="2"/>
 
                                     <Label Text="Accumulated Amount(traducir" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
+                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Gallons Accumulated(traducir)" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N0}'}" Grid.Row="2" Grid.Column="1"/>
+                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N0}'}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
                                         Grid.Column="3" Grid.RowSpan="3"
@@ -209,7 +209,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*, Auto, Auto">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
                                     <Label Text="Expenditures" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2"/>
 
@@ -264,7 +264,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
                                     <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
 

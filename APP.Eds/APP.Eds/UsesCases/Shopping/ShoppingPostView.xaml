@@ -15,9 +15,6 @@
                 <Label FontSize="16" Text="Date(traducir)"/>
                 <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31"/>
 
-                <Label FontSize="16" Text="Amount(traducir)"/>
-                <Entry Keyboard="Numeric" Placeholder="Enter Amount" Text="{Binding Amount, Mode=TwoWay}"/>
-
                 <Label FontSize="16" Text="Provider(traducir)"/>
                 <Picker Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}"/>
 
@@ -25,21 +22,19 @@
                 <Picker Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
 
 
-
-
                 <Frame Padding="10" BorderColor="Gray" CornerRadius="10">
-                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="35,*,*">
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,10,*,*" RowSpacing="5">
                         <!-- Mostrar los totales acumulados -->
                         <Label FontAttributes="Bold" FontSize="18" Text="TotalPurchases" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center"/>
 
-                        <Label Text="TotalQuantity" FontAttributes="Bold" Grid.Column="0" Grid.Row="1"/>
-                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}" Grid.Column="0" Grid.Row="2"/>
+                        <Label Text="TotalQuantity" FontAttributes="Bold" Grid.Column="0" Grid.Row="2"/>
+                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}" Grid.Column="0" Grid.Row="3"/>
 
-                        <Label Text="TotalPrice" FontAttributes="Bold" Grid.Column="1" Grid.Row="1"/>
-                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}" Grid.Column="1" Grid.Row="2"/>
+                        <Label Text="TotalPrice" FontAttributes="Bold" Grid.Column="1" Grid.Row="2"/>
+                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}" Grid.Column="1" Grid.Row="3"/>
 
-                        <Label Text="TotalAmount" FontAttributes="Bold" Grid.Column="2" Grid.Row="1"/>
-                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}" Grid.Column="2" Grid.Row="2"/>
+                        <Label Text="TotalAmount" FontAttributes="Bold" Grid.Column="2" Grid.Row="2"/>
+                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}" Grid.Column="2" Grid.Row="3"/>
                     </Grid>
                 </Frame>
 
@@ -66,20 +61,20 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="5" ColumnSpacing="10">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*, *, *" RowSpacing="5">
 
                                     <Label Text="Name" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="1" VerticalOptions="Center" />
+                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" />
 
                                     <Label Text="Price" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="1" VerticalOptions="Center" />
+                                    <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" />
 
                                     <Label Text="Quantity" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="1" VerticalOptions="Center" />
+                                    <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" />
 
                                     <!-- Botón eliminar -->
-                                    <Button Text="X"  Grid.Column="2" Grid.RowSpan="3"
-                                        WidthRequest="30" HeightRequest="30"
+                                    <Button Text="X"  Grid.Column="3" Grid.RowSpan="3"
+                                        WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent" TextColor="#6A1B9A" CornerRadius="0"
                                         VerticalOptions="Center" HorizontalOptions="Center"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}"/>

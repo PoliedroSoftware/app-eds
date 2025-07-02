@@ -37,8 +37,9 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="{Binding HoseTranslation}" HorizontalOptions="Center" Grid.Row="0" />
                             <Picker x:Name="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
-                                ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseDispenserList}"
-                                SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"/>
+                                    ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseDispenserList}"
+                                    SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"
+                                    HorizontalTextAlignment="Center"/>
                         </Grid>
                     </Frame>
                     
@@ -53,10 +54,9 @@
                             <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
                             <Entry x:Name="FirstEntry" Keyboard="Numeric" Placeholder="Ingrese el monto"
                                    Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
-                                   Margin="2"
+                                   Margin="2" Grid.Row="2" Grid.Column="2"
                                    Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted" TextChanged="FirstEntry_TextChanged"
-                                   IsEnabled="False"
-                                   Grid.Row="2" Grid.Column="2"/>
+                                   IsEnabled="False"/>
 
                             <Label Text="Amount(traducir)" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
                             <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
@@ -74,10 +74,9 @@
                             <BoxView x:Name="GallonBoxView" BackgroundColor="Transparent" CornerRadius="5" Grid.Row="1" Grid.Column="2"/>
                             <Entry x:Name="SecondEntry" Keyboard="Numeric" Placeholder="Ingrese los galones"
                                    Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
-                                   Margin="2"
+                                   Margin="2" Grid.Row="1" Grid.Column="2"
                                    Unfocused="OnEntryUnfocused" Completed="EntryGallonsCompleted" TextChanged="FirstEntry_TextChanged"
-                                   IsEnabled="False"
-                                   Grid.Row="1" Grid.Column="2"/>
+                                   IsEnabled="False"/>
 
                             <Label Text="Gallons (traducir) " VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
                             <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
