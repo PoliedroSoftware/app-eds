@@ -304,7 +304,7 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    private bool _visibleProducts =true;
+    private bool _visibleProducts;
     public bool VisibleProducts
     {
         get => _visibleProducts;
@@ -339,10 +339,7 @@ public class ShoppingService : INotifyPropertyChanged
 
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
 
-        HideProducts = new Command(() =>
-        {
-            VisibleProducts = !VisibleProducts;
-        });
+        
 
         GetAllProviderData();
         GetAllCategoryData();
@@ -355,8 +352,7 @@ public class ShoppingService : INotifyPropertyChanged
         SaveShoppingDataCommand = new Command(async () => await SaveShoppingDataAsync());
         AddShoppingProductCommand = new Command(async () => await AddShoppingProductFromPopup());
         GetByIdShoppingProductDataCommand = new Command<int>(async (ShoppingProductId) => await GetByIdShoppingProductDataAsync(ShoppingProductId));
-
-
+        HideProducts = new Command(() => { VisibleProducts = !VisibleProducts; });
     }
 
     //Get All
@@ -639,11 +635,6 @@ public class ShoppingService : INotifyPropertyChanged
         ShoppingProduct.Add(newProduct);
         SellPriceProduct.Add(newSellPrice);
         UpdateAccumulatedTotals();
-
-        SelectedProduct = null;
-        SelectedCompartiment = null;
-        OnPropertyChanged(nameof(SelectedProduct));
-        OnPropertyChanged(nameof(SelectedCompartiment));
     }
 
 
@@ -710,11 +701,15 @@ public class ShoppingService : INotifyPropertyChanged
     public void ResetProductForm()
     {
         SelectedProduct = null;
+        SelectedCompartiment = null;
         Price = 0;
         Quantity = 0;
+        SellPrice = 0;
         OnPropertyChanged(nameof(Price));
         OnPropertyChanged(nameof(Quantity));
         OnPropertyChanged(nameof(CurrentTotalPrice));
+        OnPropertyChanged(nameof(SelectedProduct));
+        OnPropertyChanged(nameof(SelectedCompartiment));
     }
 
     private void DeleteProduct(ShoppingProductNestedModel product)
