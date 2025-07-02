@@ -15,8 +15,8 @@ public class TankResponse
     public int Compartment { get; set; }
 
     [JsonPropertyName("ability")]
-    public int Ability { get; set; }
+    public double Ability { get; set; }
 
     [JsonPropertyName("stock")]
-    public int Stock { get; set; }
+    public double Stock { get; set; }
 }

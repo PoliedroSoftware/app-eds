@@ -1,4 +1,4 @@
-namespace APP.Eds.Models.Court;
+  namespace APP.Eds.Models.Court;
 
 public class CourtListItemModel
 {

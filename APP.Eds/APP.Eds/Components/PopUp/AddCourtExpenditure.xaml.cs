@@ -22,12 +22,11 @@ public partial class AddCourtExpenditure : Popup
 
     }
 
-    private async void Add_Dispenser(object sender, EventArgs e)
+    private async void Add_Expenditure(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm && vm.SelectedExpenditure is not null)
         {
             var selectedExpenditure = vm.SelectedExpenditure.IdCourtExpenditure;
-            
         }
         else
         {
@@ -68,16 +67,10 @@ public partial class AddCourtExpenditure : Popup
                 return;
             }
             
+            SecondEntry.Focus();
+            
         }
         
-    }
-
-    private void EntryDescriptionCompleted(object sender, EventArgs e)
-    {
-        if (BindingContext is CourtService vm)
-        {
-            AddButton.Focus();
-        }
     }
 
     private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
