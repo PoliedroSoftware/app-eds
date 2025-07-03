@@ -39,11 +39,11 @@ jobs:
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj
 
       - name: Build Android project
         run: |
-          dotnet publish APP.Eds/APP.Eds.csproj \
+          dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj \
             -f:net8.0-android \
             -c:Release \
             -o:./output
