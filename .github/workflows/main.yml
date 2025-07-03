@@ -42,7 +42,7 @@ jobs:
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
       - name: Restore NuGet packages
-        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj -p:TargetFramework=net8.0-android
 
       - name: Build Android project
         run: |
