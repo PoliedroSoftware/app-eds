@@ -26,8 +26,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           
-      - name: Install full .NET MAUI workload
-        run: dotnet workload install maui
+      - name: Install .NET MAUI Android workload
+        run: dotnet workload install maui-android
 
       - name: Install Android dependencies
         run: |
