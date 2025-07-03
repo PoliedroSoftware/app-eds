@@ -30,13 +30,11 @@ namespace APP.Eds.Views.Popups
 
         private void OnCloseTapped(object sender, EventArgs e)
         {
-            
             Close();
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)
         {
-            // Cerrar popup
             Close();
         }
 

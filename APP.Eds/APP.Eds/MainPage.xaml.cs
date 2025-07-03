@@ -184,6 +184,10 @@ namespace APP.Eds
             }
         }
 
+        private void UsernameEntry_Completed(object sender, EventArgs e)
+        {
+            PasswordEntry.Focus();
+        }
 
 
         //private string LoadToken(string clientId, string realm)
@@ -192,7 +196,7 @@ namespace APP.Eds
         //    {
         //        string prefix = $"AUTH_{realm}_{clientId}_";
 
-               
+
         //        int chunkCount = Preferences.Get($"{prefix}TOKEN_PART_COUNT", 0);
         //        if (chunkCount == 0) return null; 
 
