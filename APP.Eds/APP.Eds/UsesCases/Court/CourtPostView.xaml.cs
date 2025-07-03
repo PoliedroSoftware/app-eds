@@ -133,12 +133,13 @@ public partial class CourtPostView : ContentPage
                 return;
             }
 
-            double cash = totalTypeOfCollection - totalExpenditures;
-            if (cash < 0)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
-                return;
-            }
+                double cash = totalTypeOfCollection - totalExpenditures;
+                const double epsilon = 1e-6;
+                if (cash < -epsilon)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
+                    return;
+                }
 
 
             var selectedId = vm.SelectedEds.IdEds;
