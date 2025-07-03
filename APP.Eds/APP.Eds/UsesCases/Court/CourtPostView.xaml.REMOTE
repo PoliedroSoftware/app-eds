@@ -123,7 +123,7 @@
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
                                         VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
                                         CommandParameter="{Binding .}"/>
                                 </Grid>
                             </Frame>
@@ -306,43 +306,15 @@
                     <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" />
                 </Frame>
 
-                <!-- Bottons -->
-                <VerticalStackLayout Spacing="10" x:Name="Button">
-                    
-                    <Frame BorderColor="Red" CornerRadius="8" Padding="10" BackgroundColor="transparent">
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Obligatorio"
-                                   FontAttributes="Bold"
-                                   FontSize="14"
-                                   TextColor="Red"
-                                   HorizontalOptions="Center"/>
-                            <Button
-                                    Clicked="OpenDispenserPopUp"
-                                    Text="{Binding NewSale}"
-                                    Command="{Binding OpenDispenserCommand}"
-                                    IsEnabled="{Binding NewSaleEnabled}"
-                                    HorizontalOptions="FillAndExpand"
-                                    Margin="0,5,0,0"/>
-                            <Button
-                                    Clicked="OpenTypeOfCollectionPopUp"
-                                    Text="{Binding AddCollectionType}"
-                                    IsEnabled="{Binding IsEdsSelected}"
-                                    HorizontalOptions="FillAndExpand"
-                                    Margin="0,5,0,0"/>
-                        </VerticalStackLayout>
-                    </Frame>
-                    <!-- Otros botones -->
-                    <Button
-                            Clicked="OpenDocumentPopUp"
-                            Text="{Binding UploadProofOfPayment}"
-                            IsEnabled="{Binding IsEdsSelected}"/>
-                    <Button
-                            Clicked="OpenExpenditurePopUp"
-                            Text="{Binding NewEgress}"
-                            IsEnabled="{Binding IsEdsSelected}"/>
+                <!-- Botones -->
+                <VerticalStackLayout Spacing="10"  x:Name="Button">
+                    <Button Clicked="OpenDispenserPopUp" Text="{Binding NewSale}" Command="{Binding OpenDispenserCommand}" IsEnabled="{Binding NewSaleEnabled}"/>
+                    <Button Clicked="OpenDocumentPopUp" Text="{Binding UploadProofOfPayment}" IsEnabled="{Binding IsEdsSelected}"/>
+                    <Button Clicked="OpenExpenditurePopUp" Text="{Binding NewEgress}" IsEnabled="{Binding IsEdsSelected}"/>
+                    <Button Clicked="OpenTypeOfCollectionPopUp" Text="{Binding AddCollectionType}" IsEnabled="{Binding IsEdsSelected}"/>
                 </VerticalStackLayout>
 
-
+                <!-- Botón de envío -->
                 <Button  x:Name="SendData" Text="{Binding SendData}"
                          TextColor="White" BackgroundColor="Green"
                          Clicked="Button_Clicked"
