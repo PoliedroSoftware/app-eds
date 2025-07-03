@@ -55,26 +55,51 @@
 						SelectedItem="{Binding SelectedCountry}" />
 				</VerticalStackLayout>
 				<Frame
-					x:Name="PhoneEntryFrame"
-					Margin="0,0,0,10"
-					Padding="10"
-					BackgroundColor="White"
-					BorderColor="LightGray"
-					CornerRadius="10"
-					HasShadow="False"
-					HeightRequest="55"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="Center"
-					WidthRequest="271">
-					<custom:CustomEntry
-						BackgroundColor="Transparent"
-						FontSize="16"
-						KeyBoardType="Numeric"
-						MaxLength="10"
-						Placeholder="Phone number"
-						Text="{Binding Phone}" />
-				</Frame>
-			</HorizontalStackLayout>
+						x:Name="PhoneEntryFrame"
+						Margin="0,0,0,10"
+						Padding="10"
+						BackgroundColor="White"
+						BorderColor="LightGray"
+						CornerRadius="10"
+						HasShadow="False"
+						HeightRequest="55"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="Center"
+						WidthRequest="271">
+						<custom:CustomEntry
+							x:Name="PhoneEntry"
+							BackgroundColor="Transparent"
+							FontSize="16"
+							KeyBoardType="Numeric"
+							MaxLength="10"
+							Placeholder="Phone number"
+							Text="{Binding Phone}"
+							Completed="PhoneEntry_Completed" />
+
+                </Frame>
+                <Frame
+						x:Name="PasswordEntryFrame"
+						Margin="0,0,0,10"
+						Padding="10"
+						BackgroundColor="White"
+						BorderColor="LightGray"
+						CornerRadius="10"
+						HasShadow="False"
+						HeightRequest="55"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="Center"
+						WidthRequest="271">
+						<custom:CustomEntry
+							x:Name="PasswordEntry"
+							BackgroundColor="Transparent"
+							FontSize="16"
+							IsPassword="True"
+							Placeholder="Password"
+							Text="{Binding Password}"
+							Completed="PasswordEntry_Completed" />
+                </Frame>
+
+            </HorizontalStackLayout>
 			<Button
 				x:Name="LoginButton"
 				Margin="0,20,0,10"
