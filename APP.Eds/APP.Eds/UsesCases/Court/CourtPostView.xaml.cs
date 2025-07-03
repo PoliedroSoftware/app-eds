@@ -142,13 +142,19 @@ public partial class CourtPostView : ContentPage
 
 
             var selectedId = vm.SelectedEds.IdEds;
+
             await vm.SendCourtDataAsync();
-            CourtService.ResetInstanceFields();
-            _service = CourtService.Instance;
-            BindingContext = _service;
+
+            if (vm.LastSendWasSuccessful)
+            {
+                CourtService.ResetInstanceFields();
+                _service = CourtService.Instance;
+                BindingContext = _service;
+            }
 
         }
     }
+
 
 
     private void OnBusinessSelected(object sender, EventArgs e)

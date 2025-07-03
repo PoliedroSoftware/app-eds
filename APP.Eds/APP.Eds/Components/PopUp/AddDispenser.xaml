@@ -7,140 +7,86 @@
 	CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
 
-    <Frame
-		Padding="20"
-		BackgroundColor="White"
-		BorderColor="#6200E8"
-		CornerRadius="15"
-		HasShadow="True"
-        WidthRequest="400"
-        VerticalOptions="Center"
-        HorizontalOptions="Center"
-        MaximumHeightRequest="600"
-        x:Name="Frame">
+    <Frame x:Name="Frame"
+           Padding="20"
+           BorderColor="#6200E8"
+           CornerRadius="15"
+           HasShadow="True"
+           WidthRequest="400" MaximumHeightRequest="600"
+           VerticalOptions="Center" HorizontalOptions="Center">
 
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
                 <Label Grid.Column="1"
-                       FontAttributes="Bold"
-                       FontSize="22"
-                       Text="Agregar Dispensador"
-                       TextColor="Black"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                       FontAttributes="Bold" FontSize="22" Text="Agregar Dispensador"
+                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
-                        FontSize="18"
-                        Text="✖"
-                        TextColor="#6200E8"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        Padding="0"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
+                        FontSize="18" Text="✖" TextColor="#6200E8"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
             </Grid>
 
             <!--  Campos de Entrada  -->
             <ScrollView Grid.Row="1" MaximumHeightRequest="500" Margin="0,0,0,10">
                 <VerticalStackLayout>
-                    <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
-                           CornerRadius="10"
-                           HasShadow="True"
-                           Margin="0,0,0,10">
-                        <HorizontalStackLayout Spacing="10">
-                            <Label Text="{Binding HoseTranslation}" VerticalOptions="Center" TextColor="Black"/>
-                            <Picker
-                                x:Name="HosePicker"
-                                Title="{Binding SelectAHose}"
-                                BackgroundColor="#F5F5F5"
-                                ItemDisplayBinding="{Binding DisplayText}"
-                                ItemsSource="{Binding HoseDispenserList}"
-                                SelectedItem="{Binding SelectedHose, Mode=TwoWay}"
-                                SelectedIndexChanged="HoseSelected"
-                                TextColor="Black"/>
-                        </HorizontalStackLayout>
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="{Binding HoseTranslation}" HorizontalOptions="Center" Grid.Row="0" />
+                            <Picker x:Name="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
+                                    ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseDispenserList}"
+                                    SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"
+                                    HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </Frame>
-                    <Label
-                        x:Name="PricePerGallonLabel"
-                        Text="Precio por galón: -"
-                        FontAttributes="Bold"
-                        Margin="0,0,0,10"
-                        TextColor="Black"
-                        HorizontalOptions="Start" />
-                    <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
-                           CornerRadius="10"
-                           HasShadow="True"
-                           Margin="0,0,0,10">
-                        <HorizontalStackLayout Spacing="15">
-                            <VerticalStackLayout Spacing="10">
-                                <HorizontalStackLayout Spacing="10">
-                                    <Label Text="{Binding LastAccumulatedAmountTranslation, StringFormat='  {0:N0}'}" VerticalOptions="Center" TextColor="Black"/>
-                                    <Label Text="{Binding LastAccumulatedAmount}" VerticalOptions="Center" TextColor="Black"/>
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="10">
-                                    <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" TextColor="Black"/>
-                                    <Grid>
-                                        <BoxView x:Name="AmountBoxView" Color="Transparent" CornerRadius="5"/>
-                                        <Entry x:Name="FirstEntry"
-                                               BackgroundColor="#F5F5F5"
-                                               TextColor="Black"
-                                               Keyboard="Numeric"
-                                               Placeholder="Ingrese el monto"
-                                               Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
-                                               Margin="2"
-                                               Unfocused="OnEntryUnfocused"
-                                               Completed="EntryAccumulatedCompleted"
-                                               TextChanged="FirstEntry_TextChanged"
-                                               IsEnabled="False"/>
-                                    </Grid>
-                                </HorizontalStackLayout>
-                                <Label Text="{Binding AmountDifferenceResult, StringFormat=' Amount: $ {0:N0}'}"  HorizontalOptions="Center" TextColor="Black"/>
-                            </VerticalStackLayout>
-                        </HorizontalStackLayout>
+                    
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
+                            <Label Text="Precio por galón(traducir)" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            <Label x:Name="PricePerGallonLabel" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2"/>
+                            <Label Text="{Binding LastAccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
+                            <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
+                            <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+
+                            <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
+                            <Entry x:Name="FirstEntry" Keyboard="Numeric" Placeholder="Ingrese el monto"
+                                   Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                   Margin="2" Grid.Row="2" Grid.Column="2"
+                                   Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted" TextChanged="FirstEntry_TextChanged"
+                                   IsEnabled="False"/>
+
+                            <Label Text="Amount(traducir)" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
+                        </Grid>
+                        
                     </Frame>
                     <Frame Padding="10"
-                           BackgroundColor="#F5F5F5"
                            CornerRadius="10"
                            HasShadow="True">
-                        <HorizontalStackLayout Spacing="15">
-                            <VerticalStackLayout Spacing="10">
-                                <HorizontalStackLayout Spacing="10">
-                                    <Label Text="{Binding LastAccumulatedGallonsTranslation, StringFormat='{0:N0}'}" VerticalOptions="Center" TextColor="Black"/>
-                                    <Label Text="{Binding LastAccumulatedGallons}" VerticalOptions="Center" TextColor="Black"/>
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="10">
-                                    <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" TextColor="Black"/>
-                                    <Grid>
-                                        <BoxView x:Name="GallonBoxView" Color="Transparent" CornerRadius="5"/>
-                                        <Entry x:Name="SecondEntry"
-                                               BackgroundColor="#F5F5F5"
-                                               TextColor="Black"
-                                               Keyboard="Numeric"
-                                               Placeholder="Ingrese los galones"
-                                               Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
-                                               Margin="2"
-                                               Unfocused="OnEntryUnfocused"
-                                               Completed="EntryGallonsCompleted"
-                                               TextChanged="FirstEntry_TextChanged"
-                                               IsEnabled="False"/>
-                                    </Grid>
-                                    <Button Text="✎"
-                                            Clicked="EditGallonsButton_Clicked"
-                                            BackgroundColor="Transparent"
-                                            WidthRequest="30"
-                                            HeightRequest="30"
-                                            VerticalOptions="Center"/>
-                                </HorizontalStackLayout>
+                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
+                            <Label Text="{Binding LastAccumulatedGallonsTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            <Label Text="{Binding LastAccumulatedGallons, StringFormat='  {0:N2}'}" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                            <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
 
-                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='Gallons: {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Center" TextColor="Black"/>
-                            </VerticalStackLayout>
-                        </HorizontalStackLayout>
+                            <BoxView x:Name="GallonBoxView" BackgroundColor="Transparent" CornerRadius="5" Grid.Row="1" Grid.Column="2"/>
+                            <Entry x:Name="SecondEntry" Keyboard="Numeric" Placeholder="Ingrese los galones"
+                                   Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
+                                   Margin="2" Grid.Row="1" Grid.Column="2"
+                                   Unfocused="OnEntryUnfocused" Completed="EntryGallonsCompleted" TextChanged="FirstEntry_TextChanged"
+                                   IsEnabled="False"/>
+
+                            <Label Text="Gallons (traducir) " VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+                            <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
+
+                            <Button Text="✎"
+                                    Clicked="EditGallonsButton_Clicked"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center" HorizontalOptions="End"
+                                    Grid.Row="1" Grid.Column="2"/>
+                        </Grid>
                     </Frame>
                 </VerticalStackLayout>
             </ScrollView>
@@ -151,9 +97,7 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
-                    FontSize="18"
-                    Text="Add"
-                    TextColor="White"
+                    FontSize="18" Text="Add(traducir)" TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>
         </Grid>

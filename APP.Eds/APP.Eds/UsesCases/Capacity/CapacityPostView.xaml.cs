@@ -12,25 +12,29 @@ public partial class CapacityPostView : ContentPage
         BindingContext = _capacityService;
     }
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    private async void SendCapacityButton(object sender, EventArgs e)
     {
         try
         {
             LoadingOverlay.ShowLoading();
+            if (Code is null || Height is null || Gallon is null || Liters is null)
+            {
+                await DisplayAlert("Error", _capacityService.ErrorAllFieldsRequired, "OK");
+                return;
+            }
             await _capacityService.SaveCapacityDataAsync();
         }
         finally
         {
             LoadingOverlay.HideLoading();
-
-            Code = string.Empty;
-            Height = 0;
-            Gallon = 0;
-            Liters = 0;
+            Code = null;
+            Height = null;
+            Gallon = null;
+            Liters = null;
         }
         
     }
-    public string Code
+    public string? Code
     {
         get => _capacityService.Code;
         set
@@ -39,7 +43,7 @@ public partial class CapacityPostView : ContentPage
             OnPropertyChanged();
         }
     }
-    public double Height
+    public double? Height
     {
         get => _capacityService.Height;
         set
@@ -49,7 +53,7 @@ public partial class CapacityPostView : ContentPage
         }
     }
 
-    public double Gallon
+    public double? Gallon
     {
         get => _capacityService.Gallon;
         set
@@ -59,7 +63,7 @@ public partial class CapacityPostView : ContentPage
         }
     }
 
-    public int Liters
+    public int? Liters
     {
         get => _capacityService.Liters;
         set

@@ -9,7 +9,6 @@
     
 	<Frame
 		Padding="16"
-		BackgroundColor="White"
 		BorderColor="#6200E8"
 		CornerRadius="15"
 		HasShadow="True"
@@ -20,44 +19,31 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1"
-                       FontAttributes="Bold"
-                       FontSize="22"
-                       Text="AddDocumentTranslation"           
-                       TextColor="Black"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="AddDocumentTranslation(traducir)" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
-                        FontSize="18"
-                        Text="✖"
-                        TextColor="#6200E8"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        Padding="0"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
+                        FontSize="18"  Text="✖"  TextColor="#6200E8"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
             </Grid>
 
             <!--  Campos de Entrada  -->
             <Frame Grid.Row="1"
 				Margin="15"
 				Padding="10"
-				BackgroundColor="#F5F5F5"
 				CornerRadius="10">
 				<VerticalStackLayout Spacing="10">
 					<Button
 						BackgroundColor="#6200E8"
+                        TextColor="White"
 						Clicked="OnSelectFileClicked"
 						CornerRadius="10"
-						Text="Select File"
-						TextColor="White" />
+						Text="Select File(traducit)"/>
 					<Label
 						FontAttributes="Bold"
 						IsVisible="{Binding IsFileSelected}"
-						Text="Selected File:" />
+						Text="Selected File:(traducir)" />
 					<Label
 						FontAttributes="Italic"
 						Text="{Binding SelectedFileName}"
@@ -71,7 +57,7 @@
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
                     FontSize="18"
-                    Text="Add"
+                    Text="Add(traducir)"
                     TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>

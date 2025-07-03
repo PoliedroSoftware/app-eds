@@ -20,7 +20,7 @@ public partial class AddCourtTypeOfCollection : Popup
 
     }
 
-    private async void Add_Dispenser(object sender, EventArgs e)
+    private async void Add_TypeOfCollection(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm && vm.SelectedTypeOfCollection is not null)
         {
@@ -84,20 +84,4 @@ public partial class AddCourtTypeOfCollection : Popup
             SecondEntry.Focus();
         }
     }
-    
-    
-    private async void EntryDescriptionCompleted(object sender, EventArgs e)
-    {
-        if (BindingContext is CourtService)
-        {
-            if (string.IsNullOrWhiteSpace(courtService.CourtTypeOfCollectionDescription))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripcion", "OK");
-                return;
-            }  
-        }
-        AddButton.Focus();
-    }
-
-
 }

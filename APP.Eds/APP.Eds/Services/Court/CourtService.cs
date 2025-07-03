@@ -25,7 +25,8 @@ namespace APP.Eds.Services.Court
     public class CourtService : INotifyPropertyChanged
 
     {
-        
+        public bool LastSendWasSuccessful { get; private set; }
+
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
         private string? _authToken;
@@ -1511,7 +1512,52 @@ namespace APP.Eds.Services.Court
                     OnPropertyChanged(nameof(TypeofCollectionTranslation));
                 }
             }
-        }        
+        } 
+        
+        private string _CategoryTranslation = string.Empty;
+
+        public string CategoryTranslation
+        {
+            get => _CategoryTranslation;
+            set
+            {
+                if (_CategoryTranslation != value)
+                {
+                    _CategoryTranslation = value;
+                    OnPropertyChanged(nameof(CategoryTranslation));
+                }
+            }
+        }
+
+        private string _EnterCategory = string.Empty;
+
+        public string EnterCategory
+        {
+            get => _EnterCategory;
+            set
+            {
+                if (_EnterCategory != value)
+                {
+                    _EnterCategory = value;
+                    OnPropertyChanged(nameof(EnterCategory));
+                }
+            }
+        }
+
+        private string _CategoryManagement = string.Empty;
+
+        public string CategoryManagement
+        {
+            get => _CategoryManagement;
+            set
+            {
+                if (_CategoryManagement != value)
+                {
+                    _CategoryManagement = value;
+                    OnPropertyChanged(nameof(CategoryManagement));
+                }
+            }
+        }
 
         private EdsCourtModel _selectedEds;
         public EdsCourtModel SelectedEds
@@ -1794,6 +1840,7 @@ namespace APP.Eds.Services.Court
                 TypeofCollectionTranslation = GlobalTranslations.Get("TypeofCollection");
                 LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
                 LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
+
             }
             catch (Exception ex)
             {
@@ -2319,12 +2366,14 @@ GetAllEdsData()
 
                 if (response.IsSuccessStatusCode)
                 {
+                    LastSendWasSuccessful = true;
+
                     if (CourtDocuments?.Any() == true)
                     {
                         string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
 
                         using var client = new HttpClient();
-
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                         foreach (var doc in CourtDocuments)
                         {
                             try
@@ -2345,6 +2394,8 @@ GetAllEdsData()
                             }
                             catch (Exception ex)
                             {
+                                LastSendWasSuccessful = false;
+
                                 Console.WriteLine($"Error subiendo {doc.DocumentName}: {ex.Message}");
                             }
                         }
@@ -2354,12 +2405,17 @@ GetAllEdsData()
                 }
                 else
                 {
+                    LastSendWasSuccessful = false;
+
                     var error = await response.Content.ReadAsStringAsync();
                     await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
                 }
             }
             catch (Exception ex)
             {
+
+                LastSendWasSuccessful = false;
+
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
             }
         }
