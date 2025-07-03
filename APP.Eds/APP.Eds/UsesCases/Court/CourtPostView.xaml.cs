@@ -97,6 +97,10 @@ public partial class CourtPostView : ContentPage
     {
         if (BindingContext is CourtService vm)
         {
+            double totalAmount = vm.GetTotalAmount();
+            double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
+            double totalExpenditures = vm.GetTotalExpenditure();
+
             if (vm.SelectedBusiness is null)
             {
                 await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
@@ -112,6 +116,31 @@ public partial class CourtPostView : ContentPage
                 await DisplayAlert("Error", "Por favor, seleccione un Isle�o", "OK");
                 return;
             }
+            if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
+            {
+                await DisplayAlert("Error", "Debe agregar al menos un dispensador", "OK");
+                return;
+            }
+
+            if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
+            {
+                await DisplayAlert("Error", "Debe agregar al menos un tipo recuado", "OK");
+                return;
+            }
+            if (totalAmmount != totalTypeOfCollection)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"La suma de los tipos de cobro no coincide con el total del día", "OK");
+                return;
+            }
+
+                double cash = totalTypeOfCollection - totalExpenditures;
+                const double epsilon = 1e-6;
+                if (cash < -epsilon)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
+                    return;
+                }
+
 
             var selectedId = vm.SelectedEds.IdEds;
 
