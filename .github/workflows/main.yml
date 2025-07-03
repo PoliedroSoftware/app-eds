@@ -49,7 +49,9 @@ jobs:
           dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj \
             -c Release \
             -f net8.0-android \
-            /p:TargetFramework=net8.0-android \
+            -p:TargetFramework=net8.0-android \
+            -p:UseMaui=true \
+            -p:EnableWorkloadResolver=true \
             -o ./output
 
       - name: Find APK
