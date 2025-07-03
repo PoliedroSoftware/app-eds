@@ -159,6 +159,70 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
+                <!-- Collections con botón de eliminar -->
+                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
+                    <Label 
+                    Text="{Binding TypesofAggregateCollections}" 
+                    FontAttributes="Bold" 
+                    FontSize="18"
+                    Grid.Column="0"
+                    VerticalOptions="Center" />
+                    <Button 
+                    Text="💬"
+                    Command="{Binding HideCollectionList}"
+                    WidthRequest="46" 
+                    HeightRequest="46" 
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="End"
+                    Grid.Column="1">
+                        <Button.Triggers>
+                            <DataTrigger
+                                TargetType="Button"
+                                Binding="{Binding VisibleReceipts}"
+                                Value="True">
+                                <Setter Property="Text" Value="➖" />
+                            </DataTrigger>
+                            <DataTrigger
+                                TargetType="Button"
+                                Binding="{Binding VisibleReceipts}"
+                                Value="False">
+                                <Setter Property="Text" Value="👁️" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" IsVisible="{Binding VisibleReceipts}"  x:Name="CourtTypeOfCollections">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
+                                <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto, Auto, Auto">
+                                    <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="1"/>
+
+                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
+
+                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
+
+                                    <Button Text="X" 
+                                        Grid.Column="3"
+                                        Grid.RowSpan="3"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        BackgroundColor="Transparent"
+                                        TextColor="#6A1B9A"
+                                        CornerRadius="0"
+                                        VerticalOptions="Center"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
                     <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.Column="0" VerticalOptions="Center" />
@@ -276,70 +340,6 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!-- Collections con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
-                    <Label 
-                    Text="{Binding TypesofAggregateCollections}" 
-                    FontAttributes="Bold" 
-                    FontSize="18"
-                    Grid.Column="0"
-                    VerticalOptions="Center" />
-                    <Button 
-                    Text="💬"
-                    Command="{Binding HideCollectionList}"
-                    WidthRequest="46" 
-                    HeightRequest="46" 
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="End"
-                    Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
-                </Grid>
-
-                <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" IsVisible="{Binding VisibleReceipts}"  x:Name="CourtTypeOfCollections">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="*,*,*,Auto" RowDefinitions="Auto, Auto, Auto">
-                                    <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="1"/>
-
-                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1"/>
-
-                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="1"/>
-
-                                    <Button Text="X" 
-                                        Grid.Column="3"
-                                        Grid.RowSpan="3"
-                                        WidthRequest="50"
-                                        HeightRequest="50"
-                                        BackgroundColor="Transparent"
-                                        TextColor="#6A1B9A"
-                                        CornerRadius="0"
-                                        VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
-                                        CommandParameter="{Binding .}"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
                 <!-- Informacion Adicional -->
                 <Grid ColumnDefinitions="*, auto" x:Name="AdditionalInformation">
                     <Label Grid.Column="0" VerticalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" TextColor="Black"/>
@@ -361,21 +361,52 @@
                 </Frame>
 
                 <!-- Botones -->
-                <VerticalStackLayout Spacing="10"  x:Name="Button">
-                    <Button Clicked="OpenDispenserPopUp" Text="{Binding NewSale}" Command="{Binding OpenDispenserCommand}" IsEnabled="{Binding NewSaleEnabled}"/>
-                    <Button Clicked="OpenDocumentPopUp" Text="{Binding UploadProofOfPayment}" IsEnabled="{Binding IsEdsSelected}"/>
-                    <Button Clicked="OpenExpenditurePopUp" Text="{Binding NewEgress}" IsEnabled="{Binding IsEdsSelected}"/>
-                    <Button Clicked="OpenTypeOfCollectionPopUp" Text="{Binding AddCollectionType}" IsEnabled="{Binding IsEdsSelected}"/>
+                <VerticalStackLayout Spacing="10" x:Name="Button">
+                    <!-- Agrupación de botones obligatorios -->
+                    <Frame BorderColor="Red" CornerRadius="8" Padding="10" BackgroundColor="transparent">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Obligatorio"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="Red"
+                                   HorizontalOptions="Center"/>
+                            <!-- Botón Nueva venta -->
+                            <Button
+                                    Clicked="OpenDispenserPopUp"
+                                    Text="{Binding NewSale}"
+                                    Command="{Binding OpenDispenserCommand}"
+                                    IsEnabled="{Binding NewSaleEnabled}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="0,5,0,0"/>
+                            <!-- Botón Método de pago -->
+                            <Button
+                                    Clicked="OpenTypeOfCollectionPopUp"
+                                    Text="{Binding AddCollectionType}"
+                                    IsEnabled="{Binding IsEdsSelected}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="0,5,0,0"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <!-- Otros botones -->
+                    <Button
+                            Clicked="OpenDocumentPopUp"
+                            Text="{Binding UploadProofOfPayment}"
+                            IsEnabled="{Binding IsEdsSelected}"/>
+                    <Button
+                            Clicked="OpenExpenditurePopUp"
+                            Text="{Binding NewEgress}"
+                            IsEnabled="{Binding IsEdsSelected}"/>
                 </VerticalStackLayout>
+
 
                 <!-- Botón de envío -->
                 <Button  x:Name="SendData"
-                BackgroundColor="Green"
-                Clicked="Button_Clicked"
-                CornerRadius="10"
-                HeightRequest="50"
-                Text="{Binding SendData}"
-                TextColor="White">
+                        BackgroundColor="Green"
+                        Clicked="Button_Clicked"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Text="{Binding SendData}"
+                        TextColor="White">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                             <Setter Property="IsEnabled" Value="False" />
