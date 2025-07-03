@@ -14,7 +14,7 @@ on:
 
 jobs:
   build_android:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          
+      - name: Install .NET MAUI Android workload
+        run: dotnet workload install maui-android
 
       - name: Install Android dependencies
         run: |
