@@ -97,7 +97,7 @@ public partial class CourtPostView : ContentPage
     {
         if (BindingContext is CourtService vm)
         {
-            double totalAmmount = vm.GetTotalAmount();
+            double totalAmount = vm.GetTotalAmount();
             double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
             double totalExpenditures = vm.GetTotalExpenditure();
 
