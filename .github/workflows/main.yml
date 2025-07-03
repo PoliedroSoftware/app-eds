@@ -47,8 +47,9 @@ jobs:
       - name: Build Android project
         run: |
           dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj \
-            -f:net8.0-android \
             -c:Release \
+            -f:net8.0-android \
+            -p:TargetFramework=net8.0-android \
             -o:./output
 
       - name: Find APK
