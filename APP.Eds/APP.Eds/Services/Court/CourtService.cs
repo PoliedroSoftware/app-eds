@@ -2293,23 +2293,6 @@ GetAllEdsData()
             }
             try
             {
-                double totalAmmount = GetTotalAmount();
-                double totalGallons = GetTotalGallons();
-                double totalTypeOfCollection = GetTotalTypeOfCollection();
-                double totalExpenditures = GetTotalExpenditure();
-
-                if (totalAmmount != totalTypeOfCollection)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Error", $"La suma de los tipos de cobro no coincide con el total del día", "OK");
-                    return;
-                }
-
-                double cash = totalTypeOfCollection - totalExpenditures;
-                if (cash < 0)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
-                    return;
-                }
 
                 if (Court == null)
                 {
