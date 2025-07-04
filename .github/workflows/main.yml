@@ -56,7 +56,7 @@ jobs:
       - name: Find APK
         id: locate_apk
         run: |
-          APK_PATH=$(find ./output -name "*.apk" | head -n 1)
+          APK_PATH=$(find APP.Eds/APP.Eds/bin/Release/net8.0-android -name "*.apk" | head -n 1)
           echo "APK path: $APK_PATH"
           echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
 
