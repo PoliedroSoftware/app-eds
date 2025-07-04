@@ -23,14 +23,13 @@ jobs:
 
       - name: Override TargetFrameworks for Android build
         run: |
-          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > APP.Eds/APP.Eds/Directory.Build.props
-
+          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > Directory.Build.props
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Install .NET MAUI Android workload
         run: dotnet workload install maui-android
 
@@ -42,7 +41,6 @@ jobs:
           unzip tools.zip -d $HOME/cmdline-tools
           yes | $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk --licenses
           $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
           echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
@@ -53,7 +51,7 @@ jobs:
         run: |
           dotnet build APP.Eds/APP.Eds/APP.Eds.csproj \
             -c Release \
-            -f net8.0-android \
+            -f net8.0-android
 
       - name: Find APK
         id: locate_apk
