@@ -2230,8 +2230,7 @@ namespace APP.Eds.Services.Court
                 CollectionTranslation = GlobalTranslations.Get("Collection");
                 AmountTranslation = GlobalTranslations.Get("Amount");
                 DispensersTranslation = GlobalTranslations.Get("Dispensers");
-                DispenserTranslation = GlobalTranslations.Get("Dispenser");
-                NumberHoseTranslation = GlobalTranslations.Get("Dispenser");
+                NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
                 ProductTranslation = GlobalTranslations.Get("Product");
                 PriceTranslation = GlobalTranslations.Get("Price");
                 StarttimeTranslation = GlobalTranslations.Get("Starttime");
