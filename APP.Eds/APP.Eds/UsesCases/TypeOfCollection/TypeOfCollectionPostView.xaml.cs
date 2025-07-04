@@ -18,14 +18,14 @@ public partial class TypeOfCollectionPostView : ContentPage
         try
         {
             LoadingOverlay.ShowLoading();
-            if (string.IsNullOrWhiteSpace(Description))
+            if (string.IsNullOrWhiteSpace(_typeOfCollectionService.Description))
             {
-                await DisplayAlert("Error", $"El tipo de colección {Description} no puede estar vacio !", "OK");
+                await DisplayAlert("Error", $"{_typeOfCollectionService.ErrorEmpty}!", "OK");
                 return;
             }
-            if (!Regex.IsMatch(Description, @"^\p{L}+$"))
+            if (!Regex.IsMatch(_typeOfCollectionService.Description, @"^\p{L}+$"))
             {
-                await DisplayAlert("Error", $"El tipo de colección {Description} no debe contener caracteres especiales !", "OK");
+                await DisplayAlert("Error", $"{_typeOfCollectionService.ErrorCharacteres}!\n{_typeOfCollectionService.Description}", "OK");
                 return;
             }
             await _typeOfCollectionService.SaveTypeOfCollectionDataAsync();
@@ -34,18 +34,7 @@ public partial class TypeOfCollectionPostView : ContentPage
         {
             LoadingOverlay.HideLoading();
 
-            Description = string.Empty;
-        }
-        
-    }
-
-    public string Description
-    {
-        get => _typeOfCollectionService.Description;
-        set
-        {
-            _typeOfCollectionService.Description = value;
-            OnPropertyChanged();
-        }
+            _typeOfCollectionService.Description = string.Empty;
+        }  
     }
 }
