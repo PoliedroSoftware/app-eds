@@ -84,6 +84,28 @@ namespace APP.Eds.Services.TypeOfCollection
             }
         }
 
+        private string _errorEmpty;
+        public string ErrorEmpty
+        {
+            get => _errorEmpty;
+            set
+            {
+                _errorEmpty = value;
+                OnPropertyChanged(nameof(ErrorEmpty));
+            }
+        }
+
+        private string _errorCharacteres;
+        public string ErrorCharacteres
+        {
+            get => _errorCharacteres;
+            set
+            {
+                _errorCharacteres = value;
+                OnPropertyChanged(nameof(_errorCharacteres));
+            }
+        }
+
         public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
@@ -124,6 +146,8 @@ namespace APP.Eds.Services.TypeOfCollection
             DescriptionLabel = GlobalTranslations.Get("DescriptionLabel");
             DescriptionPlaceholder = GlobalTranslations.Get("DescriptionPlaceHolder");
             SendData = GlobalTranslations.Get("SendData");
+            ErrorEmpty = GlobalTranslations.Get("ErrorEmpty");
+            ErrorCharacteres = GlobalTranslations.Get("ErrorCharacteres");
         }
 
         public async Task GetByIdTypeOfCollectionDataAsync(int typeOfCollectionId)
