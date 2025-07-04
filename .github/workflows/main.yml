@@ -41,17 +41,18 @@ jobs:
           echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
+      - name: Override TargetFrameworks for Android build
+        run: |
+          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > APP.Eds/APP.Eds/Directory.Build.props
+
       - name: Restore NuGet packages
-        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj /p:TargetFramework=net8.0-android
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj
 
       - name: Build Android project
         run: |
           dotnet build APP.Eds/APP.Eds/APP.Eds.csproj \
             -c Release \
             -f net8.0-android \
-            -p:TargetFramework=net8.0-android \
-            -p:UseMaui=true \
-            -p:EnableWorkloadResolver=true
 
       - name: Find APK
         id: locate_apk
