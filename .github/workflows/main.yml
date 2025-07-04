@@ -25,6 +25,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+          
+      - name: Install .NET MAUI Android workload
+        run: dotnet workload install maui-android
 
       - name: Install Android dependencies
         run: |
@@ -39,14 +42,15 @@ jobs:
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj /p:TargetFramework=net8.0-android
 
       - name: Build Android project
         run: |
-          dotnet publish APP.Eds/APP.Eds.csproj \
-            -f:net8.0-android \
-            -c:Release \
-            -o:./output
+          dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj \
+            -c Release \
+            -f net8.0-android \
+            -p:TargetFramework=net8.0-android \
+            -o ./output
 
       - name: Find APK
         id: locate_apk

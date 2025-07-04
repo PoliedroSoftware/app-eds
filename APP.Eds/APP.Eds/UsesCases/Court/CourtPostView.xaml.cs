@@ -127,11 +127,11 @@ public partial class CourtPostView : ContentPage
                 await DisplayAlert("Error", "Debe agregar al menos un tipo recuado", "OK");
                 return;
             }
-            if (totalAmmount != totalTypeOfCollection)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"La suma de los tipos de cobro no coincide con el total del día", "OK");
-                return;
-            }
+            //if (totalAmmount != totalTypeOfCollection)
+            //{
+            //    await Application.Current.MainPage.DisplayAlert("Error", $"La suma de los tipos de cobro no coincide con el total del día", "OK");
+            //    return;
+            //}
 
                 double cash = totalTypeOfCollection - totalExpenditures;
                 const double epsilon = 1e-6;
