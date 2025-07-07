@@ -13,7 +13,7 @@
         <Label FontSize="16" Text="{Binding DescriptionLabel}"/>
         <Entry
             Keyboard="Text"
-            Placeholder="{Binding DescriptionPlaceholder}"
+            Placeholder="{Binding DescriptionPlaceHolder}"
             Text="{Binding Description, Mode=TwoWay}" />
         <button:HoverButton
             BackgroundColor="Green"

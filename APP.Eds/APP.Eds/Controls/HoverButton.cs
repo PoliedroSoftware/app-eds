@@ -12,14 +12,14 @@ namespace APP.Eds.Controls
     public class HoverButton : MauiButton
     {
         // Propiedades para los colores personalizables
-        public Color NormalColor { get; set; } = Colors.Green;
-        public Color HoverColor { get; set; } = Colors.DarkGreen;
-        public Color PressedColor { get; set; } = Colors.LimeGreen;
+        public Color NormalColor { get; set; }
+        public Color HoverColor { get; set; }
+        public Color PressedColor { get; set; }
 
 
         public HoverButton()
         {
-            BackgroundColor = NormalColor;
+            Loaded += OnLoaded;
 
             Pressed += OnPressed;
             Released += OnReleased;
@@ -30,7 +30,21 @@ namespace APP.Eds.Controls
             pointerGesture.PointerExited += OnPointerExited;
             GestureRecognizers.Add(pointerGesture);
 #endif
+        }
 
+        private void OnLoaded(object sender, EventArgs e)
+        {
+            if (NormalColor == default || NormalColor == Colors.Transparent)
+                NormalColor = this.BackgroundColor != default ? this.BackgroundColor : Colors.Transparent;
+                NormalColor = this.TextColor != default ? this.TextColor : Colors.Transparent;
+
+            if (HoverColor == default || HoverColor == Colors.Transparent)
+                HoverColor = AdjustBrightness(NormalColor, 1.1);
+
+            if (PressedColor == default || PressedColor == Colors.Transparent)
+                PressedColor = AdjustBrightness(NormalColor, 0.9);
+
+            this.BackgroundColor = NormalColor;
         }
 
         private async void OnPressed(object sender, EventArgs e)
@@ -79,6 +93,15 @@ namespace APP.Eds.Controls
                 from.Green + (to.Green - from.Green) * t,
                 from.Blue + (to.Blue - from.Blue) * t,
                 from.Alpha + (to.Alpha - from.Alpha) * t);
+        }
+
+        private Color AdjustBrightness(Color color, double factor)
+        {
+            return Color.FromRgba(
+                Math.Min(color.Red * factor, 1.0),
+                Math.Min(color.Green * factor, 1.0),
+                Math.Min(color.Blue * factor, 1.0),
+                color.Alpha);
         }
 
     }
