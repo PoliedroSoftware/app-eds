@@ -49,6 +49,7 @@
 						Source="{Binding SelectedCountry.Flag}"
 						WidthRequest="50" />
 					<Picker
+                        AutomationId="CountryPicker"
 						IsVisible="False"
 						ItemDisplayBinding="{Binding Name}"
 						ItemsSource="{Binding Countries}"
@@ -68,6 +69,7 @@
 						WidthRequest="271">
 						<custom:CustomEntry
 							x:Name="PhoneEntry"
+					        AutomationId="PhoneEntry"
 							BackgroundColor="Transparent"
 							FontSize="16"
 							KeyBoardType="Numeric"
@@ -91,6 +93,7 @@
 						WidthRequest="271">
 						<custom:CustomEntry
 							x:Name="PasswordEntry"
+                            AutomationId="PasswordEntry"
 							BackgroundColor="Transparent"
 							FontSize="16"
 							IsPassword="True"
@@ -102,6 +105,7 @@
             </HorizontalStackLayout>
 			<Button
 				x:Name="LoginButton"
+                AutomationId="LoginButton"
 				Margin="0,20,0,10"
 				BackgroundColor="#6200E8"
 				Command="{Binding ValidationCommand}"
@@ -126,6 +130,7 @@
 		<!--  ContentView LoginPin  -->
 		<ContentView
 			x:Name="LoginPinContentView"
+	        AutomationId="LoginPinContentView"
 			Padding="0"
 			BackgroundColor="White"
 			HorizontalOptions="FillAndExpand"
