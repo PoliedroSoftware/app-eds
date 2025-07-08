@@ -30,12 +30,8 @@ public class CourtListItemModel
     public string AccumulatedAmountTranslation { get; set; }
     public string AccumulatedGallonsTranslations { get; set; }
     public string DistincTranslation { get; set; }
-    
-    
     public string DispensersTranslation { get; set; }
-    
-    
-    public string AccumulatedGaons { get; set; }
+    public string AccumulatedGallons { get; set; }
     public string LastAccumulatedAmountTranslation { get; set; }
     public string LastAccumulatedGallonsTranslation { get; set; }
     public string DocumentsTranslation { get; set; }
