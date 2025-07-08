@@ -12,14 +12,14 @@ namespace APP.Eds.Controls
     public class HoverButton : MauiButton
     {
         // Propiedades para los colores personalizables
-        public Color NormalColor { get; set; }
-        public Color HoverColor { get; set; }
-        public Color PressedColor { get; set; }
+        public Color NormalColor { get; set; } = Colors.Green;
+        public Color HoverColor { get; set; } = Colors.DarkGreen;
+        public Color PressedColor { get; set; } = Colors.LimeGreen;
 
 
         public HoverButton()
         {
-            Loaded += OnLoaded;
+            BackgroundColor = NormalColor;
 
             Pressed += OnPressed;
             Released += OnReleased;
@@ -30,43 +30,29 @@ namespace APP.Eds.Controls
             pointerGesture.PointerExited += OnPointerExited;
             GestureRecognizers.Add(pointerGesture);
 #endif
-        }
 
-        private void OnLoaded(object sender, EventArgs e)
-        {
-            if (NormalColor == default || NormalColor == Colors.Transparent)
-                NormalColor = this.BackgroundColor != default ? this.BackgroundColor : Colors.Transparent;
-                NormalColor = this.TextColor != default ? this.TextColor : Colors.Transparent;
-
-            if (HoverColor == default || HoverColor == Colors.Transparent)
-                HoverColor = AdjustBrightness(NormalColor, 1.1);
-
-            if (PressedColor == default || PressedColor == Colors.Transparent)
-                PressedColor = AdjustBrightness(NormalColor, 0.9);
-
-            this.BackgroundColor = NormalColor;
         }
 
         private async void OnPressed(object sender, EventArgs e)
         {
-            _= AnimateColorAsync(PressedColor);
+            _ = AnimateColorAsync(PressedColor);
         }
 
         private async void OnReleased(object sender, EventArgs e)
         {
-            _= AnimateColorAsync(NormalColor);
+            _ = AnimateColorAsync(NormalColor);
         }
 
 #if WINDOWS
         private async void OnPointerEntered(object sender, EventArgs e)
         {
-            _= AnimateColorAsync(HoverColor);
+            _ = AnimateColorAsync(HoverColor);
 
         }
 
         private async void OnPointerExited(object sender, EventArgs e)
         {
-            _= AnimateColorAsync(NormalColor);
+            _ = AnimateColorAsync(NormalColor);
         }
 #endif
 
@@ -94,17 +80,5 @@ namespace APP.Eds.Controls
                 from.Blue + (to.Blue - from.Blue) * t,
                 from.Alpha + (to.Alpha - from.Alpha) * t);
         }
-
-        private Color AdjustBrightness(Color color, double factor)
-        {
-            return Color.FromRgba(
-                Math.Min(color.Red * factor, 1.0),
-                Math.Min(color.Green * factor, 1.0),
-                Math.Min(color.Blue * factor, 1.0),
-                color.Alpha);
-        }
-
     }
 }
-
-

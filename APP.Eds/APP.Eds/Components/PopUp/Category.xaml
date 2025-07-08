@@ -15,24 +15,25 @@
            WidthRequest="400"
            VerticalOptions="Center" HorizontalOptions="Center"
            CornerRadius="15"
-           HasShadow="True">
+           HasShadow="False">
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
             <!-- Encabezado fijo -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,25">
                 <Label Grid.Column="1" x:Name="CategoryTitle"
-                       FontAttributes="Bold" FontSize="22"
+                       FontAttributes="Bold" FontSize="21"
                        HorizontalOptions="Center" VerticalOptions="Center" />
 
                 <button:HoverButton
                         Grid.Column="2"                      
                         Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖"
-                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        FontSize="20" Text="✖"
+                        WidthRequest="25" HeightRequest="25" Padding="-10"
                         HorizontalOptions="End" VerticalOptions="Center"
                         CornerRadius="10"
-                        HoverColor="White"/>
+                        HoverColor="Gray"
+                        Margin="0,0,0,0"/>
             </Grid>
             
             <!-- Menu -->
@@ -47,9 +48,10 @@
                             Text="{Binding Name}" 
                             Command="{Binding NavigateCommand}" 
                             Margin="0,0,0,10"
-                            HoverColor="White"
+                            HoverColor="Gray"
                             PressedColor="Green"
-                            Clicked="OnMenuItemClicked"/>
+                            Clicked="OnMenuItemClicked"
+                            Padding="10,5,10,10"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
