@@ -25,6 +25,7 @@
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
+                        AutomationId="CloseButton"
                         FontSize="18" Text="✖" TextColor="#6200E8"
                         WidthRequest="30" HeightRequest="30" Padding="0"
                         HorizontalOptions="End" VerticalOptions="Center"/>
@@ -36,7 +37,7 @@
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="{Binding HoseTranslation}" HorizontalOptions="Center" Grid.Row="0" />
-                            <Picker x:Name="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
+                            <Picker x:Name="HosePicker" AutomationId="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
                                     ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseDispenserList}"
                                     SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"
                                     HorizontalTextAlignment="Center"/>
@@ -52,7 +53,8 @@
                             <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
 
                             <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
-                            <Entry x:Name="FirstEntry" Keyboard="Numeric" Placeholder="Ingrese el monto"
+                            <Entry x:Name="FirstEntry" AutomationId="AccumulatedAmountEntry"
+                                   Keyboard="Numeric" Placeholder="Ingrese el monto"
                                    Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    Margin="2" Grid.Row="2" Grid.Column="2"
                                    Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted" TextChanged="FirstEntry_TextChanged"
@@ -72,7 +74,8 @@
                             <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
 
                             <BoxView x:Name="GallonBoxView" BackgroundColor="Transparent" CornerRadius="5" Grid.Row="1" Grid.Column="2"/>
-                            <Entry x:Name="SecondEntry" Keyboard="Numeric" Placeholder="Ingrese los galones"
+                            <Entry x:Name="SecondEntry" AutomationId="AccumulatedGallonsEntry" 
+                                   Keyboard="Numeric" Placeholder="Ingrese los galones"
                                    Text="{Binding AccumulatedGallons, Mode=TwoWay, StringFormat='{0:N2}'}"
                                    Margin="2" Grid.Row="1" Grid.Column="2"
                                    Unfocused="OnEntryUnfocused" Completed="EntryGallonsCompleted" TextChanged="FirstEntry_TextChanged"
@@ -83,6 +86,7 @@
 
                             <Button Text="✎"
                                     Clicked="EditGallonsButton_Clicked"
+                                    AutomationId="EditGallonsButton"
                                     BackgroundColor="Transparent"
                                     VerticalOptions="Center" HorizontalOptions="End"
                                     Grid.Row="1" Grid.Column="2"/>
@@ -94,6 +98,7 @@
             <!--  Botón Agregar  -->
             <Button Grid.Row="2"
                     x:Name="AddButton"
+                    AutomationId="AddButton" 
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
