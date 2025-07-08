@@ -147,22 +147,4 @@ public partial class AddDispenser : Popup
         }
     }
 
-    private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (sender is Entry entry)
-        {
-            string newText = e.NewTextValue;
-
-            if (string.IsNullOrEmpty(newText))
-                return;
-
-            if (!decimal.TryParse(newText, System.Globalization.NumberStyles.Number,
-                new System.Globalization.CultureInfo("es-CO"), out _))
-            {
-                entry.Text = e.OldTextValue;
-            }
-        }
-    }
-
-}   
-
+}
