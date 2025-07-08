@@ -105,6 +105,7 @@ namespace APP.Eds.Services.Navigation
         {
             public string Name { get; set; }
             public Type Page { get; set; }
+            public Page PageInstance { get; set; }
             public ICommand NavigateCommand { get; }
 
             public MenuItemModel(string name, Type page)
@@ -115,8 +116,13 @@ namespace APP.Eds.Services.Navigation
                 {
                     if (Application.Current?.MainPage is NavigationPage navPage)
                     {
-                        var pageInstance = (Page)Activator.CreateInstance(Page);
-                        await navPage.PushAsync(pageInstance);
+
+                        if (PageInstance == null)
+                        {
+                            PageInstance = (Page)Activator.CreateInstance(Page);
+                        }
+
+                        await navPage.PushAsync(PageInstance);
                     }
                 });
 
