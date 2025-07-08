@@ -30,15 +30,11 @@ public class CourtListItemModel
     public string AccumulatedAmountTranslation { get; set; }
     public string AccumulatedGallonsTranslations { get; set; }
     public string DistincTranslation { get; set; }
-    public string AmountTranslation { get; set; }
-    public string DescriptionTranslation { get; set; }
+    
+    
     public string DispensersTranslation { get; set; }
-    public string DispenserTranslation { get; set; }
-    public string NumberHoseTranslation { get; set; }
-    public string ProductTranslation { get; set; }
-    public string PriceTranslation { get; set; }
-    public string StarttimeTranslation { get; set; }
-    public string EndtimeTranslation { get; set; }
+    
+    
     public string AccumulatedGaons { get; set; }
     public string LastAccumulatedAmountTranslation { get; set; }
     public string LastAccumulatedGallonsTranslation { get; set; }
@@ -91,6 +87,16 @@ public class DispenserItem
     public string ProductType { get; set; }
     public double AccumulatedAmount { get; set; }
     public double AccumulatedGallons { get; set; }
+    public string DispenserTranslation { get; set; }
+    public string NumberHoseTranslation { get; set; }
+    public string ProductTranslation { get; set; }
+    public string PriceTranslation { get; set; }
+    public string StarttimeTranslation { get; set; }
+    public string EndtimeTranslation { get; set; }
+    public string LastAccumulatedAmountTranslation { get; set; }
+    public string LastAccumulatedGallonsTranslation { get; set; }
+    public string AccumulatedAmountTranslation { get; set; }
+    public string AccumulatedGallonsTranslations { get; set; }
 }
 
 public class DocumentItem
@@ -98,6 +104,8 @@ public class DocumentItem
     public int Id { get; set; }
     public int Court { get; set; }
     public string Descripcion { get; set; }
+    public string CourtTranslation { get; set; }
+    public string ThereIsNoImageTranslation { get; set; }
     public ImageSource ImageSource
     {
         get
@@ -146,4 +154,8 @@ public class ExpenditureItem
     public string Expenditure { get; set; }
     public double Amount { get; set; }
     public string Description { get; set; }
+    public string DateTranslation { get; set; }
+    public string ExpenditureTranslation { get; set; }
+    public string AmountTranslation { get; set; }
+    public string DescriptionTranslation { get; set; }
 }

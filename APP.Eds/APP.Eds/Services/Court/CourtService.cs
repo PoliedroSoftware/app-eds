@@ -2578,21 +2578,7 @@ GetAllEdsData()
             selectedCourt.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
             selectedCourt.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
             selectedCourt.DistincTranslation = GlobalTranslations.Get("Distinc");
-
-            foreach (var collection in selectedCourt.Collections)
-            {
-                collection.DateTranslation = GlobalTranslations.Get("Date");
-            }
-
-            selectedCourt.AmountTranslation = GlobalTranslations.Get("Amount");
-            selectedCourt.DescriptionTranslation = GlobalTranslations.Get("Description");
             selectedCourt.DispensersTranslation = GlobalTranslations.Get("Dispensers");
-            selectedCourt.DispenserTranslation = GlobalTranslations.Get("Dispenser");
-            selectedCourt.NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
-            selectedCourt.ProductTranslation = GlobalTranslations.Get("Product");
-            selectedCourt.PriceTranslation = GlobalTranslations.Get("Price");
-            selectedCourt.StarttimeTranslation = GlobalTranslations.Get("Starttime");
-            selectedCourt.EndtimeTranslation = GlobalTranslations.Get("Endtime");
             selectedCourt.LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
             selectedCourt.LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
             selectedCourt.DocumentsTranslation = GlobalTranslations.Get("Documents");
@@ -2601,6 +2587,44 @@ GetAllEdsData()
             selectedCourt.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
             selectedCourt.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
 
+
+            foreach (var collection in selectedCourt.Collections)
+            {
+                collection.DateTranslation = GlobalTranslations.Get("Date");
+                collection.CollectionTranslation = GlobalTranslations.Get("Collection");
+                collection.AmountTranslation = GlobalTranslations.Get("Amount");
+                collection.DescriptionTranslation = GlobalTranslations.Get("Description");
+            }
+            foreach (var Dispensers in selectedCourt.Dispensers) 
+            {
+                Dispensers.DispenserTranslation = GlobalTranslations.Get("Dispenser");
+                Dispensers.NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
+                Dispensers.ProductTranslation = GlobalTranslations.Get("Product");
+                Dispensers.PriceTranslation = GlobalTranslations.Get("Price");
+                Dispensers.StarttimeTranslation = GlobalTranslations.Get("Starttime");
+                Dispensers.EndtimeTranslation = GlobalTranslations.Get("Endtime");
+                Dispensers.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
+                Dispensers.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
+                Dispensers.LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
+                Dispensers.LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
+            }
+
+                foreach (var Documents in selectedCourt.Documents) 
+            {
+                Documents.CourtTranslation = GlobalTranslations.Get("Court");
+                Documents.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
+                
+            }
+
+                    foreach (var Expenditures in selectedCourt.Expenditures) 
+            {
+                Expenditures.DateTranslation = GlobalTranslations.Get("Date");
+                Expenditures.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
+                Expenditures.AmountTranslation = GlobalTranslations.Get("Amount");
+                Expenditures.DescriptionTranslation = GlobalTranslations.Get("Description");
+            }
+
+            
 
             Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
         }
