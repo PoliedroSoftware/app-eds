@@ -48,35 +48,67 @@
 						HeightRequest="30"
 						Source="{Binding SelectedCountry.Flag}"
 						WidthRequest="50" />
-                    <Picker
+
+					<Picker
+            AutomationId="CountryPicker"
+
 						IsVisible="False"
 						ItemDisplayBinding="{Binding Name}"
 						ItemsSource="{Binding Countries}"
 						SelectedItem="{Binding SelectedCountry}" />
-                </VerticalStackLayout>
+
+				</VerticalStackLayout>
+				<Frame
+						x:Name="PhoneEntryFrame"
+						Margin="0,0,0,10"
+						Padding="10"
+						BackgroundColor="White"
+						BorderColor="LightGray"
+						CornerRadius="10"
+						HasShadow="False"
+						HeightRequest="55"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="Center"
+						WidthRequest="271">
+						<custom:CustomEntry
+							x:Name="PhoneEntry"
+					        AutomationId="PhoneEntry"
+							BackgroundColor="Transparent"
+							FontSize="16"
+							KeyBoardType="Numeric"
+							MaxLength="10"
+							Placeholder="Phone number"
+							Text="{Binding Phone}"
+							Completed="PhoneEntry_Completed" />
+
+                </Frame>
                 <Frame
-					x:Name="PhoneEntryFrame"
-					Margin="0,0,0,10"
-					Padding="10"
-					BackgroundColor="White"
-					BorderColor="LightGray"
-					CornerRadius="10"
-					HasShadow="False"
-					HeightRequest="55"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="Center"
-					WidthRequest="271">
-                    <custom:CustomEntry
-						BackgroundColor="Transparent"
-						FontSize="16"
-						KeyBoardType="Numeric"
-						MaxLength="10"
-						Placeholder="Phone number"
-						Text="{Binding Phone}" />
+						x:Name="PasswordEntryFrame"
+						Margin="0,0,0,10"
+						Padding="10"
+						BackgroundColor="White"
+						BorderColor="LightGray"
+						CornerRadius="10"
+						HasShadow="False"
+						HeightRequest="55"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="Center"
+						WidthRequest="271">
+						<custom:CustomEntry
+							x:Name="PasswordEntry"
+              AutomationId="PasswordEntry"
+							BackgroundColor="Transparent"
+							FontSize="16"
+							IsPassword="True"
+							Placeholder="Password"
+							Text="{Binding Password}"
+							Completed="PasswordEntry_Completed" />
+
                 </Frame>
             </HorizontalStackLayout>
             <Button
 				x:Name="LoginButton"
+                AutomationId="LoginButton"
 				Margin="0,20,0,10"
 				BackgroundColor="#6200E8"
 				Command="{Binding ValidationCommand}"
@@ -101,6 +133,7 @@
         <!--  ContentView LoginPin  -->
         <ContentView
 			x:Name="LoginPinContentView"
+	        AutomationId="LoginPinContentView"
 			Padding="0"
 			BackgroundColor="White"
 			HorizontalOptions="FillAndExpand"
