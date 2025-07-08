@@ -3,60 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.MainPage"
              Title="Login">
-
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-
-            <!-- Título -->
-            <Label Text="Login"
+            <Label Text="Login" 
                    FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
-
-            <!-- Usuario -->
-            <Entry x:Name="UsernameEntry"
+            <Entry x:Name="UsernameEntry" 
                    Placeholder="Username"
-                   Keyboard="Text"
-                   Completed="UsernameEntry_Completed" />
-
-            <!-- Contraseña -->
-            <Entry x:Name="PasswordEntry"
-                   Placeholder="Password"
-                   IsPassword="True"
                    Keyboard="Text" />
-
-            <!-- Campo Monto -->
-            <Entry x:Name="MontoEntry"
-                   Placeholder="Monto"
-                   Keyboard="Numeric"
-                   TextChanged="MontoEntry_TextChanged" />
-
-            <!-- Error de monto -->
-            <Label x:Name="MontoErrorLabel"
-                   TextColor="Red"
-                   IsVisible="False"
-                   HorizontalOptions="Center" />
-
-            <!-- Botón Login -->
+            <Entry x:Name="PasswordEntry" 
+                   Placeholder="Password"
+                   IsPassword="True" />
             <Button Text="Login"
                     Clicked="OnLoginClicked"
                     BackgroundColor="#512BD4"
                     TextColor="White"
                     HeightRequest="50" />
-
-            <!-- Indicador de carga -->
             <ActivityIndicator x:Name="LoadingIndicator"
                                IsVisible="False"
                                IsRunning="False"
                                Color="#512BD4"
                                HorizontalOptions="Center" />
-
-            <!-- Error general -->
+            <!-- Error display -->
             <Label x:Name="ErrorLabel"
                    TextColor="Red"
-                   IsVisible="False"
-                   HorizontalOptions="Center" />
-
+                   IsVisible="False" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
