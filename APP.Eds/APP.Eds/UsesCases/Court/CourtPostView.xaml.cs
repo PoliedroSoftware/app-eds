@@ -43,7 +43,12 @@ public partial class CourtPostView : ContentPage
         {
             LoadingOverlay.ShowLoading();
             MainContent.IsVisible = false;
-            await _service.GetAllEdsData();
+
+            if (_service.BusinessList == null || !_service.BusinessList.Any())
+            {
+                await _service.GetAllEdsData();
+            }
+
             await _service.LoadTranslationsAsync();
         }
         catch (Exception ex)
