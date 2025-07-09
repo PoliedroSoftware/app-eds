@@ -85,36 +85,25 @@ namespace APP.Eds
                     .Select(r => r.GetString())
                     .ToList();
 
-                Dictionary<string, bool> config = new Dictionary<string, bool>();
-                if (tokenPayload.TryGetProperty("Config", out JsonElement configElement))
-                {
-                    foreach (var prop in configElement.EnumerateObject())
-                    {
-                        config[prop.Name] = prop.Value.GetBoolean();
-                    }
-                }
-
-                var configJson = JsonSerializer.Serialize(config);
-                Preferences.Set("userConfig", configJson);
-
-
                 TokenHelper.SaveToken(token, _clientId, _realm);
 
-                
+
                 if (roles.Contains("Admin"))
                 {
                     Preferences.Set("userRole", "Admin");
                     Application.Current.MainPage = new NavigationPage(new Main());
                 }
-                else if (roles.Contains("User"))
+                else if (roles.Contains("Islander"))
                 {
-                    Preferences.Set("userRole", "User");
+                    Preferences.Set("userRole", "Islander");
                     Application.Current.MainPage = new NavigationPage(new Main());
                 }
                 else
                 {
                     ShowError("Rol no autorizado.");
                 }
+
+
 
             }
             catch (Exception ex)
@@ -136,43 +125,6 @@ namespace APP.Eds
             ErrorLabel.IsVisible = true;
         }
 
-        
-        //private void SaveToken(string token, string clientId, string realm)
-        //{
-
-            
-            
-        //    Preferences.Set("CURRENT_AUTH_REALM", realm);
-        //    Preferences.Set("CURRENT_AUTH_CLIENT_ID", clientId);
-
-            
-        //    string prefix = $"AUTH_{realm}_{clientId}_";
-        //    var tokenParts = SplitTokenIntoParts(token);  
-        //    Preferences.Set($"{prefix}TOKEN_PART_COUNT", tokenParts.Length);
-
-        //    for (int i = 0; i < tokenParts.Length; i++)
-        //    {
-        //        Preferences.Set($"{prefix}TOKEN_PART_{i}", tokenParts[i]);
-        //    }
-        //}
-
-        
-        //private string[] SplitTokenIntoParts(string token)
-        //{
-        //    const int chunkSize = 512; 
-        //    int partCount = (int)Math.Ceiling((double)token.Length / chunkSize);
-
-        //    var parts = new string[partCount];
-        //    for (int i = 0; i < partCount; i++)
-        //    {
-        //        int startIndex = i * chunkSize;
-        //        int length = Math.Min(chunkSize, token.Length - startIndex);
-        //        parts[i] = token.Substring(startIndex, length);
-        //    }
-
-        //    return parts;
-        //}
-
         private string PadBase64(string base64)
         {
             switch (base64.Length % 4)
@@ -188,30 +140,5 @@ namespace APP.Eds
         {
             PasswordEntry.Focus();
         }
-
-
-        //private string LoadToken(string clientId, string realm)
-        //{
-        //    try
-        //    {
-        //        string prefix = $"AUTH_{realm}_{clientId}_";
-
-
-        //        int chunkCount = Preferences.Get($"{prefix}TOKEN_PART_COUNT", 0);
-        //        if (chunkCount == 0) return null; 
-
-        //        var tokenBuilder = new StringBuilder();
-        //        for (int i = 0; i < chunkCount; i++)
-        //        {
-        //            tokenBuilder.Append(Preferences.Get($"{prefix}TOKEN_PART_{i}", string.Empty));
-        //        }
-        //        return tokenBuilder.ToString();  
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine($"Error loading token: {ex}");
-        //        return null;
-        //    }
-        //}
     }
 }

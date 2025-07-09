@@ -8,6 +8,14 @@
         <ScrollView>
             <VerticalStackLayout Padding="20">
                 <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal(traducir)" />
+
+                <Button Text="Court"
+                        Command="{Binding NavigateToCourtCommand}"
+                        IsVisible="{Binding IsIslander}"
+                        HeightRequest="50"
+                        BackgroundColor="Purple"
+                        TextColor="White"/>
+                
                 <CollectionView ItemsSource="{Binding Categories}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>

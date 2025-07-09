@@ -32,10 +32,24 @@ namespace APP.Eds.Services.Navigation
     public class MainService : BindableObject
     {
         public ObservableCollection<CategoryModel> Categories { get; set; }
-
+        public bool IsIslander => Preferences.Get("userRole", "") == "Islander";
+        public ICommand NavigateToCourtCommand { get; }
         public MainService()
         {
-            Categories = new ObservableCollection<CategoryModel>
+
+            NavigateToCourtCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    var page = (Page)Activator.CreateInstance(typeof(CourtPostView));
+                    await navPage.PushAsync(page);
+                }
+            });
+
+            if (!IsIslander)
+            {
+
+                Categories = new ObservableCollection<CategoryModel>
             {
                 new("Administración", new List<MenuItemModel>
                 {
@@ -80,6 +94,11 @@ namespace APP.Eds.Services.Navigation
                  
                 ]),
             };
+            }
+            else
+            {
+                Categories = new ObservableCollection<CategoryModel>();
+            }
         }
 
         public class CategoryModel
