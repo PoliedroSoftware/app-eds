@@ -15,10 +15,19 @@ public partial class EdsPostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        if (BindingContext is EdsService vm && vm.SelectedBusiness is not null)
+        if (BindingContext is EdsService vm)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace (Name) ||
+                    string.IsNullOrWhiteSpace (Nit) || 
+                    string.IsNullOrWhiteSpace (Sicom) ||
+                    string.IsNullOrWhiteSpace (Address)||
+                    _edsService.SelectedBusiness is null)
+                {
+                   await DisplayAlert("Error", "Ningun campo puede estar vacio", "OK");
+                   return;
+                }
                 LoadingOverlay.ShowLoading();
                 var selectedId = vm.SelectedBusiness.IdBusiness;
                 await vm.SaveEdsDataAsync();
@@ -32,12 +41,7 @@ public partial class EdsPostView : ContentPage
                 Address = string.Empty;
                 Sicom = string.Empty;
                 _edsService.SelectedBusiness = null;
-            }
-            
-        }
-        else
-        {
-            await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
+            }  
         }
     }
 
