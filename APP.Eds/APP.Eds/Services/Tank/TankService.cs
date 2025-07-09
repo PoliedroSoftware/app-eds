@@ -18,7 +18,7 @@ public class TankService : INotifyPropertyChanged
 
     private TankRequest Request { get; set; }
     private TankModel _tank;
-    private TranslationsService _translations = new TranslationsService();
+    private readonly TranslationsService _translations = new TranslationsService();
     private string? _authToken;
 
     public TankModel Tank
@@ -228,13 +228,13 @@ public class TankService : INotifyPropertyChanged
             OnPropertyChanged(nameof(ErrorAbilityNegative));
         }
     }
-    private string _tankList;
+    private string _tankListTitle;
     public string TankListTitle
     {
-        get => _tankList;
+        get => _tankListTitle;
         set
         {
-            _tankList = value;
+            _tankListTitle = value;
             OnPropertyChanged(nameof(TankListTitle));
         }
     }
@@ -248,6 +248,7 @@ public class TankService : INotifyPropertyChanged
         GetByIdTankDataCommand = new Command<int>(async (tankId) => await GetByIdTankDataAsync(tankId));
         SaveTankDataCommand = new Command(async () => await SaveTankDataAsync());
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        GetTankAsync();
         LoadTranslationsAsync();
     }
 
@@ -270,7 +271,7 @@ public class TankService : INotifyPropertyChanged
         ErrorNegativeNumber = GlobalTranslations.Get("ErrorNegativeNumber");
         ErrorStockNegative = GlobalTranslations.Get("ErrorStockNegative");
         ErrorAbilityNegative = GlobalTranslations.Get("ErrorAbilityNegative");
-        TankList = GlobalTranslations.Get("TankListTitle");
+        TankListTitle = GlobalTranslations.Get("TankListTitle");
 
     }
 
