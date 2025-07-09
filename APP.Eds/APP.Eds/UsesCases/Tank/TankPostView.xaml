@@ -41,7 +41,7 @@
                 Text="{Binding SendData}"
                 TextColor="White" />
 
-                <Label FontSize="18" Text="{Binding TankList}" />
+                <Label FontSize="18" Text="{Binding TankListTitle}" />
                 <CollectionView ItemsSource="{Binding TankList}" Margin="0,20">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
