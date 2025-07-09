@@ -19,7 +19,7 @@ public partial class CapacityPostView : ContentPage
             LoadingOverlay.ShowLoading();
             if (Code is null || Height is null || Gallon is null || Liters is null)
             {
-                await DisplayAlert("Error", _capacityService.ErrorAllFieldsRequired, "OK");
+                await DisplayAlert(_capacityService.Error, _capacityService.ErrorAllFieldsRequired, "OK");
                 return;
             }
             await _capacityService.SaveCapacityDataAsync();

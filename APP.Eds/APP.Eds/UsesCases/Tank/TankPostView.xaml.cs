@@ -5,6 +5,44 @@ namespace APP.Eds.UsesCases.Tank;
 
 public partial class TankPostView : ContentPage
 {
+    public string Number
+    {
+        get => _tankService.Number;
+        set
+        {
+            _tankService.Number = value;
+            OnPropertyChanged();
+        }
+    }
+    public int? Compartment
+    {
+        get => _tankService.Compartment;
+        set
+        {
+            _tankService.Compartment = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public double? Ability
+    {
+        get => _tankService.Ability;
+        set
+        {
+            _tankService.Ability = value;
+            OnPropertyChanged();
+        }
+    }
+    public double? Stock
+    {
+        get => _tankService.Stock;
+        set
+        {
+            _tankService.Stock = value;
+            OnPropertyChanged();
+        }
+    }
+
     private TankService _tankService;
     public TankPostView()
     {
@@ -13,7 +51,7 @@ public partial class TankPostView : ContentPage
         BindingContext = _tankService;
     }
 
-    private async void Button_Clicked_1(object sender, EventArgs e)
+    private async void SendData(object sender, EventArgs e)
     {
         if (BindingContext is TankService vm)
         {
@@ -22,25 +60,25 @@ public partial class TankPostView : ContentPage
                 LoadingOverlay.ShowLoading();
                 if (string.IsNullOrWhiteSpace(vm.Number))
                 {
-                    await DisplayAlert("Error", "Por favor, ingrese un n�mero v�lido (no puede estar vac�o)", "OK");
+                    await DisplayAlert(_tankService.Error, _tankService.ErrorEnterNumber, "OK");
                     return;
                 }
 
                 if (vm.Compartment <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor, ingrese un numero mayor que 0", "OK");
+                    await DisplayAlert(_tankService.Error, _tankService.ErrorNegativeNumber, "OK");
                     return;
                 }
 
                 if (vm.Stock <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor, ingrese un numero mayor que 0", "OK");
+                    await DisplayAlert(_tankService.Error, _tankService.ErrorStockNegative, "OK");
                     return;
                 }
 
                 if (vm.Ability <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor, ingrese un numero mayor que 0", "OK");
+                    await DisplayAlert(_tankService.Error, _tankService.ErrorAbilityNegative, "OK");
                     return;
                 }
 
@@ -52,53 +90,15 @@ public partial class TankPostView : ContentPage
                 LoadingOverlay.HideLoading();
 
                 Number = string.Empty;
-                Compartment = 0;
-                Ability = 0;
-                Stock = 0;
+                Compartment = null;
+                Ability = null;
+                Stock = null;
             }
             
         }
         else
         {
             await DisplayAlert("Error", "Context error", "OK");
-        }
-    }
-
-    public string Number
-    {
-        get => _tankService.Number;
-        set
-        {
-            _tankService.Number = value;
-            OnPropertyChanged();
-        }
-    }
-    public int Compartment
-    {
-        get => _tankService.Compartment;
-        set
-        {
-            _tankService.Compartment = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public double Ability
-    {
-        get => _tankService.Ability;
-        set
-        {
-            _tankService.Ability = value;
-            OnPropertyChanged();
-        }
-    }
-    public double Stock
-    {
-        get => _tankService.Stock;
-        set
-        {
-            _tankService.Stock = value;
-            OnPropertyChanged();
         }
     }
 }
