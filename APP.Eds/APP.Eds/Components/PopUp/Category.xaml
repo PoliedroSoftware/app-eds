@@ -25,14 +25,13 @@
                        FontAttributes="Bold" FontSize="21"
                        HorizontalOptions="Center" VerticalOptions="Center" />
 
-                <button:HoverButton
+                <button:HoverButtonPopup
                         Grid.Column="2"                      
                         Clicked="OnCloseTapped"
                         FontSize="20" Text="✖"
                         WidthRequest="25" HeightRequest="25" Padding="-10"
                         HorizontalOptions="End" VerticalOptions="Center"
-                        CornerRadius="10"
-                        HoverColor="Gray"
+                        HoverColorPopup="Gray"
                         Margin="0,0,0,0"/>
             </Grid>
             
@@ -44,12 +43,12 @@
                             Margin="0,20,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <button:HoverButton
+                        <button:HoverButtonPopup
                             Text="{Binding Name}" 
                             Command="{Binding NavigateCommand}" 
                             Margin="0,0,0,10"
-                            HoverColor="Gray"
-                            PressedColor="Green"
+                            HoverColorPopup="DarkGray"
+                            PressedColorPopup="Black"
                             Clicked="OnMenuItemClicked"
                             Padding="10,5,10,10"/>
                     </DataTemplate>
