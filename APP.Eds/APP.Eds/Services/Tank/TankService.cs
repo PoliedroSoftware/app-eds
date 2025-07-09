@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Tank;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Translations;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -17,6 +18,7 @@ public class TankService : INotifyPropertyChanged
 
     private TankRequest Request { get; set; }
     private TankModel _tank;
+    private readonly TranslationsService _translations = new TranslationsService();
     private string? _authToken;
 
     public TankModel Tank
@@ -29,8 +31,8 @@ public class TankService : INotifyPropertyChanged
         }
     }
 
-    private int _compartment;
-    public int Compartment
+    private int? _compartment;
+    public int? Compartment
     {
         get => _compartment;
         set
@@ -51,8 +53,8 @@ public class TankService : INotifyPropertyChanged
         }
     }
 
-    private double _ability;
-    public double Ability
+    private double? _ability;
+    public double? Ability
     {
         get => _ability;
         set
@@ -62,8 +64,8 @@ public class TankService : INotifyPropertyChanged
         }
     }
 
-    private double _stock;
-    public double Stock
+    private double? _stock;
+    public double? Stock
     {
         get => _stock;
         set
@@ -73,6 +75,171 @@ public class TankService : INotifyPropertyChanged
         }
     }
 
+    // Translations
+    private string _gestionTankTitle;
+    public string GestionTankTitle
+    {
+        get => _gestionTankTitle;
+        set
+        {
+            _gestionTankTitle = value;
+            OnPropertyChanged(nameof(GestionTankTitle));
+        }
+    }
+
+    private string _sendData;
+    public string SendData
+    {
+        get => _sendData;
+        set
+        {
+            _sendData = value;
+            OnPropertyChanged(nameof(SendData));
+        }
+    }
+    private string _tankNumberPlaceholder;
+    public string TankNumberPlaceholder
+    {
+        get => _tankNumberPlaceholder;
+        set
+        {
+            _tankNumberPlaceholder = value;
+            OnPropertyChanged(nameof(TankNumberPlaceholder));
+        }
+    }
+    private string _tankNumberLabel;
+    public string TankNumberLabel
+    {
+        get => _tankNumberLabel;
+        set
+        {
+            _tankNumberLabel = value;
+            OnPropertyChanged(nameof(TankNumberLabel));
+        }
+    }
+    private string _tankCompartmentLabel;
+    public string TankCompartmentLabel
+    {
+        get => _tankCompartmentLabel;
+        set
+        {
+            _tankCompartmentLabel = value;
+            OnPropertyChanged(nameof(TankCompartmentLabel));
+        }
+    }
+    private string _compartmentPlacheholder;
+    public string CompartmentPlacheholder
+    {
+        get => _compartmentPlacheholder;
+        set
+        {
+            _compartmentPlacheholder = value;
+            OnPropertyChanged(nameof(CompartmentPlacheholder));
+        }
+    }
+    private string _stockLabel;
+    public string StockLabel
+    {
+        get => _stockLabel;
+        set
+        {
+            _stockLabel = value;
+            OnPropertyChanged(nameof(StockLabel));
+}
+    }
+    private string _stockPlaceholder;
+    public string StockPlaceholder
+    {
+        get => _stockPlaceholder;
+        set
+        {
+            _stockPlaceholder = value;
+            OnPropertyChanged(nameof(StockPlaceholder));
+        }
+    }
+    private string _capacity;
+    public string Capacity
+    {
+        get => _capacity;
+        set
+        {
+            _capacity = value;
+            OnPropertyChanged(nameof(Capacity));
+        }
+    }
+    private string _capacityPlaceholder;
+    public string CapacityPlaceholder
+    {
+        get => _capacityPlaceholder;
+        set
+        {
+            _capacityPlaceholder = value;
+            OnPropertyChanged(nameof(CapacityPlaceholder));
+        }
+    }
+    //Error handling
+    private string _error;
+    public string Error
+    {
+        get => _error;
+        set
+        {
+            _error = value;
+            OnPropertyChanged(nameof(Error));
+        }
+    }
+    private string _errorEnterNumber;
+    public string ErrorEnterNumber
+    {
+        get => _errorEnterNumber;
+        set
+        {
+            _errorEnterNumber = value;
+            OnPropertyChanged(nameof(ErrorEnterNumber));
+        }
+    }
+    private string _errorNegativeNumber;
+    public string ErrorNegativeNumber
+    {
+        get => _errorNegativeNumber;
+        set
+        {
+            _errorNegativeNumber = value;
+            OnPropertyChanged(nameof(ErrorNegativeNumber));
+        }
+    }
+    private string _errorStockNegative;
+    public string ErrorStockNegative
+    {
+        get => _errorStockNegative;
+        set
+        {
+            _errorStockNegative = value;
+            OnPropertyChanged(nameof(ErrorStockNegative));
+        }
+    }
+    private string _errorAbilityNegative;
+    public string ErrorAbilityNegative
+    {
+        get => _errorAbilityNegative;
+        set
+        {
+            _errorAbilityNegative = value;
+            OnPropertyChanged(nameof(ErrorAbilityNegative));
+        }
+    }
+    private string _tankListTitle;
+    public string TankListTitle
+    {
+        get => _tankListTitle;
+        set
+        {
+            _tankListTitle = value;
+            OnPropertyChanged(nameof(TankListTitle));
+        }
+    }
+
+
     public ICommand GetByIdTankDataCommand { get; }
     public ICommand SaveTankDataCommand { get; }
 
@@ -81,6 +248,31 @@ public class TankService : INotifyPropertyChanged
         GetByIdTankDataCommand = new Command<int>(async (tankId) => await GetByIdTankDataAsync(tankId));
         SaveTankDataCommand = new Command(async () => await SaveTankDataAsync());
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        GetTankAsync();
+        LoadTranslationsAsync();
+    }
+
+    public async Task LoadTranslationsAsync()
+    {
+        var result = await _translations.GetTranslationsByLanguageAsync("es-CO");
+        GlobalTranslations.SetTranslations(result ?? []);
+        SendData = GlobalTranslations.Get("SendData");
+        TankNumberPlaceholder = GlobalTranslations.Get("TankNumberPlaceholder");
+        TankNumberLabel = GlobalTranslations.Get("TankNumberLabel");
+        GestionTankTitle = GlobalTranslations.Get("GestionTankTitle");
+        TankCompartmentLabel = GlobalTranslations.Get("TankCompartmentLabel");
+        CompartmentPlacheholder = GlobalTranslations.Get("CompartmentPlacheholder");
+        StockLabel = GlobalTranslations.Get("StockLabel");
+        StockPlaceholder = GlobalTranslations.Get("StockPlaceholder");
+        Capacity = GlobalTranslations.Get("Capacity");
+        CapacityPlaceholder = GlobalTranslations.Get("CapacityPlaceholder");
+        Error = GlobalTranslations.Get("Error");
+        ErrorEnterNumber = GlobalTranslations.Get("ErrorEnterNumber");
+        ErrorNegativeNumber = GlobalTranslations.Get("ErrorNegativeNumber");
+        ErrorStockNegative = GlobalTranslations.Get("ErrorStockNegative");
+        ErrorAbilityNegative = GlobalTranslations.Get("ErrorAbilityNegative");
+        TankListTitle = GlobalTranslations.Get("TankListTitle");
+
     }
 
     public async Task GetByIdTankDataAsync(int tankId)
