@@ -92,7 +92,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\alemania.png" />
+	  <MauiImage Remove="Resources\Images\colombia.png" />
+	  <MauiImage Remove="Resources\Images\eeuu.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\AppIcon\logoicono.svg" />
+	  <None Remove="Resources\Images\alemania.png" />
+	  <None Remove="Resources\Images\colombia.png" />
+	  <None Remove="Resources\Images\eeuu.png" />
 	  <None Remove="Resources\Splash\logosplash.svg" />
 	</ItemGroup>
 

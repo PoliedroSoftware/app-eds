@@ -3,43 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.Eds.EdsPostView"
-             Title="Gestion Eds">
+             xmlns:button="clr-namespace:APP.Eds.Controls"
+             Title="{Binding EdsTitle}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <VerticalStackLayout Padding="20" Spacing="15">
-                <Label FontSize="16" Text="Name"/>
                 <Entry
                 Keyboard="Text"
-                Placeholder="Enter Eds"
+                Placeholder="{Binding NamePlaceHolder}"
                 Text="{Binding Name, Mode=TwoWay}" />
                 <Entry
 	            Keyboard="Text"
-	            Placeholder="Ingrese el NIT de la EDS"
+	            Placeholder="{Binding NitPlaceHolder}"
 	            Text="{Binding Nit, Mode=TwoWay}" />
                 <Entry
                 Keyboard="Text"
-                Placeholder="Ingrese la Direccion de la EDS"
+                Placeholder="{Binding AdreessPlaceHolder}"
                 Text="{Binding Address, Mode=TwoWay}" />
                 <Entry
                 Keyboard="Text"
-                Placeholder="Ingrese el codigo Sicom de la EDS"
+                Placeholder="{Binding SicomPlaceHolder}"
                 Text="{Binding Sicom, Mode=TwoWay}" />
 
-                <Label FontSize="16" Text="ID Business" />
-                <Picker Title="Seleccione un Negocio"
+                <Label FontSize="16" Text="{Binding SelectBusiness}" />
+                <Picker Title="{Binding BusinessPicker}"
                 ItemsSource="{Binding BusinessList}"
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" />
 
-                <Button
+                <button:HoverButton
                 BackgroundColor="Green"
                 Clicked="Button_Clicked_1"
+                WidthRequest="200"
+                HeightRequest="60"
                 CornerRadius="10"
-                Text="Enviar Datos"
+                HoverColor="Gray"
+                PressedColor="AliceBlue"
+                Text="{Binding SendData}"
                 TextColor="White" />
 
-                <Label FontSize="18" Text="Lista de EDS" />
+                <Label FontSize="18" Text="{Binding EdsListTranslation}" />
                 <CollectionView ItemsSource="{Binding EdsList}" Margin="0,20">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
