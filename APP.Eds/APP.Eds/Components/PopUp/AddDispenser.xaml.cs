@@ -67,7 +67,6 @@ public partial class AddDispenser : Popup
             }
 
             
-
             await courtService.AddDispenserFromPopup();
 
             vm.AddSelectedHose(vm.SelectedHose);
@@ -89,16 +88,13 @@ public partial class AddDispenser : Popup
     private void EntryAccumulatedCompleted(object sender, EventArgs e)
     {
         if (BindingContext is CourtService vm)
-        {
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-            
+        {   
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
                 vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
             }
-            SecondEntry.Focus();
-            SecondEntry.CursorPosition = SecondEntry.Text.Length;
+            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
+            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
         }
     }
    
@@ -106,13 +102,12 @@ public partial class AddDispenser : Popup
     {
         if (BindingContext is CourtService vm)
         {
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
                 vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
             }
+            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
+            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
         }
     }
 
@@ -152,22 +147,4 @@ public partial class AddDispenser : Popup
         }
     }
 
-    private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (sender is Entry entry)
-        {
-            string newText = e.NewTextValue;
-
-            if (string.IsNullOrEmpty(newText))
-                return;
-
-            if (!decimal.TryParse(newText, System.Globalization.NumberStyles.Number,
-                new System.Globalization.CultureInfo("es-CO"), out _))
-            {
-                entry.Text = e.OldTextValue;
-            }
-        }
-    }
-
-}   
-
+}
