@@ -19,13 +19,13 @@ public partial class EdsPostView : ContentPage
         {
             try
             {
-                if (string.IsNullOrWhiteSpace (Name) ||
-                    string.IsNullOrWhiteSpace (Nit) || 
-                    string.IsNullOrWhiteSpace (Sicom) ||
-                    string.IsNullOrWhiteSpace (Address)||
+                if (string.IsNullOrWhiteSpace (_edsService.Name) ||
+                    string.IsNullOrWhiteSpace (_edsService.Nit) || 
+                    string.IsNullOrWhiteSpace (_edsService.Sicom) ||
+                    string.IsNullOrWhiteSpace (_edsService.Address)||
                     _edsService.SelectedBusiness is null)
                 {
-                   await DisplayAlert("Error", "Ningun campo puede estar vacio", "OK");
+                   await DisplayAlert("Error", $"{_edsService.ErrorEmpty}", "OK");
                    return;
                 }
                 LoadingOverlay.ShowLoading();
@@ -36,49 +36,12 @@ public partial class EdsPostView : ContentPage
             {
                 LoadingOverlay.HideLoading();
 
-                Name = string.Empty;
-                Nit = string.Empty;
-                Address = string.Empty;
-                Sicom = string.Empty;
+                _edsService.Name = string.Empty;
+                _edsService.Nit = string.Empty;
+                _edsService.Address = string.Empty;
+                _edsService.Sicom = string.Empty;
                 _edsService.SelectedBusiness = null;
             }  
-        }
-    }
-
-    public string Name
-    {
-        get => _edsService.Name;
-        set
-        {
-            _edsService.Name = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Nit
-    {
-        get => _edsService.Nit;
-        set
-        {
-            _edsService.Nit = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Address
-    {
-        get => _edsService.Address;
-        set
-        {
-            _edsService.Address = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Sicom
-    {
-        get => _edsService.Sicom;
-        set
-        {
-            _edsService.Sicom = value;
-            OnPropertyChanged();
         }
     }
 }

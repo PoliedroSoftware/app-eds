@@ -270,7 +270,7 @@ public class TankService : INotifyPropertyChanged
         ErrorNegativeNumber = GlobalTranslations.Get("ErrorNegativeNumber");
         ErrorStockNegative = GlobalTranslations.Get("ErrorStockNegative");
         ErrorAbilityNegative = GlobalTranslations.Get("ErrorAbilityNegative");
-        TankList = GlobalTranslations.Get("TankListTitle");
+        TankListTitle = GlobalTranslations.Get("TankListTitle");
 
     }
 
