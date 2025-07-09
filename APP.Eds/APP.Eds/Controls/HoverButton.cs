@@ -14,7 +14,7 @@ namespace APP.Eds.Controls
         // Propiedades para los colores personalizables
         public Color NormalColor { get; set; } = Colors.Green;
         public Color HoverColor { get; set; } = Colors.DarkGreen;
-        public Color PressedColor { get; set; } = Colors.LimeGreen;
+        public Color PressedColor { get; set; } = Colors.White;
 
 
         public HoverButton()
