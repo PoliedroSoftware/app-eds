@@ -49,6 +49,11 @@ public partial class CourtPostView : ContentPage
                 await _service.GetAllEdsData();
             }
 
+            if (UserRole == "Islander")
+            {
+                Business.IsVisible = false;
+            }
+
             await _service.LoadTranslationsAsync();
         }
         catch (Exception ex)
