@@ -3,22 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Shopping.ShoppingPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Shopping(Traducir)">
+             Title="Gestion Shopping">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
             <VerticalStackLayout Padding="20" Spacing="15">
 
-                <Label FontSize="16" Text="Invoice(traducir)"/>
+                <Label FontSize="16" Text="Invoice"/>
                 <Entry Keyboard="Text" Placeholder="Enter Invoice" Text="{Binding Invoice, Mode=TwoWay}"/>
 
-                <Label FontSize="16" Text="Date(traducir)"/>
+                <Label FontSize="16" Text="Date"/>
                 <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31"/>
 
-                <Label FontSize="16" Text="Provider(traducir)"/>
+                <Label FontSize="16" Text="Provider"/>
                 <Picker Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}"/>
 
-                <Label FontSize="16" Text="Category(traducir)"/>
+                <Label FontSize="16" Text="Category"/>
                 <Picker Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
 
 

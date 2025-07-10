@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using APP.Eds.Services.Translations;
 
 namespace APP.Eds.Services.Eds;
 
@@ -18,6 +19,7 @@ public class EdsService : INotifyPropertyChanged
     public ObservableCollection<EdsResponse> EdsList { get; set; } = [];
     private EdsRequest Request { get; set; }
     private EdsModel _eds;
+    private TranslationsService _traslationService = new TranslationsService();
 
 
     public EdsModel Eds
@@ -75,6 +77,117 @@ public class EdsService : INotifyPropertyChanged
         }
     }
 
+    private string _namePlaceHolder;
+    public string NamePlaceHolder
+    {
+        get => _namePlaceHolder;
+        set
+        {
+            _namePlaceHolder = value;
+            OnPropertyChanged(nameof(NamePlaceHolder));
+        }
+    }
+
+    private string _edsTitle;
+    public string EdsTitle
+    {
+        get => _edsTitle;
+        set
+        {
+            _edsTitle = value;
+            OnPropertyChanged(nameof(EdsTitle));
+        }
+    }
+
+    private string _nitPlaceHolder;
+    public string NitPlaceHolder
+    {
+        get => _nitPlaceHolder;
+        set
+        {
+            _nitPlaceHolder = value;
+            OnPropertyChanged(nameof(NitPlaceHolder));
+        }
+    }
+
+    private string _adreessPlaceHolder;
+    public string AdreessPlaceHolder
+    {
+        get => _adreessPlaceHolder;
+        set
+        {
+            _adreessPlaceHolder = value;
+            OnPropertyChanged(nameof(AdreessPlaceHolder));
+        }
+    }
+
+    private string _sicomPlaceHolder;
+    public string SicomPlaceHolder
+    {
+        get => _sicomPlaceHolder;
+        set
+        {
+            _sicomPlaceHolder = value;
+            OnPropertyChanged(nameof(SicomPlaceHolder));
+        }
+    }
+
+    private string _selectBusiness;
+    public string SelectBusiness
+    {
+        get => _selectBusiness;
+        set
+        {
+            _selectBusiness = value;
+            OnPropertyChanged(nameof(SelectBusiness));
+        }
+    }
+
+    private string _businessPicker;
+    public string BusinessPicker
+    {
+        get => _businessPicker;
+        set
+        {
+            _businessPicker = value;
+            OnPropertyChanged(nameof(BusinessPicker));
+        }
+    }
+
+    private string _edsListTranslation;
+    public string EdsListTranslation
+    {
+        get => _edsListTranslation;
+        set
+        {
+            _edsListTranslation = value;
+            OnPropertyChanged(nameof(EdsListTranslation));
+        }
+    }
+
+    private string _errorEmpty;
+    public string ErrorEmpty
+    {
+        get => _errorEmpty;
+        set
+        {
+            _errorEmpty = value;
+            OnPropertyChanged(nameof(ErrorEmpty));
+        }
+    }
+
+    private string _sendData;
+    public string SendData
+    {
+        get => _sendData;
+        set
+        {
+            _sendData = value;
+            OnPropertyChanged(nameof(SendData));
+        }
+    }
+
+
     private BusinessModel _selectedBusiness;
     public BusinessModel SelectedBusiness
     {
@@ -113,8 +226,7 @@ public class EdsService : INotifyPropertyChanged
         GetEdssAsync();
         GetByIdEdsDataCommand = new Command<int>(async (edsId) => await GetByIdEdsDataAsync(edsId));
         SaveEdsDataCommand = new Command(async () => await SaveEdsDataAsync());
-        
-
+        LoadTraslationsAsync();
     }
 
     private async void GetAllBusinessData()
@@ -257,5 +369,21 @@ public class EdsService : INotifyPropertyChanged
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public async Task LoadTraslationsAsync()
+    {
+        var result = await _traslationService.GetTranslationsByLanguageAsync("es-CO");
+        GlobalTranslations.SetTranslations(result ?? []);
+        EdsTitle = GlobalTranslations.Get("EdsTitle");
+        NamePlaceHolder = GlobalTranslations.Get("NamePlaceHolder");
+        NitPlaceHolder = GlobalTranslations.Get("NitPlaceHolder");
+        AdreessPlaceHolder = GlobalTranslations.Get("AdreessPlaceHolder");
+        SicomPlaceHolder = GlobalTranslations.Get("SicomPLaceHolder");
+        SelectBusiness = GlobalTranslations.Get("SelectBussines");
+        BusinessPicker = GlobalTranslations.Get("BusinessPicker");
+        EdsListTranslation = GlobalTranslations.Get("EdsListTranslation");
+        ErrorEmpty = GlobalTranslations.Get("ErrorEmpty");
+        SendData = GlobalTranslations.Get("SendData");
     }
 }
