@@ -39,13 +39,13 @@ namespace APP.Eds.Services.TypeOfCollection
         }
 
         private string _descriptionPlaceHolder;
-        public string DescriptionPlaceholder
+        public string DescriptionPlaceHolder
         {
             get => _descriptionPlaceHolder;
             set
             {
                 _descriptionPlaceHolder = value;
-                OnPropertyChanged(nameof(DescriptionPlaceholder));
+                OnPropertyChanged(nameof(DescriptionPlaceHolder));
             }
         }
 
@@ -144,7 +144,7 @@ namespace APP.Eds.Services.TypeOfCollection
             GlobalTranslations.SetTranslations(result ?? []);
             DescriptionTitle = GlobalTranslations.Get("DescriptionTitle");
             DescriptionLabel = GlobalTranslations.Get("DescriptionLabel");
-            DescriptionPlaceholder = GlobalTranslations.Get("DescriptionPlaceHolder");
+            DescriptionPlaceHolder = GlobalTranslations.Get("DescriptionPlaceHolder");
             SendData = GlobalTranslations.Get("SendData");
             ErrorEmpty = GlobalTranslations.Get("ErrorEmpty");
             ErrorCharacteres = GlobalTranslations.Get("ErrorCharacteres");

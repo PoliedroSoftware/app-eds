@@ -4,32 +4,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="APP.Eds.Views.Popups.CategoryPopup"
+    xmlns:button="clr-namespace:APP.Eds.Controls"
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent"
     VerticalOptions="Center"
     HorizontalOptions="Center">
 
     <Frame x:Name="Frame"
-           BorderColor="#6200E8"
+           BorderColor="#6200E8"          
            WidthRequest="400"
            VerticalOptions="Center" HorizontalOptions="Center"
            CornerRadius="15"
-           HasShadow="True">
+           HasShadow="False">
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
             <!-- Encabezado fijo -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,25">
                 <Label Grid.Column="1" x:Name="CategoryTitle"
-                       FontAttributes="Bold" FontSize="22"
+                       FontAttributes="Bold" FontSize="21"
                        HorizontalOptions="Center" VerticalOptions="Center" />
 
-                <Button Grid.Column="2"
-                        BackgroundColor="Transparent"
+                <button:HoverButtonPopup
+                        Grid.Column="2"                      
                         Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖" TextColor="#6200E8"
-                        WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"/>
+                        FontSize="20" Text="✖"
+                        WidthRequest="25" HeightRequest="25" Padding="-10"
+                        HorizontalOptions="End" VerticalOptions="Center"
+                        HoverColorPopup="Gray"
+                        Margin="0,0,0,0"/>
             </Grid>
             
             <!-- Menu -->
@@ -40,8 +43,15 @@
                             Margin="0,20,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Button Text="{Binding Name}" Command="{Binding NavigateCommand}" Margin="0,0,0,10"  Clicked="OnMenuItemClicked"/>
-                        </DataTemplate>
+                        <button:HoverButtonPopup
+                            Text="{Binding Name}" 
+                            Command="{Binding NavigateCommand}" 
+                            Margin="0,0,0,10"
+                            HoverColorPopup="DarkGray"
+                            PressedColorPopup="Black"
+                            Clicked="OnMenuItemClicked"
+                            Padding="10,5,10,10"/>
+                    </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
