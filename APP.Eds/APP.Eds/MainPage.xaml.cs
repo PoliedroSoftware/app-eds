@@ -76,7 +76,10 @@ namespace APP.Eds
 
                 var tokenPayload = JsonSerializer.Deserialize<JsonElement>(jsonPayload);
 
-               
+                var Username = tokenPayload.GetProperty("preferred_username").GetString();
+
+                Preferences.Set("Usernamelogin", Username);
+
                 var roles = tokenPayload
                     .GetProperty("resource_access")
                     .GetProperty("application-eds")
@@ -93,9 +96,9 @@ namespace APP.Eds
                     Preferences.Set("userRole", "Admin");
                     Application.Current.MainPage = new NavigationPage(new Main());
                 }
-                else if (roles.Contains("Islander"))
+                else if (roles.Contains("User"))
                 {
-                    Preferences.Set("userRole", "Islander");
+                    Preferences.Set("userRole", "User");
                     Application.Current.MainPage = new NavigationPage(new Main());
                 }
                 else
