@@ -26,7 +26,7 @@ namespace APP.Eds.Services.Court
 
     {
         public bool LastSendWasSuccessful { get; private set; }
-
+        public string UserRole { get; set; } = string.Empty;
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
 
@@ -52,7 +52,8 @@ namespace APP.Eds.Services.Court
             
         }
 
-
+       
+                 
         public ObservableCollection<EdsCourtModel> EdsList { get; set; } = [];
         public ObservableCollection<EdsCourtModel> EdsSelectList { get; set; } = [];
         public ObservableCollection<ProductCourtModel> ProductList { get; set; } = [];
@@ -69,7 +70,7 @@ namespace APP.Eds.Services.Court
         public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
         public bool AreAvailableHoses => HoseDispenserList != null && HoseDispenserList.Count > 0;
-        public bool NewSaleEnabled => IsEdsSelected && AreAvailableHoses;
+        public bool NewSaleEnabled => (IsEdsSelected && AreAvailableHoses);
         public bool AdditionalInfoEnabled => !string.IsNullOrEmpty(AdditionalInfoDescription);
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
@@ -2251,6 +2252,8 @@ namespace APP.Eds.Services.Court
 
         public CourtService()
         {
+           
+
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             //OcultarListas
 
@@ -2841,6 +2844,16 @@ GetAllEdsData()
                 Court.IdBusiness = IdBusiness;
                 Court.IdEds = IdEds;
                 Court.IdIslander = IdIslander;
+
+                UserRole = Preferences.Get("userRole", string.Empty);
+                if (UserRole == "User")
+                {
+                    Court.IdBusiness = int.Parse(Preferences.Get("businessId", string.Empty));
+                    Court.IdEds = int.Parse(Preferences.Get("edsId", string.Empty));
+                    Court.IdIslander = int.Parse(Preferences.Get("islanderId", string.Empty));
+                }
+            
+               
                 Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
                 Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
                 Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
