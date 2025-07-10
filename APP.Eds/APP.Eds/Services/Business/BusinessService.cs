@@ -9,7 +9,7 @@ using APP.Eds.Models.Eds;
 using BusinessModel = APP.Eds.Models.Business.BusinessModel;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
-using Microsoft.Maui.Controls; 
+using Microsoft.Maui.Controls;
 
 namespace APP.Eds.Services.Business;
 
@@ -41,9 +41,12 @@ public class BusinessService : INotifyPropertyChanged
         }
     }
 
+    // Propiedad para acceder al servicio de traducciones desde el XAML
+    public GlobalTranslations Translations => new GlobalTranslations();
+ 
     public ICommand GetByIdBusinessDataCommand { get; }
     public ICommand SaveBusinessDataCommand { get; }
-
+ 
     public BusinessService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
