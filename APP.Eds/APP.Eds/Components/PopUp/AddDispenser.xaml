@@ -46,7 +46,7 @@
                     
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
-                            <Label Text="Precio por galón(traducir)" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            <Label Text="Precio por galón" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
                             <Label x:Name="PricePerGallonLabel" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2"/>
                             <Label Text="{Binding LastAccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
@@ -60,7 +60,7 @@
                                    Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted"
                                    IsEnabled="False"/>
 
-                            <Label Text="Amount(traducir)" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="Amount" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
                             <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
                         </Grid>
                         
@@ -81,7 +81,7 @@
                                    Unfocused="OnEntryUnfocused" Completed="EntryGallonsCompleted"
                                    IsEnabled="False"/>
 
-                            <Label Text="Gallons (traducir) " VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+                            <Label Text="Gallons " VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
                             <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
 
                             <Button Text="✎"
@@ -102,7 +102,7 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
-                    FontSize="18" Text="Add(traducir)" TextColor="White"
+                    FontSize="18" Text="Add" TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>
         </Grid>
