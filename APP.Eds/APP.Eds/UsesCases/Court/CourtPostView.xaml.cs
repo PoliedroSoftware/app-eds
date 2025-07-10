@@ -45,35 +45,8 @@ public partial class CourtPostView : ContentPage
         {
             LoadingOverlay.ShowLoading();
             MainContent.IsVisible = false;
-
-            //if (_service.BusinessList == null || !_service.BusinessList.Any())
-            //{
-            //    await _service.GetAllEdsData();
-            //}
-            await _service.GetAllEdsData();
-
-            if (UserRole == "User")
-            {
-
-                
-
-                var businessId = Preferences.Get("businessId", string.Empty);
-                var edsId = Preferences.Get("edsId", string.Empty);
-                var islanderId = Preferences.Get("islanderId", string.Empty);
-
-                if (_service.BusinessList?.Any() == true && int.TryParse(businessId, out var parsedBusinessId))
-                    _service.SelectedBusiness = _service.BusinessList.FirstOrDefault(b => b.IdBusiness == parsedBusinessId);
-
-                if (_service.EdsSelectList?.Any() == true && int.TryParse(edsId, out var parsedEdsId))
-                    _service.SelectedEds = _service.EdsSelectList.FirstOrDefault(e => e.IdEds == parsedEdsId);
-
-                if (_service.IslanderSelectList?.Any() == true && int.TryParse(islanderId, out var parsedIslanderId))
-                    _service.SelectedIslander = _service.IslanderSelectList.FirstOrDefault(i => i.IdIslander == parsedIslanderId);
-
-
-
-                Business.IsVisible = true;
-            }
+            Business.IsVisible = (UserRole is  "Admin");
+            
 
             await _service.LoadTranslationsAsync();
         }
