@@ -46,7 +46,7 @@
                        Margin="0,0,0,10">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <Entry x:Name="FirstEntry"   Placeholder="Ingrese el monto(traducir)" Grid.Row="1" Grid.Column="1"
+                            <Entry x:Name="FirstEntry"   Placeholder="Ingrese el monto" Grid.Row="1" Grid.Column="1"
                                Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay, StringFormat='{0:N0}'}"
                                Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
                                IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"/>
