@@ -27,6 +27,8 @@ namespace APP.Eds.Services.Court
     {
         public bool LastSendWasSuccessful { get; private set; }
         public string UserRole { get; set; } = string.Empty;
+        public bool IsUserRole => Preferences.Get("userRole", "") == "User";
+
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
 
@@ -51,9 +53,13 @@ namespace APP.Eds.Services.Court
             _instance.AdditionalInfoDescription = null;
             
         }
+        public static void DestroyInstance()
+        {
+            _instance = null;
+        }
 
-       
-                 
+
+
         public ObservableCollection<EdsCourtModel> EdsList { get; set; } = [];
         public ObservableCollection<EdsCourtModel> EdsSelectList { get; set; } = [];
         public ObservableCollection<ProductCourtModel> ProductList { get; set; } = [];
@@ -69,9 +75,9 @@ namespace APP.Eds.Services.Court
         public ObservableCollection<double> AmountResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
-        public bool AreAvailableHoses => HoseDispenserList != null && HoseDispenserList.Count > 0;
-        public bool NewSaleEnabled => (IsEdsSelected && AreAvailableHoses);
-        public bool AdditionalInfoEnabled => !string.IsNullOrEmpty(AdditionalInfoDescription);
+        public bool AreAvailableHoses => IsUserRole || HoseDispenserList != null && HoseDispenserList.Count > 0;
+        public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
+        public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
@@ -127,6 +133,7 @@ namespace APP.Eds.Services.Court
                 OnPropertyChanged(nameof(IdIslander));
             }
         }
+
 
         private DateTime _dateStarttime;
         public DateTime DateStarttime
@@ -728,7 +735,7 @@ namespace APP.Eds.Services.Court
         private bool _isEdsSelected;
         public bool IsEdsSelected
         {
-            get => _isEdsSelected;
+            get => IsUserRole || _isEdsSelected;
             set
             {
                 _isEdsSelected = value;
@@ -2384,7 +2391,6 @@ GetAllEdsData()
                 }
             }
 
-
         }
 
         private async void LoadLastAccumulated(int idDispenser, int idHose)
@@ -2846,6 +2852,7 @@ GetAllEdsData()
                 Court.IdIslander = IdIslander;
 
                 UserRole = Preferences.Get("userRole", string.Empty);
+
                 if (UserRole == "User")
                 {
                     Court.IdBusiness = int.Parse(Preferences.Get("businessId", string.Empty));
