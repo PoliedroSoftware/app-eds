@@ -29,6 +29,7 @@ namespace APP.Eds.Services.Court
 
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
+
         private string? _authToken;
 
         public static void ResetInstanceFields()
@@ -2308,36 +2309,46 @@ GetAllEdsData()
                 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+                var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
                 var IslanderResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
                 var edsResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
+
+
+
+                var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+
+                UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
+                UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
+                UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
+
                 var productResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100");
                 var compartimentResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
                 var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
                 var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
                 var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
-                var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
+                
                 var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
-               
 
-                var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
                 var productList = JsonSerializer.Deserialize<ProductCourtResponseModel>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+     
                 var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                
-                UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
-                UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
                 UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
                 UpdateCompartiment(compartimentList?.Data ?? new List<CompartimentCourtModel>());
                 UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
                 UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
                 UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
-                UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
+                
                 UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
 
             }
@@ -2347,6 +2358,30 @@ GetAllEdsData()
 
 
             }
+
+            var username = Preferences.Get("Usernamelogin", "");
+
+            var islander = IslanderList.FirstOrDefault(i => i.Name == username);
+            if (islander != null)
+            {
+                Preferences.Set("islanderId", islander.IdIslander.ToString());
+
+                var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
+                if (eds != null)
+                {
+                    Preferences.Set("edsId", eds.IdEds.ToString());
+                    Preferences.Set("edsName", eds.Name);
+
+                    var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
+                    if (business != null)
+                    {
+                        Preferences.Set("businessId", business.IdBusiness.ToString());
+                        Preferences.Set("businessName", business.Name);
+                    }
+                }
+            }
+
+
         }
 
         private async void LoadLastAccumulated(int idDispenser, int idHose)

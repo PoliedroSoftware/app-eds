@@ -32,7 +32,7 @@ namespace APP.Eds.Services.Navigation
     public class MainService : BindableObject
     {
         public ObservableCollection<CategoryModel> Categories { get; set; }
-        public bool IsIslander => Preferences.Get("userRole", "") == "Islander";
+        public bool IsIslander => Preferences.Get("userRole", "") == "User";
         public ICommand NavigateToCourtCommand { get; }
         public MainService()
         {
@@ -41,8 +41,7 @@ namespace APP.Eds.Services.Navigation
             {
                 if (Application.Current?.MainPage is NavigationPage navPage)
                 {
-                    var page = (Page)Activator.CreateInstance(typeof(CourtPostView));
-                    await navPage.PushAsync(page);
+                    await navPage.PushAsync(new CourtPostView());
                 }
             });
 
