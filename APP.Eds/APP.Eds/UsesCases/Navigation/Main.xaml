@@ -3,11 +3,11 @@
     x:Class="APP.Eds.UsesCases.Navigation.Main"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="EDS App(traducir)">
+    Title="APP EDS">
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20">
-                <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal(traducir)" />
+                <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal" />
                 <CollectionView ItemsSource="{Binding Categories}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -24,7 +24,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Logout"
+                <Button Text="Cerrar sección"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"
