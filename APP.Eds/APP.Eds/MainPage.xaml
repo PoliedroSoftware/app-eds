@@ -17,7 +17,7 @@
                    Placeholder="Contraseña"
                    IsPassword="True" 
                    Completed="OnLoginClicked"/>
-            <Button Text="Entar"
+            <Button Text="Entrar"
                     Clicked="OnLoginClicked"
                     BackgroundColor="#512BD4"
                     TextColor="White"

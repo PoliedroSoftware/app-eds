@@ -25,7 +25,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Cerrar sección"
+                <Button Text="Cerrar Sesion"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"
