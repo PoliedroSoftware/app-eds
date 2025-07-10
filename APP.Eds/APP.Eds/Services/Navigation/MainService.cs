@@ -57,7 +57,7 @@ namespace APP.Eds.Services.Navigation
                     new("Dispensadores", typeof(DispensersPostView)),
                     new("Tipo de dispensador", typeof(DispenserTypePostView)),
                     new("Manguera", typeof(HosePostView)),
-                    new("Historial de la mangera", typeof(HoseHistoryPostView))
+                    new("Historial de la manguera", typeof(HoseHistoryPostView))
                 }),
                 new("Productos y Compras", new List<MenuItemModel>
                 {
