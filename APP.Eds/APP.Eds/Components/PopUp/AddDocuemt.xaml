@@ -19,7 +19,7 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="AddDocumentTranslation(traducir)" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="AddDocumentTranslation" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
@@ -41,11 +41,11 @@
 						Clicked="OnSelectFileClicked"
                         AutomationId="SelectFileButton"
 						CornerRadius="10"
-						Text="Select File(traducit)"/>
+						Text="Select File"/>
 					<Label
 						FontAttributes="Bold"
 						IsVisible="{Binding IsFileSelected}"
-						Text="Selected File:(traducir)"
+						Text="Selected File:"
                         AutomationId="SelectedFileLabel"/>
 					<Label
 						FontAttributes="Italic"
@@ -62,7 +62,7 @@
                     AutomationId="AddButton"
                     CornerRadius="10"
                     FontSize="18"
-                    Text="Add(traducir)"
+                    Text="Add"
                     TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>

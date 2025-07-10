@@ -17,7 +17,7 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*" Padding="0,0,0,10">
-                <Label Text="Nuevo Producto(traducir)" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
+                <Label Text="Nuevo Producto" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
                        HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
@@ -31,8 +31,8 @@
                 <VerticalStackLayout>
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label FontSize="16" Text="Producto(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
-                            <Picker x:Name="ProductPicker" Title="Seleccione un producto(traducir)"  Grid.Row="1"
+                            <Label FontSize="16" Text="Producto" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="ProductPicker" Title="Seleccione un producto"  Grid.Row="1"
                                     ItemsSource="{Binding ProductList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
                                     SelectedIndexChanged="ProductSelected" HorizontalTextAlignment="Center"/>
                         </Grid>
@@ -40,8 +40,8 @@
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
-                            <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento(traducir)" Grid.Row="1"
+                            <Label Text="Compartimiento destino" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento" Grid.Row="1"
                                     ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding DisplayCompartiment}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
                                     IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"/>
                         </Grid>
@@ -49,9 +49,9 @@
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de compra por galon" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de compra por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de compra por galon" HorizontalTextAlignment="Center"
                                    Text="{Binding Price, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    Completed="EntryPriceCompleted"
                                    IsEnabled="False"/>
@@ -60,9 +60,9 @@
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Cantidad" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese la cantidad de galones(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese la cantidad de galones" HorizontalTextAlignment="Center"
                                    Text="{Binding Quantity, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="EntryQuantityCompleted"/>
                         </Grid>
@@ -70,9 +70,9 @@
 
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de venta por galon" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de venta por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de venta por galon" HorizontalTextAlignment="Center"
                                    Text="{Binding SellPrice, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="Add_Product"/>
                         </Grid>
@@ -85,7 +85,7 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Product"
                     CornerRadius="10"
-                    FontSize="18" Text="Agregar Egreso(traducir)" TextColor="White"/>
+                    FontSize="18" Text="Agregar Egreso" TextColor="White"/>
         </Grid>
     </Frame>
 </mct:Popup>
