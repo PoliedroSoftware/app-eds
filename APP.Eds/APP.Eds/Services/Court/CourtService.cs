@@ -26,9 +26,12 @@ namespace APP.Eds.Services.Court
 
     {
         public bool LastSendWasSuccessful { get; private set; }
+        public string UserRole { get; set; } = string.Empty;
+        public bool IsUserRole => Preferences.Get("userRole", "") == "User";
 
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
+
         private string? _authToken;
 
         public static void ResetInstanceFields()
@@ -50,6 +53,11 @@ namespace APP.Eds.Services.Court
             _instance.AdditionalInfoDescription = null;
             
         }
+        public static void DestroyInstance()
+        {
+            _instance = null;
+        }
+
 
 
         public ObservableCollection<EdsCourtModel> EdsList { get; set; } = [];
@@ -67,9 +75,9 @@ namespace APP.Eds.Services.Court
         public ObservableCollection<double> AmountResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
-        public bool AreAvailableHoses => HoseDispenserList != null && HoseDispenserList.Count > 0;
-        public bool NewSaleEnabled => IsEdsSelected && AreAvailableHoses;
-        public bool AdditionalInfoEnabled => !string.IsNullOrEmpty(AdditionalInfoDescription);
+        public bool AreAvailableHoses => IsUserRole || HoseDispenserList != null && HoseDispenserList.Count > 0;
+        public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
+        public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
@@ -125,6 +133,7 @@ namespace APP.Eds.Services.Court
                 OnPropertyChanged(nameof(IdIslander));
             }
         }
+
 
         private DateTime _dateStarttime;
         public DateTime DateStarttime
@@ -726,7 +735,7 @@ namespace APP.Eds.Services.Court
         private bool _isEdsSelected;
         public bool IsEdsSelected
         {
-            get => _isEdsSelected;
+            get => IsUserRole || _isEdsSelected;
             set
             {
                 _isEdsSelected = value;
@@ -2250,6 +2259,8 @@ namespace APP.Eds.Services.Court
 
         public CourtService()
         {
+           
+
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             //OcultarListas
 
@@ -2308,36 +2319,46 @@ GetAllEdsData()
                 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+                var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
                 var IslanderResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
                 var edsResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
+
+
+
+                var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+
+                UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
+                UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
+                UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
+
                 var productResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100");
                 var compartimentResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
                 var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
                 var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
                 var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
-                var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
+                
                 var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
-               
 
-                var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
                 var productList = JsonSerializer.Deserialize<ProductCourtResponseModel>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+     
                 var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                
-                UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
-                UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
                 UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
                 UpdateCompartiment(compartimentList?.Data ?? new List<CompartimentCourtModel>());
                 UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
                 UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
                 UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
-                UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
+                
                 UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
 
             }
@@ -2347,6 +2368,29 @@ GetAllEdsData()
 
 
             }
+
+            var username = Preferences.Get("Usernamelogin", "");
+
+            var islander = IslanderList.FirstOrDefault(i => i.Name == username);
+            if (islander != null)
+            {
+                Preferences.Set("islanderId", islander.IdIslander.ToString());
+
+                var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
+                if (eds != null)
+                {
+                    Preferences.Set("edsId", eds.IdEds.ToString());
+                    Preferences.Set("edsName", eds.Name);
+
+                    var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
+                    if (business != null)
+                    {
+                        Preferences.Set("businessId", business.IdBusiness.ToString());
+                        Preferences.Set("businessName", business.Name);
+                    }
+                }
+            }
+
         }
 
         private async void LoadLastAccumulated(int idDispenser, int idHose)
@@ -2806,6 +2850,17 @@ GetAllEdsData()
                 Court.IdBusiness = IdBusiness;
                 Court.IdEds = IdEds;
                 Court.IdIslander = IdIslander;
+
+                UserRole = Preferences.Get("userRole", string.Empty);
+
+                if (UserRole == "User")
+                {
+                    Court.IdBusiness = int.Parse(Preferences.Get("businessId", string.Empty));
+                    Court.IdEds = int.Parse(Preferences.Get("edsId", string.Empty));
+                    Court.IdIslander = int.Parse(Preferences.Get("islanderId", string.Empty));
+                }
+            
+               
                 Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
                 Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
                 Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");

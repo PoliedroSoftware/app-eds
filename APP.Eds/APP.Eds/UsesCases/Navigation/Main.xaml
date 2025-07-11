@@ -3,14 +3,21 @@
     x:Class="APP.Eds.UsesCases.Navigation.Main"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="EDS App(traducir)">
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20">
-                <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal(traducir)" 
-                       AutomationId="LabelMenuPrincipal"/>
-                <CollectionView ItemsSource="{Binding Categories}" AutomationId="CollectionViewCategories">
+                <Label  Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal"
+                        AutomationId="LabelMenuPrincipal" />
+
+                <Button Text="Court"
+                        Command="{Binding NavigateToCourtCommand}"
+                        IsVisible="{Binding IsIslander}"
+                        HeightRequest="50"
+                        BackgroundColor="Purple"
+                        TextColor="White"/>
+                
+                <CollectionView ItemsSource="{Binding Categories}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10"
@@ -27,7 +34,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Logout"
+                <Button Text="Cerrar sección"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"
