@@ -10,12 +10,16 @@ using BusinessModel = APP.Eds.Models.Business.BusinessModel;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using Microsoft.Maui.Controls;
+using APP.Eds.Services.Translations;
 
 namespace APP.Eds.Services.Business;
 
 public class BusinessService : INotifyPropertyChanged
+
 {
     private string? _authToken;
+    public readonly TranslationsService _translations= new TranslationsService();
+
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<BusinessModel> BusinessList { get; set; } = [];
     private BusinessRequest Request { get; set; }
@@ -41,10 +45,55 @@ public class BusinessService : INotifyPropertyChanged
         }
     }
 
-    public string TranslatedNameKey => GlobalTranslations.Get("NameKey");
-    public string TranslatedEnterBusinessPlaceholderKey => GlobalTranslations.Get("EnterBusinessPlaceholderKey");
-    public string TranslatedSendDataButtonKey => GlobalTranslations.Get("SendDataButtonKey");
- 
+    //public string TranslatedNameKey => GlobalTranslations.Get("NameKey");
+    //public string TranslatedEnterBusinessPlaceholderKey => GlobalTranslations.Get("EnterBusinessPlaceholderKey");
+    //public string TranslatedSendDataButtonKey => GlobalTranslations.Get("SendDataButtonKey");
+    private string _translatedNamekey;
+    public string TranslatedNameKey
+    {
+        get => _translatedNamekey;
+        set
+        {
+            _translatedNamekey = value; 
+            OnPropertyChanged(nameof(TranslatedNameKey));
+        }
+    }
+    private string _translatedSendData;
+    public string TranslatedSendData
+    {
+        get => _translatedSendData;
+        set
+        {
+            _translatedSendData = value;
+            OnPropertyChanged(nameof(TranslatedSendData));
+        }
+    }
+    private string _translatedBusinessPlaceholder;
+    public string TranslatedBusinessPlaceholder
+    {
+        get => _translatedBusinessPlaceholder;
+        set
+        {
+            _translatedBusinessPlaceholder = value;
+            OnPropertyChanged(nameof(TranslatedBusinessPlaceholder));
+        }
+    }
+
+    private string _TranslatedBusinessmanagement;
+    public string TranslatedBusinessmanagement
+    {
+        get => _TranslatedBusinessmanagement;
+        set
+        {
+            _TranslatedBusinessmanagement = value;
+            OnPropertyChanged(nameof(TranslatedBusinessmanagement));
+        }
+    }
+
+
+
+
+
     public ICommand GetByIdBusinessDataCommand { get; }
     public ICommand SaveBusinessDataCommand { get; }
  
@@ -53,6 +102,18 @@ public class BusinessService : INotifyPropertyChanged
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         GetByIdBusinessDataCommand = new Command<int>(async (businessId) => await GetByIdBusinessDataAsync(businessId));
         SaveBusinessDataCommand = new Command(async () => await SaveBusinessDataAsync());
+        LoadTranslationsAsync();
+    }
+    public async Task LoadTranslationsAsync()
+    {
+        var result = await _translations.GetTranslationsByLanguageAsync("es-CO");
+        GlobalTranslations.SetTranslations(result ?? []);
+        //SendData = GlobalTranslations.Get("SendData"); 134.122.125.60:8085
+        TranslatedNameKey = GlobalTranslations.Get("BusinessPicker");
+        TranslatedSendData = GlobalTranslations.Get("SendData");
+        TranslatedBusinessPlaceholder = GlobalTranslations.Get("TranslatedBusinessPlaceholder");
+        TranslatedBusinessmanagement = GlobalTranslations.Get("Businessmanagement");
+
     }
 
     public async Task GetByIdBusinessDataAsync(int businessId)

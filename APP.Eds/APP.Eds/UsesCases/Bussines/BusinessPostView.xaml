@@ -3,22 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Business.BusinessPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestión Business">
+             Title="Gestion de Negocio">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-        <Label FontSize="16" Text="{Binding TranslatedNameKey}"/>
-        <Entry
+            <Label FontSize="16" Text="{Binding TranslatedNameKey}"/>
+            <Entry
             Keyboard="Text"
-            Placeholder="{Binding TranslatedEnterBusinessPlaceholderKey}"
+            Placeholder="{Binding TranslatedBusinessPlaceholder}"
             Text="{Binding Name, Mode=TwoWay}" />
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
-            Text="{Binding TranslatedSendDataButtonKey}"
+            Text="{Binding TranslatedSendData }"
             TextColor="White" />
         </VerticalStackLayout>
 
