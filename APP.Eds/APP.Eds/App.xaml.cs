@@ -22,7 +22,7 @@ public partial class App : Application
         
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("EntryCustomization", (handler, view) =>
         {
-#if __ANDROID__
+#if ANDROID
             handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
 #elif __IOS__
             handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;

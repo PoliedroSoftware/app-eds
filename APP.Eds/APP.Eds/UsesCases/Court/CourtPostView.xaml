@@ -19,15 +19,18 @@
                         <Grid ColumnDefinitions="Auto,20, *" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
                             <Label Text="{Binding Business}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
                             <Picker Title="{Binding SelectaBusiness}" Grid.Row="0" Grid.Column="2"
+                                    AutomationId="BusinessPicker"
                                     ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding BusinessList}"
                                     SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" SelectedIndexChanged="OnBusinessSelected"/>
                             <Label Text="{Binding Eds}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
                             <Picker Title="{Binding SelectaEds}" Grid.Row="1" Grid.Column="2"
+                                    AutomationId="EdsPicker"
                                     ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding EdsSelectList}"
                                     SelectedItem="{Binding SelectedEds, Mode=TwoWay}" SelectedIndexChanged="OnEdsSelected" 
                                     IsEnabled="{Binding IsBusinessSelected}"/>
                             <Label Text="{Binding Islander}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
                             <Picker Title="{Binding SelectAnIslander}" Grid.Row="2" Grid.Column="2"
+                                    AutomationId="IslanderPicker"
                                     ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding IslanderSelectList}"
                                     SelectedItem="{Binding SelectedIslander, Mode=TwoWay}" SelectedIndexChanged="OnIslanderSelected"
                                     IsEnabled="{Binding IsEdsSelected}"/>
@@ -41,13 +44,13 @@
                         <Label FontAttributes="Bold" FontSize="18" Text="{Binding Time}" HorizontalOptions="Center"/>
                         <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding DateTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0"/>
-                            <DatePicker x:Name="datePicker" Date="{Binding DateStarttime, Mode=TwoWay}" MinimumDate="1900-01-01" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center"/>
+                            <DatePicker x:Name="datePicker" AutomationId="DatePicker" Date="{Binding DateStarttime, Mode=TwoWay}" MinimumDate="1900-01-01" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center"/>
 
                             <Label Text="{Binding StartTime}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <TimePicker Time="{Binding Starttime, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center"/>
+                            <TimePicker AutomationId="StartTimePicker" Time="{Binding Starttime, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center"/>
 
                             <Label Text="{Binding EndTime }" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="2"/>
-                            <TimePicker Time="{Binding Endtime, Mode=TwoWay}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center"/>
+                            <TimePicker AutomationId="EndTimePicker" Time="{Binding Endtime, Mode=TwoWay}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
@@ -63,7 +66,7 @@
                             <Label Text="{Binding TotalAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
 
                             <Label Text="{Binding SalesInGallons}" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalGallons, StringFormat='{0:N0}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalGallons, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
 
                             
                             <Label Text="{Binding Expenses}" FontAttributes="Bold" VerticalOptions="End" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" />
@@ -77,7 +80,7 @@
                             <Label Text="{Binding TotalSales, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="5" Grid.Column="1" HorizontalOptions="Center" />
                  
                             <Label Text="{Binding DistinticDescription}" Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" />
-                            <Entry Keyboard="Numeric" Placeholder="Ingrese el distintic (traducir)" Text="{Binding Distintic, Mode=TwoWay}" Grid.Row="5" Grid.Column="2" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Entry Keyboard="Numeric" Placeholder="Ingrese el distintic" Text="{Binding Distintic, Mode=TwoWay}" Grid.Row="5" Grid.Column="2" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
@@ -87,6 +90,7 @@
                     <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️" 
                              Command="{Binding HideListDispenser}"
+                             AutomationId="HideDispenserListButton"
                              WidthRequest="46" HeightRequest="46" 
                              BackgroundColor="Transparent"
                              HorizontalOptions="End"
@@ -107,23 +111,24 @@
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
-                                    <Label Text="Number(traducir)" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="Number" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding NumberName}" Grid.Row="0" Grid.Column="2"/>
 
-                                    <Label Text="Accumulated Amount(traducir" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="Accumulated Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
-                                    <Label Text="Gallons Accumulated(traducir)" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N0}'}" Grid.Row="2" Grid.Column="2"/>
+                                    <Label Text="Gallons Accumulated" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N2}'}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
+                                        AutomationId="DeleteDispenserButton"
                                         Grid.Column="3" Grid.RowSpan="3"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
                                         CornerRadius="0"
                                         VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
                                         CommandParameter="{Binding .}"/>
                                 </Grid>
                             </Frame>
@@ -133,9 +138,10 @@
 
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
-                    <Label Text="AddedDocuments(traducir)" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️"
                              Command="{Binding HideDocumentList}"
+                             AutomationId="HideDocumentListButton"
                              WidthRequest="46"  HeightRequest="46"
                              BackgroundColor="Transparent" HorizontalOptions="End"
                              Grid.Column="1">
@@ -165,6 +171,7 @@
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding DocumentName}"/>
 
                                     <Button Text="X" 
+                                        AutomationId="DeleteDocumentButton"
                                         Grid.Column="3" Grid.RowSpan="2"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
@@ -184,6 +191,7 @@
                     <Label  Text="{Binding AddedExpenses}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️"  
                              Command="{Binding HideExpenseList}"
+                             AutomationId="HideExpenseListButton"
                              WidthRequest="46" HeightRequest="46" 
                              BackgroundColor="Transparent"
                              HorizontalOptions="End"
@@ -220,6 +228,7 @@
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
+                                        AutomationId="DeleteExpenseButton"
                                         Grid.Column="3" Grid.RowSpan="3"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
@@ -239,6 +248,7 @@
                     <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button Text="💬"
                             Command="{Binding HideCollectionList}"
+                            AutomationId="HideCollectionListButton"
                             WidthRequest="46"  HeightRequest="46" 
                             BackgroundColor="Transparent"
                             HorizontalOptions="End"
@@ -275,6 +285,7 @@
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
+                                        AutomationId="DeleteCollectionButton"
                                         Grid.Column="3" Grid.RowSpan="3"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
@@ -297,7 +308,8 @@
                             FontSize="Medium"
                             Text="💬"
                             BackgroundColor="Transparent"
-                            Clicked="OpenAdditionalInfoPopUp"/>
+                            Clicked="OpenAdditionalInfoPopUp"
+                            AutomationId="OpenAdditionalInfoButton"/>
                 </Grid>
                 <Frame x:Name="AdditionalInfo"
                        Padding="10"
@@ -306,16 +318,50 @@
                     <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" />
                 </Frame>
 
-                <!-- Botones -->
-                <VerticalStackLayout Spacing="10"  x:Name="Button">
-                    <Button Clicked="OpenDispenserPopUp" Text="{Binding NewSale}" Command="{Binding OpenDispenserCommand}" IsEnabled="{Binding NewSaleEnabled}"/>
-                    <Button Clicked="OpenDocumentPopUp" Text="{Binding UploadProofOfPayment}" IsEnabled="{Binding IsEdsSelected}"/>
-                    <Button Clicked="OpenExpenditurePopUp" Text="{Binding NewEgress}" IsEnabled="{Binding IsEdsSelected}"/>
-                    <Button Clicked="OpenTypeOfCollectionPopUp" Text="{Binding AddCollectionType}" IsEnabled="{Binding IsEdsSelected}"/>
+                <!-- Bottons -->
+                <VerticalStackLayout Spacing="10" x:Name="Button">
+                    
+                    <Frame BorderColor="Red" CornerRadius="8" Padding="10" BackgroundColor="transparent">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Obligatorio"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="Red"
+                                   HorizontalOptions="Center"/>
+                            <Button
+                                    Clicked="OpenDispenserPopUp"
+                                    Text="{Binding NewSale}"
+                                    Command="{Binding OpenDispenserCommand}"
+                                    AutomationId="AddSaleButton"
+                                    IsEnabled="{Binding NewSaleEnabled}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="0,5,0,0"/>
+                            <Button
+                                    Clicked="OpenTypeOfCollectionPopUp"
+                                    AutomationId="AddCollectionTypeButton"
+                                    Text="{Binding AddCollectionType}"
+                                    IsEnabled="{Binding IsEdsSelected}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="0,5,0,0"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <!-- Otros botones -->
+                    <Button
+                            Clicked="OpenDocumentPopUp"
+                            AutomationId="UploadProofButton"
+                            Text="{Binding UploadProofOfPayment}"
+                            IsEnabled="{Binding IsEdsSelected}"/>
+                    <Button
+                            Clicked="OpenExpenditurePopUp"
+                            AutomationId="AddExpenditureButton"
+                            Text="{Binding NewEgress}"
+                            IsEnabled="{Binding IsEdsSelected}"/>
                 </VerticalStackLayout>
 
-                <!-- Botón de envío -->
-                <Button  x:Name="SendData" Text="{Binding SendData}"
+
+                <Button  x:Name="SendData" 
+                         AutomationId="SendDataButton"
+                         Text="{Binding SendData}"
                          TextColor="White" BackgroundColor="Green"
                          Clicked="Button_Clicked"
                          CornerRadius="10"
@@ -329,7 +375,9 @@
                 </Button>
             </VerticalStackLayout>
         </ScrollView>
-        <Button x:Name="Questions" Text="📜"
+        <Button x:Name="Questions" 
+                AutomationId="QuestionsButton"
+                Text="📜"
                 FontSize="30"
                 WidthRequest="50" HeightRequest="50"
                 CornerRadius="10" Padding="0"

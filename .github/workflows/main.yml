@@ -21,10 +21,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Override TargetFrameworks for Android build
+        run: |
+          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > Directory.Build.props
+
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+    
+      - name: Install .NET MAUI Android workload
+        run: dotnet workload install maui-android
 
       - name: Install Android dependencies
         run: |
@@ -34,24 +41,23 @@ jobs:
           unzip tools.zip -d $HOME/cmdline-tools
           yes | $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk --licenses
           $HOME/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/Android/Sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
           echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
           echo "$HOME/Android/Sdk/platform-tools" >> $GITHUB_PATH
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj -p:TargetFramework=net8.0-android
 
       - name: Build Android project
         run: |
-          dotnet publish APP.Eds/APP.Eds.csproj \
-            -f:net8.0-android \
-            -c:Release \
-            -o:./output
+          dotnet build APP.Eds/APP.Eds/APP.Eds.csproj \
+            -c Release \
+            -f net8.0-android
+            -p:TargetFramework=net8.0-android
 
       - name: Find APK
         id: locate_apk
         run: |
-          APK_PATH=$(find ./output -name "*.apk" | head -n 1)
+          APK_PATH=$(find APP.Eds/APP.Eds/bin/Release/net8.0-android -name "*.apk" | head -n 1)
           echo "APK path: $APK_PATH"
           echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
 

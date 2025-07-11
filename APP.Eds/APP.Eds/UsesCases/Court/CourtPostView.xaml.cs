@@ -17,7 +17,9 @@ public partial class CourtPostView : ContentPage
     {
 
         InitializeComponent();
+
         _service = CourtService.Instance;
+
         _service.DateStarttime = DateTime.Today;
         BindingContext = _service;
         datePicker.MinimumDate = new DateTime(1900, 1, 1);
@@ -43,7 +45,9 @@ public partial class CourtPostView : ContentPage
         {
             LoadingOverlay.ShowLoading();
             MainContent.IsVisible = false;
-            await _service.GetAllEdsData();
+            Business.IsVisible = (UserRole is "Admin");
+            
+
             await _service.LoadTranslationsAsync();
         }
         catch (Exception ex)
@@ -97,21 +101,54 @@ public partial class CourtPostView : ContentPage
     {
         if (BindingContext is CourtService vm)
         {
-            if (vm.SelectedBusiness is null)
+            double totalAmount = vm.GetTotalAmount();
+            double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
+            double totalExpenditures = vm.GetTotalExpenditure();
+
+            if (UserRole == "Admin")
             {
-                await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
+                if (vm.SelectedBusiness is null)
+                {
+                    await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
+                    return;
+                }
+                if (vm.SelectedEds is null)
+                {
+                    await DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
+                    return;
+                }
+                if (vm.SelectedIslander is null)
+                {
+                    await DisplayAlert("Error", "Por favor, seleccione un Isle�o", "OK");
+                    return;
+                }
+            }
+
+            if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
+            {
+                await DisplayAlert("Error", "Debe agregar al menos un dispensador", "OK");
                 return;
             }
-            if (vm.SelectedEds is null)
+
+            if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
             {
-                await DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
+                await DisplayAlert("Error", "Debe agregar al menos un tipo recuado", "OK");
                 return;
             }
-            if (vm.SelectedIslander is null)
-            {
-                await DisplayAlert("Error", "Por favor, seleccione un Isle�o", "OK");
-                return;
-            }
+            //if (totalAmmount != totalTypeOfCollection)
+            //{
+            //    await Application.Current.MainPage.DisplayAlert("Error", $"La suma de los tipos de cobro no coincide con el total del día", "OK");
+            //    return;
+            //}
+
+                double cash = totalTypeOfCollection - totalExpenditures;
+                const double epsilon = 1e-6;
+                if (cash < -epsilon)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
+                    return;
+                }
+
 
             var selectedId = vm.SelectedEds.IdEds;
 
