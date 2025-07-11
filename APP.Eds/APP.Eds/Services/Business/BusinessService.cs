@@ -41,8 +41,9 @@ public class BusinessService : INotifyPropertyChanged
         }
     }
 
-    // Propiedad para acceder al servicio de traducciones desde el XAML
-    public GlobalTranslations Translations => new GlobalTranslations();
+    public string TranslatedNameKey => GlobalTranslations.Get("NameKey");
+    public string TranslatedEnterBusinessPlaceholderKey => GlobalTranslations.Get("EnterBusinessPlaceholderKey");
+    public string TranslatedSendDataButtonKey => GlobalTranslations.Get("SendDataButtonKey");
  
     public ICommand GetByIdBusinessDataCommand { get; }
     public ICommand SaveBusinessDataCommand { get; }

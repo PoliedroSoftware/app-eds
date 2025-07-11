@@ -9,16 +9,16 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-        <Label FontSize="16" Text="{Binding Translations.Get('NameKey')}"/>
+        <Label FontSize="16" Text="{Binding TranslatedNameKey}"/>
         <Entry
             Keyboard="Text"
-            Placeholder="{Binding Translations.Get('EnterBusinessPlaceholderKey')}"
+            Placeholder="{Binding TranslatedEnterBusinessPlaceholderKey}"
             Text="{Binding Name, Mode=TwoWay}" />
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
-            Text="{Binding Translations.Get('SendDataButtonKey')}"
+            Text="{Binding TranslatedSendDataButtonKey}"
             TextColor="White" />
         </VerticalStackLayout>
 
