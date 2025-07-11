@@ -8,19 +8,21 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20">
-                <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal(traducir)" />
-                <CollectionView ItemsSource="{Binding Categories}">
+                <Label Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal(traducir)" 
+                       AutomationId="LabelMenuPrincipal"/>
+                <CollectionView ItemsSource="{Binding Categories}" AutomationId="CollectionViewCategories">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10"
-                                   CornerRadius="10">
+                                   CornerRadius="10" AutomationId="FrameCategory">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding ShowPopupCommand}" />
                                 </Frame.GestureRecognizers>
                                 <Label FontSize="18"
                                        HorizontalOptions="Center"
                                        Text="{Binding Title}"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"
+                                       AutomationId="LabelCategoryTitle"/>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -30,7 +32,8 @@
                         BackgroundColor="Red"
                         TextColor="White"
                         HeightRequest="50" 
-                        Margin="0,20,0,0"/>
+                        Margin="0,20,0,0"
+                        AutomationId="ButtonLogout"/>
             </VerticalStackLayout>
         </ScrollView>
         <Grid x:Name="LoadingOverlay"
@@ -38,13 +41,15 @@
               IsVisible="False"
               VerticalOptions="Fill"
               HorizontalOptions="Fill"
-              ZIndex="1">
+              ZIndex="1"
+              AutomationId="GridLoadingOverlay">
             <ActivityIndicator IsRunning="True"
                                Color="Purple"
                                VerticalOptions="Center"
                                HorizontalOptions="Center"
                                WidthRequest="50"
-                               HeightRequest="50" />
+                               HeightRequest="50"
+                               AutomationId="ActivityIndicatorLoading"/>
         </Grid>
     </Grid>
 </ContentPage>

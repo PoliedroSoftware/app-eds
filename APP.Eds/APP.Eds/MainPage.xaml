@@ -8,29 +8,35 @@
             <Label Text="Login" 
                    FontSize="24"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center" 
+                   AutomationId="LabelLogin"/>
             <Entry x:Name="UsernameEntry"
                    Placeholder="Username"
                    Keyboard="Text"
-                   Completed="UsernameEntry_Completed"/>
+                   Completed="UsernameEntry_Completed"
+                   AutomationId="EntryUsername"/>
             <Entry x:Name="PasswordEntry" 
                    Placeholder="Password"
                    IsPassword="True" 
-                   Completed="OnLoginClicked"/>
+                   Completed="OnLoginClicked"
+                   AutomationId="EntryPassword"/>
             <Button Text="Login"
                     Clicked="OnLoginClicked"
                     BackgroundColor="#512BD4"
                     TextColor="White"
-                    HeightRequest="50" />
+                    HeightRequest="50" 
+                    AutomationId="ButtonLogin"/>
             <ActivityIndicator x:Name="LoadingIndicator"
                                IsVisible="False"
                                IsRunning="False"
                                Color="#512BD4"
-                               HorizontalOptions="Center" />
+                               HorizontalOptions="Center"
+                               AutomationId="ActivityIndicatorLoading"/>
             <!-- Error display -->
             <Label x:Name="ErrorLabel"
                    TextColor="Red"
-                   IsVisible="False" />
+                   IsVisible="False"
+                   AutomationId="LabelError"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

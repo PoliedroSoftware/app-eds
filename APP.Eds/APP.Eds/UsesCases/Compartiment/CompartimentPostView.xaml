@@ -16,47 +16,54 @@
                 <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Number"
-                Text="{Binding Number, Mode=TwoWay}"/>
+                Text="{Binding Number, Mode=TwoWay}"
+                AutomationId="EntryCompartimentNumber"/>
 
                 <Label FontSize="16"
                     Text="Nominal"/>
                 <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Nominal"
-                Text="{Binding Nominal, Mode=TwoWay}"/>
+                Text="{Binding Nominal, Mode=TwoWay}"
+                AutomationId="EntryCompartimentNominal"/>
 
                 <Label FontSize="16"
                     Text="Operative"/>
                 <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Operative"
-                Text="{Binding Operative, Mode=TwoWay}"/>
+                Text="{Binding Operative, Mode=TwoWay}"
+                AutomationId="EntryCompartimentOperative"/>
 
                 <Label FontSize="16"
                     Text="Stock"/>
                 <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Stock"
-                Text="{Binding Stock, Mode=TwoWay}"/>
+                Text="{Binding Stock, Mode=TwoWay}"
+                AutomationId="EntryCompartimentStock"/>
 
                 <Label FontSize="16"
                     Text="Height"/>
                 <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Height"
-                Text="{Binding Height, Mode=TwoWay}"/>
+                Text="{Binding Height, Mode=TwoWay}"
+                AutomationId="EntryCompartimentHeight"/>
 
                 <Picker Title="Seleccione un Tank"
                     ItemsSource="{Binding TankList}"
                     ItemDisplayBinding="{Binding Number}"
-                    SelectedItem="{Binding SelectedTank, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                    AutomationId="PickerTank"/>
 
                 <Button
                 BackgroundColor="Green"
                 Clicked="Button_Clicked_1"
                 CornerRadius="10"
                 Text="Enviar Datos"
-                TextColor="White"/>
+                TextColor="White"
+                AutomationId="ButtonSendCompartimentData"/>
 
                 <Label FontSize="18" Text="Lista de dispensers"/>
 

@@ -14,7 +14,8 @@
             <Entry
             Keyboard="Text"
             Placeholder="Ingresar Tipo de Dispensador"
-            Text="{Binding Description, Mode=TwoWay}" />
+            Text="{Binding Description, Mode=TwoWay}" 
+            AutomationId="EntryDispenserType"/>
             <button:HoverButton
                 BackgroundColor="Green"
                 Clicked="Button_Clicked_1"
@@ -24,10 +25,12 @@
                 Text="Enviar Datos"
                 HoverColor="Gray"
                 PressedColor="AliceBlue"
-                TextColor="White" />
+                TextColor="White"
+                AutomationId="ButtonSendDispenserType"/>
         </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
-                            AbsoluteLayout.LayoutFlags="All"/>
+                            AbsoluteLayout.LayoutFlags="All"
+                            AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>

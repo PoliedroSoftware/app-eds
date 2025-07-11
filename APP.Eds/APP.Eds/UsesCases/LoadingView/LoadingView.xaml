@@ -4,24 +4,27 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:vm="clr-namespace:APP.Eds.Services.Court">
 
-	<Grid
+    <Grid
 		x:Name="LoadingOverlay"
 		BackgroundColor="#80000000"
 		IsVisible="False"
 		HorizontalOptions="FillAndExpand"
-		VerticalOptions="FillAndExpand">
+		VerticalOptions="FillAndExpand"
+        AutomationId="GridLoadingOverlay">
 
-		<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
 
 			<ActivityIndicator x:Name="LoadingIndicator"
 							   IsRunning="False"
 							   Color="DodgerBlue"
 							   WidthRequest="60"
-							   HeightRequest="60"/>
+							   HeightRequest="60"
+                               AutomationId="ActivityIndicatorLoading"/>
 			<Label x:Name="LoadingLabel" Text="Cargando...." FontSize="25"
 				TextColor="Red"
 				IsVisible="False"
-				HorizontalOptions="Center"/>
+				HorizontalOptions="Center"
+                AutomationId="LabelLoadingText"/>
 		</StackLayout>
 	</Grid>
 </ContentView>

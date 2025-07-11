@@ -17,24 +17,28 @@
                     ItemsSource="{Binding CapacityList}"
                     ItemDisplayBinding="{Binding Code}"
                     SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
-                    Margin="0,6,0,6"/>
+                    Margin="0,6,0,6"
+                    AutomationId="PickerCapacity"/>
 
             <Picker Title="Seleccione Un Compartiment"
                     ItemsSource="{Binding CompartimentList}"
                     ItemDisplayBinding="{Binding Number}"
                     SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
-                    Margin="0,6,0,6"/>
+                    Margin="0,6,0,6"
+                    AutomationId="PickerCompartiment"/>
 
-            <Entry Keyboard="Text"
-                   Placeholder="Enter Default"
-                   Text="{Binding Default, Mode=TwoWay}" />
+            <Entry  Keyboard="Text"
+                    Placeholder="Enter Default"
+                    Text="{Binding Default, Mode=TwoWay}" 
+                    AutomationId="EntryDefault"/>
 
             <Button BackgroundColor="Green"
                     Clicked="Button_Clicked"
                     CornerRadius="10"
                     Text="Enviar Datos"
                     TextColor="White"
-                    Margin="0,11,0,11"/>
+                    Margin="0,11,0,11"
+                    AutomationId="ButtonSendData"/>
 
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
