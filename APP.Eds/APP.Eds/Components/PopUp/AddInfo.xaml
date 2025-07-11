@@ -12,32 +12,36 @@
 		BorderColor="#6200E8"
 		CornerRadius="15"
 		HasShadow="True"
-		WidthRequest="390">
+		WidthRequest="390"
+        AutomationId="FrameAddInfo">
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="Agregar Informacion Extra(traducir)" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="Agregar Informacion Extra(traducir)" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" AutomationId="LabelAddInfo"/>
                 <Button Grid.Column="2" Margin="10,0,0,0"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
                         FontSize="18" Text="✖" TextColor="#6200E8"
                         WidthRequest="30" HeightRequest="30"
                         Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"/>
+                        HorizontalOptions="End" VerticalOptions="Center"
+                        AutomationId="ButtonClosePopup"/>
             </Grid>
             
             <!--  Campos de Entrada  -->
             <Frame Grid.Row="1"
                    Padding="10"
-                CornerRadius="10">
+                CornerRadius="10"
+                   AutomationId="FrameDescriptionInput">
             <VerticalStackLayout Spacing="10">
                     <Editor
                         HeightRequest="300"
                         AutoSize="Disabled"
                         Placeholder="{Binding EnterADescription}"
-                        Text="{Binding AditionalInfoDescription, Mode=TwoWay}" />
+                        Text="{Binding AditionalInfoDescription, Mode=TwoWay}"
+                        AutomationId="EditorDescription"/>
                 </VerticalStackLayout>
             </Frame>
         </Grid>

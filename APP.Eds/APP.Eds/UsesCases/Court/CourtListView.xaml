@@ -37,7 +37,8 @@
                                     FontSize="30"
                                     WidthRequest="40" HeightRequest="40" Padding="0"
                                     HorizontalOptions="End" VerticalOptions="Center"
-                                    Grid.RowSpan="8" Grid.Column="3"/>
+                                    Grid.RowSpan="8" Grid.Column="3"
+                                    AutomationId="ButtonCourtInfo"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>
@@ -46,6 +47,7 @@
         <!-- Loading after of sendButton-->
         <controls:LoadingView x:Name="LoadingOverlay"
                       AbsoluteLayout.LayoutBounds="0,0,1,1"
-                      AbsoluteLayout.LayoutFlags="All"/>
+                      AbsoluteLayout.LayoutFlags="All"
+                      AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>

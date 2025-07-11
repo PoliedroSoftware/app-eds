@@ -15,34 +15,40 @@
                 <Entry
             Keyboard="Text"
             Placeholder="Ingresar Dispensador"
-            Text="{Binding Code, Mode=TwoWay}" />
+            Text="{Binding Code, Mode=TwoWay}" 
+            AutomationId="EntryDispenserCode"/>
 
                 <Label FontSize="16" Text="Numero"/>
                 <Entry
             Keyboard="Numeric"
             Placeholder="Digite Numero"
-            Text="{Binding Number, Mode=TwoWay}" />
+            Text="{Binding Number, Mode=TwoWay}" 
+            AutomationId="EntryDispenserNumber"/>
 
                 <Picker Title="Seleccione un Dispensador"
             ItemsSource="{Binding DispenserTypeList}"
             ItemDisplayBinding="{Binding Description}"
-            SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" />
+            SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" 
+            AutomationId="PickerDispenserType"/>
 
                 <Picker Title="Seleccione un EDS"
             ItemsSource="{Binding EdsList}"
             ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"/>
+            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+            AutomationId="PickerEds"/>
 
                 <Picker Title="Seleccione una Isla"
             ItemsSource="{Binding IslandList}"
             ItemDisplayBinding="{Binding Description}"
-            SelectedItem="{Binding SelectedIsland, Mode=TwoWay}" />
+            SelectedItem="{Binding SelectedIsland, Mode=TwoWay}"
+            AutomationId="PickerIsland"/>
 
                 <Label FontSize="16" Text="Numero de Manguera"/>
                 <Entry
             Keyboard="Numeric"
             Placeholder="Enter Hose Number"
-            Text="{Binding HoseNumber, Mode=TwoWay}"/>
+            Text="{Binding HoseNumber, Mode=TwoWay}"
+            AutomationId="EntryHoseNumber"/>
 
                 <button:HoverButton
                     BackgroundColor="Green"
@@ -53,7 +59,8 @@
                     Text="Enviar Datos"
                     HoverColor="Gray"
                     PressedColor="AliceBlue"
-                    TextColor="White" />
+                    TextColor="White" 
+                    AutomationId="ButtonSendData"/>
                 
                 <Label FontSize="18" Text="Lista de Dispensadores"/>
 
@@ -84,7 +91,8 @@
             </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
  </ScrollView>
 </ContentPage>

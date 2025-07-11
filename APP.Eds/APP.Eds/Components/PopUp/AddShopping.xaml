@@ -5,76 +5,95 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
     CanBeDismissedByTappingOutsideOfPopup="False"
-    Color="Transparent">
+    Color="Transparent"
+    AutomationId="PopupAddShopping">
 
     <Frame Padding="20"
            BorderColor="#6200E8"
            CornerRadius="15"
            HasShadow="True"
-           HeightRequest="600" WidthRequest="380">
+           HeightRequest="600" WidthRequest="380"
+           AutomationId="FrameAddShopping">
 
         <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*" Padding="0,0,0,10">
                 <Label Text="Nuevo Producto(traducir)" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
-                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"
+                       AutomationId="LabelAddShopping"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
                         FontSize="18" Text="✖" TextColor="#6200E8"
                         WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"/>
+                        HorizontalOptions="End" VerticalOptions="Center"
+                        AutomationId="ButtonClosePopup"/>
             </Grid>
 
             <ScrollView Grid.Row="1" MaximumHeightRequest="500">
                 <VerticalStackLayout>
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10"
+                           AutomationId="FrameProductPicker">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label FontSize="16" Text="Producto(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label FontSize="16" Text="Producto(traducir)" HorizontalOptions="Center" Grid.Row="0"
+                                   AutomationId="LabelProduct"/>
                             <Picker x:Name="ProductPicker" Title="Seleccione un producto(traducir)"  Grid.Row="1"
                                     ItemsSource="{Binding ProductList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-                                    SelectedIndexChanged="ProductSelected" HorizontalTextAlignment="Center"/>
+                                    SelectedIndexChanged="ProductSelected" HorizontalTextAlignment="Center"
+                                    AutomationId="PickerProduct"/>
                         </Grid>
                     </Frame>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10"
+                           AutomationId="FrameCompartimentPicker">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"
+                                   AutomationId="LabelCompartiment"/>
                             <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento(traducir)" Grid.Row="1"
                                     ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding DisplayCompartiment}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
-                                    IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"/>
+                                    IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"
+                                    AutomationId="PickerCompartiment"/>
                         </Grid>
                     </Frame>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10"
+                           AutomationId="FramePriceEntry">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"
+                                   AutomationId="LabelPrice"/>
                             <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
                                    Placeholder="Ingrese el precio de compra por galon(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding Price, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    Completed="EntryPriceCompleted"
-                                   IsEnabled="False"/>
+                                   IsEnabled="False"
+                                   AutomationId="EntryPrice"/>
                         </Grid>
                     </Frame>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10"
+                           AutomationId="FrameQuantityEntry">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"
+                                   AutomationId="LabelQuantity"/>
                             <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
                                    Placeholder="Ingrese la cantidad de galones(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding Quantity, Mode=TwoWay, StringFormat='{0:N0}'}"
-                                   IsEnabled="False" Completed="EntryQuantityCompleted"/>
+                                   IsEnabled="False" Completed="EntryQuantityCompleted"
+                                   AutomationId="EntryQuantity"/>
                         </Grid>
                     </Frame>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10"
+                           AutomationId="FrameSellPriceEntry">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"
+                                   AutomationId="LabelSellPrice"/>
                             <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
                                    Placeholder="Ingrese el precio de venta por galon(traducir)" HorizontalTextAlignment="Center"
                                    Text="{Binding SellPrice, Mode=TwoWay, StringFormat='{0:N0}'}"
-                                   IsEnabled="False" Completed="Add_Product"/>
+                                   IsEnabled="False" Completed="Add_Product"
+                                   AutomationId="EntrySellPrice"/>
                         </Grid>
                     </Frame>
                 </VerticalStackLayout>
@@ -85,7 +104,8 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Product"
                     CornerRadius="10"
-                    FontSize="18" Text="Agregar Egreso(traducir)" TextColor="White"/>
+                    FontSize="18" Text="Agregar Egreso(traducir)" TextColor="White"
+                    AutomationId="ButtonAddProduct"/>
         </Grid>
     </Frame>
 </mct:Popup>

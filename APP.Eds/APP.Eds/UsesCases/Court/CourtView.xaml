@@ -70,8 +70,9 @@
 			<Entry
 				x:Name="CourtIdEntry"
 				Keyboard="Numeric"
-				Placeholder="Enter Court ID" />
-			<Button Text="Load Court Data" Clicked="Button_Clicked"/>
+				Placeholder="Enter Court ID" 
+                AutomationId="EntryCourtId"/>
+            <Button Text="Load Court Data" Clicked="Button_Clicked" AutomationId="ButtonLoadCourtData"/>
 		</StackLayout>
 	</ScrollView>
 </ContentPage>
