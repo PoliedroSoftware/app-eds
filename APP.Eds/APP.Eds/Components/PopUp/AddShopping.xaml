@@ -19,7 +19,7 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*" Padding="0,0,0,10">
-                <Label Text="Nuevo Producto(traducir)" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
+                <Label Text="Nuevo Producto" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
                        HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"
                        AutomationId="LabelAddShopping"/>
                 <Button Grid.Column="2"
@@ -39,6 +39,8 @@
                             <Label FontSize="16" Text="Producto(traducir)" HorizontalOptions="Center" Grid.Row="0"
                                    AutomationId="LabelProduct"/>
                             <Picker x:Name="ProductPicker" Title="Seleccione un producto(traducir)"  Grid.Row="1"
+                            <Label FontSize="16" Text="Producto" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="ProductPicker" Title="Seleccione un producto"  Grid.Row="1"
                                     ItemsSource="{Binding ProductList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
                                     SelectedIndexChanged="ProductSelected" HorizontalTextAlignment="Center"
                                     AutomationId="PickerProduct"/>
@@ -51,6 +53,8 @@
                             <Label Text="Compartimiento destino(traducir)" HorizontalOptions="Center" Grid.Row="0"
                                    AutomationId="LabelCompartiment"/>
                             <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento(traducir)" Grid.Row="1"
+                            <Label Text="Compartimiento destino" HorizontalOptions="Center" Grid.Row="0"/>
+                            <Picker x:Name="CompartimentPicker" Title="Seleccione un compartimiento" Grid.Row="1"
                                     ItemsSource="{Binding CompartimentList}" ItemDisplayBinding="{Binding DisplayCompartiment}" SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
                                     IsEnabled="False" SelectedIndexChanged="CompartimentSelected"  HorizontalTextAlignment="Center"
                                     AutomationId="PickerCompartiment"/>
@@ -62,8 +66,9 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="Precio de compra por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"
                                    AutomationId="LabelPrice"/>
+                            <Label Text="Precio de compra por galon" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de compra por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de compra por galon" HorizontalTextAlignment="Center"
                                    Text="{Binding Price, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    Completed="EntryPriceCompleted"
                                    IsEnabled="False"
@@ -76,8 +81,9 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="Cantidad(traducir)" HorizontalOptions="Center" Grid.Row="0"
                                    AutomationId="LabelQuantity"/>
+                            <Label Text="Cantidad" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese la cantidad de galones(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese la cantidad de galones" HorizontalTextAlignment="Center"
                                    Text="{Binding Quantity, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="EntryQuantityCompleted"
                                    AutomationId="EntryQuantity"/>
@@ -89,8 +95,9 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="Precio de venta por galon(traducir)" HorizontalOptions="Center" Grid.Row="0"
                                    AutomationId="LabelSellPrice"/>
+                            <Label Text="Precio de venta por galon" HorizontalOptions="Center" Grid.Row="0"/>
                             <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de venta por galon(traducir)" HorizontalTextAlignment="Center"
+                                   Placeholder="Ingrese el precio de venta por galon" HorizontalTextAlignment="Center"
                                    Text="{Binding SellPrice, Mode=TwoWay, StringFormat='{0:N0}'}"
                                    IsEnabled="False" Completed="Add_Product"
                                    AutomationId="EntrySellPrice"/>
