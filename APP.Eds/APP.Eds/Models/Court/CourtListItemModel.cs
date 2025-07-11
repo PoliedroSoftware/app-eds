@@ -19,6 +19,33 @@ public class CourtListItemModel
     public List<DispenserItem> Dispensers { get; set; }
     public List<DocumentItem> Documents { get; set; }
     public List<ExpenditureItem> Expenditures { get; set; }
+
+//Traducciones
+    public string DateTranslation { get; set; }
+    public string ConsecutiveTranslation { get; set; }
+    public string IslanderTranslation { get; set; }
+    public string CourtDetailTranslation { get; set; }
+    public string ShiftTranslation { get; set; }
+    public string TotalsTranslation { get; set; }
+    public string AccumulatedAmountTranslation { get; set; }
+    public string AccumulatedGallonsTranslations { get; set; }
+    public string DistincTranslation { get; set; }
+    public string DispensersTranslation { get; set; }
+    public string AccumulatedGallons { get; set; }
+    public string LastAccumulatedAmountTranslation { get; set; }
+    public string LastAccumulatedGallonsTranslation { get; set; }
+    public string DocumentsTranslation { get; set; }
+    public string ExpendituresTranslation { get; set; }
+    public string CourtTranslation { get; set; }
+    public string ThereIsNoImageTranslation { get; set; }
+    public string ExpenditureTranslation { get; set; }
+
+
+}
+
+public class Translation
+{
+    public string DateTranslation { get; set; }
 }
 
 public class CollectionItem
@@ -29,6 +56,10 @@ public class CollectionItem
     public string Collection { get; set; }
     public double Amount { get; set; }
     public string Description { get; set; }
+    public string DateTranslation { get; set; }
+    public string CollectionTranslation { get; set; }
+    public string AmountTranslation { get; set; }
+    public string DescriptionTranslation { get; set; }
 }
 
 public class DispenserItem
@@ -52,6 +83,16 @@ public class DispenserItem
     public string ProductType { get; set; }
     public double AccumulatedAmount { get; set; }
     public double AccumulatedGallons { get; set; }
+    public string DispenserTranslation { get; set; }
+    public string NumberHoseTranslation { get; set; }
+    public string ProductTranslation { get; set; }
+    public string PriceTranslation { get; set; }
+    public string StarttimeTranslation { get; set; }
+    public string EndtimeTranslation { get; set; }
+    public string LastAccumulatedAmountTranslation { get; set; }
+    public string LastAccumulatedGallonsTranslation { get; set; }
+    public string AccumulatedAmountTranslation { get; set; }
+    public string AccumulatedGallonsTranslations { get; set; }
 }
 
 public class DocumentItem
@@ -59,6 +100,8 @@ public class DocumentItem
     public int Id { get; set; }
     public int Court { get; set; }
     public string Descripcion { get; set; }
+    public string CourtTranslation { get; set; }
+    public string ThereIsNoImageTranslation { get; set; }
     public ImageSource ImageSource
     {
         get
@@ -107,4 +150,8 @@ public class ExpenditureItem
     public string Expenditure { get; set; }
     public double Amount { get; set; }
     public string Description { get; set; }
+    public string DateTranslation { get; set; }
+    public string ExpenditureTranslation { get; set; }
+    public string AmountTranslation { get; set; }
+    public string DescriptionTranslation { get; set; }
 }

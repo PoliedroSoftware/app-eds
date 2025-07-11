@@ -24,7 +24,8 @@
                         Clicked="OnCloseTapped"
                         FontSize="18" Text="✖" TextColor="#6200E8"
                         WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"/>
+                        HorizontalOptions="End" VerticalOptions="Center"
+                        AutomationId="CloseButton"/>
             </Grid>
 
             <!--  Campos de Entrada  -->
@@ -38,7 +39,8 @@
                             <Picker x:Name="ExpenditurePicker" Title="{Binding Select}" Grid.Row="2" Grid.Column="1"
                                     ItemDisplayBinding="{Binding Description}" ItemsSource="{Binding ExpenditureList}"
                                     SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"  SelectedIndexChanged="ExpenditureSelected"
-                                    HorizontalTextAlignment="Center"/>
+                                    HorizontalTextAlignment="Center"
+                                    AutomationId="ExpenditurePicker"/>
                         </Grid>
                     </Frame>
                     <Frame Padding="10"
@@ -46,10 +48,11 @@
                            Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <Entry x:Name="FirstEntry" Placeholder="Ingrese monto(traducir)" Grid.Row="1" Grid.Column="1"
+                            <Entry x:Name="FirstEntry" Placeholder="Ingrese monto" Grid.Row="1" Grid.Column="1"
                                    Text="{Binding CourtExpenditureAmount, StringFormat='{0:N0}', Mode=TwoWay}"
                                    Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
-                                   IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"/>
+                                   IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"
+                                   AutomationId="AmountEntry"/>
                         </Grid>
                     </Frame>
                     <Frame Padding="10"
@@ -58,7 +61,8 @@
                             <Label Text="Descripción:" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
                             <Entry x:Name="SecondEntry" Placeholder="{Binding Description}" Grid.Row="1" Grid.Column="1"
                                    Text="{Binding ExpenditureDescription, Mode=TwoWay}"
-                                   Completed="Add_Expenditure" IsEnabled="False" HorizontalTextAlignment="Center"/>
+                                   Completed="Add_Expenditure" IsEnabled="False" HorizontalTextAlignment="Center"
+                                   AutomationId="DescriptionEntry"/>
                         </Grid>
                     </Frame>
                 </VerticalStackLayout>
@@ -72,7 +76,8 @@
                     CornerRadius="10"
                     FontSize="18" Text="{Binding Add}" TextColor="White"
                     VerticalOptions="Center"
-                    HeightRequest="50"/>
+                    HeightRequest="50"
+                    AutomationId="AddButton"/>
 		</Grid>
 	</Frame>
 </mct:Popup>

@@ -19,10 +19,11 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="AddDocumentTranslation(traducir)" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="AddDocumentTranslation" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
+                        AutomationId="CloseButton"
                         FontSize="18"  Text="✖"  TextColor="#6200E8"
                         WidthRequest="30" HeightRequest="30" Padding="0"
                         HorizontalOptions="End" VerticalOptions="Center"/>
@@ -38,15 +39,18 @@
 						BackgroundColor="#6200E8"
                         TextColor="White"
 						Clicked="OnSelectFileClicked"
+                        AutomationId="SelectFileButton"
 						CornerRadius="10"
-						Text="Select File(traducit)"/>
+						Text="Select File"/>
 					<Label
 						FontAttributes="Bold"
 						IsVisible="{Binding IsFileSelected}"
-						Text="Selected File:(traducir)" />
+						Text="Selected File:"
+                        AutomationId="SelectedFileLabel"/>
 					<Label
 						FontAttributes="Italic"
 						Text="{Binding SelectedFileName}"
+                        AutomationId="SelectedFileNameLabel"
 						TextColor="Gray" />
 				</VerticalStackLayout>
 			</Frame>
@@ -55,9 +59,10 @@
             <Button Grid.Row="2"
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
+                    AutomationId="AddButton"
                     CornerRadius="10"
                     FontSize="18"
-                    Text="Add(traducir)"
+                    Text="Add"
                     TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>

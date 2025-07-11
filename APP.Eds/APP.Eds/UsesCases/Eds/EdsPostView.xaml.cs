@@ -15,10 +15,19 @@ public partial class EdsPostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        if (BindingContext is EdsService vm && vm.SelectedBusiness is not null)
+        if (BindingContext is EdsService vm)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace (_edsService.Name) ||
+                    string.IsNullOrWhiteSpace (_edsService.Nit) || 
+                    string.IsNullOrWhiteSpace (_edsService.Sicom) ||
+                    string.IsNullOrWhiteSpace (_edsService.Address)||
+                    _edsService.SelectedBusiness is null)
+                {
+                   await DisplayAlert("Error", $"{_edsService.ErrorEmpty}", "OK");
+                   return;
+                }
                 LoadingOverlay.ShowLoading();
                 var selectedId = vm.SelectedBusiness.IdBusiness;
                 await vm.SaveEdsDataAsync();
@@ -27,54 +36,12 @@ public partial class EdsPostView : ContentPage
             {
                 LoadingOverlay.HideLoading();
 
-                Name = string.Empty;
-                Nit = string.Empty;
-                Address = string.Empty;
-                Sicom = string.Empty;
+                _edsService.Name = string.Empty;
+                _edsService.Nit = string.Empty;
+                _edsService.Address = string.Empty;
+                _edsService.Sicom = string.Empty;
                 _edsService.SelectedBusiness = null;
-            }
-            
-        }
-        else
-        {
-            await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
-        }
-    }
-
-    public string Name
-    {
-        get => _edsService.Name;
-        set
-        {
-            _edsService.Name = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Nit
-    {
-        get => _edsService.Nit;
-        set
-        {
-            _edsService.Nit = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Address
-    {
-        get => _edsService.Address;
-        set
-        {
-            _edsService.Address = value;
-            OnPropertyChanged();
-        }
-    }
-    public string Sicom
-    {
-        get => _edsService.Sicom;
-        set
-        {
-            _edsService.Sicom = value;
-            OnPropertyChanged();
+            }  
         }
     }
 }
