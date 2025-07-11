@@ -7,6 +7,7 @@ using APP.Eds.Models.Compartiment;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using APP.Eds.Models.Translations;
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -109,8 +110,151 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
+        private string _NumberTranslation = string.Empty;
+        public string NumberTranslation
+        {
+            get => _NumberTranslation;
+            set
+            {
+                if (_NumberTranslation != value)
+                {
+                    _NumberTranslation = value;
+                    OnPropertyChanged(nameof(NumberTranslation));
+                }
+            }
+        }
+
+        private string _CompartimentManagement = string.Empty;
+        public string CompartimentManagement
+        {
+            get => _CompartimentManagement;
+            set
+            {
+                if (_CompartimentManagement != value)
+                {
+                    _CompartimentManagement = value;
+                    OnPropertyChanged(nameof(CompartimentManagement));
+                }
+            }
+        }
+
+        private string _EnterNumber = string.Empty;
+        public string EnterNumber
+        {
+            get => _EnterNumber;
+            set
+            {
+                if (_EnterNumber != value)
+                {
+                    _EnterNumber = value;
+                    OnPropertyChanged(nameof(EnterNumber));
+                }
+            }
+        }
+
+        private string _SendData = string.Empty;
+        public string SendData
+        {
+            get => _SendData;
+            set
+            {
+                if (_SendData != value)
+                {
+                    _SendData = value;
+                    OnPropertyChanged(nameof(SendData));
+                }
+            }
+        }
+
+        private string _EnterNominal = string.Empty;
+        public string EnterNominal
+        {
+            get => _EnterNominal;
+            set
+            {
+                if (_EnterNominal != value)
+                {
+                    _EnterNominal = value;
+                    OnPropertyChanged(nameof(EnterNominal));
+                }
+            }
+        }
+
+        private string _EnterOperative = string.Empty;
+        public string EnterOperative
+        {
+            get => _EnterOperative;
+            set
+            {
+                if (_EnterOperative != value)
+                {
+                    _EnterOperative = value;
+                    OnPropertyChanged(nameof(EnterOperative));
+                }
+            }
+        }
+
+        private string _EnterStock = string.Empty;
+        public string EnterStock
+        {
+            get => _EnterStock;
+            set
+            {
+                if (_EnterStock != value)
+                {
+                    _EnterStock = value;
+                    OnPropertyChanged(nameof(EnterStock));
+                }
+            }
+        }
+
+        private string _EnterHeight = string.Empty;
+        public string EnterHeight
+        {
+            get => _EnterHeight;
+            set
+            {
+                if (_EnterHeight != value)
+                {
+                    _EnterHeight = value;
+                    OnPropertyChanged(nameof(EnterHeight));
+                }
+            }
+        }
+
+        private string _SelectTank = string.Empty;
+        public string SelectTank
+        {
+            get => _SelectTank;
+            set
+            {
+                if (_SelectTank != value)
+                {
+                    _SelectTank = value;
+                    OnPropertyChanged(nameof(SelectTank));
+                }
+            }
+        }
+
+        private string _ListDispensers = string.Empty;
+        public string ListDispensers
+        {
+            get => _ListDispensers;
+            set
+            {
+                if (_ListDispensers != value)
+                {
+                    _ListDispensers = value;
+                    OnPropertyChanged(nameof(ListDispensers));
+                }
+            }
+        }
+
+
         public ICommand GetByIdCompartimentDataCommand { get; }
         public ICommand SaveCompartimentDataCommand { get; }
+        public string? NewDispenserNumber { get; internal set; }
+        public string? NewDispenserNominal { get; internal set; }
 
         //ejecutando el metodo
         public CompartimentService()
@@ -119,6 +263,44 @@ namespace APP.Eds.Services.Compartiment
             GetAllTankData();
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
+            LoadTranslationsAsync();
+
+        }
+
+        public async Task LoadTranslationsAsync()
+        {
+            var result = await GetTranslationsByLanguageAsync("es-CO");
+            GlobalTranslations.SetTranslations(result ?? []);
+            NumberTranslation = GlobalTranslations.Get("Number");
+            CompartimentManagement = GlobalTranslations.Get("CompartimentManagement");
+            SendData = GlobalTranslations.Get("SendData");
+            EnterNumber = GlobalTranslations.Get("EnterNumber");
+            EnterNominal = GlobalTranslations.Get("EnterNominal");
+            EnterOperative = GlobalTranslations.Get("EnterOperative");
+            EnterStock = GlobalTranslations.Get("EnterStock");
+            EnterHeight = GlobalTranslations.Get("EnterHeight");
+             SelectTank = GlobalTranslations.Get("SelectTank");
+            ListDispensers = GlobalTranslations.Get("ListDispensers");
+
+        }
+        public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return new Dictionary<string, string>();
+            }
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/translations");
+            var data = JsonSerializer.Deserialize<TranslationsResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return data.Translations.TryGetValue(languageTag, out var translations)
+                ? translations
+                : new Dictionary<string, string>();
 
         }
 
@@ -294,6 +476,11 @@ namespace APP.Eds.Services.Compartiment
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        internal void AddNewDispenser()
+        {
+            throw new NotImplementedException();
         }
     }
 }
