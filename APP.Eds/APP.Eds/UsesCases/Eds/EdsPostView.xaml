@@ -12,25 +12,30 @@
                 <Entry
                 Keyboard="Text"
                 Placeholder="{Binding NamePlaceHolder}"
-                Text="{Binding Name, Mode=TwoWay}" />
+                Text="{Binding Name, Mode=TwoWay}" 
+                AutomationId="EntryName"/>
                 <Entry
 	            Keyboard="Text"
 	            Placeholder="{Binding NitPlaceHolder}"
-	            Text="{Binding Nit, Mode=TwoWay}" />
+	            Text="{Binding Nit, Mode=TwoWay}"
+                AutomationId="EntryNit"/>
                 <Entry
                 Keyboard="Text"
                 Placeholder="{Binding AdreessPlaceHolder}"
-                Text="{Binding Address, Mode=TwoWay}" />
+                Text="{Binding Address, Mode=TwoWay}"
+                AutomationId="EntryAddress"/>
                 <Entry
                 Keyboard="Text"
                 Placeholder="{Binding SicomPlaceHolder}"
-                Text="{Binding Sicom, Mode=TwoWay}" />
+                Text="{Binding Sicom, Mode=TwoWay}"
+                AutomationId="EntrySicom"/>
 
                 <Label FontSize="16" Text="{Binding SelectBusiness}" />
                 <Picker Title="{Binding BusinessPicker}"
                 ItemsSource="{Binding BusinessList}"
                 ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
+                AutomationId="PickerBusiness"/>
 
                 <button:HoverButton
                 BackgroundColor="Green"
@@ -41,7 +46,8 @@
                 HoverColor="Gray"
                 PressedColor="AliceBlue"
                 Text="{Binding SendData}"
-                TextColor="White" />
+                TextColor="White"
+                AutomationId="ButtonSendData"/>
 
                 <Label FontSize="18" Text="{Binding EdsListTranslation}" />
                 <CollectionView ItemsSource="{Binding EdsList}" Margin="0,20">
@@ -72,7 +78,8 @@
         </ScrollView>
         <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 
 </ContentPage>

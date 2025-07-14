@@ -5,26 +5,28 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
 	CanBeDismissedByTappingOutsideOfPopup="False"
-    Color="Transparent">
+    Color="Transparent"
+    AutomationId="PopupAddCourtTypeOfCollection">
 	<Frame
 		Padding="20"
 		BorderColor="#6200E8"
 		CornerRadius="15"
 		HasShadow="True"
 		HeightRequest="470"
-		WidthRequest="380">
+		WidthRequest="380"
+        AutomationId="FrameAddCourtTypeOfCollection">
         
         
         <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="{Binding AddCollectionType}" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="{Binding AddCollectionType}" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" AutomationId="LabelAddCollectionType"/>
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
                         FontSize="18" Text="✖" TextColor="#6200E8"
-                        HorizontalOptions="End" VerticalOptions="Center" Padding="5,0"/>
+                        HorizontalOptions="End" VerticalOptions="Center" Padding="5,0" AutomationId="ButtonClosePopup"/>
             </Grid>
 
             <!--  Campos de Entrada  -->
@@ -32,34 +34,40 @@
                 <VerticalStackLayout Padding="0,10">
                 <Frame Padding="10"
                        CornerRadius="10"
-                       Margin="0,0,0,10">
+                       Margin="0,0,0,10"
+                       AutomationId="FrameTypeOfCollection">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                        <Label Text="{Binding TypeofCollectionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Label Text="{Binding TypeofCollectionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelTypeofCollectionTranslation"/>
                             <Picker x:Name="TypeOfCollentionPicker" Title="{Binding Select}" Grid.Row="1" Grid.Column="1"
                                 ItemDisplayBinding="{Binding Description}" ItemsSource="{Binding TypeOfCollectionList}"
                                 SelectedItem="{Binding SelectedTypeOfCollection, Mode=TwoWay}" SelectedIndexChanged="TypeOfCollentionSelected"
-                                    HorizontalTextAlignment="Center"/>
+                                HorizontalTextAlignment="Center"
+                                AutomationId="PickerTypeOfCollection"/>
                     </Grid>
                 </Frame>
                 <Frame Padding="10"
                        CornerRadius="10"
-                       Margin="0,0,0,10">
+                       Margin="0,0,0,10"
+                       AutomationId="FrameCollectionAmount">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelCollectionAmount"/>
                             <Entry x:Name="FirstEntry"   Placeholder="Ingrese el monto" Grid.Row="1" Grid.Column="1"
                                Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay, StringFormat='{0:N0}'}"
                                Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
-                               IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"/>
+                               IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"
+                               AutomationId="EntryCourtTypeOfCollectionAmount"/>
                     </Grid>
                 </Frame>
                 <Frame Padding="10"
-                       CornerRadius="10">
+                       CornerRadius="10"
+                       AutomationId="FrameDescription">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding DescriptionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
+                            <Label Text="{Binding DescriptionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelDescriptionTranslation"/>
                             <Entry x:Name="SecondEntry"  Placeholder="{Binding EnterthedescriptionTranslations}" Grid.Row="1" Grid.Column="1"
                                    Text="{Binding CourtTypeOfCollectionDescription, Mode=TwoWay}"
                                    Completed="Add_TypeOfCollection"
-                                   IsEnabled="False" HorizontalTextAlignment="Center"/>
+                                   IsEnabled="False" HorizontalTextAlignment="Center"
+                                   AutomationId="EntryCourtTypeOfCollectionDescription"/>
                     </Grid>
                 </Frame>
                 </VerticalStackLayout>
@@ -75,7 +83,8 @@
                     Text="{Binding Add}"
                     TextColor="White"
                     VerticalOptions="Center"
-                    HeightRequest="40" />
+                    HeightRequest="40"
+                    AutomationId="ButtonAddTypeOfCollection"/>
         </Grid>
     </Frame>
 </mct:Popup>

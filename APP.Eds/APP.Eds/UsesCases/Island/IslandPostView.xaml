@@ -11,18 +11,21 @@
             <Entry
                 Keyboard="Text"
                 Placeholder="Ingrese la descripción"
-                Text="{Binding Description, Mode=TwoWay}" />
+                Text="{Binding Description, Mode=TwoWay}"
+                AutomationId="EntryDescription"/>
 
             <Button
                 BackgroundColor="Green"
                 CornerRadius="10"
                 Text="Enviar Datos"
                 TextColor="White"
-                Command="{Binding SaveIslandDataCommand}" />
+                Command="{Binding SaveIslandDataCommand}"
+                AutomationId="ButtonSaveData"/>
 
             <Label FontSize="18" Text="Lista de Islas" />
 
-            <CollectionView ItemsSource="{Binding IslandList}" Margin="0,20">
+            <CollectionView ItemsSource="{Binding IslandList}" Margin="0,20"
+                            AutomationId="CollectionViewIslandList">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10">

@@ -15,24 +15,28 @@
                     ItemsSource="{Binding EdsList}"
                     ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectEds, Mode=TwoWay}"
-                    Margin="0,6,0,6"/>
+                    Margin="0,6,0,6"
+                    AutomationId="PickerEds"/>
 
             <Picker Title="Seleccione Un Tank "
                     ItemsSource="{Binding TankList}"
                     ItemDisplayBinding="{Binding Number}"
                     SelectedItem="{Binding SelectTank, Mode=TwoWay}"
-                    Margin="0,6,0,6"/>
+                    Margin="0,6,0,6"
+                    AutomationId="PickerTank"/>
 
             <Button BackgroundColor="Green"
                     Clicked="Button_Clicked"
                     CornerRadius="10"
                     Text="Enviar Datos"
                     TextColor="White"
-                    Margin="0,11,0,11" />
+                    Margin="0,11,0,11"
+                    AutomationId="ButtonSendData"/>
             </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </Frame>
 
