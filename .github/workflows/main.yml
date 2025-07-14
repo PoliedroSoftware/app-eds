@@ -23,7 +23,7 @@ jobs:
 
       - name: Override TargetFrameworks for Android build
         run: |
-          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > Directory.Build.props
+          echo '<Project><PropertyGroup><TargetFramework>net8.0-android</TargetFramework></PropertyGroup></Project>' > $GITHUB_WORKSPACE/Directory.Build.props
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v3
