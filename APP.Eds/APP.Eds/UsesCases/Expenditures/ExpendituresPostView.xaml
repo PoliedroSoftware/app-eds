@@ -13,16 +13,19 @@
             <Entry
             Keyboard="Text"
             Placeholder="Enter Expenditures"
-            Text="{Binding Description, Mode=TwoWay}" />
+            Text="{Binding Description, Mode=TwoWay}"
+            AutomationId="EntryExpenditures"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
             Text="Enviar Datos"
-            TextColor="White" />
+            TextColor="White"
+            AutomationId="ButtonSendExpenditures"/>
         </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
-                              AbsoluteLayout.LayoutFlags="All"/>
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>

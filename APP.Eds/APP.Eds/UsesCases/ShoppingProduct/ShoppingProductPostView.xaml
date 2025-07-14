@@ -13,36 +13,42 @@
             <Picker Title="Seleccione un Shopping"
                     ItemsSource="{Binding ShoppingList}"
                     ItemDisplayBinding="{Binding Invoice}"
-                    SelectedItem="{Binding SelectedShopping, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedShopping, Mode=TwoWay}"
+                    AutomationId="PickerShopping"/>
 
             <Picker Title="Seleccione un Product"
                     ItemsSource="{Binding ProductList}"
                     ItemDisplayBinding="{Binding Name}"
-                    SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                    AutomationId="PickerProduct"/>
 
             <Label FontSize="16" Text="Quantity"/>
             <Entry
                 Keyboard="Numeric"
                 Placeholder="Ingrese la Quantity"
-                Text="{Binding Quantity, Mode=TwoWay}"/>
+                Text="{Binding Quantity, Mode=TwoWay}"
+                AutomationId="EntryQuantity"/>
 
             <Label FontSize="16" Text="Price"/>
             <Entry
                 Keyboard="Numeric"
                 Placeholder="Ingrese el Price"
-                Text="{Binding Price, Mode=TwoWay}"/>
+                Text="{Binding Price, Mode=TwoWay}"
+                AutomationId="EntryPrice"/>
 
             <Picker Title="Seleccione un Compartiment"
                     ItemsSource="{Binding CompartimentList}"
                     ItemDisplayBinding="{Binding Number}"
-                    SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"/>
+                    SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
+                    AutomationId="PickerCompartiment"/>
 
             <Button
                 BackgroundColor="Green"
                 Clicked="Button_Clicked_1"
                 CornerRadius="10"
                 Text="Enviar Datos"
-                TextColor="White"/>
+                TextColor="White"
+                AutomationId="ButtonSendData"/>
 
             <Label FontSize="18" Text="Lista de shopping-product"/>
 
@@ -72,7 +78,8 @@
     </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </ScrollView>
 </ContentPage>

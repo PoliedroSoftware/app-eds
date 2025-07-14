@@ -13,13 +13,15 @@
         <Entry
             Keyboard="Text"
             Placeholder="Enter Business"
-            Text="{Binding Name, Mode=TwoWay}" />
+            Text="{Binding Name, Mode=TwoWay}"
+            AutomationId="EntryBusinessName"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
             Text="Enviar Datos"
-            TextColor="White" />
+            TextColor="White"
+            AutomationId="ButtonSendBusinessData"/>
         </VerticalStackLayout>
 
         <controls:LoadingView x:Name="LoadingOverlay"
