@@ -15,29 +15,34 @@
             <Entry
                 Keyboard="Text"
                 Placeholder="Enter ProductT"
-                Text="{Binding Name, Mode=TwoWay}" />
+                Text="{Binding Name, Mode=TwoWay}"
+                AutomationId="EntryProductName"/>
 
             <Picker 
                 Title="Seleccione un Product Type"
                 ItemsSource="{Binding ProductTypeList}"
                 ItemDisplayBinding="{Binding Description}"
-                SelectedItem="{Binding SelectProductType, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
+                AutomationId="PickerProductType"/>
 
             <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Price"
-                Text="{Binding Price, Mode=TwoWay}" />
+                Text="{Binding Price, Mode=TwoWay}"
+                AutomationId="EntryPrice"/>
 
             <Button
                 BackgroundColor="Green"
                 Clicked="Button_Clicked"
                 CornerRadius="10"
                 Text="Enviar Datos"
-                TextColor="White" />
+                TextColor="White"
+                AutomationId="ButtonSendData"/>
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </Frame>
 </ContentPage>

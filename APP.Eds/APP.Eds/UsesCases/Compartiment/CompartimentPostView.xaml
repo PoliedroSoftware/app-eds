@@ -9,30 +9,32 @@
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="15">
                 <Label FontSize="16" Text="{Binding NumberTranslation}"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
                 <Label FontSize="16" Text="Nominal"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
 
                 <Label FontSize="16" Text="Operative"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
 
                 <Label FontSize="16" Text="Stock"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentStock"/>
 
                 <Label FontSize="16" Text="Height"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
 
                 <Picker Title="{Binding SelectTank}"
                         ItemsSource="{Binding TankList}"
                         ItemDisplayBinding="{Binding Number}"
-                        SelectedItem="{Binding SelectedTank, Mode=TwoWay}"/>
+                        SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                        AutomationId="PickerTank"/>
 
                 <Button BackgroundColor="Green"
                         Clicked="Button_Clicked_1"
                         CornerRadius="10"
                         Text="{Binding SendData}"
-                        TextColor="White"/>
+                        TextColor="White"
+                        AutomationId="ButtonSendCompartimentData"/>
 
                 <Label FontSize="18" Text="{Binding ListDispensers}"/>
 

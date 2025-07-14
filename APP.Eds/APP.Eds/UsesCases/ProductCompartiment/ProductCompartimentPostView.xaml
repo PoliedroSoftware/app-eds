@@ -28,19 +28,22 @@
                             ItemsSource="{Binding ProductList}"
                             ItemDisplayBinding="{Binding Name}"
                             SelectedItem="{Binding SelectProduct, Mode=TwoWay}"
-                            Margin="0,6,0,6"/>
+                            Margin="0,6,0,6"
+                            AutomationId="PickerProduct"/>
 
                     <Picker Title="Seleccione Un Compartiment"
                             ItemsSource="{Binding CompartimentList}"
                             ItemDisplayBinding="{Binding Number}"
                             SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}" 
-                            Margin="0,6,0,6"/>
+                            Margin="0,6,0,6"
+                            AutomationId="PickerCompartiment"/>
 
                     <Entry                       
                         Keyboard="Text"
                         Placeholder="Enter Stock"
                         Text="{Binding Stock, Mode=TwoWay}"
-                        Margin="0,6,0,6"/>
+                        Margin="0,6,0,6"
+                        AutomationId="EntryStock"/>
 
                     <Button
                         BackgroundColor="Green"
@@ -48,7 +51,8 @@
                         CornerRadius="10"
                         Text="Enviar Datos"
                         TextColor="White"
-                        Margin="0,11,0,11"/>
+                        Margin="0,11,0,11"
+                        AutomationId="ButtonSendData"/>
 
                 </VerticalStackLayout>
 
@@ -57,7 +61,8 @@
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </ScrollView>
 </ContentPage>

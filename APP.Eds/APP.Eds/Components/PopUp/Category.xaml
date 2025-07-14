@@ -8,14 +8,16 @@
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent"
     VerticalOptions="Center"
-    HorizontalOptions="Center">
+    HorizontalOptions="Center"
+    AutomationId="PopupCategory">
 
     <Frame x:Name="Frame"
            BorderColor="#6200E8"          
            WidthRequest="400"
            VerticalOptions="Center" HorizontalOptions="Center"
            CornerRadius="15"
-           HasShadow="False">
+           HasShadow="False"
+           AutomationId="FrameCategory">
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
@@ -23,7 +25,8 @@
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,25">
                 <Label Grid.Column="1" x:Name="CategoryTitle"
                        FontAttributes="Bold" FontSize="21"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       AutomationId="LabelCategoryTitle"/>
 
                 <button:HoverButtonPopup
                         Grid.Column="2"                      
@@ -32,7 +35,8 @@
                         WidthRequest="25" HeightRequest="25" Padding="-10"
                         HorizontalOptions="End" VerticalOptions="Center"
                         HoverColorPopup="Gray"
-                        Margin="0,0,0,0"/>
+                        Margin="0,0,0,0"
+                        AutomationId="ButtonClosePopup"/>
             </Grid>
             
             <!-- Menu -->
@@ -40,7 +44,8 @@
                             x:Name="MenuItemsList"
                             ItemSizingStrategy="MeasureAllItems"
                             MaximumHeightRequest="550"
-                            Margin="0,20,0,0">
+                            Margin="0,20,0,0"
+                            AutomationId="CollectionViewMenuItems">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <button:HoverButtonPopup
@@ -50,7 +55,8 @@
                             HoverColorPopup="DarkGray"
                             PressedColorPopup="Black"
                             Clicked="OnMenuItemClicked"
-                            Padding="10,5,10,10"/>
+                            Padding="10,5,10,10"
+                            AutomationId="ButtonMenuItem"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

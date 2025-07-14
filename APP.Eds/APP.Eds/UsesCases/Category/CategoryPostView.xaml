@@ -15,13 +15,15 @@
             Keyboard="Text"
             Placeholder="{Binding EnterCategory, Mode=TwoWay}"
             Text="{Binding Description, Mode=TwoWay}"
-            TextChanged="CategoryEntry_TextChanged"/>
+            TextChanged="CategoryEntry_TextChanged"
+            AutomationId="EntryCategoryDescription"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
             Text="{Binding SendData, Mode=TwoWay}"
-            TextColor="White" />
+            TextColor="White" 
+            AutomationId="ButtonSendCategoryData"/>
         </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                           AbsoluteLayout.LayoutBounds="0,0,1,1"

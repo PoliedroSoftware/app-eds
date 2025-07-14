@@ -10,42 +10,43 @@
             <VerticalStackLayout Padding="20" Spacing="15">
 
                 <Label FontSize="16" Text="Invoice"/>
-                <Entry Keyboard="Text" Placeholder="Enter Invoice" Text="{Binding Invoice, Mode=TwoWay}"/>
+                <Entry Keyboard="Text" Placeholder="Enter Invoice" Text="{Binding Invoice, Mode=TwoWay}" AutomationId="EntryInvoice"/>
 
                 <Label FontSize="16" Text="Date"/>
-                <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31"/>
+                <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31" AutomationId="DatePickerDate"/>
 
                 <Label FontSize="16" Text="Provider"/>
-                <Picker Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}"/>
+                <Picker Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}" AutomationId="PickerProvider"/>
 
                 <Label FontSize="16" Text="Category"/>
-                <Picker Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
+                <Picker Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" AutomationId="PickerCategory"/>
 
 
                 <Frame Padding="10" BorderColor="Gray" CornerRadius="10">
                     <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,10,*,*" RowSpacing="5">
                         <!-- Mostrar los totales acumulados -->
-                        <Label FontAttributes="Bold" FontSize="18" Text="TotalPurchases" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center"/>
+                        <Label FontAttributes="Bold" FontSize="18" Text="TotalPurchases" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" AutomationId="LabelTotalPurchases"/>
 
-                        <Label Text="TotalQuantity" FontAttributes="Bold" Grid.Column="0" Grid.Row="2"/>
-                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}" Grid.Column="0" Grid.Row="3"/>
+                        <Label Text="TotalQuantity" FontAttributes="Bold" Grid.Column="0" Grid.Row="2" AutomationId="LabelTotalQuantity"/>
+                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}" Grid.Column="0" Grid.Row="3" AutomationId="LabelTotalAccumulatedQuantity"/>
 
-                        <Label Text="TotalPrice" FontAttributes="Bold" Grid.Column="1" Grid.Row="2"/>
-                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}" Grid.Column="1" Grid.Row="3"/>
+                        <Label Text="TotalPrice" FontAttributes="Bold" Grid.Column="1" Grid.Row="2" AutomationId="LabelTotalPrice"/>
+                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}" Grid.Column="1" Grid.Row="3" AutomationId="LabelTotalAccumulatedPrice"/>
 
-                        <Label Text="TotalAmount" FontAttributes="Bold" Grid.Column="2" Grid.Row="2"/>
-                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}" Grid.Column="2" Grid.Row="3"/>
+                        <Label Text="TotalAmount" FontAttributes="Bold" Grid.Column="2" Grid.Row="2" AutomationId="LabelTotalAmount"/>
+                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}" Grid.Column="2" Grid.Row="3" AutomationId="LabelTotalAccumulatedAmount"/>
                     </Grid>
                 </Frame>
 
 
                 <!-- Products con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto">
-                    <Label  Text="{Binding AddeProducts}"  FontAttributes="Bold"  FontSize="18" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Label  Text="{Binding AddeProducts}"  FontAttributes="Bold"  FontSize="18" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" AutomationId="LabelAddeProducts"/>
                     <Button  Text="�️"  Command="{Binding HideProducts}"
                              WidthRequest="46"  HeightRequest="46"
                              BackgroundColor="Transparent"
-                             HorizontalOptions="End" Grid.Column="1">
+                             HorizontalOptions="End" Grid.Column="1"
+                             AutomationId="ButtonHideProducts">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding VisibleProducts}" Value="True">
                                 <Setter Property="Text" Value="➖" />
@@ -57,27 +58,27 @@
                     </Button>
                 </Grid>
 
-                <CollectionView ItemsSource="{Binding ShoppingProduct}" >
+                <CollectionView ItemsSource="{Binding ShoppingProduct}" AutomationId="CollectionViewShoppingProduct" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*, *, *" RowSpacing="5">
 
-                                    <Label Text="Name" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" />
+                                    <Label Text="Name" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductName" />
+                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductNameValue"/>
 
-                                    <Label Text="Price" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" />
+                                    <Label Text="Price" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
+                                    <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
 
-                                    <Label Text="Quantity" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" />
-                                    <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" />
+                                    <Label Text="Quantity" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductQuantity"/>
+                                    <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductQuantityValue"/>
 
                                     <!-- Botón eliminar -->
                                     <Button Text="X"  Grid.Column="3" Grid.RowSpan="3"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent" TextColor="#6A1B9A" CornerRadius="0"
                                         VerticalOptions="Center" HorizontalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}"/>
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" AutomationId="ButtonDeleteProduct"/>
                                 </Grid>
                             </Frame>
                         </DataTemplate>
@@ -86,20 +87,22 @@
 
 
                 <VerticalStackLayout Spacing="10">
-                    <Button Clicked="OpenShoppingPopUp" Text="NewProduct" />
+                    <Button Clicked="OpenShoppingPopUp" Text="NewProduct" AutomationId="ButtonNewProduct"/>
                 </VerticalStackLayout>
 
                 <Button BackgroundColor="Green"
                         Clicked="Button_Clicked_1"
                         CornerRadius="10"
                         Text="Enviar Datos"
-                        TextColor="White"/>
+                        TextColor="White"
+                        AutomationId="ButtonSendData"/>
 
             </VerticalStackLayout>
         </ScrollView>
         <controls:LoadingView x:Name="LoadingOverlay"
                           AbsoluteLayout.LayoutBounds="0,0,1,1"
-                          AbsoluteLayout.LayoutFlags="All"/>
+                          AbsoluteLayout.LayoutFlags="All"
+                          AutomationId="LoadingOverlay"/>
 
     </AbsoluteLayout>
 
