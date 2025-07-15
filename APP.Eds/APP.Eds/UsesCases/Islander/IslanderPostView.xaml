@@ -3,51 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Islander.IslanderPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Islander">
+             Title="Gestion De Islero">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Name"/>
+            <Label FontSize="16" Text="Nombre"/>
             <Entry
             Keyboard="Text"
-            Placeholder="Enter Isleño"
+            Placeholder="Ingrese EL Nombre"
             Text="{Binding Name, Mode=TwoWay}"
             AutomationId="EntryName"/>
         
-        <Label FontSize="16" Text="Email"/>
+        <Label FontSize="16" Text="Correo"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter Correo Electrónico"
+            Placeholder="Ingrese Correo Electrónico"
             Text="{Binding Email, Mode=TwoWay}"
             AutomationId="EntryEmail"/>
 
-        <Label FontSize="16" Text="First name"/>
+        <Label FontSize="16" Text="Nombre De Pila"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter Nombre De Pila"
+            Placeholder="Ingrese Nombre De Pila"
             Text="{Binding FirstName, Mode=TwoWay}"
             AutomationId="EntryFirstName"/>
 
-        <Label FontSize="16" Text="Last name"/>
+        <Label FontSize="16" Text="Ultimo Apellido"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter Apellido"
+            Placeholder="Ingrese Apellido"
             Text="{Binding LastName, Mode=TwoWay}"
             AutomationId="EntryLastName"/>
 
-
-            <Label FontSize="16" Text="ID Eds" />
+            
             <Picker Title="Seleccione un EDS"
             ItemsSource="{Binding EdsList}"
             ItemDisplayBinding="{Binding Name}"
             SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
             AutomationId="PickerEds"/>
 
-            <Label FontSize="16" Text="Password" />
+            <Label FontSize="16" Text="Contraseña" />
             <Entry
-               Placeholder="Ingrese contraseña"
+               Placeholder="Ingrese Una Contraseña"
                Text="{Binding Password, Mode=TwoWay}"
                IsPassword="True"
                AutomationId="EntryPassword"/>
@@ -60,7 +59,7 @@
             TextColor="White"
             AutomationId="ButtonSendData"/>
 
-            <Label FontSize="18" Text="Lista de Islander" />
+            <Label FontSize="18" Text="Lista De Isleros" />
             <CollectionView ItemsSource="{Binding IslanderList}" Margin="0,20"
                             AutomationId="CollectionViewIslanderList">
                 <CollectionView.ItemTemplate>

@@ -3,7 +3,7 @@
     x:Class="APP.Eds.UsesCases.Navigation.Main"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="EDS App(traducir)">
+    Title="App EDS">
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20">
@@ -34,7 +34,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Cerrar sección"
+                <Button Text="Cerrar Sesión"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"

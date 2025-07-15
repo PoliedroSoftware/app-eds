@@ -13,7 +13,7 @@
             <Label FontSize="16" Text="Tipo de Dispensador"/>
             <Entry
             Keyboard="Text"
-            Placeholder="Ingresar Tipo de Dispensador"
+            Placeholder="Ingrese El Tipo De Dispensador"
             Text="{Binding Description, Mode=TwoWay}" 
             AutomationId="EntryDispenserType"/>
             <button:HoverButton
