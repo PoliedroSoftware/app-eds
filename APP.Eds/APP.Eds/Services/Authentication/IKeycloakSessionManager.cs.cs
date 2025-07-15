@@ -1,6 +1,4 @@
 ﻿
-using APP.Eds.Services.Court;
-
 namespace APP.Eds.Services.Authentication
 {
     public class KeycloakSessionManager
@@ -29,8 +27,6 @@ namespace APP.Eds.Services.Authentication
             string clientId = "application-eds";
 
             ClearSession(realm, clientId);
-
-            CourtService.DestroyInstance();
 
             Console.WriteLine($"Current session cleared for realm={realm}, clientId={clientId}");
         }

@@ -17,9 +17,7 @@ public partial class CourtPostView : ContentPage
     {
 
         InitializeComponent();
-
         _service = CourtService.Instance;
-
         _service.DateStarttime = DateTime.Today;
         BindingContext = _service;
         datePicker.MinimumDate = new DateTime(1900, 1, 1);
@@ -45,8 +43,11 @@ public partial class CourtPostView : ContentPage
         {
             LoadingOverlay.ShowLoading();
             MainContent.IsVisible = false;
-            Business.IsVisible = (UserRole is "Admin");
-            
+
+            if (_service.BusinessList == null || !_service.BusinessList.Any())
+            {
+                await _service.GetAllEdsData();
+            }
 
             await _service.LoadTranslationsAsync();
         }
@@ -105,25 +106,21 @@ public partial class CourtPostView : ContentPage
             double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
             double totalExpenditures = vm.GetTotalExpenditure();
 
-            if (UserRole == "Admin")
+            if (vm.SelectedBusiness is null)
             {
-                if (vm.SelectedBusiness is null)
-                {
-                    await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
-                    return;
-                }
-                if (vm.SelectedEds is null)
-                {
-                    await DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
-                    return;
-                }
-                if (vm.SelectedIslander is null)
-                {
-                    await DisplayAlert("Error", "Por favor, seleccione un Isle�o", "OK");
-                    return;
-                }
+                await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
+                return;
             }
-
+            if (vm.SelectedEds is null)
+            {
+                await DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
+                return;
+            }
+            if (vm.SelectedIslander is null)
+            {
+                await DisplayAlert("Error", "Por favor, seleccione un Isle�o", "OK");
+                return;
+            }
             if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
             {
                 await DisplayAlert("Error", "Debe agregar al menos un dispensador", "OK");
