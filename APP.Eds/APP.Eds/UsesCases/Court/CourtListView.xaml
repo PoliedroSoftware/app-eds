@@ -13,7 +13,7 @@
                         <Grid RowDefinitions="10,*,*,*,*,*,*,10" ColumnDefinitions="10,Auto,20,*,Auto,10">
                             <Label Text="{Binding Islander}" FontAttributes="Bold"  Grid.Row="1" Grid.ColumnSpan="6" Margin="10,0,0,10"/>
 
-                            <Label Text="Date"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
+                            <Label Text="Fecha"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
                             <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
 
                             <Label Text="Start" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
