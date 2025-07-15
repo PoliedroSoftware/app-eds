@@ -27,7 +27,7 @@
                 <Label FontSize="16" Text="{Binding Capacity}"/>
                 <Entry
                 Keyboard="Text"
-                Placeholder="{Binding CapacityPlaceholder}"
+                Placeholder="Ingresa La Capacidad"
                 Text="{Binding Ability, Mode=TwoWay}"
                 AutomationId="EntryCapacity"/>
 
@@ -46,7 +46,7 @@
                 TextColor="White"
                 AutomationId="ButtonSendData"/>
 
-                <Label FontSize="18" Text="{Binding TankListTitle}" />
+                <Label FontSize="18" Text="Lista De Tanques" />
                 <CollectionView ItemsSource="{Binding TankList}" Margin="0,20"
                                 AutomationId="CollectionViewTankList">
                     <CollectionView.ItemTemplate>
