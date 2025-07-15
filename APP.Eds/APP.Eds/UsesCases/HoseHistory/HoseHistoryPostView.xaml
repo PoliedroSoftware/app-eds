@@ -4,7 +4,7 @@
              x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestión Historial de Mangueras">
+             Title="Gestión Historial De Mangueras">
     <ScrollView>
         <AbsoluteLayout>
         <VerticalStackLayout 
