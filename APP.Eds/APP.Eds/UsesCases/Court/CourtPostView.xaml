@@ -136,6 +136,63 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
+                <!-- Collections con botón de eliminar -->
+                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
+                    <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Button Text="💬"
+             Command="{Binding HideCollectionList}"
+             AutomationId="HideCollectionListButton"
+             WidthRequest="46"  HeightRequest="46" 
+             BackgroundColor="Transparent"
+             HorizontalOptions="End"
+             Grid.Column="1">
+                        <Button.Triggers>
+                            <DataTrigger
+                 TargetType="Button"
+                 Binding="{Binding VisibleReceipts}"
+                 Value="True">
+                                <Setter Property="Text" Value="➖" />
+                            </DataTrigger>
+                            <DataTrigger
+                 TargetType="Button"
+                 Binding="{Binding VisibleReceipts}"
+                 Value="False">
+                                <Setter Property="Text" Value="👁️" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" IsVisible="{Binding VisibleReceipts}"  x:Name="CourtTypeOfCollections">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
+                                    <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
+
+                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
+
+                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
+
+                                    <Button Text="X" 
+                         AutomationId="DeleteCollectionButton"
+                         Grid.Column="3" Grid.RowSpan="3"
+                         WidthRequest="50" HeightRequest="50"
+                         BackgroundColor="Transparent"
+                         TextColor="#6A1B9A"
+                         CornerRadius="0"
+                         VerticalOptions="Center"
+                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
+                         CommandParameter="{Binding .}"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
                     <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
@@ -236,63 +293,6 @@
                                         CornerRadius="0"
                                         VerticalOptions="Center"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteExpenseCommand}"
-                                        CommandParameter="{Binding .}"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <!-- Collections con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
-                    <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button Text="💬"
-                            Command="{Binding HideCollectionList}"
-                            AutomationId="HideCollectionListButton"
-                            WidthRequest="46"  HeightRequest="46" 
-                            BackgroundColor="Transparent"
-                            HorizontalOptions="End"
-                            Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
-                </Grid>
-
-                <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" IsVisible="{Binding VisibleReceipts}"  x:Name="CourtTypeOfCollections">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
-                                    <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
-
-                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
-
-                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
-
-                                    <Button Text="X" 
-                                        AutomationId="DeleteCollectionButton"
-                                        Grid.Column="3" Grid.RowSpan="3"
-                                        WidthRequest="50" HeightRequest="50"
-                                        BackgroundColor="Transparent"
-                                        TextColor="#6A1B9A"
-                                        CornerRadius="0"
-                                        VerticalOptions="Center"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
                                         CommandParameter="{Binding .}"/>
                                 </Grid>
                             </Frame>

@@ -8,19 +8,19 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="15">
-                <Label FontSize="16" Text="{Binding NumberTranslation}"/>
+                <Label FontSize="16" Text="Numero"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
                 <Label FontSize="16" Text="Nominal"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
 
-                <Label FontSize="16" Text="Operative"/>
+                <Label FontSize="16" Text="Operativo"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
 
-                <Label FontSize="16" Text="Stock"/>
+                <Label FontSize="16" Text="Existencia"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentStock"/>
 
-                <Label FontSize="16" Text="Height"/>
+                <Label FontSize="16" Text="Altura"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
 
                 <Picker Title="{Binding SelectTank}"

@@ -27,7 +27,7 @@ namespace APP.Eds.Services.Court
     {
         public bool LastSendWasSuccessful { get; private set; }
         public string UserRole { get; set; } = string.Empty;
-        public bool IsUserRole => Preferences.Get("userRole", "") == "User";
+        public bool IsUserRole = true;
 
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
@@ -36,7 +36,7 @@ namespace APP.Eds.Services.Court
 
         public static void ResetInstanceFields()
         {
-            _instance._authToken = null;
+            
             _instance.SelectedBusiness = null;
             _instance.SelectedEds = null;
             _instance.SelectedIslander = null;
