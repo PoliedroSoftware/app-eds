@@ -38,7 +38,7 @@
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*">
                             <Label Text="{Binding HoseTranslation}" HorizontalOptions="Center" Grid.Row="0" />
                             <Picker x:Name="HosePicker" AutomationId="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
-                                    ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseDispenserList}"
+                                    ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseList}"
                                     SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"
                                     HorizontalTextAlignment="Center"/>
                         </Grid>

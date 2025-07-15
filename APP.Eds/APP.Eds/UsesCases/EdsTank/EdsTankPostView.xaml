@@ -2,23 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.EdsTank.EdsTankPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="EdsTankPostView">
+             Title="Gestion Del Tanque En La EDS ">
 
     <!-- Borde envolvente -->
     <Frame BorderColor="Transparent" Padding="10" CornerRadius="12" Margin="10" HasShadow="False">
         <AbsoluteLayout>
             <VerticalStackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
                                  AbsoluteLayout.LayoutFlags="All">
-            <Label FontSize="16" Text="EdsTank" Margin="0,11,0,11"/>
 
-            <Picker Title="Seleccione Una Eds "
+                <Picker Title="Seleccione Una Eds "
                     ItemsSource="{Binding EdsList}"
                     ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectEds, Mode=TwoWay}"
                     Margin="0,6,0,6"
                     AutomationId="PickerEds"/>
 
-            <Picker Title="Seleccione Un Tank "
+            <Picker Title="Seleccione Un Tanque "
                     ItemsSource="{Binding TankList}"
                     ItemDisplayBinding="{Binding Number}"
                     SelectedItem="{Binding SelectTank, Mode=TwoWay}"
