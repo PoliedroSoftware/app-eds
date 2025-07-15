@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Expenditures.ExpendituresPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Expenditures">
+             Title="Gestion De Gastos">
     <AbsoluteLayout>
         <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Expenditures"/>
+            <Label FontSize="16" Text="Gastos"/>
             <Entry
             Keyboard="Text"
-            Placeholder="Enter Expenditures"
+            Placeholder="Ingrese Un Gasto"
             Text="{Binding Description, Mode=TwoWay}"
             AutomationId="EntryExpenditures"/>
             <Button
