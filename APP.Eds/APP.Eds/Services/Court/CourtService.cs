@@ -27,7 +27,7 @@ namespace APP.Eds.Services.Court
     {
         public bool LastSendWasSuccessful { get; private set; }
         public string UserRole { get; set; } = string.Empty;
-        public bool IsUserRole = true;
+        public bool IsUserRole => Preferences.Get("userRole", "") == "User";
 
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
