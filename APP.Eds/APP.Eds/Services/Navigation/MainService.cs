@@ -33,9 +33,11 @@ namespace APP.Eds.Services.Navigation
     {
         public ObservableCollection<CategoryModel> Categories { get; set; }
         public bool IsIslander => Preferences.Get("userRole", "") == "User";
+
         public ICommand NavigateToCourtCommand { get; }
         public MainService()
         {
+           var userRole = Preferences.Get("userRole", "");
 
             NavigateToCourtCommand = new Command(async () =>
             {
@@ -45,7 +47,9 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
-            if (!IsIslander)
+            
+
+            if (userRole == "Admin")
             {
 
                 Categories = new ObservableCollection<CategoryModel>
