@@ -15,6 +15,14 @@ namespace APP.Eds.UsesCases.Inventory
             ViewModel = new InventoryViewModel();
             BindingContext = ViewModel;
         }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (ViewModel != null)
+                await ViewModel.LoadDataAsync();
+        }
+
     }
 
 }
