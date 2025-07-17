@@ -368,6 +368,36 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
+            TranslatedAdministrationCategoryKey = GlobalTranslations.Get("AdministrationCategoryKey");
+            TranslatedTanksAndCompartmentsCategoryKey = GlobalTranslations.Get("TanksAndCompartmentsCategoryKey");
+            TranslatedDispensersAndHosesCategoryKey = GlobalTranslations.Get("DispensersAndHosesCategoryKey");
+            TranslatedProductsAndShoppingCategoryKey = GlobalTranslations.Get("ProductsAndShoppingCategoryKey");
+            TranslatedEdsAndOthersCategoryKey = GlobalTranslations.Get("EdsAndOthersCategoryKey");
+            TranslatedInventoryCategoryKey = GlobalTranslations.Get("InventoryCategoryKey");
+            TranslatedCourtMenuItemKey = GlobalTranslations.Get("CourtMenuItemKey");
+            TranslatedBusinessMenuItemKey = GlobalTranslations.Get("BusinessMenuItemKey");
+            TranslatedProviderMenuItemKey = GlobalTranslations.Get("ProviderMenuItemKey");
+            TranslatedCapacityMenuItemKey = GlobalTranslations.Get("CapacityMenuItemKey");
+            TranslatedCompartmentMenuItemKey = GlobalTranslations.Get("CompartmentMenuItemKey");
+            TranslatedCompartmentCapacityMenuItemKey = GlobalTranslations.Get("CompartmentCapacityMenuItemKey");
+            TranslatedEdsTankMenuItemKey = GlobalTranslations.Get("EdsTankMenuItemKey");
+            TranslatedTankMenuItemKey = GlobalTranslations.Get("TankMenuItemKey");
+            TranslatedProductCompartmentMenuItemKey = GlobalTranslations.Get("ProductCompartmentMenuItemKey");
+            TranslatedDispensersMenuItemKey = GlobalTranslations.Get("DispensersMenuItemKey");
+            TranslatedDispenserTypeMenuItemKey = GlobalTranslations.Get("DispenserTypeMenuItemKey");
+            TranslatedHoseMenuItemKey = GlobalTranslations.Get("HoseMenuItemKey");
+            TranslatedHoseHistoryMenuItemKey = GlobalTranslations.Get("HoseHistoryMenuItemKey");
+            TranslatedProductMenuItemKey = GlobalTranslations.Get("ProductMenuItemKey");
+            TranslatedProductTypeMenuItemKey = GlobalTranslations.Get("ProductTypeMenuItemKey");
+            TranslatedShoppingMenuItemKey = GlobalTranslations.Get("ShoppingMenuItemKey");
+            TranslatedEdsMenuItemKey = GlobalTranslations.Get("EdsMenuItemKey");
+            TranslatedExpenditureMenuItemKey = GlobalTranslations.Get("ExpenditureMenuItemKey");
+            TranslatedIslanderMenuItemKey = GlobalTranslations.Get("IslanderMenuItemKey");
+            TranslatedIslandMenuItemKey = GlobalTranslations.Get("IslandMenuItemKey");
+            TranslatedCategoryMenuItemKey = GlobalTranslations.Get("CategoryMenuItemKey");
+            TranslatedTypeOfCollectionMenuItemKey = GlobalTranslations.Get("TypeOfCollectionMenuItemKey");
+            TranslatedInventoryMenuItemKey = GlobalTranslations.Get("InventoryMenuItemKey");
+
             if (!IsIslander)
             {
 
