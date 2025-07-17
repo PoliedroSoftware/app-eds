@@ -7,7 +7,7 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20">
-                <Label  Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="Menu Principal"
+                <Label  Margin="0,10,0,20" FontSize="20" HorizontalOptions="Center" Text="{Binding TranslatedMenuTitle}"
                         AutomationId="LabelMenuPrincipal" />
 
                 <Button Text="Court"
@@ -34,11 +34,11 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Cerrar Sesión"
+                <Button Text="{Binding TranslatedLogoutButtonText}"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"
-                        HeightRequest="50" 
+                        HeightRequest="50"
                         Margin="0,20,0,0"
                         AutomationId="ButtonLogout"/>
             </VerticalStackLayout>
