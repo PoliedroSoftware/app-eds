@@ -15,6 +15,18 @@ public partial class App : Application
         
         sessionManager.ClearCurrentSession();
         MainPage = new NavigationPage(new MainPage());
+        _ = InitializeTranslationsAsync(); // Llamar al método asíncrono sin esperar para no bloquear el constructor
+    }
+
+    private async Task InitializeTranslationsAsync()
+    {
+        var translationsService = Current.MainPage.Handler.MauiContext.Services.GetService<APP.Eds.Services.Translations.TranslationsService>();
+        if (translationsService != null)
+        {
+            var currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+            var translations = await translationsService.GetTranslationsByLanguageAsync(currentCulture);
+            APP.Eds.Services.Config.GlobalTranslations.SetTranslations(translations);
+        }
     }
 
     private void HandlerInitialize()

@@ -27,6 +27,8 @@ using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using APP.Eds.Services.Config; // Importar GlobalTranslations
+using APP.Eds.Services.Translations;
+using System.ComponentModel;
 
 namespace APP.Eds.Services.Navigation
 {
@@ -35,9 +37,328 @@ namespace APP.Eds.Services.Navigation
         public ObservableCollection<CategoryModel> Categories { get; set; }
         public bool IsIslander => Preferences.Get("userRole", "") == "User";
         public ICommand NavigateToCourtCommand { get; }
+        public readonly TranslationsService _translations = new TranslationsService();
+        private string _translatedAdministrationCategoryKey;
+        public string TranslatedAdministrationCategoryKey
+        {
+            get => _translatedAdministrationCategoryKey;
+            set
+            {
+                _translatedAdministrationCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedAdministrationCategoryKey));
+            }
+        }
 
+        private string _translatedTanksAndCompartmentsCategoryKey;
+        public string TranslatedTanksAndCompartmentsCategoryKey
+        {
+            get => _translatedTanksAndCompartmentsCategoryKey;
+            set
+            {
+                _translatedTanksAndCompartmentsCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedTanksAndCompartmentsCategoryKey));
+            }
+        }
+
+        private string _translatedDispensersAndHosesCategoryKey;
+        public string TranslatedDispensersAndHosesCategoryKey
+        {
+            get => _translatedDispensersAndHosesCategoryKey;
+            set
+            {
+                _translatedDispensersAndHosesCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedDispensersAndHosesCategoryKey));
+            }
+        }
+
+        private string _translatedProductsAndShoppingCategoryKey;
+        public string TranslatedProductsAndShoppingCategoryKey
+        {
+            get => _translatedProductsAndShoppingCategoryKey;
+            set
+            {
+                _translatedProductsAndShoppingCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedProductsAndShoppingCategoryKey));
+            }
+        }
+
+        private string _translatedEdsAndOthersCategoryKey;
+        public string TranslatedEdsAndOthersCategoryKey
+        {
+            get => _translatedEdsAndOthersCategoryKey;
+            set
+            {
+                _translatedEdsAndOthersCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedEdsAndOthersCategoryKey));
+            }
+        }
+
+        private string _translatedInventoryCategoryKey;
+        public string TranslatedInventoryCategoryKey
+        {
+            get => _translatedInventoryCategoryKey;
+            set
+            {
+                _translatedInventoryCategoryKey = value;
+                OnPropertyChanged(nameof(TranslatedInventoryCategoryKey));
+            }
+        }
+
+        private string _translatedCourtMenuItemKey;
+        public string TranslatedCourtMenuItemKey
+        {
+            get => _translatedCourtMenuItemKey;
+            set
+            {
+                _translatedCourtMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedCourtMenuItemKey));
+            }
+        }
+
+        private string _translatedBusinessMenuItemKey;
+        public string TranslatedBusinessMenuItemKey
+        {
+            get => _translatedBusinessMenuItemKey;
+            set
+            {
+                _translatedBusinessMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedBusinessMenuItemKey));
+            }
+        }
+
+        private string _translatedProviderMenuItemKey;
+        public string TranslatedProviderMenuItemKey
+        {
+            get => _translatedProviderMenuItemKey;
+            set
+            {
+                _translatedProviderMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedProviderMenuItemKey));
+            }
+        }
+
+        private string _translatedCapacityMenuItemKey;
+        public string TranslatedCapacityMenuItemKey
+        {
+            get => _translatedCapacityMenuItemKey;
+            set
+            {
+                _translatedCapacityMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedCapacityMenuItemKey));
+            }
+        }
+
+        private string _translatedCompartmentMenuItemKey;
+        public string TranslatedCompartmentMenuItemKey
+        {
+            get => _translatedCompartmentMenuItemKey;
+            set
+            {
+                _translatedCompartmentMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedCompartmentMenuItemKey));
+            }
+        }
+
+        private string _translatedCompartmentCapacityMenuItemKey;
+        public string TranslatedCompartmentCapacityMenuItemKey
+        {
+            get => _translatedCompartmentCapacityMenuItemKey;
+            set
+            {
+                _translatedCompartmentCapacityMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedCompartmentCapacityMenuItemKey));
+            }
+        }
+
+        private string _translatedEdsTankMenuItemKey;
+        public string TranslatedEdsTankMenuItemKey
+        {
+            get => _translatedEdsTankMenuItemKey;
+            set
+            {
+                _translatedEdsTankMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedEdsTankMenuItemKey));
+            }
+        }
+
+        private string _translatedTankMenuItemKey;
+        public string TranslatedTankMenuItemKey
+        {
+            get => _translatedTankMenuItemKey;
+            set
+            {
+                _translatedTankMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedTankMenuItemKey));
+            }
+        }
+
+        private string _translatedProductCompartmentMenuItemKey;
+        public string TranslatedProductCompartmentMenuItemKey
+        {
+            get => _translatedProductCompartmentMenuItemKey;
+            set
+            {
+                _translatedProductCompartmentMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedProductCompartmentMenuItemKey));
+            }
+        }
+
+        private string _translatedDispensersMenuItemKey;
+        public string TranslatedDispensersMenuItemKey
+        {
+            get => _translatedDispensersMenuItemKey;
+            set
+            {
+                _translatedDispensersMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedDispensersMenuItemKey));
+            }
+        }
+
+        private string _translatedDispenserTypeMenuItemKey;
+        public string TranslatedDispenserTypeMenuItemKey
+        {
+            get => _translatedDispenserTypeMenuItemKey;
+            set
+            {
+                _translatedDispenserTypeMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedDispenserTypeMenuItemKey));
+            }
+        }
+
+        private string _translatedHoseMenuItemKey;
+        public string TranslatedHoseMenuItemKey
+        {
+            get => _translatedHoseMenuItemKey;
+            set
+            {
+                _translatedHoseMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedHoseMenuItemKey));
+            }
+        }
+
+        private string _translatedHoseHistoryMenuItemKey;
+        public string TranslatedHoseHistoryMenuItemKey
+        {
+            get => _translatedHoseHistoryMenuItemKey;
+            set
+            {
+                _translatedHoseHistoryMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedHoseHistoryMenuItemKey));
+            }
+        }
+
+        private string _translatedProductMenuItemKey;
+        public string TranslatedProductMenuItemKey
+        {
+            get => _translatedProductMenuItemKey;
+            set
+            {
+                _translatedProductMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedProductMenuItemKey));
+            }
+        }
+
+        private string _translatedProductTypeMenuItemKey;
+        public string TranslatedProductTypeMenuItemKey
+        {
+            get => _translatedProductTypeMenuItemKey;
+            set
+            {
+                _translatedProductTypeMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedProductTypeMenuItemKey));
+            }
+        }
+
+        private string _translatedShoppingMenuItemKey;
+        public string TranslatedShoppingMenuItemKey
+        {
+            get => _translatedShoppingMenuItemKey;
+            set
+            {
+                _translatedShoppingMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedShoppingMenuItemKey));
+            }
+        }
+
+        private string _translatedEdsMenuItemKey;
+        public string TranslatedEdsMenuItemKey
+        {
+            get => _translatedEdsMenuItemKey;
+            set
+            {
+                _translatedEdsMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedEdsMenuItemKey));
+            }
+        }
+
+        private string _translatedExpenditureMenuItemKey;
+        public string TranslatedExpenditureMenuItemKey
+        {
+            get => _translatedExpenditureMenuItemKey;
+            set
+            {
+                _translatedExpenditureMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedExpenditureMenuItemKey));
+            }
+        }
+
+        private string _translatedIslanderMenuItemKey;
+        public string TranslatedIslanderMenuItemKey
+        {
+            get => _translatedIslanderMenuItemKey;
+            set
+            {
+                _translatedIslanderMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedIslanderMenuItemKey));
+            }
+        }
+
+        private string _translatedIslandMenuItemKey;
+        public string TranslatedIslandMenuItemKey
+        {
+            get => _translatedIslandMenuItemKey;
+            set
+            {
+                _translatedIslandMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedIslandMenuItemKey));
+            }
+        }
+
+        private string _translatedCategoryMenuItemKey;
+        public string TranslatedCategoryMenuItemKey
+        {
+            get => _translatedCategoryMenuItemKey;
+            set
+            {
+                _translatedCategoryMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedCategoryMenuItemKey));
+            }
+        }
+
+        private string _translatedTypeOfCollectionMenuItemKey;
+        public string TranslatedTypeOfCollectionMenuItemKey
+        {
+            get => _translatedTypeOfCollectionMenuItemKey;
+            set
+            {
+                _translatedTypeOfCollectionMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedTypeOfCollectionMenuItemKey));
+            }
+        }
+
+        private string _translatedInventoryMenuItemKey;
+        public string TranslatedInventoryMenuItemKey
+        {
+            get => _translatedInventoryMenuItemKey;
+            set
+            {
+                _translatedInventoryMenuItemKey = value;
+                OnPropertyChanged(nameof(TranslatedInventoryMenuItemKey));
+            }
+        }
         public MainService()
         {
+            LoadTranslationsAsync().ConfigureAwait(false);
 
             NavigateToCourtCommand = new Command(async () =>
             {
@@ -46,7 +367,6 @@ namespace APP.Eds.Services.Navigation
                     await navPage.PushAsync(new CourtPostView());
                 }
             });
-
 
             if (!IsIslander)
             {
@@ -93,7 +413,7 @@ namespace APP.Eds.Services.Navigation
                  new(GlobalTranslations.Get("InventoryCategoryKey"),
                 [
                     new(GlobalTranslations.Get("InventoryMenuItemKey"), typeof(InventoryPostView)),
-
+                 
                 ]),
             };
             }
@@ -148,6 +468,43 @@ namespace APP.Eds.Services.Navigation
                 });
 
             }
+        private async Task LoadTranslationsAsync()
+        {
+            var currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+            var translations = await _translations.GetTranslationsByLanguageAsync(currentCulture);
+            APP.Eds.Services.Config.GlobalTranslations.SetTranslations(translations);
+
+            // Actualizar las propiedades traducibles después de cargar las traducciones
+            TranslatedAdministrationCategoryKey = GlobalTranslations.Get("AdministrationCategoryKey");
+            TranslatedTanksAndCompartmentsCategoryKey = GlobalTranslations.Get("TanksAndCompartmentsCategoryKey");
+            TranslatedDispensersAndHosesCategoryKey = GlobalTranslations.Get("DispensersAndHosesCategoryKey");
+            TranslatedProductsAndShoppingCategoryKey = GlobalTranslations.Get("ProductsAndShoppingCategoryKey");
+            TranslatedEdsAndOthersCategoryKey = GlobalTranslations.Get("EdsAndOthersCategoryKey");
+            TranslatedInventoryCategoryKey = GlobalTranslations.Get("InventoryCategoryKey");
+            TranslatedCourtMenuItemKey = GlobalTranslations.Get("CourtMenuItemKey");
+            TranslatedBusinessMenuItemKey = GlobalTranslations.Get("BusinessMenuItemKey");
+            TranslatedProviderMenuItemKey = GlobalTranslations.Get("ProviderMenuItemKey");
+            TranslatedCapacityMenuItemKey = GlobalTranslations.Get("CapacityMenuItemKey");
+            TranslatedCompartmentMenuItemKey = GlobalTranslations.Get("CompartmentMenuItemKey");
+            TranslatedCompartmentCapacityMenuItemKey = GlobalTranslations.Get("CompartmentCapacityMenuItemKey");
+            TranslatedEdsTankMenuItemKey = GlobalTranslations.Get("EdsTankMenuItemKey");
+            TranslatedTankMenuItemKey = GlobalTranslations.Get("TankMenuItemKey");
+            TranslatedProductCompartmentMenuItemKey = GlobalTranslations.Get("ProductCompartmentMenuItemKey");
+            TranslatedDispensersMenuItemKey = GlobalTranslations.Get("DispensersMenuItemKey");
+            TranslatedDispenserTypeMenuItemKey = GlobalTranslations.Get("DispenserTypeMenuItemKey");
+            TranslatedHoseMenuItemKey = GlobalTranslations.Get("HoseMenuItemKey");
+            TranslatedHoseHistoryMenuItemKey = GlobalTranslations.Get("HoseHistoryMenuItemKey");
+            TranslatedProductMenuItemKey = GlobalTranslations.Get("ProductMenuItemKey");
+            TranslatedProductTypeMenuItemKey = GlobalTranslations.Get("ProductTypeMenuItemKey");
+            TranslatedShoppingMenuItemKey = GlobalTranslations.Get("ShoppingMenuItemKey");
+            TranslatedEdsMenuItemKey = GlobalTranslations.Get("EdsMenuItemKey");
+            TranslatedExpenditureMenuItemKey = GlobalTranslations.Get("ExpenditureMenuItemKey");
+            TranslatedIslanderMenuItemKey = GlobalTranslations.Get("IslanderMenuItemKey");
+            TranslatedIslandMenuItemKey = GlobalTranslations.Get("IslandMenuItemKey");
+            TranslatedCategoryMenuItemKey = GlobalTranslations.Get("CategoryMenuItemKey");
+            TranslatedTypeOfCollectionMenuItemKey = GlobalTranslations.Get("TypeOfCollectionMenuItemKey");
+            TranslatedInventoryMenuItemKey = GlobalTranslations.Get("InventoryMenuItemKey");
+        }
         }
     }
 }
