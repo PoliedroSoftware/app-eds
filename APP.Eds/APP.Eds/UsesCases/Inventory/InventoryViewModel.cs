@@ -45,8 +45,6 @@ namespace APP.Eds.UsesCases.Inventory
                 if (c != null)
                     c.IsExpanded = !c.IsExpanded;
             });
-
-            Task.Run(async () => await LoadDataAsync());
         }
 
         public async Task LoadDataAsync()
