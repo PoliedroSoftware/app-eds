@@ -1,4 +1,5 @@
 using APP.Eds.Services.ProductCompartiment;
+using APP.Eds.UsesCases.LoadingView;
 
 namespace APP.Eds.UsesCases.ProductCompartiment;
 
@@ -17,13 +18,13 @@ public partial class ProductCompartimentPostView : ContentPage
     {
         try
         {
-            LoadingOverlay.ShowLoading();
+            LoadingView.ShowLoading();
             await _productCompartimentService.SaveProductCompartimentDataAsync();
         }
 
         finally
         {
-            LoadingOverlay.HideLoading();
+            LoadingView.HideLoading();
 
             _productCompartimentService.SelectProduct = null;
             _productCompartimentService.SelectCompartiment = null;

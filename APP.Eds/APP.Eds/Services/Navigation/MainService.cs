@@ -358,7 +358,7 @@ namespace APP.Eds.Services.Navigation
         }
         public MainService()
         {
-            LoadTranslationsAsync().ConfigureAwait(false);
+            LoadTranslationsAsync();
 
             NavigateToCourtCommand = new Command(async () =>
             {
@@ -370,52 +370,164 @@ namespace APP.Eds.Services.Navigation
 
             if (!IsIslander)
             {
-
                 Categories = new ObservableCollection<CategoryModel>
+                {
+                    new(TranslatedAdministrationCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedCourtMenuItemKey, typeof(CourtPostView)),
+                        new(TranslatedBusinessMenuItemKey, typeof(BusinessPostView)),
+                        new(TranslatedProviderMenuItemKey, typeof(ProviderPostView))
+                    }),
+                    new(TranslatedTanksAndCompartmentsCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedCapacityMenuItemKey, typeof(CapacityPostView)),
+                        new(TranslatedCompartmentMenuItemKey, typeof(CompartimentPostView)),
+                        new(TranslatedCompartmentCapacityMenuItemKey, typeof(APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView)),
+                        new(TranslatedEdsTankMenuItemKey, typeof(EdsTankPostView)),
+                        new(TranslatedTankMenuItemKey, typeof(TankPostView)),
+                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartmentPostView))
+                    }),
+                    new(TranslatedDispensersAndHosesCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedDispensersMenuItemKey, typeof(DispensersPostView)),
+                        new(TranslatedDispenserTypeMenuItemKey, typeof(DispenserTypePostView)),
+                        new(TranslatedHoseMenuItemKey, typeof(HosePostView)),
+                        new(TranslatedHoseHistoryMenuItemKey, typeof(HoseHistoryPostView))
+                    }),
+                    new(TranslatedProductsAndShoppingCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedProductMenuItemKey, typeof(ProductPostView)),
+                        new(TranslatedProductTypeMenuItemKey, typeof(ProductTypePostView)),
+                        new(TranslatedShoppingMenuItemKey, typeof(ShoppingPostView)),
+                    }),
+                    new(TranslatedEdsAndOthersCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedEdsMenuItemKey, typeof(EdsPostView)),
+                        new(TranslatedExpenditureMenuItemKey, typeof(ExpendituresPostView)),
+                        new(TranslatedIslanderMenuItemKey, typeof(IslanderPostView)),
+                        new(TranslatedIslandMenuItemKey, typeof(IslandPostView)),
+                        new(TranslatedCategoryMenuItemKey, typeof(CategoryPostView)),
+                        new(TranslatedTypeOfCollectionMenuItemKey, typeof(TypeOfCollectionPostView))
+                    }),
+                    new(TranslatedInventoryCategoryKey,
+                    [
+                        new(TranslatedInventoryMenuItemKey, typeof(InventoryPostView)),
+                    ]),
+                };
+            }
+            else
             {
-                new(GlobalTranslations.Get("AdministrationCategoryKey"), new List<MenuItemModel>
+                Categories = new ObservableCollection<CategoryModel>();
+            }
+        }
+
+        private string _translatedLogoutButtonText;
+        public string TranslatedLogoutButtonText
+        {
+            get => _translatedLogoutButtonText;
+            set
+            {
+                _translatedLogoutButtonText = value;
+                OnPropertyChanged(nameof(TranslatedLogoutButtonText));
+            }
+        }
+
+        private string _translatedMenuTitle;
+        public string TranslatedMenuTitle
+        {
+            get => _translatedMenuTitle;
+            set
+            {
+                _translatedMenuTitle = value;
+                OnPropertyChanged(nameof(TranslatedMenuTitle));
+            }
+        }
+
+        private async void LoadTranslationsAsync()
+        {
+            var currentLanguage = TranslationsService.CurrentLanguage;
+            var translations = await _translations.GetTranslationsByLanguageAsync(currentLanguage);
+
+            TranslatedMenuTitle = translations.TryGetValue("MenuPrincipal", out var menuTitle) ? menuTitle : "Menú Principal";
+            TranslatedLogoutButtonText = translations.TryGetValue("LogoutButtonText", out var logoutText) ? logoutText : "Cerrar Sesión";
+
+            TranslatedAdministrationCategoryKey = translations.TryGetValue("AdministrationCategory", out var adminCategory) ? adminCategory : "Administración";
+            TranslatedTanksAndCompartmentsCategoryKey = translations.TryGetValue("TanksAndCompartmentsCategory", out var tanksCategory) ? tanksCategory : "Tanques y Compartimentos";
+            TranslatedDispensersAndHosesCategoryKey = translations.TryGetValue("DispensersAndHosesCategory", out var dispensersCategory) ? dispensersCategory : "Dispensadores y Mangueras";
+            TranslatedProductsAndShoppingCategoryKey = translations.TryGetValue("ProductsAndShoppingCategory", out var productsCategory) ? productsCategory : "Productos y Compras";
+            TranslatedEdsAndOthersCategoryKey = translations.TryGetValue("EdsAndOthersCategory", out var edsCategory) ? edsCategory : "EDS y Otros";
+            TranslatedInventoryCategoryKey = translations.TryGetValue("InventoryCategory", out var inventoryCategory) ? inventoryCategory : "Inventario";
+
+            TranslatedCourtMenuItemKey = translations.TryGetValue("CourtMenuItem", out var courtMenuItem) ? courtMenuItem : "Corte";
+            TranslatedBusinessMenuItemKey = translations.TryGetValue("BusinessMenuItem", out var businessMenuItem) ? businessMenuItem : "Negocio";
+            TranslatedProviderMenuItemKey = translations.TryGetValue("ProviderMenuItem", out var providerMenuItem) ? providerMenuItem : "Proveedor";
+            TranslatedCapacityMenuItemKey = translations.TryGetValue("CapacityMenuItem", out var capacityMenuItem) ? capacityMenuItem : "Capacidad";
+            TranslatedCompartmentMenuItemKey = translations.TryGetValue("CompartmentMenuItem", out var compartmentMenuItem) ? compartmentMenuItem : "Compartimento";
+            TranslatedCompartmentCapacityMenuItemKey = translations.TryGetValue("CompartmentCapacityMenuItem", out var compartmentCapacityMenuItem) ? compartmentCapacityMenuItem : "Capacidad de Compartimento";
+            TranslatedEdsTankMenuItemKey = translations.TryGetValue("EdsTankMenuItem", out var edsTankMenuItem) ? edsTankMenuItem : "Tanque EDS";
+            TranslatedTankMenuItemKey = translations.TryGetValue("TankMenuItem", out var tankMenuItem) ? tankMenuItem : "Tanque";
+            TranslatedProductCompartmentMenuItemKey = translations.TryGetValue("ProductCompartmentMenuItem", out var productCompartmentMenuItem) ? productCompartmentMenuItem : "Compartimento de Producto";
+            TranslatedDispensersMenuItemKey = translations.TryGetValue("DispensersMenuItem", out var dispensersMenuItem) ? dispensersMenuItem : "Dispensadores";
+            TranslatedDispenserTypeMenuItemKey = translations.TryGetValue("DispenserTypeMenuItem", out var dispenserTypeMenuItem) ? dispenserTypeMenuItem : "Tipo de Dispensador";
+            TranslatedHoseMenuItemKey = translations.TryGetValue("HoseMenuItem", out var hoseMenuItem) ? hoseMenuItem : "Manguera";
+            TranslatedHoseHistoryMenuItemKey = translations.TryGetValue("HoseHistoryMenuItem", out var hoseHistoryMenuItem) ? hoseHistoryMenuItem : "Historial de Manguera";
+            TranslatedProductMenuItemKey = translations.TryGetValue("ProductMenuItem", out var productMenuItem) ? productMenuItem : "Producto";
+            TranslatedProductTypeMenuItemKey = translations.TryGetValue("ProductTypeMenuItem", out var productTypeMenuItem) ? productTypeMenuItem : "Tipo de Producto";
+            TranslatedShoppingMenuItemKey = translations.TryGetValue("ShoppingMenuItem", out var shoppingMenuItem) ? shoppingMenuItem : "Compras";
+            TranslatedEdsMenuItemKey = translations.TryGetValue("EdsMenuItem", out var edsMenuItem) ? edsMenuItem : "EDS";
+            TranslatedExpenditureMenuItemKey = translations.TryGetValue("ExpenditureMenuItem", out var expenditureMenuItem) ? expenditureMenuItem : "Gastos";
+            TranslatedIslanderMenuItemKey = translations.TryGetValue("IslanderMenuItem", out var islanderMenuItem) ? islanderMenuItem : "Isleño";
+            TranslatedIslandMenuItemKey = translations.TryGetValue("IslandMenuItem", out var islandMenuItem) ? islandMenuItem : "Isla";
+            TranslatedCategoryMenuItemKey = translations.TryGetValue("CategoryMenuItem", out var categoryMenuItem) ? categoryMenuItem : "Categoría";
+            TranslatedTypeOfCollectionMenuItemKey = translations.TryGetValue("TypeOfCollectionMenuItem", out var typeOfCollectionMenuItem) ? typeOfCollectionMenuItem : "Tipo de Recolección";
+
+            // Re-initialize Categories after translations are loaded
+            if (!IsIslander)
+            {
+                Categories = new ObservableCollection<CategoryModel>
                 {
-                    new(GlobalTranslations.Get("CourtMenuItemKey"), typeof(CourtPostView)),
-                    new(GlobalTranslations.Get("BusinessMenuItemKey"), typeof(BusinessPostView)),
-                    new(GlobalTranslations.Get("ProviderMenuItemKey"), typeof(ProviderPostView))
-                }),
-                new(GlobalTranslations.Get("TanksAndCompartmentsCategoryKey"), new List<MenuItemModel>
-                {
-                    new(GlobalTranslations.Get("CapacityMenuItemKey"), typeof(CapacityPostView)),
-                    new(GlobalTranslations.Get("CompartmentMenuItemKey"), typeof(CompartimentPostView)),
-                    new(GlobalTranslations.Get("CompartmentCapacityMenuItemKey"), typeof(CompartimentCapacityPostView)),
-                    new(GlobalTranslations.Get("EdsTankMenuItemKey"), typeof(EdsTankPostView)),
-                    new(GlobalTranslations.Get("TankMenuItemKey"), typeof(TankPostView)),
-                    new(GlobalTranslations.Get("ProductCompartmentMenuItemKey"), typeof(ProductCompartimentPostView))
-                }),
-                new(GlobalTranslations.Get("DispensersAndHosesCategoryKey"), new List<MenuItemModel>
-                {
-                    new(GlobalTranslations.Get("DispensersMenuItemKey"), typeof(DispensersPostView)),
-                    new(GlobalTranslations.Get("DispenserTypeMenuItemKey"), typeof(DispenserTypePostView)),
-                    new(GlobalTranslations.Get("HoseMenuItemKey"), typeof(HosePostView)),
-                    new(GlobalTranslations.Get("HoseHistoryMenuItemKey"), typeof(HoseHistoryPostView))
-                }),
-                new(GlobalTranslations.Get("ProductsAndShoppingCategoryKey"), new List<MenuItemModel>
-                {
-                    new(GlobalTranslations.Get("ProductMenuItemKey"), typeof(ProductPostView)),
-                    new(GlobalTranslations.Get("ProductTypeMenuItemKey"), typeof(ProductTypePostView)),
-                    new(GlobalTranslations.Get("ShoppingMenuItemKey"), typeof(ShoppingPostView)),
-                }),
-                new(GlobalTranslations.Get("EdsAndOthersCategoryKey"), new List<MenuItemModel>
-                {
-                    new(GlobalTranslations.Get("EdsMenuItemKey"), typeof(EdsPostView)),
-                    new(GlobalTranslations.Get("ExpenditureMenuItemKey"), typeof(ExpendituresPostView)),
-                    new(GlobalTranslations.Get("IslanderMenuItemKey"), typeof(IslanderPostView)),
-                     new(GlobalTranslations.Get("IslandMenuItemKey"), typeof(IslandPostView)),
-                    new(GlobalTranslations.Get("CategoryMenuItemKey"), typeof(CategoryPostView)),
-                    new(GlobalTranslations.Get("TypeOfCollectionMenuItemKey"), typeof(TypeOfCollectionPostView))
-                }),
-                 new(GlobalTranslations.Get("InventoryCategoryKey"),
-                [
-                    new(GlobalTranslations.Get("InventoryMenuItemKey"), typeof(InventoryPostView)),
-                 
-                ]),
-            };
+                    new(TranslatedAdministrationCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedCourtMenuItemKey, typeof(CourtPostView)),
+                        new(TranslatedBusinessMenuItemKey, typeof(BusinessPostView)),
+                        new(TranslatedProviderMenuItemKey, typeof(ProviderPostView))
+                    }),
+                    new(TranslatedTanksAndCompartmentsCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedCapacityMenuItemKey, typeof(CapacityPostView)),
+                        new(TranslatedCompartmentMenuItemKey, typeof(CompartimentPostView)),
+                        new(TranslatedCompartmentCapacityMenuItemKey, typeof(APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView)),
+                        new(TranslatedEdsTankMenuItemKey, typeof(EdsTankPostView)),
+                        new(TranslatedTankMenuItemKey, typeof(TankPostView)),
+                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartmentPostView))
+                    }),
+                    new(TranslatedDispensersAndHosesCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedDispensersMenuItemKey, typeof(DispensersPostView)),
+                        new(TranslatedDispenserTypeMenuItemKey, typeof(DispenserTypePostView)),
+                        new(TranslatedHoseMenuItemKey, typeof(HosePostView)),
+                        new(TranslatedHoseHistoryMenuItemKey, typeof(HoseHistoryPostView))
+                    }),
+                    new(TranslatedProductsAndShoppingCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedProductMenuItemKey, typeof(ProductPostView)),
+                        new(TranslatedProductTypeMenuItemKey, typeof(ProductTypePostView)),
+                        new(TranslatedShoppingMenuItemKey, typeof(ShoppingPostView)),
+                    }),
+                    new(TranslatedEdsAndOthersCategoryKey, new List<MenuItemModel>
+                    {
+                        new(TranslatedEdsMenuItemKey, typeof(EdsPostView)),
+                        new(TranslatedExpenditureMenuItemKey, typeof(ExpendituresPostView)),
+                        new(TranslatedIslanderMenuItemKey, typeof(IslanderPostView)),
+                        new(TranslatedIslandMenuItemKey, typeof(IslandPostView)),
+                        new(TranslatedCategoryMenuItemKey, typeof(CategoryPostView)),
+                        new(TranslatedTypeOfCollectionMenuItemKey, typeof(TypeOfCollectionPostView))
+                    }),
+                    new(TranslatedInventoryCategoryKey,
+                    [
+                        new(TranslatedInventoryMenuItemKey, typeof(InventoryPostView)),
+                    ]),
+                };
             }
             else
             {
@@ -468,43 +580,6 @@ namespace APP.Eds.Services.Navigation
                 });
 
             }
-        private async Task LoadTranslationsAsync()
-        {
-            var currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
-            var translations = await _translations.GetTranslationsByLanguageAsync(currentCulture);
-            APP.Eds.Services.Config.GlobalTranslations.SetTranslations(translations);
-
-            // Actualizar las propiedades traducibles después de cargar las traducciones
-            TranslatedAdministrationCategoryKey = GlobalTranslations.Get("AdministrationCategoryKey");
-            TranslatedTanksAndCompartmentsCategoryKey = GlobalTranslations.Get("TanksAndCompartmentsCategoryKey");
-            TranslatedDispensersAndHosesCategoryKey = GlobalTranslations.Get("DispensersAndHosesCategoryKey");
-            TranslatedProductsAndShoppingCategoryKey = GlobalTranslations.Get("ProductsAndShoppingCategoryKey");
-            TranslatedEdsAndOthersCategoryKey = GlobalTranslations.Get("EdsAndOthersCategoryKey");
-            TranslatedInventoryCategoryKey = GlobalTranslations.Get("InventoryCategoryKey");
-            TranslatedCourtMenuItemKey = GlobalTranslations.Get("CourtMenuItemKey");
-            TranslatedBusinessMenuItemKey = GlobalTranslations.Get("BusinessMenuItemKey");
-            TranslatedProviderMenuItemKey = GlobalTranslations.Get("ProviderMenuItemKey");
-            TranslatedCapacityMenuItemKey = GlobalTranslations.Get("CapacityMenuItemKey");
-            TranslatedCompartmentMenuItemKey = GlobalTranslations.Get("CompartmentMenuItemKey");
-            TranslatedCompartmentCapacityMenuItemKey = GlobalTranslations.Get("CompartmentCapacityMenuItemKey");
-            TranslatedEdsTankMenuItemKey = GlobalTranslations.Get("EdsTankMenuItemKey");
-            TranslatedTankMenuItemKey = GlobalTranslations.Get("TankMenuItemKey");
-            TranslatedProductCompartmentMenuItemKey = GlobalTranslations.Get("ProductCompartmentMenuItemKey");
-            TranslatedDispensersMenuItemKey = GlobalTranslations.Get("DispensersMenuItemKey");
-            TranslatedDispenserTypeMenuItemKey = GlobalTranslations.Get("DispenserTypeMenuItemKey");
-            TranslatedHoseMenuItemKey = GlobalTranslations.Get("HoseMenuItemKey");
-            TranslatedHoseHistoryMenuItemKey = GlobalTranslations.Get("HoseHistoryMenuItemKey");
-            TranslatedProductMenuItemKey = GlobalTranslations.Get("ProductMenuItemKey");
-            TranslatedProductTypeMenuItemKey = GlobalTranslations.Get("ProductTypeMenuItemKey");
-            TranslatedShoppingMenuItemKey = GlobalTranslations.Get("ShoppingMenuItemKey");
-            TranslatedEdsMenuItemKey = GlobalTranslations.Get("EdsMenuItemKey");
-            TranslatedExpenditureMenuItemKey = GlobalTranslations.Get("ExpenditureMenuItemKey");
-            TranslatedIslanderMenuItemKey = GlobalTranslations.Get("IslanderMenuItemKey");
-            TranslatedIslandMenuItemKey = GlobalTranslations.Get("IslandMenuItemKey");
-            TranslatedCategoryMenuItemKey = GlobalTranslations.Get("CategoryMenuItemKey");
-            TranslatedTypeOfCollectionMenuItemKey = GlobalTranslations.Get("TypeOfCollectionMenuItemKey");
-            TranslatedInventoryMenuItemKey = GlobalTranslations.Get("InventoryMenuItemKey");
-        }
         }
     }
 }

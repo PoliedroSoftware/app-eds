@@ -9,6 +9,7 @@ namespace APP.Eds.Services.Translations;
 
 public class TranslationsService : ITranslationsService
 {
+    public static string CurrentLanguage { get; private set; } = "es"; // Valor por defecto
     private string? _authToken;
 
 
@@ -17,7 +18,10 @@ public class TranslationsService : ITranslationsService
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error de Token", "No se encontró el token de autenticación. La traducción no funcionará.", "OK");
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error de Token", "No se encontró el token de autenticación. La traducción no funcionará.", "OK");
+            }
             return new Dictionary<string, string>();
         }
 
