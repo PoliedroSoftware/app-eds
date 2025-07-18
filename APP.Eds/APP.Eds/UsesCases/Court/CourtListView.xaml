@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-    Title="Courts">
+    Title="Cortes">
     <AbsoluteLayout>
         <CollectionView ItemsSource="{Binding CourtList}" SelectionChanged="OnCourtSelected" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <CollectionView.ItemTemplate>
@@ -13,21 +13,21 @@
                         <Grid RowDefinitions="10,*,*,*,*,*,*,10" ColumnDefinitions="10,Auto,20,*,Auto,10">
                             <Label Text="{Binding Islander}" FontAttributes="Bold"  Grid.Row="1" Grid.ColumnSpan="6" Margin="10,0,0,10"/>
 
-                            <Label Text="Date"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
+                            <Label Text="Fecha"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
                             <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
 
-                            <Label Text="Start" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
+                            <Label Text="Inicio" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
                             <Label Text="{Binding Starttime}"  Grid.Row="3" Grid.Column="3"/>
                             <BoxView Grid.Row="3" Grid.ColumnSpan="6" ZIndex="-1"/>
 
-                            <Label Text="End"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
+                            <Label Text="Fin"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
                             <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="3"/>
 
                             <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
                             <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}"  Grid.Row="5" Grid.Column="3"/>
                             <BoxView Grid.Row="5" Grid.ColumnSpan="6" ZIndex="-1"/>
 
-                            <Label Text="Gallons"  FontAttributes="Bold" Grid.Row="6" Grid.Column="1"/>
+                            <Label Text="Galones"  FontAttributes="Bold" Grid.Row="6" Grid.Column="1"/>
                             <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N2}'}"  Grid.Row="6" Grid.Column="3"/>
 
                             <Button Text="ℹ️"
@@ -37,7 +37,8 @@
                                     FontSize="30"
                                     WidthRequest="40" HeightRequest="40" Padding="0"
                                     HorizontalOptions="End" VerticalOptions="Center"
-                                    Grid.RowSpan="8" Grid.Column="3"/>
+                                    Grid.RowSpan="8" Grid.Column="3"
+                                    AutomationId="ButtonCourtInfo"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>
@@ -46,6 +47,7 @@
         <!-- Loading after of sendButton-->
         <controls:LoadingView x:Name="LoadingOverlay"
                       AbsoluteLayout.LayoutBounds="0,0,1,1"
-                      AbsoluteLayout.LayoutFlags="All"/>
+                      AbsoluteLayout.LayoutFlags="All"
+                      AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>

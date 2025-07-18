@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
              x:Class="APP.Eds.UsesCases.Capacity.CapacityPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="{Binding GestionCapacityLabel}">
+             Title="Gestion De Capacidad">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -13,29 +13,34 @@
         <Entry
             Keyboard="Text"
             Placeholder="{Binding CodePlaceholder}"
-            Text="{Binding Code, Mode=TwoWay}" />
+            Text="{Binding Code, Mode=TwoWay}"
+            AutomationId="EntryCode"/>
         <Label FontSize="16" Text="{Binding HeightLabel}"/>
         <Entry
             Keyboard="Numeric"
             Placeholder="{Binding HeightPlaceholder}"
-            Text="{Binding Height, Mode=TwoWay}" />
+            Text="{Binding Height, Mode=TwoWay}" 
+            AutomationId="EntryHeight"/>
         <Label FontSize="16" Text="{Binding GallonLabel}"/>
         <Entry
             Keyboard="Numeric"
             Placeholder="{Binding GallonPlaceholder}"
-            Text="{Binding Gallon, Mode=TwoWay}" />
+            Text="{Binding Gallon, Mode=TwoWay}" 
+            AutomationId="EntryGallon"/>
         <Label FontSize="16" Text="{Binding LitersLabel}"/>
         <Entry
             Keyboard="Numeric"
             Placeholder="{Binding LitersPlaceholder}"
-            Text="{Binding Liters, Mode=TwoWay}" />
+            Text="{Binding Liters, Mode=TwoWay}" 
+            AutomationId="EntryLiters"/>
 
         <Button
             BackgroundColor="Green"
             Clicked="SendCapacityButton"
             CornerRadius="10"
             Text="{Binding SendData}"
-            TextColor="White" />
+            TextColor="White" 
+            AutomationId="ButtonSendCapacityData"/>
     </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
               AbsoluteLayout.LayoutBounds="0,0,1,1"

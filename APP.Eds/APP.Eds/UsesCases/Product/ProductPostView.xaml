@@ -3,41 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.Product.ProductPostView"
-             Title="ProductPostView">
+             Title="Gestion De Productos">
 
     <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
         <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All">
-            <Label FontSize="16" Text="Product" />
+            <Label FontSize="16" Text="Ingrese El Producto" />
 
             <Entry
                 Keyboard="Text"
-                Placeholder="Enter ProductT"
-                Text="{Binding Name, Mode=TwoWay}" />
+                Placeholder="Ingrese EL Producto"
+                Text="{Binding Name, Mode=TwoWay}"
+                AutomationId="EntryProductName"/>
 
             <Picker 
-                Title="Seleccione un Product Type"
+                Title="Seleccione Un Tipo De Producto"
                 ItemsSource="{Binding ProductTypeList}"
                 ItemDisplayBinding="{Binding Description}"
-                SelectedItem="{Binding SelectProductType, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
+                AutomationId="PickerProductType"/>
 
+                <Label Text="Ingrese EL Precio Del Producto" />
             <Entry
                 Keyboard="Numeric"
                 Placeholder="Enter Price"
-                Text="{Binding Price, Mode=TwoWay}" />
+                Text="{Binding Price, Mode=TwoWay}"
+                AutomationId="EntryPrice"/>
 
             <Button
                 BackgroundColor="Green"
                 Clicked="Button_Clicked"
                 CornerRadius="10"
                 Text="Enviar Datos"
-                TextColor="White" />
+                TextColor="White"
+                AutomationId="ButtonSendData"/>
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </Frame>
 </ContentPage>

@@ -319,12 +319,6 @@ public class TankService : INotifyPropertyChanged
                     return;
                 }
 
-                if (Stock <= 0)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Stock' debe ser mayor que 0", "OK");
-                    return;
-                }
-
                 if (Ability <= 0)
                 {
                     await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Ability' debe ser mayor que 0", "OK");

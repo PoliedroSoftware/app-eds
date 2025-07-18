@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.ProductCompartiment.ProductCompartimentPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="ProductCompartimentPostView"
+             Title="Gestion Del Producto En El Compartimento"
              BackgroundColor="Transparent">
 
     <ScrollView>
@@ -20,27 +20,30 @@
                 Padding="20"
                 BackgroundColor="Transparent">
 
-                <VerticalStackLayout>
+                    <VerticalStackLayout>
 
-                    <Label FontSize="16" Text="ProductCompartiment" Margin="0,11,0,11"/>
-
-                    <Picker Title="Seleccione Un Product"
+                        <Picker Title="Seleccione Un Producto"
                             ItemsSource="{Binding ProductList}"
                             ItemDisplayBinding="{Binding Name}"
                             SelectedItem="{Binding SelectProduct, Mode=TwoWay}"
-                            Margin="0,6,0,6"/>
+                            Margin="0,6,0,6"
+                            AutomationId="PickerProduct"/>
 
-                    <Picker Title="Seleccione Un Compartiment"
+                    <Picker Title="Seleccione Un Compartimento"
                             ItemsSource="{Binding CompartimentList}"
                             ItemDisplayBinding="{Binding Number}"
                             SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}" 
-                            Margin="0,6,0,6"/>
+                            Margin="0,6,0,6"
+                            AutomationId="PickerCompartiment"/>
 
-                    <Entry                       
+                        <Label Text="Existencia" Margin="0,11,0,11"/>
+                        
+                        <Entry                       
                         Keyboard="Text"
                         Placeholder="Enter Stock"
                         Text="{Binding Stock, Mode=TwoWay}"
-                        Margin="0,6,0,6"/>
+                        Margin="0,6,0,6"
+                        AutomationId="EntryStock"/>
 
                     <Button
                         BackgroundColor="Green"
@@ -48,7 +51,8 @@
                         CornerRadius="10"
                         Text="Enviar Datos"
                         TextColor="White"
-                        Margin="0,11,0,11"/>
+                        Margin="0,11,0,11"
+                        AutomationId="ButtonSendData"/>
 
                 </VerticalStackLayout>
 
@@ -57,7 +61,8 @@
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </ScrollView>
 </ContentPage>

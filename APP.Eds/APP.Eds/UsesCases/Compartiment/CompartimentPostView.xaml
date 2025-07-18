@@ -3,69 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Compartiment.CompartimentPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Compartiment">
-  
+             Title="{Binding CompartimentManagement}">
+
+    <Grid>
         <ScrollView>
-        <AbsoluteLayout>
-            <VerticalStackLayout 
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-                <Label FontSize="16"
-                    Text="Number"/>
-                <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Number"
-                Text="{Binding Number, Mode=TwoWay}"/>
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <Label FontSize="16" Text="Numero"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
-                <Label FontSize="16"
-                    Text="Nominal"/>
-                <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Nominal"
-                Text="{Binding Nominal, Mode=TwoWay}"/>
+                <Label FontSize="16" Text="Nominal"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
 
-                <Label FontSize="16"
-                    Text="Operative"/>
-                <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Operative"
-                Text="{Binding Operative, Mode=TwoWay}"/>
+                <Label FontSize="16" Text="Operativo"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
 
-                <Label FontSize="16"
-                    Text="Stock"/>
-                <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Stock"
-                Text="{Binding Stock, Mode=TwoWay}"/>
+                <Label FontSize="16" Text="Existencia"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentStock"/>
 
-                <Label FontSize="16"
-                    Text="Height"/>
-                <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Height"
-                Text="{Binding Height, Mode=TwoWay}"/>
+                <Label FontSize="16" Text="Altura"/>
+                <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
 
-                <Picker Title="Seleccione un Tank"
-                    ItemsSource="{Binding TankList}"
-                    ItemDisplayBinding="{Binding Number}"
-                    SelectedItem="{Binding SelectedTank, Mode=TwoWay}"/>
+                <Picker Title="{Binding SelectTank}"
+                        ItemsSource="{Binding TankList}"
+                        ItemDisplayBinding="{Binding Number}"
+                        SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                        AutomationId="PickerTank"/>
 
-                <Button
-                BackgroundColor="Green"
-                Clicked="Button_Clicked_1"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White"/>
+                <Button BackgroundColor="Green"
+                        Clicked="Button_Clicked_1"
+                        CornerRadius="10"
+                        Text="{Binding SendData}"
+                        TextColor="White"
+                        AutomationId="ButtonSendCompartimentData"/>
 
-                <Label FontSize="18" Text="Lista de dispensers"/>
+                <Label FontSize="18" Text="{Binding ListDispensers}"/>
 
                 <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
-                            HeightRequest="400">
+                                HeightRequest="400">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="10">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -79,16 +58,16 @@
                                 <Label Text="{Binding Operative}" FontSize="14" Grid.Row="3" />
                                 <Label Text="{Binding Stock}" FontSize="14" Grid.Row="4" />
                                 <Label Text="{Binding Height}" FontSize="14" Grid.Row="5" />
-                                <Label Text="{Binding IdTank}" FontSize="14" Grid.Row="5" />
+                                <Label Text="{Binding IdTank}" FontSize="14" Grid.Row="6" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-      AbsoluteLayout.LayoutBounds="0,0,1,1"
-      AbsoluteLayout.LayoutFlags="All"/>
-        </AbsoluteLayout>
-    </ScrollView>
-    
+        </ScrollView>
+
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              IsVisible="{Binding IsLoading}" VerticalOptions="FillAndExpand"
+                              HorizontalOptions="FillAndExpand" />
+    </Grid>
 </ContentPage>

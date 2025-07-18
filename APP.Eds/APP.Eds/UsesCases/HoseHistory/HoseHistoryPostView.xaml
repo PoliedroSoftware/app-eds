@@ -4,7 +4,7 @@
              x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestión Historial de Mangueras">
+             Title="Gestión Historial De Mangueras">
     <ScrollView>
         <AbsoluteLayout>
         <VerticalStackLayout 
@@ -14,29 +14,34 @@
             <Label FontSize="16" Text="Fecha"/>
             <DatePicker
                 Date="{Binding Date, Mode=TwoWay}"
-                Format="dd/MM/yyyy"/>
+                Format="dd/MM/yyyy"
+                AutomationId="DatePickerDate"/>
 
             <Label FontSize="16" Text="Monto Acumulado"/>
             <Entry
                 Keyboard="Text"
                 Placeholder="Ingrese Monto Acumulado"
-                Text="{Binding AccumulatedAmount, Mode=TwoWay}" />
+                Text="{Binding AccumulatedAmount, Mode=TwoWay}"
+                AutomationId="EntryAccumulatedAmount"/>
 
             <Label FontSize="16" Text="Galones Acumulados"/>
             <Entry
                 Keyboard="Text"
                 Placeholder="Enter AccumulatedGallons"
-                Text="{Binding AccumulatedGallons, Mode=TwoWay}" />
+                Text="{Binding AccumulatedGallons, Mode=TwoWay}"
+                AutomationId="EntryAccumulatedGallons"/>
 
             <Picker Title="Seleccione un Dispensador"
                 ItemsSource="{Binding DispensersList}"
                 ItemDisplayBinding="{Binding DisplayName}"
-                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}"
+                AutomationId="PickerDispensers"/>
 
             <Picker Title="Seleccione una Manguera"
                 ItemsSource="{Binding HoseList}"
                 ItemDisplayBinding="{Binding Number}"
-                SelectedItem="{Binding SelectHose, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectHose, Mode=TwoWay}"
+                AutomationId="PickerHose"/>
 
                 <button:HoverButton
                     BackgroundColor="Green"
@@ -47,7 +52,8 @@
                     Text="Enviar Datos"
                     HoverColor="Gray"
                     PressedColor="AliceBlue"
-                    TextColor="White" />
+                    TextColor="White"
+                    AutomationId="ButtonSendData"/>
 
                 <Label FontSize="18" Text="Historial de Mangueras" />
 
@@ -77,7 +83,8 @@
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
+                                  AbsoluteLayout.LayoutFlags="All"
+                                  AutomationId="LoadingOverlay"/>
         </AbsoluteLayout>
     </ScrollView>
 </ContentPage>

@@ -36,7 +36,7 @@ namespace APP.Eds.Services.Court
 
         public static void ResetInstanceFields()
         {
-            _instance._authToken = null;
+            
             _instance.SelectedBusiness = null;
             _instance.SelectedEds = null;
             _instance.SelectedIslander = null;

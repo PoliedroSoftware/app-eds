@@ -36,6 +36,7 @@ namespace APP.Eds.Services.Navigation
     {
         public ObservableCollection<CategoryModel> Categories { get; set; }
         public bool IsIslander => Preferences.Get("userRole", "") == "User";
+
         public ICommand NavigateToCourtCommand { get; }
         public event PropertyChangedEventHandler? PropertyChanged;
         public readonly TranslationsService _translations = new TranslationsService();
@@ -359,6 +360,7 @@ namespace APP.Eds.Services.Navigation
         }
         public MainService()
         {
+           var userRole = Preferences.Get("userRole", "");
 
             NavigateToCourtCommand = new Command(async () =>
             {
@@ -368,7 +370,9 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
-            if (!IsIslander)
+            
+
+            if (userRole == "Admin")
             {
 
                 Categories = new ObservableCollection<CategoryModel>
@@ -381,34 +385,43 @@ namespace APP.Eds.Services.Navigation
                 }),
                 new(GlobalTranslations.Get("TanksAndCompartmentsCategoryKey"), new List<MenuItemModel>
                 {
+
                     new(GlobalTranslations.Get("CapacityMenuItemKey"), typeof(CapacityPostView)),
                     new(GlobalTranslations.Get("CompartmentMenuItemKey"), typeof(CompartimentPostView)),
                     new(GlobalTranslations.Get("CompartmentCapacityMenuItemKey"), typeof(CompartimentCapacityPostView)),
                     new(GlobalTranslations.Get("EdsTankMenuItemKey"), typeof(EdsTankPostView)),
                     new(GlobalTranslations.Get("TankMenuItemKey"), typeof(TankPostView)),
                     new(GlobalTranslations.Get("ProductCompartmentMenuItemKey"), typeof(ProductCompartimentPostView))
+                
                 }),
                 new(GlobalTranslations.Get("DispensersAndHosesCategoryKey"), new List<MenuItemModel>
                 {
+
                     new(GlobalTranslations.Get("DispensersMenuItemKey"), typeof(DispensersPostView)),
                     new(GlobalTranslations.Get("DispenserTypeMenuItemKey"), typeof(DispenserTypePostView)),
                     new(GlobalTranslations.Get("HoseMenuItemKey"), typeof(HosePostView)),
                     new(GlobalTranslations.Get("HoseHistoryMenuItemKey"), typeof(HoseHistoryPostView))
+                
                 }),
                 new(GlobalTranslations.Get("ProductsAndShoppingCategoryKey"), new List<MenuItemModel>
                 {
+
                     new(GlobalTranslations.Get("ProductMenuItemKey"), typeof(ProductPostView)),
                     new(GlobalTranslations.Get("ProductTypeMenuItemKey"), typeof(ProductTypePostView)),
                     new(GlobalTranslations.Get("ShoppingMenuItemKey"), typeof(ShoppingPostView)),
+
+
                 }),
                 new(GlobalTranslations.Get("EdsAndOthersCategoryKey"), new List<MenuItemModel>
                 {
+
                     new(GlobalTranslations.Get("EdsMenuItemKey"), typeof(EdsPostView)),
                     new(GlobalTranslations.Get("ExpenditureMenuItemKey"), typeof(ExpendituresPostView)),
                     new(GlobalTranslations.Get("IslanderMenuItemKey"), typeof(IslanderPostView)),
                      new(GlobalTranslations.Get("IslandMenuItemKey"), typeof(IslandPostView)),
                     new(GlobalTranslations.Get("CategoryMenuItemKey"), typeof(CategoryPostView)),
                     new(GlobalTranslations.Get("TypeOfCollectionMenuItemKey"), typeof(TypeOfCollectionPostView))
+
                 }),
                  new(GlobalTranslations.Get("InventoryCategoryKey"),
                 [

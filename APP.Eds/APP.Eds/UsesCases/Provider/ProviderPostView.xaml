@@ -3,26 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Provider.ProviderPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Provider">
+             Title="Gestion De Proveedor">
     <AbsoluteLayout>
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Name"/>
+            <Label FontSize="16" Text="Proveedor"/>
         <Entry
             Keyboard="Text"
-            Placeholder="Enter Provider"
-            Text="{Binding Name, Mode=TwoWay}" />
+            Placeholder="Ingrese Un Proveedor"
+            Text="{Binding Name, Mode=TwoWay}"
+            AutomationId="EntryProvider"/>
         <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
             CornerRadius="10"
             Text="Enviar Datos"
-            TextColor="White" />
+            TextColor="White"
+            AutomationId="ButtonSendData"/>
     </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
               AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All"/>
+              AbsoluteLayout.LayoutFlags="All"
+              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>
