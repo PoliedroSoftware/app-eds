@@ -18,13 +18,13 @@ public partial class ProductCompartimentPostView : ContentPage
     {
         try
         {
-            LoadingView.ShowLoading();
+            LoadingOverlay.ShowLoading();
             await _productCompartimentService.SaveProductCompartimentDataAsync();
         }
 
         finally
         {
-            LoadingView.HideLoading();
+            LoadingOverlay.HideLoading();
 
             _productCompartimentService.SelectProduct = null;
             _productCompartimentService.SelectCompartiment = null;

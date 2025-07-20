@@ -385,7 +385,7 @@ namespace APP.Eds.Services.Navigation
                         new(TranslatedCompartmentCapacityMenuItemKey, typeof(APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView)),
                         new(TranslatedEdsTankMenuItemKey, typeof(EdsTankPostView)),
                         new(TranslatedTankMenuItemKey, typeof(TankPostView)),
-                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartmentPostView))
+                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartimentPostView))
                     }),
                     new(TranslatedDispensersAndHosesCategoryKey, new List<MenuItemModel>
                     {
@@ -499,7 +499,7 @@ namespace APP.Eds.Services.Navigation
                         new(TranslatedCompartmentCapacityMenuItemKey, typeof(APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView)),
                         new(TranslatedEdsTankMenuItemKey, typeof(EdsTankPostView)),
                         new(TranslatedTankMenuItemKey, typeof(TankPostView)),
-                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartmentPostView))
+                        new(TranslatedProductCompartmentMenuItemKey, typeof(APP.Eds.UsesCases.ProductCompartiment.ProductCompartimentPostView))
                     }),
                     new(TranslatedDispensersAndHosesCategoryKey, new List<MenuItemModel>
                     {
