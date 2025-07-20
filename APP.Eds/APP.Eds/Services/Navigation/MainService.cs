@@ -535,16 +535,28 @@ namespace APP.Eds.Services.Navigation
             }
         }
 
-        public class CategoryModel
+        public class CategoryModel : INotifyPropertyChanged
         {
-            public string Title { get; set; }
+            private string _title;
+            public string Title
+            {
+                get => _title;
+                set
+                {
+                    if (_title != value)
+                    {
+                        _title = value;
+                        OnPropertyChanged(nameof(Title));
+                    }
+                }
+            }
             public ICommand ShowPopupCommand { get; }
 
             public List<MenuItemModel> Items { get; set; }
 
             public CategoryModel(string title, List<MenuItemModel> items)
             {
-                Title = title;
+                _title = title; // Asignar directamente para evitar notificación en el constructor
                 Items = items;
                 ShowPopupCommand = new Command(() =>
                 {
@@ -552,18 +564,37 @@ namespace APP.Eds.Services.Navigation
                     Application.Current?.MainPage?.ShowPopup(popup);
                 });
             }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
-        public class MenuItemModel
+        public class MenuItemModel : INotifyPropertyChanged
         {
-            public string Name { get; set; }
+            private string _name;
+            public string Name
+            {
+                get => _name;
+                set
+                {
+                    if (_name != value)
+                    {
+                        _name = value;
+                        OnPropertyChanged(nameof(Name));
+                    }
+                }
+            }
             public Type Page { get; set; }
             public Page PageInstance { get; set; }
             public ICommand NavigateCommand { get; }
 
             public MenuItemModel(string name, Type page)
             {
-                Name = name;
+                _name = name; // Asignar directamente para evitar notificación en el constructor
                 Page = page;
                 NavigateCommand = new Command(async () =>
                 {
@@ -579,6 +610,13 @@ namespace APP.Eds.Services.Navigation
                     }
                 });
 
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
