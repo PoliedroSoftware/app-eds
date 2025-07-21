@@ -102,7 +102,7 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
-                    FontSize="18" Text="Add" TextColor="White"
+                    FontSize="18" Text="Agregar" TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>
         </Grid>
