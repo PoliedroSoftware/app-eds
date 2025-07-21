@@ -9,7 +9,7 @@ namespace APP.Eds.Services.Translations;
 
 public class TranslationsService : ITranslationsService
 {
-    public static string CurrentLanguage { get; private set; } = "es"; // Valor por defecto
+    public static string CurrentLanguage { get; private set; } = "es-CO"; // Valor por defecto
     private string? _authToken;
 
 
@@ -53,6 +53,7 @@ public class TranslationsService : ITranslationsService
         {
             await Application.Current.MainPage.DisplayAlert("Error de Red/Deserialización", $"Error al obtener o procesar traducciones: {ex.Message}", "OK");
             return new Dictionary<string, string>();
+
         }
 }
     }
