@@ -152,7 +152,15 @@ public partial class CourtPostView : ContentPage
 
             var selectedId = vm.SelectedEds.IdEds;
 
-            await vm.SendCourtDataAsync();
+            try
+            {
+                LoadingOverlay.ShowLoading();
+                await vm.SendCourtDataAsync();
+            }
+            finally
+            {
+                LoadingOverlay.HideLoading();
+            }
 
             if (vm.LastSendWasSuccessful)
             {
