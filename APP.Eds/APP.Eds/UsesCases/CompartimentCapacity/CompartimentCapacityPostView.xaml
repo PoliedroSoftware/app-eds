@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="CompartimentCapacityPostView">
+             Title="Gestion Capacidad Compartimento">
 
     <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
       <AbsoluteLayout>
@@ -11,22 +11,21 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All">
 
-                <Label FontSize="16" Text="CompartimentCapacity" Margin="0,11,0,11"/>
-
-            <Picker Title="Seleccione Un Capacity"
+                <Picker Title="Seleccione Un Tanque"
                     ItemsSource="{Binding CapacityList}"
                     ItemDisplayBinding="{Binding Code}"
                     SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
                     Margin="0,6,0,6"
                     AutomationId="PickerCapacity"/>
 
-            <Picker Title="Seleccione Un Compartiment"
+            <Picker Title="Seleccione Un Compartimento"
                     ItemsSource="{Binding CompartimentList}"
                     ItemDisplayBinding="{Binding Number}"
                     SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
                     Margin="0,6,0,6"
                     AutomationId="PickerCompartiment"/>
-
+            
+                <Label Text="Ingrese La Capacidad Del Compartimento" Margin="0,11,0,11"/>
             <Entry  Keyboard="Text"
                     Placeholder="Enter Default"
                     Text="{Binding Default, Mode=TwoWay}" 

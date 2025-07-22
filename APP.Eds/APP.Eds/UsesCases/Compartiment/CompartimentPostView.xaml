@@ -5,69 +5,65 @@
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              Title="{Binding CompartimentManagement}">
 
-    <Grid>
+    
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="15">
-                <Label FontSize="16" Text="{Binding NumberTranslation}"/>
+                <Label FontSize="16" Text="Numero"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
                 <Label FontSize="16" Text="Nominal"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
 
-                <Label FontSize="16" Text="Operative"/>
+                <Label FontSize="16" Text="Operativo"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
 
-                <Label FontSize="16" Text="Stock"/>
+                <Label FontSize="16" Text="Existencia"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentStock"/>
 
-                <Label FontSize="16" Text="Height"/>
+                <Label FontSize="16" Text="Altura"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
 
-                <Picker Title="{Binding SelectTank}"
-                        ItemsSource="{Binding TankList}"
-                        ItemDisplayBinding="{Binding Number}"
-                        SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
-                        AutomationId="PickerTank"/>
+                <Picker Title="{Binding SelectTank}" ItemsSource="{Binding TankList}" ItemDisplayBinding="{Binding Number}" SelectedItem="{Binding SelectedTank, Mode=TwoWay}" AutomationId="PickerTank"/>
 
-                <Button BackgroundColor="Green"
-                        Clicked="Button_Clicked_1"
-                        CornerRadius="10"
-                        Text="{Binding SendData}"
-                        TextColor="White"
+                <Button BackgroundColor="Green" Clicked="Button_Clicked_1"
+                        Text="{Binding SendData}" TextColor="White" CornerRadius="10"
                         AutomationId="ButtonSendCompartimentData"/>
 
-                <Label FontSize="18" Text="{Binding ListDispensers}"/>
-
-                <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
-                                HeightRequest="400">
+                <CollectionView ItemsSource="{Binding CompartimentList}" Margin="0,20,0,0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                                <Label Text="{Binding Number}" FontSize="14" Grid.Row="1" />
-                                <Label Text="{Binding Nominal}" FontSize="14" Grid.Row="2" />
-                                <Label Text="{Binding Operative}" FontSize="14" Grid.Row="3" />
-                                <Label Text="{Binding Stock}" FontSize="14" Grid.Row="4" />
-                                <Label Text="{Binding Height}" FontSize="14" Grid.Row="5" />
-                                <Label Text="{Binding IdTank}" FontSize="14" Grid.Row="6" />
-                            </Grid>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Number,StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.Column="3" HorizontalOptions="Center" Margin="0,20,0,5"/>
+                                <Frame Padding="0">
+                                    <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
+                                        <!--<Label Text="{Binding Number, StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Center"/>-->
+
+                                        <Label Text="Capacidad nominal"  Grid.Row="3" Grid.Column="1"/>
+                                        <Label Text="{Binding Nominal}"  Grid.Row="3" Grid.Column="3"/>
+
+                                        <Label Text="Capacidad operativa"  Grid.Row="4" Grid.Column="1"/>
+                                        <Label Text="{Binding Operative}"  Grid.Row="4" Grid.Column="3"/>
+                                        <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
+
+                                        <Label Text="Stock"  Grid.Row="5" Grid.Column="1"/>
+                                    <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
+
+                                        <Label Text="Altura"  Grid.Row="6" Grid.Column="1"/>
+                                        <Label Text="{Binding Height}"  Grid.Row="6" Grid.Column="3"/>
+                                        <BoxView Grid.Row="6" Grid.ColumnSpan="5" ZIndex="-1"/>
+
+                                        <Label Text="Tanque"  Grid.Row="7" Grid.Column="1"/>
+                                        <Label Text="{Binding IdTank}"  Grid.Row="7" Grid.Column="3"/>
+                                        
+                                    </Grid>
+                                </Frame>
+                            </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </VerticalStackLayout>
-        </ScrollView>
 
         <controls:LoadingView x:Name="LoadingOverlay"
-                              IsVisible="{Binding IsLoading}" VerticalOptions="FillAndExpand"
-                              HorizontalOptions="FillAndExpand" />
-    </Grid>
+                              IsVisible="{Binding IsLoading}"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

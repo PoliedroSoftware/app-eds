@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MauiButton = Microsoft.Maui.Controls.Button;
-using System.Runtime.InteropServices;
-using MauiApp = Microsoft.Maui.Controls.Application;
+﻿using MauiButton = Microsoft.Maui.Controls.Button;
 
 namespace APP.Eds.Controls
 {
@@ -84,32 +77,36 @@ namespace APP.Eds.Controls
 
     public class HoverButtonPopup : MauiButton
     {
-        public Color NormalColorPopup { get; set; } = Colors.Gray;
+        //public Color NormalColorPopup { get; set; } = Colors.Gray;
+        private Color? _originalBackgroundColor;
         public Color PressedColorPopup { get; set; } = Colors.Black;
         public Color HoverColorPopup { get; set; } = Colors.Black;
         public HoverButtonPopup()
         {
-            BackgroundColor = NormalColorPopup;
+            //BackgroundColor = NormalColorPopup;
 
-            Pressed += OnPointerEntered;
+            Pressed += OnPressedPopup;
             Released += OnReleasedPopup;
-
+#if WINDOWS
             var pointerGesture = new PointerGestureRecognizer();
             pointerGesture.PointerEntered += OnPointerEntered;
             pointerGesture.PointerExited += OnPointerExited;
             GestureRecognizers.Add(pointerGesture);
+#endif
         }
 
         private async void OnReleasedPopup(object sender, EventArgs e)
         {
-            _ = AnimateColorAsync(NormalColorPopup);
+            _ = AnimateColorAsync(_originalBackgroundColor);
         }
 
         private async void OnPressedPopup(object sender, EventArgs e)
         {
+            SaveOriginalColor();
             _ = AnimateColorAsync(PressedColorPopup);
         }
 
+#if WINDOWS
         private async void OnPointerEntered(object sender, EventArgs e)
         {
             _ = AnimateColorAsync(HoverColorPopup);
@@ -117,7 +114,15 @@ namespace APP.Eds.Controls
 
         private async void OnPointerExited(object sender, EventArgs e)
         {
-            _ = AnimateColorAsync(NormalColorPopup);
+            SaveOriginalColor();
+            _ = AnimateColorAsync(_originalBackgroundColor);
+        }
+#endif
+
+        private void SaveOriginalColor()
+        {
+            if (_originalBackgroundColor == null)
+                _originalBackgroundColor = BackgroundColor;
         }
 
         private async Task AnimateColorAsync(Color targetColor)
