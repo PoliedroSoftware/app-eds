@@ -1,4 +1,6 @@
-﻿using APP.Eds.Services.Court;
+﻿using System.Diagnostics;
+using System.Globalization;
+using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -87,25 +89,30 @@ public partial class AddDispenser : Popup
 
     private void EntryAccumulatedCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
-        {   
-            if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
-            {
-                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
-            }
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-        }
+        UpdateAccumulatedValues();
     }
    
     private void OnEntryUnfocused(object sender, FocusEventArgs e)
+    {
+        UpdateAccumulatedValues();
+    }
+
+    private void UpdateAccumulatedValues()
     {
         if (BindingContext is CourtService vm)
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price),2);
+                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price), 2);
             }
+            UpdateAccumulatedColors();
+        }
+    }
+
+    private void UpdateAccumulatedColors()
+    {
+        if (BindingContext is CourtService vm)
+        {
             AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
             GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
         }
@@ -114,12 +121,8 @@ public partial class AddDispenser : Popup
 
     private void EntryGallonsCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
-        {
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-            AddButton.Focus();
-        }
+        UpdateAccumulatedColors();
+        AddButton.Focus();
     }
 
     private void HoseSelected(object sender, EventArgs e)
@@ -130,7 +133,6 @@ public partial class AddDispenser : Popup
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
 
-            // Mostrar el precio directamente desde el modelo seleccionado
             if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
                 double price = vm.SelectedHose.Price;
