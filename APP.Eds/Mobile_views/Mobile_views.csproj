@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj" />
+  </ItemGroup>
+
 </Project>

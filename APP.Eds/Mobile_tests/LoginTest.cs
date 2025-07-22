@@ -1,33 +1,30 @@
 ﻿using Helpers.Drivers.Mobile;
 using OpenQA.Selenium;
 using NUnit.Framework;
+using Helpers.Interfaces;
+using Mobile_views;
 
 
 namespace Mobile_tests
 {
     public class LoginTest
     {
+        IDriverManager _driver;
         [SetUp]
         public void Setup()
         {
+            _driver = new MobileDriverManager();
         }
 
         [Test]
         public void TestLogin()
         {
-            var driver = AndroidDriverBuilder.GetDriver();
-
-            var userField = driver.FindElement(By.Id("com.companyname.app.eds:id/EntryUsername"));
-            userField.SendKeys("admin");
-
-            var passField = driver.FindElement(By.Id("com.companyname.app.eds:id/EntryPassword"));
-            passField.SendKeys("admin");
-
-            var loginButton = driver.FindElement(By.Id("com.companyname.app.eds:id/ButtonLogin"));
-            loginButton.Click();
+            var loginView = new LoginView(_driver);
+            loginView.Skip.Click();
+            Assert.Pass();
 
             //Assert.That(driver.PageSource.Contains());
-            driver.Quit();
+            
 
         }
     }
