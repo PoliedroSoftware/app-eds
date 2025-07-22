@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Helpers\Helpers.csproj" />
+    <ProjectReference Include="..\Mobile_views\Mobile_views.csproj" />
   </ItemGroup>
 
   <ItemGroup>

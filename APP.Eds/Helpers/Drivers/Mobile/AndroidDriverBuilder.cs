@@ -14,7 +14,7 @@ namespace Helpers.Drivers.Mobile
         {
             var options = new AppiumOptions();
 
-            options.PlatformName = Configuration.PlatfromName;
+            options.PlatformName = Configuration.PlatformName.ToString();
             options.AutomationName = "UiAutomator2";
             options.AddAdditionalAppiumOption("appium:appPackage", Configuration.AppPackage);
             options.AddAdditionalAppiumOption("appium:appActivity", Configuration.AppActivity);
