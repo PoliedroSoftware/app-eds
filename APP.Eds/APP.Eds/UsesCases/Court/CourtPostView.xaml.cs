@@ -159,6 +159,8 @@ public partial class CourtPostView : ContentPage
                 CourtService.ResetInstanceFields();
                 _service = CourtService.Instance;
                 BindingContext = _service;
+
+                await _service.GetAllEdsData();
             }
 
         }
