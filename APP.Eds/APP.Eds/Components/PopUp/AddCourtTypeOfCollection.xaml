@@ -32,9 +32,7 @@
             <!--  Campos de Entrada  -->
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Padding="0,10">
-                <Frame Padding="10"
-                       CornerRadius="10"
-                       Margin="0,0,0,10"
+                <Frame Padding="10" CornerRadius="10" Margin="0,0,0,10"
                        AutomationId="FrameTypeOfCollection">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding TypeofCollectionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelTypeofCollectionTranslation"/>
@@ -45,14 +43,12 @@
                                 AutomationId="PickerTypeOfCollection"/>
                     </Grid>
                 </Frame>
-                <Frame Padding="10"
-                       CornerRadius="10"
-                       Margin="0,0,0,10"
+                <Frame Padding="10" CornerRadius="10" Margin="0,0,0,10"
                        AutomationId="FrameCollectionAmount">
                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelCollectionAmount"/>
                             <Entry x:Name="FirstEntry"   Placeholder="Ingrese el monto" Grid.Row="1" Grid.Column="1"
-                               Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay, StringFormat='{0:N0}'}"
+                               Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay}"
                                Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
                                IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"
                                AutomationId="EntryCourtTypeOfCollectionAmount"/>
