@@ -34,7 +34,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Button Text="Cerrar Sesión"
+                <Button Text="{Binding LogOutText}"
                         Clicked="OnLogoutClicked"
                         BackgroundColor="Red"
                         TextColor="White"

@@ -25,20 +25,54 @@ using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
+using APP.Eds.Services.Config;
+using APP.Eds.Services.Translations;
 
 namespace APP.Eds.Services.Navigation
 {
-    public class MainService : BindableObject
+    public class MainService : BindableObject, INotifyPropertyChanged
     {
-        public ObservableCollection<CategoryModel> Categories { get; set; }
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
+        public TranslationsService _translations = TranslationsService.GetTranslationServiceInstance();
+        private ObservableCollection<CategoryModel> _categories;
+        public ObservableCollection<CategoryModel> Categories
+        {
+            get => _categories;
+            set
+            {
+                _categories = value;
+                OnPropertyChanged(nameof(Categories));
+            }
+        }
         public bool IsIslander => Preferences.Get("userRole", "") == "User";
 
+        //Translations
+        private String _management;
+        public String Management
+        {
+            get => _management;
+            set
+            {
+                _management = value;
+                OnPropertyChanged(nameof(Management));
+            }
+        }
+        private string _logOutText;
+        public string LogOutText
+        {
+            get => _logOutText;
+            set
+            {
+                _logOutText = value;
+                OnPropertyChanged(nameof(LogOutText));
+            }
+        }
         public ICommand NavigateToCourtCommand { get; }
         public MainService()
         {
-           var userRole = Preferences.Get("userRole", "");
-
             NavigateToCourtCommand = new Command(async () =>
             {
                 if (Application.Current?.MainPage is NavigationPage navPage)
@@ -47,14 +81,20 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
+            Categories = new ObservableCollection<CategoryModel>();
+        }
+        public async Task InitializeAsync() {
             
+            await LoadTranslationsAsync();
+
+            var userRole = Preferences.Get("userRole", "");
 
             if (userRole == "Admin")
             {
 
                 Categories = new ObservableCollection<CategoryModel>
-            {
-                new("Administración", new List<MenuItemModel>
+                {
+                new(Management, new List<MenuItemModel>
                 {
                     new("Corte", typeof(CourtPostView)),
                     new("Negocio", typeof(BusinessPostView)),
@@ -94,16 +134,23 @@ namespace APP.Eds.Services.Navigation
                  new("Inventario",
                 [
                     new("Inventario", typeof(InventoryPostView)),
-                 
+
                 ]),
-            };
+                };
             }
             else
             {
                 Categories = new ObservableCollection<CategoryModel>();
             }
         }
-
+        public async Task LoadTranslationsAsync()
+        {
+            var result = await _translations.GetTranslationsByLanguageAsync("es-CO");
+            GlobalTranslations.SetTranslations(result ?? []);
+            Management = GlobalTranslations.Get("Management");
+            LogOutText = GlobalTranslations.Get("Logout");
+            //Todas las demas variables de traducción que necesites
+        }
         public class CategoryModel
         {
             public string Title { get; set; }
@@ -149,6 +196,11 @@ namespace APP.Eds.Services.Navigation
                 });
 
             }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
