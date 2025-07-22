@@ -18,6 +18,8 @@ namespace APP.Eds.Services.Compartiment
         public ObservableCollection<TankResponse> TankList { get; set; } = [];
         public ObservableCollection<CompartimentResponse> CompartimentList { get; set; } = [];
         private CompartimentRequest Request { get; set; }
+
+
         private CompartimentModel _compartiment;
         public CompartimentModel Compartiment
         {
@@ -261,6 +263,7 @@ namespace APP.Eds.Services.Compartiment
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetAllTankData();
+            GetCompartimentAsync();
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
             LoadTranslationsAsync();
@@ -371,7 +374,7 @@ namespace APP.Eds.Services.Compartiment
             {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment");
+                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
                 var compartiments = JsonSerializer.Deserialize<CompartimentApiResponse>(response, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase

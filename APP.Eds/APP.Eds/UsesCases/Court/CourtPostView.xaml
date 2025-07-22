@@ -61,7 +61,7 @@
                         CornerRadius="10">
                     <VerticalStackLayout Spacing="10">
                         <Label FontAttributes="Bold" FontSize="18" Text="{Binding CashCount}" HorizontalOptions="Center"/>
-                        <Grid RowDefinitions="20,20,20,20,20,*" ColumnDefinitions="20,*,*,20" RowSpacing="10">
+                        <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="20,*,*,20" RowSpacing="15">
                             <Label Text="{Binding SalesInMoney}" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center"/>
                             <Label Text="{Binding TotalAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
 
@@ -110,19 +110,27 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
-                                    <Label Text="Number" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*,*,*,*,*" RowSpacing="5">
+                                    <Label Text="Manguera #" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding NumberName}" Grid.Row="0" Grid.Column="2"/>
+                                    <BoxView Grid.Row="1" Grid.ColumnSpan="4" ZIndex="-1"/>
 
-                                    <Label Text="Accumulated Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="Monto acumulado" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
-                                    <Label Text="Gallons Accumulated" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N2}'}" Grid.Row="2" Grid.Column="2"/>
+                                    <Label Text="Venta en dinero" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N0}'}" Grid.Row="2" Grid.Column="2"/>
+                                    <BoxView Grid.Row="3" Grid.ColumnSpan="4" ZIndex="-1"/>
+
+                                    <Label Text="Galones acumulados" FontAttributes="Bold" Grid.Row="3" Grid.Column="0"/>
+                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N2}'}" Grid.Row="3" Grid.Column="2"/>
+
+                                    <Label Text="Venta en galones" FontAttributes="Bold" Grid.Row="4" Grid.Column="0"/>
+                                    <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N2}'}" Grid.Row="4" Grid.Column="2"/>
 
                                     <Button Text="X" 
                                         AutomationId="DeleteDispenserButton"
-                                        Grid.Column="3" Grid.RowSpan="3"
+                                        Grid.Column="3" Grid.RowSpan="5"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent"
                                         TextColor="#6A1B9A"
@@ -140,23 +148,23 @@
                 <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
                     <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button Text="💬"
-             Command="{Binding HideCollectionList}"
-             AutomationId="HideCollectionListButton"
-             WidthRequest="46"  HeightRequest="46" 
-             BackgroundColor="Transparent"
-             HorizontalOptions="End"
-             Grid.Column="1">
+                            Command="{Binding HideCollectionList}"
+                            AutomationId="HideCollectionListButton"
+                            WidthRequest="46"  HeightRequest="46" 
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="End"
+                            Grid.Column="1">
                         <Button.Triggers>
                             <DataTrigger
-                 TargetType="Button"
-                 Binding="{Binding VisibleReceipts}"
-                 Value="True">
+                                TargetType="Button"
+                                Binding="{Binding VisibleReceipts}"
+                                Value="True">
                                 <Setter Property="Text" Value="➖" />
                             </DataTrigger>
                             <DataTrigger
-                 TargetType="Button"
-                 Binding="{Binding VisibleReceipts}"
-                 Value="False">
+                                TargetType="Button"
+                                Binding="{Binding VisibleReceipts}"
+                                Value="False">
                                 <Setter Property="Text" Value="👁️" />
                             </DataTrigger>
                         </Button.Triggers>
@@ -168,25 +176,25 @@
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
-                                    <Label Text="TypeofCollection" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="Tipo de cobro" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
 
-                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="Monto" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
-                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="Descricion" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
-                                    <Button Text="X" 
-                         AutomationId="DeleteCollectionButton"
-                         Grid.Column="3" Grid.RowSpan="3"
-                         WidthRequest="50" HeightRequest="50"
-                         BackgroundColor="Transparent"
-                         TextColor="#6A1B9A"
-                         CornerRadius="0"
-                         VerticalOptions="Center"
-                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
-                         CommandParameter="{Binding .}"/>
+                                    <Button Text="X"
+                                            AutomationId="DeleteCollectionButton"
+                                            Grid.Column="3" Grid.RowSpan="3"
+                                            WidthRequest="50" HeightRequest="50"
+                                            BackgroundColor="Transparent"
+                                            TextColor="#6A1B9A"
+                                            CornerRadius="0"
+                                            VerticalOptions="Center"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
+                                            CommandParameter="{Binding .}"/>
                                 </Grid>
                             </Frame>
                         </DataTemplate>
@@ -195,7 +203,7 @@
 
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
-                    <Label Text="AddedDocuments" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <Label Text="Comprobantes" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️"
                              Command="{Binding HideDocumentList}"
                              AutomationId="HideDocumentListButton"
@@ -224,7 +232,7 @@
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="*, *, *, Auto" RowDefinitions="Auto, Auto">
-                                    <Label Grid.Row="1" Grid.Column="0" Text="Document" FontAttributes="Bold"/>
+                                    <Label Grid.Row="1" Grid.Column="0" Text="Comprobante" FontAttributes="Bold"/>
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding DocumentName}"/>
 
                                     <Button Text="X" 
@@ -275,13 +283,13 @@
                         <DataTemplate>
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
-                                    <Label Text="Expenditures" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="Tipo de gasto" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2"/>
 
-                                    <Label Text="Amount" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+                                    <Label Text="Monto" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
 
-                                    <Label Text="Description" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="Descricion" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
 
                                     <Button Text="X" 
