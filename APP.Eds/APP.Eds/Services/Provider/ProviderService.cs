@@ -1,11 +1,12 @@
-﻿using APP.Eds.Models.Provider;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using APP.Eds.Services.Config;
-using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
+using APP.Eds.Helpers;
+using APP.Eds.Models.Provider;
+using APP.Eds.Services.Config;
 
 namespace APP.Eds.Services.Provider;
 
@@ -14,6 +15,7 @@ public class ProviderService : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private ProviderRequest Request { get; set; }
     private ProviderModel _provider;
+    public ObservableCollection<ProviderResponse> ProviderList { get; set; } = [];
     private string? _authToken;
     public ProviderModel Provider
     {
@@ -44,6 +46,7 @@ public class ProviderService : INotifyPropertyChanged
         GetByIdProviderDataCommand = new Command<int>(async (providerId) => await GetByIdProviderDataAsync(providerId));
         SaveProviderDataCommand = new Command(async () => await SaveProviderDataAsync());
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        GetProvidersAsync();
     }
 
     public async Task GetByIdProviderDataAsync(int providerId)
@@ -109,6 +112,36 @@ public class ProviderService : INotifyPropertyChanged
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+        }
+    }
+
+    public async Task GetProvidersAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/provider?PageNumber=1&PageSize=100");
+            Console.WriteLine(response);
+            var providers = JsonSerializer.Deserialize<ProviderApiResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            ProviderList.Clear();
+            foreach (var provider in providers.Data)
+            {
+                ProviderList.Add(provider);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 
