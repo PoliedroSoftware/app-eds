@@ -28,14 +28,12 @@
                        HorizontalOptions="Center" VerticalOptions="Center"
                        AutomationId="LabelCategoryTitle"/>
 
-                <button:HoverButtonPopup
-                        Grid.Column="2"                      
+                <Button Grid.Column="2"                      
                         Clicked="OnCloseTapped"
-                        FontSize="20" Text="✖"
+                        FontSize="20" Text="✖" TextColor="#6200E8"
                         WidthRequest="25" HeightRequest="25" Padding="-10"
-                        HorizontalOptions="End" VerticalOptions="Center"
-                        HoverColorPopup="Gray"
-                        Margin="0,0,0,0"
+                        HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,0,0"
+                        BackgroundColor="Transparent"
                         AutomationId="ButtonClosePopup"/>
             </Grid>
             
@@ -52,8 +50,6 @@
                             Text="{Binding Name}" 
                             Command="{Binding NavigateCommand}" 
                             Margin="0,0,0,10"
-                            HoverColorPopup="DarkGray"
-                            PressedColorPopup="Black"
                             Clicked="OnMenuItemClicked"
                             Padding="10,5,10,10"
                             AutomationId="ButtonMenuItem"/>
