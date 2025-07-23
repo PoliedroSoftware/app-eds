@@ -5,9 +5,9 @@ namespace Mobile_views
     public class BaseView
     {
         protected IDriverManager _driver;
-        protected BaseView(IDriverManager dirver)
+        protected BaseView(IDriverManager driver)
         {
-            _driver = dirver;
+            _driver = driver;
         }
     }
 }

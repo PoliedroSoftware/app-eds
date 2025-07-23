@@ -50,18 +50,18 @@ namespace Helpers.Drivers.Mobile
 
         }
 
-        private AppiumElement FindElement(FindsBy findsBy, string locator)
+        public AppiumElement FindElement(FindsBy findsBy, string locator)
         {
             IWait<IWebDriver> wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
 
             switch (findsBy)
             {
                 case FindsBy.XPath:
-                    return wait.Until(driver => _driver.FindElementByXPath(locator));
+                    return wait.Until(driver => _driver.FindElement(By.XPath(locator)));
                 case FindsBy.Id:
-                    return wait.Until(driver => _driver.FindElementById(locator));
+                    return wait.Until(driver => _driver.FindElement(By.Id(locator)));
                 case FindsBy.AcessibilityId:
-                    return wait.Until(driver => _driver.FindElementByAccesibilityId(locator));
+                    return wait.Until(driver => _driver.FindElement(MobileBy.AccessibilityId(locator)));
                 default:
                     throw new NotSupportedException($"Locator type \"{findsBy}\" not supported.");
             }

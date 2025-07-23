@@ -11,7 +11,6 @@ namespace Helpers.Enums
         Button,
         Text,
         TextField,
-        EditText
-          
+        EditText         
     }
 }
