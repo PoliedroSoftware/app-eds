@@ -8,6 +8,14 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>   
+    <Compile Remove="NUnitTestItem1.cs" />
+	<Compile Remove="TestAdminFrame.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.15" />
