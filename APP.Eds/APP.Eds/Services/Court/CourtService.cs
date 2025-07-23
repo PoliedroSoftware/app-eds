@@ -75,7 +75,7 @@ namespace APP.Eds.Services.Court
         public ObservableCollection<double> AmountResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
         public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
-        public bool AreAvailableHoses => IsUserRole || HoseDispenserList != null && HoseDispenserList.Count > 0;
+        public bool AreAvailableHoses => IsUserRole || HoseList != null && HoseList.Count > 0;
         public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
         public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
 
@@ -2964,12 +2964,12 @@ GetAllEdsData()
                 .ThenBy(x => x.Number) 
                 .ToList();
 
-            HoseDispenserList.Clear();
+            HoseList.Clear();
             foreach (var hose in filteredIsHoseByEds)
             {
-                HoseDispenserList.Add(hose);
+                HoseList.Add(hose);
             }
-            OnPropertyChanged(nameof(HoseDispenserList));
+            OnPropertyChanged(nameof(HoseList));
             OnPropertyChanged(nameof(AreAvailableHoses));
             OnPropertyChanged(nameof(NewSaleEnabled));
         }
@@ -2987,12 +2987,12 @@ GetAllEdsData()
         private void UpdateAvailableHoses()
         {
             var filteredHoses = HoseList.Where(h => !selectedHoses.Contains(h)).ToList();
-            HoseDispenserList.Clear();
+            HoseList.Clear();
             foreach (var hose in filteredHoses)
             {
-                HoseDispenserList.Add(hose);
+                HoseList.Add(hose);
             }
-            OnPropertyChanged(nameof(HoseDispenserList));
+            OnPropertyChanged(nameof(HoseList));
             OnPropertyChanged(nameof(AreAvailableHoses));
             OnPropertyChanged(nameof(NewSaleEnabled));
         }
@@ -3020,10 +3020,10 @@ GetAllEdsData()
                         selectedHoses.Remove(selectedHose);
                     }
 
-                    if (!HoseDispenserList.Contains(hose))
+                    if (!HoseList.Contains(hose))
                     {
-                        HoseDispenserList.Add(hose);
-                        OnPropertyChanged(nameof(HoseDispenserList));
+                        HoseList.Add(hose);
+                        OnPropertyChanged(nameof(HoseList));
                         OnPropertyChanged(nameof(AreAvailableHoses));
                     }
                 }

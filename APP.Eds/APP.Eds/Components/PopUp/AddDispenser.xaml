@@ -55,19 +55,17 @@
                             <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
                             <Entry x:Name="FirstEntry" AutomationId="AccumulatedAmountEntry"
                                    Keyboard="Numeric" Placeholder="Ingrese el monto"
-                                   Text="{Binding AccumulatedAmount, Mode=TwoWay, StringFormat='{0:N0}'}"
+                                   Text="{Binding AccumulatedAmount, Mode=TwoWay}"
                                    Margin="2" Grid.Row="2" Grid.Column="2"
                                    Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted"
                                    IsEnabled="False"/>
 
-                            <Label Text="Amount" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="Venta en dinero" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
                             <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
                         </Grid>
                         
                     </Frame>
-                    <Frame Padding="10"
-                           CornerRadius="10"
-                           HasShadow="True">
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True">
                         <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
                             <Label Text="{Binding LastAccumulatedGallonsTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedGallons, StringFormat='  {0:N2}'}" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
@@ -78,10 +76,10 @@
                                    Keyboard="Numeric" Placeholder="Ingrese los galones"
                                    Text="{Binding AccumulatedGallons, Mode=TwoWay}"
                                    Margin="2" Grid.Row="1" Grid.Column="2"
-                                   Unfocused="OnEntryUnfocused" Completed="EntryGallonsCompleted"
+                                   Completed="EntryGallonsCompleted"
                                    IsEnabled="False"/>
 
-                            <Label Text="Gallons " VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+                            <Label Text="Venta en galones" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
                             <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
 
                             <Button Text="✎"
@@ -102,7 +100,7 @@
                     BackgroundColor="#6200E8"
                     Clicked="Add_Dispenser"
                     CornerRadius="10"
-                    FontSize="18" Text="Add" TextColor="White"
+                    FontSize="18" Text="Agregar" TextColor="White"
                     VerticalOptions="Center"
                     HeightRequest="40"/>
         </Grid>

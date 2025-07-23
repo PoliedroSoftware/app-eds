@@ -77,12 +77,13 @@ namespace APP.Eds.Controls
 
     public class HoverButtonPopup : MauiButton
     {
-        public Color NormalColorPopup { get; set; } = Colors.Gray;
+        //public Color NormalColorPopup { get; set; } = Colors.Gray;
+        private Color? _originalBackgroundColor;
         public Color PressedColorPopup { get; set; } = Colors.Black;
         public Color HoverColorPopup { get; set; } = Colors.Black;
         public HoverButtonPopup()
         {
-            BackgroundColor = NormalColorPopup;
+            //BackgroundColor = NormalColorPopup;
 
             Pressed += OnPressedPopup;
             Released += OnReleasedPopup;
@@ -96,11 +97,12 @@ namespace APP.Eds.Controls
 
         private async void OnReleasedPopup(object sender, EventArgs e)
         {
-            _ = AnimateColorAsync(NormalColorPopup);
+            _ = AnimateColorAsync(_originalBackgroundColor);
         }
 
         private async void OnPressedPopup(object sender, EventArgs e)
         {
+            SaveOriginalColor();
             _ = AnimateColorAsync(PressedColorPopup);
         }
 
@@ -112,9 +114,16 @@ namespace APP.Eds.Controls
 
         private async void OnPointerExited(object sender, EventArgs e)
         {
-            _ = AnimateColorAsync(NormalColorPopup);
+            SaveOriginalColor();
+            _ = AnimateColorAsync(_originalBackgroundColor);
         }
 #endif
+
+        private void SaveOriginalColor()
+        {
+            if (_originalBackgroundColor == null)
+                _originalBackgroundColor = BackgroundColor;
+        }
 
         private async Task AnimateColorAsync(Color targetColor)
         {
