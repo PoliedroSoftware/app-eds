@@ -8,7 +8,7 @@ namespace Mobile_views
     {
         public MainMenuView(IDriverManager driver) : base(driver) { }
 
-        public MobileElement AdminFrame => _driver.GetElement(ElementType.TextField, FindsBy.XPath,
+        public MobileElement AdminFrameClick => _driver.GetElement(ElementType.TextField, FindsBy.XPath,
             "//android.widget.TextView[@resource-id=\"com.companyname.app.eds:id/LabelCategoryTitle\" and @text= 'Administración']/parent::*");
     }
 }
