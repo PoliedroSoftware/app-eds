@@ -9,7 +9,6 @@ namespace APP.Eds.Services.Translations;
 
 public class TranslationsService : ITranslationsService
 {
-    private static TranslationsService? translationsService;
     private string? _authToken;
 
 
@@ -32,14 +31,6 @@ public class TranslationsService : ITranslationsService
         return data.Translations.TryGetValue(languageTag, out var translations)
             ? translations
             : new Dictionary<string, string>();
-    }
-
-    public static TranslationsService GetTranslationServiceInstance(){
-        if (translationsService == null)
-        {
-            translationsService = new TranslationsService();
-        }
-        return translationsService;
     }
 
 }
