@@ -6,17 +6,11 @@ namespace APP.Eds.UsesCases.Navigation;
 public partial class Main : ContentPage
 {
     private KeycloakSessionManager _sessionManager;
-    private readonly MainService _service = new MainService();
     public Main()
 	{
         InitializeComponent();
-        BindingContext = _service;
-        InitAsync();
+        BindingContext = new MainService();
         _sessionManager = new KeycloakSessionManager();
-    }
-    private async void InitAsync()
-    {
-        await _service.InitializeAsync();
     }
     private async void OnLogoutClicked(object sender, EventArgs e)
     {
