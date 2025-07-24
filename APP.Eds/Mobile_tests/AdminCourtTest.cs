@@ -1,4 +1,5 @@
-﻿using Mobile_views;
+﻿using Helpers.Drivers.Mobile;
+using Mobile_views;
 
 namespace Mobile_tests;
 
@@ -28,6 +29,17 @@ public class AdminCourtTest : BaseTest
         Thread.Sleep(2000);
         courtButton.ClickIslander.Element.Click();
         Thread.Sleep(2000);
+        ((MobileDriverManager)_driver).ScrollToEnd();
+        courtButton.NewSale.Click();
+        Thread.Sleep(2000);
+        courtButton.SelectHose.Element.Click();
+        Thread.Sleep(2000);
+        courtButton.ClickHose.Element.Click();
+        Thread.Sleep(2000);
+        courtButton.ClickAmmountAcumulate.Element.Click();
+        Thread.Sleep(2000);
+        courtButton.Ammount.SetNumber(5);
+
         Assert.Pass();
     }
 }

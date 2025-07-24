@@ -11,7 +11,13 @@ namespace Helpers.UIElements.Mobile
 
         public void SetText(string text)
         {
+            _element.Clear();
             _element.SendKeys(text);
+        }
+
+        public void SetNumber(int number)
+        {
+            SetText(number.ToString());
         }
     }
 }

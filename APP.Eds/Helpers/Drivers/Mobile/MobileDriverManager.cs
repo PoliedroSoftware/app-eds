@@ -76,5 +76,11 @@ namespace Helpers.Drivers.Mobile
         {
             throw new NotImplementedException();
         }
+
+        public void ScrollToEnd(int maxSwipes = 10)
+        {
+            _driver.FindElement(MobileBy.AndroidUIAutomator(
+                $"new UiScrollable(new UiSelector().scrollable(true)).scrollToEnd({maxSwipes})"));
+        }
     }
 }
