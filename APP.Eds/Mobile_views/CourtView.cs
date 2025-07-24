@@ -27,5 +27,22 @@ namespace Mobile_views
 
         public TextField ClickIslander => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
             "android:id/text1");
+
+        public IButton NewSale => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/AddSaleButton");
+
+        public TextField SelectHose => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/HosePicker");
+
+        public TextField ClickHose => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.XPath,
+            "//android.widget.TextView[@resource-id=\'android:id/text1\'][2]");
+
+        public TextField ClickAmmountAcumulate => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/AccumulatedAmountEntry");
+
+        public TextField Ammount => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/AccumulatedAmountEntry");
+
+
     }
 }
