@@ -234,29 +234,29 @@
                                     AutomationId="CollectionViewExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Frame Padding="0" Margin="0,5" CornerRadius="9"
+                                <Frame Padding="10" Margin="0,5" CornerRadius="9"
                                        AutomationId="FrameExpenditureItem">
                                     <Grid RowDefinitions="10,*,*,*,*,10" ColumnDefinitions="10,*,*,10">
                                         <Label Text="{Binding DateTranslation}" FontAttributes="Bold"  Grid.Row="1" Grid.Column="1"
                                                AutomationId="LabelExpenditureDate"/>
                                         <Label Text="{Binding Date}"  Grid.Row="1" Grid.Column="2"
                                                AutomationId="LabelExpenditureDateValue"/>
-                                        <BoxView Grid.Row="2" Grid.ColumnSpan="4" ZIndex="-1"/>
+                                        <BoxView Grid.Row="2" Grid.ColumnSpan="4" Color="#E0E0E0" HeightRequest="1"/>
 
                                         <Label Text="{Binding ExpenditureTranslation}" FontAttributes="Bold"  Grid.Row="2" Grid.Column="1"
                                                AutomationId="LabelExpenditure"/>
-                                        <Label Text="{Binding Expenditure}"  Grid.Row="2" Grid.Column="2"
+                                        <Label Text="{Binding Expenditure}"  Grid.Row="2" Grid.Column="2" LineBreakMode="TailTruncation"
                                                AutomationId="LabelExpenditureValue"/>
 
                                         <Label Text="{Binding AmountTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="1"
                                                AutomationId="LabelExpenditureAmount"/>
                                         <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}"  Grid.Row="3" Grid.Column="2"
                                                AutomationId="LabelExpenditureAmountValue"/>
-                                        <BoxView Grid.Row="4" Grid.ColumnSpan="4" ZIndex="-1"/>
+                                        <BoxView Grid.Row="4" Grid.ColumnSpan="4" Color="#E0E0E0" HeightRequest="1"/>
 
                                         <Label Text="{Binding DescriptionTranslation}" FontAttributes="Bold"  Grid.Row="4" Grid.Column="1"
                                                AutomationId="LabelExpenditureDescription"/>
-                                        <Label Text="{Binding Description}"  Grid.Row="4" Grid.Column="2"
+                                        <Label Text="{Binding Description}"  Grid.Row="4" Grid.Column="2" LineBreakMode="TailTruncation"
                                                AutomationId="LabelExpenditureDescriptionValue"/>
                                     </Grid>
                                 </Frame>

@@ -43,12 +43,17 @@
 			<CollectionView ItemsSource="{Binding Court.CourtExpenditures}">
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
-						<StackLayout>
-							<Label Text="Amount:" />
-							<Label Text="{Binding Amount}" />
-							<Label Text="Description:" />
-							<Label Text="{Binding Description}" />
-						</StackLayout>
+						<Frame Padding="10" Margin="0,5" CornerRadius="9" BorderColor="LightGray">
+							<Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *, Auto" RowSpacing="5">
+								<Label Text="Monto:" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+								<Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="0" Grid.Column="1"/>
+								<BoxView Grid.Row="0" Grid.ColumnSpan="3" Color="#E0E0E0" HeightRequest="1" VerticalOptions="End"/>
+
+								<Label Text="Descripción:" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
+								<Label Text="{Binding Description}" Grid.Row="1" Grid.Column="1" LineBreakMode="TailTruncation"/>
+								<BoxView Grid.Row="1" Grid.ColumnSpan="3" Color="#E0E0E0" HeightRequest="1" VerticalOptions="End"/>
+							</Grid>
+						</Frame>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>

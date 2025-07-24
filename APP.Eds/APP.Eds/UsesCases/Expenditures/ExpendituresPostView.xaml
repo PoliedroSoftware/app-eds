@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Expenditures.ExpendituresPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion De Gastos">
+             Title="Nuevo Egreso">
     <AbsoluteLayout>
         <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Gastos"/>
+            <Label FontSize="16" Text="Nuevo Egreso"/>
             <Entry
             Keyboard="Text"
             Placeholder="Ingrese Un Gasto"

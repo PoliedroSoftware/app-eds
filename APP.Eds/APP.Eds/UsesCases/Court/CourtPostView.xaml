@@ -284,13 +284,15 @@
                             <Frame Margin="5" Padding="10" BorderColor="LightGray" CornerRadius="8">
                                 <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="Auto, Auto, Auto" RowSpacing="5">
                                     <Label Text="Tipo de gasto" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2"/>
+                                    <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2" LineBreakMode="TailTruncation"/>
 
                                     <Label Text="Monto" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
                                     <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
+                                    <BoxView Grid.Row="1" Grid.ColumnSpan="4" Color="#E0E0E0" HeightRequest="1"/>
 
-                                    <Label Text="Descricion" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
+                                    <Label Text="Descripción" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
+                                    <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2" LineBreakMode="TailTruncation"/>
+                                    <BoxView Grid.Row="2" Grid.ColumnSpan="4" Color="#E0E0E0" HeightRequest="1"/>
 
                                     <Button Text="X" 
                                         AutomationId="DeleteExpenseButton"
