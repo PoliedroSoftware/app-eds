@@ -3,6 +3,7 @@ using Helpers.Interfaces;
 using Helpers.UIElements.Mobile;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
+using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Support.UI;
 
 namespace Helpers.Drivers.Mobile
@@ -81,6 +82,14 @@ namespace Helpers.Drivers.Mobile
         {
             _driver.FindElement(MobileBy.AndroidUIAutomator(
                 $"new UiScrollable(new UiSelector().scrollable(true)).scrollToEnd({maxSwipes})"));
+        }
+
+        public void PressEnter()
+        {
+            if (_driver is AndroidDriver androidDriver)
+            {
+                androidDriver.PressKeyCode(OpenQA.Selenium.Appium.Android.Enums.AndroidKeyCode.Enter);
+            }
         }
     }
 }
