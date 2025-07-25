@@ -1,4 +1,5 @@
 ﻿using Helpers.Drivers.Mobile;
+using Helpers.Enums;
 using Mobile_views;
 
 namespace Mobile_tests;
@@ -15,6 +16,7 @@ public class AdminCourtTest : BaseTest
 
         var courtButton = new CourtView(_driver);
         var dateSelect = new CourtView( _driver);
+        
         courtButton.CourtButton.Click();
         Thread.Sleep(5000);
         courtButton.SelectBussines.Element.Click();
@@ -38,7 +40,7 @@ public class AdminCourtTest : BaseTest
         Thread.Sleep(2000);
         courtButton.ClickAmmountAcumulate.Element.Click();
         Thread.Sleep(2000);
-        courtButton.Ammount.SetNumber(5);
+        courtButton.ChangeTextToInt(1);
 
         Assert.Pass();
     }

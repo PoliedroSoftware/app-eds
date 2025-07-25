@@ -43,6 +43,19 @@ namespace Mobile_views
         public TextField Ammount => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
             "com.companyname.app.eds:id/AccumulatedAmountEntry");
 
+        public Text AcumulatedValue => (Text)_driver.GetElement(ElementType.Text, FindsBy.XPath,
+            "//android.widget.TextView[@text='$ 350,000']");
 
+        public void ChangeTextToInt(int value)
+        {
+            string valueRaw = AcumulatedValue.Element.Text;
+            string valueClear = valueRaw.Replace("$", "").Replace(",", "").Trim();
+
+            if (int.TryParse(valueClear, out int valueNumber))
+            {
+                int valueNew = valueNumber + value;
+                Ammount.SetNumber(valueNew);
+            }
+        }
     }
 }
