@@ -44,7 +44,7 @@ namespace Mobile_views
             "com.companyname.app.eds:id/AccumulatedAmountEntry");
 
         public Text AcumulatedValue => (Text)_driver.GetElement(ElementType.Text, FindsBy.XPath,
-            "//android.widget.TextView[@text='$ 350,000']");
+            "(//android.widget.TextView[starts-with(@text,'$')])[2]");
 
         public void ChangeTextToInt(int value)
         {
@@ -57,5 +57,57 @@ namespace Mobile_views
                 Ammount.SetNumber(valueNew);
             }
         }
+
+        public IButton AddButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/AddButton");
+
+        public IButton AddCollectionButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/AddCollectionTypeButton");
+
+        public TextField TypeCollectionClick => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/PickerTypeOfCollection");
+
+        public TextField CashSelect => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.XPath,
+            "//android.widget.TextView[@resource-id=\"android:id/text1\" and @text=\"Efectivo\"]");
+
+        public TextField ValueCollection => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/EntryCourtTypeOfCollectionAmount");
+
+        public TextField ValueDescription => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/EntryCourtTypeOfCollectionDescription");
+
+        public IButton SendCollectionButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/ButtonAddTypeOfCollection");
+
+        public IButton NewEgressButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/AddExpenditureButton");
+
+        public TextField ExpendiSelectClick => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/ExpenditurePicker");
+
+        public TextField FleteSelectClick => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.XPath,
+            "//android.widget.TextView[@resource-id=\"android:id/text1\" and @text=\"Flete\"]");
+
+        public TextField AmmountValue => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/AmountEntry");
+
+        public TextField DescriptionValue => (TextField)_driver.GetElement(ElementType.TextField, FindsBy.Id,
+            "com.companyname.app.eds:id/DescriptionEntry");
+
+        public IButton AddExpenseButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/AddButton");
+
+        public IButton SendDataButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/SendDataButton");
+
+        public IButton OkAceptButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "android:id/button2");
+
+        public IButton NavigateUpButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.AcessibilityId,
+            "Navigate up");
+
+        public IButton OpenListButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
+            "com.companyname.app.eds:id/QuestionsButton");
+
     }
 }
