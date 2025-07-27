@@ -33,7 +33,8 @@
                 <VerticalStackLayout>
                     <Frame Padding="10"
                            CornerRadius="10"
-                           Margin="0,0,0,10">
+                           Margin="0,0,0,10"
+                           BorderColor="Transparent">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding Expenditures}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
                             <Picker x:Name="ExpenditurePicker" Title="{Binding Select}" Grid.Row="2" Grid.Column="1"
@@ -45,7 +46,8 @@
                     </Frame>
                     <Frame Padding="10"
                            CornerRadius="10"
-                           Margin="0,0,0,10">
+                           Margin="0,0,0,10"
+                           BorderColor="Transparent">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
                             <Entry x:Name="FirstEntry" Placeholder="Ingrese monto" Grid.Row="1" Grid.Column="1"
@@ -56,7 +58,8 @@
                         </Grid>
                     </Frame>
                     <Frame Padding="10"
-                           CornerRadius="10">
+                           CornerRadius="10"
+                           BorderColor="Transparent">
                         <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
                             <Label Text="Descripción:" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
                             <Entry x:Name="SecondEntry" Placeholder="{Binding Description}" Grid.Row="1" Grid.Column="1"
