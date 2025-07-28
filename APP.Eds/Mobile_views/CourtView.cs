@@ -1,6 +1,10 @@
-﻿using Helpers.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using Helpers.Enums;
 using Helpers.Interfaces;
 using Helpers.UIElements.Mobile;
+using NUnit.Framework;
+using OpenQA.Selenium;
 
 namespace Mobile_views
 {
@@ -46,7 +50,7 @@ namespace Mobile_views
         public Text AcumulatedValue => (Text)_driver.GetElement(ElementType.Text, FindsBy.XPath,
             "(//android.widget.TextView[starts-with(@text,'$')])[2]");
 
-        public void ChangeTextToInt(int value)
+        public async Task ChangeTextToInt(int value)
         {
             string valueRaw = AcumulatedValue.Element.Text;
             string valueClear = valueRaw.Replace("$", "").Replace(",", "").Trim();
@@ -55,6 +59,11 @@ namespace Mobile_views
             {
                 int valueNew = valueNumber + value;
                 Ammount.SetNumber(valueNew);
+            }
+            else
+            {
+                Assert.Fail($"{valueRaw} Can not be resolver.");
+                return;
             }
         }
 
@@ -99,12 +108,6 @@ namespace Mobile_views
 
         public IButton SendDataButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
             "com.companyname.app.eds:id/SendDataButton");
-
-        public IButton OkAceptButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
-            "android:id/button2");
-
-        public IButton NavigateUpButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.AcessibilityId,
-            "Navigate up");
 
         public IButton OpenListButton => (IButton)_driver.GetElement(ElementType.Button, FindsBy.Id,
             "com.companyname.app.eds:id/QuestionsButton");

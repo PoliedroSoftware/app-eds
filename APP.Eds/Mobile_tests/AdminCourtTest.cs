@@ -4,10 +4,12 @@ using Mobile_views;
 
 namespace Mobile_tests;
 
+[TestFixture, Order(1)]
 public class AdminCourtTest : BaseTest
 {
     [Test]
-    public void TestAdminFrameClick()
+    [Category ("Court")]
+    public void TestAdminCourtClick()
     {
         var adminFrameClick = new MainMenuView(_driver);
         adminFrameClick.AdminFrameClick.Element.Click();
@@ -76,13 +78,14 @@ public class AdminCourtTest : BaseTest
         ((MobileDriverManager)_driver).ScrollToEnd();
         courtButton.SendDataButton.Click();
         Thread.Sleep(3000);
-        courtButton.OkAceptButton.Click();
+        ((MobileDriverManager)_driver).OkAceptButton().Click();
         courtButton.OpenListButton.Click();
         Thread.Sleep(5000);
-        courtButton.NavigateUpButton.Click();
+        ((MobileDriverManager)_driver).NavigateUpButton().Click();
         Thread.Sleep(2000);
-        courtButton.NavigateUpButton.Click();
+        ((MobileDriverManager)_driver).NavigateUpButton().Click();
 
-        Assert.Pass();
+        Assert.Pass("Court testing Success !!");
     }
 }
+
