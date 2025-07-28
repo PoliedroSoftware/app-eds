@@ -3,18 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Business.BusinessPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:behaviors="clr-namespace:APP.Eds.UsesCases.Behaviors"
              Title="Gestion De Negocios">
-    <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-        <Label FontSize="16" Text="Negocio"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese Un Negocio"
-            Text="{Binding Name, Mode=TwoWay}"
-            AutomationId="EntryBusinessName"/>
+     <AbsoluteLayout>
+         <VerticalStackLayout
+             AbsoluteLayout.LayoutBounds="0,0,1,1"
+             AbsoluteLayout.LayoutFlags="All"
+             Padding="20" Spacing="15">
+         <Label FontSize="16" Text="Negocio"/>
+         <Entry
+             x:Name="BusinessNameEntry"
+             Keyboard="Text"
+             Placeholder="Ingrese Un Negocio"
+             Text="{Binding Name, Mode=TwoWay}"
+             AutomationId="EntryBusinessName">
+             <Entry.Behaviors>
+                 <behaviors:LettersOnlyBehavior />
+             </Entry.Behaviors>
+         </Entry>
+         <Label x:Name="BusinessNameErrorLabel"
+                TextColor="Red"
+                FontSize="12"
+                IsVisible="False"/>
             <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
