@@ -29,7 +29,6 @@ namespace Helpers.Drivers.Mobile
 
         public void Close()
         {
-            _driver.Close();
             _driver.Quit();
         }
 
@@ -75,7 +74,7 @@ namespace Helpers.Drivers.Mobile
 
         public byte[] TakeScreenshot()
         {
-            throw new NotImplementedException();
+            return _driver.GetScreenshot().AsByteArray;
         }
 
         public void ScrollToEnd(int maxSwipes = 10)
@@ -90,6 +89,18 @@ namespace Helpers.Drivers.Mobile
             {
                 androidDriver.PressKeyCode(OpenQA.Selenium.Appium.Android.Enums.AndroidKeyCode.Enter);
             }
+        }
+
+        public IButton NavigateUpButton()
+        {
+            return (IButton)GetElement(ElementType.Button, FindsBy.AcessibilityId,
+            "Navigate up");
+        }
+
+        public IButton OkAceptButton()
+        {
+            return (IButton)GetElement(ElementType.Button, FindsBy.Id,
+            "android:id/button2");
         }
     }
 }

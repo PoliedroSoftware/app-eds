@@ -7,7 +7,7 @@ namespace Mobile_tests;
 public class BaseTest
 {
     protected IDriverManager _driver;
-    [OneTimeSetUp]
+    [SetUp]
     public void GlobalSetup()
     {
         _driver = new MobileDriverManager();
@@ -21,7 +21,7 @@ public class BaseTest
         Thread.Sleep(3000);
     }
 
-    [OneTimeTearDown]
+    [TearDown]
     public void GlobalTearDown()
     {
         _driver.Close();
