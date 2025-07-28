@@ -72,7 +72,7 @@ jobs:
             -Dsonar.projectKey=PoliedroSoftware_app-eds
             -Dsonar.organization=poliedro-software-sonarqube
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
           
 # MAUI Android Build
   build-android:
