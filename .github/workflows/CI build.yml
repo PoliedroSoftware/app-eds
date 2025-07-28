@@ -16,8 +16,67 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true       # Disable sending .NET CLI telemetry
 
 jobs:
+# General Build
+  build-and-test:
+    runs-on: windows-2022
+    name: General Build and Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Cache .NET dependencies (General)
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-
+
+      - name: Cache MAUI Workloads (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet
+          key: ${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-maui-
+            
+      - name: Install MAUI Workload
+        run: dotnet workload install maui --ignore-failed-sources
+
+      - name: Restore Dependencies
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj --runtime win-x64
+
+      - name: Build
+        run: dotnet build APP.Eds/APP.Eds/APP.Eds.csproj --no-restore -c Release -f net8.0-windows10.0.19041.0 -r win-x64
+
+      - name: Run Unit Tests
+        run: dotnet test APP.Eds/APP.Eds.sln --no-build --verbosity normal
+
+# Software Quality Check with Sonar
+  sonar:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=PoliedroSoftware_app-eds
+            -Dsonar.organization=poliedro-software-sonarqube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
+          
 # MAUI Android Build
   build-android:
+    needs: build-and-test
     runs-on: windows-2022
     name: Android Build
     steps:
@@ -28,7 +87,23 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 8.0.x
+          
+      - name: Cache .NET dependencies (Android)
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-android-dotnet-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-android-dotnet-
 
+      - name: Cache MAUI Workloads (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet
+          key: ${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-maui-
+            
       - name: Install MAUI Workload
         run: dotnet workload install maui --ignore-failed-sources
 
@@ -43,9 +118,45 @@ jobs:
         with:
           name: app.eds-android-ci-build
           path: APP.Eds/APP.Eds/bin/Release/net8.0-android/*Signed.a*
+          
+# Automated testing with Appium
+  appium-tests-android:
+    needs: [build-android]
+    runs-on: macos-latest
+    name: Appium E2E Tests Android (Placeholder)
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future Appium tests."
 
+# Upload APK to Amazon S3
+  amazon-emulator:
+    needs: [appium-tests-android]
+    runs-on: ubuntu-latest
+    name: Upload Artifact to Amazon S3 (Placeholder)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4  # Download artifact
+        with:
+          name: app.eds-android-ci-build  # Artifact name
+          path: ./downloaded-artifacts  # Artifacts folder
+
+      - name: Upload APK to S3
+        run: |
+          aws s3 cp ./downloaded-artifacts/*Signed.apk s3://${{ secrets.S3_BUCKET_NAME }}/android/${{ github.sha }}-app.apk --acl private
+        
 # MAUI Windows Build
   build-windows:
+    needs: build-and-test
     runs-on: windows-2022
     name: Windows Build
     steps:
@@ -57,6 +168,22 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Cache .NET dependencies (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-windows-dotnet-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-windows-dotnet-
+
+      - name: Cache MAUI Workloads (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet
+          key: ${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-maui-
+            
       - name: Install MAUI Workload
         run: dotnet workload install maui --ignore-failed-sources
 
@@ -70,4 +197,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-eds-windows-ci-build
-          path: APP.Eds/APP.Eds/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/*.msix
+          path: APP.Eds/APP.Eds/bin/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
+
+# Automated testing with Appium
+  appium-tests-windows:
+    needs: [build-windows]
+    runs-on: windows-2022
+    name: Appium E2E Tests Windows (Placeholder)
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future Appium tests."
+
+# Upload APK to Amazon S3
+  windows-emulator:
+    needs: [appium-tests-windows]
+    runs-on: windows-2022
+    name: Upload Artifact to Windows Emulation (Placeholder)
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future S3 uploads."
