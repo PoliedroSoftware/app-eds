@@ -149,9 +149,6 @@ public partial class CourtPostView : ContentPage
                     return;
                 }
 
-
-            var selectedId = vm.SelectedEds.IdEds;
-
             try
             {
                 LoadingOverlay.ShowLoading();
