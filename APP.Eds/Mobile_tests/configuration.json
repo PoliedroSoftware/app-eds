@@ -1,0 +1,8 @@
+{
+    "appSettings": {
+        "appiumServer": "http://127.0.0.1:4723",
+        "platformName": "Android",
+        "appActivity": "crc64b29921a3d0f5cd39.MainActivity",
+        "appPackage": "com.companyname.app.eds"
+    }
+}
