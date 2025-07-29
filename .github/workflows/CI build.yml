@@ -152,7 +152,15 @@ jobs:
 
       - name: Upload APK to S3
         run: |
-          aws s3 cp ./downloaded-artifacts/*Signed.apk s3://${{ secrets.S3_BUCKET_NAME }}/android/${{ github.sha }}-app.apk --acl private
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          APK_FILE=$(find ./downloaded-artifacts -name "*Signed.apk" -print -quit)
+          if [ -z "$APK_FILE" ]; then
+            echo "Error: No se encontró ningún archivo APK firmado en ./downloaded-artifacts"
+            exit 1
+          fi
+          NEW_APK_NAME="App-Eds-${TIMESTAMP}.apk"
+          mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
+          aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
         
 # MAUI Windows Build
   build-windows:
