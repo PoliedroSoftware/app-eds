@@ -79,27 +79,21 @@
 	  <AndroidResource Remove="NewFolder\**" />
 	  <AndroidResource Remove="Services\ClearFields\**" />
 	  <AndroidResource Remove="TestAutomation\**" />
-	  <AndroidResource Remove="UsesCases\Behaviors\**" />
 	  <Compile Remove="NewFolder\**" />
 	  <Compile Remove="Services\ClearFields\**" />
 	  <Compile Remove="TestAutomation\**" />
-	  <Compile Remove="UsesCases\Behaviors\**" />
 	  <EmbeddedResource Remove="NewFolder\**" />
 	  <EmbeddedResource Remove="Services\ClearFields\**" />
 	  <EmbeddedResource Remove="TestAutomation\**" />
-	  <EmbeddedResource Remove="UsesCases\Behaviors\**" />
 	  <MauiCss Remove="NewFolder\**" />
 	  <MauiCss Remove="Services\ClearFields\**" />
 	  <MauiCss Remove="TestAutomation\**" />
-	  <MauiCss Remove="UsesCases\Behaviors\**" />
 	  <MauiXaml Remove="NewFolder\**" />
 	  <MauiXaml Remove="Services\ClearFields\**" />
 	  <MauiXaml Remove="TestAutomation\**" />
-	  <MauiXaml Remove="UsesCases\Behaviors\**" />
 	  <None Remove="NewFolder\**" />
 	  <None Remove="Services\ClearFields\**" />
 	  <None Remove="TestAutomation\**" />
-	  <None Remove="UsesCases\Behaviors\**" />
 	</ItemGroup>
 
 	<ItemGroup>
