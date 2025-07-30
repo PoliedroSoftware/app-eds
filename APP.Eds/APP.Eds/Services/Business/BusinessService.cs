@@ -37,7 +37,22 @@ public class BusinessService : INotifyPropertyChanged
         set
         {
             _name = value;
+            ValidateName();
             OnPropertyChanged(nameof(Name));
+        }
+    }
+
+    private bool _showNameError;
+    public bool ShowNameError
+    {
+        get => _showNameError;
+        set
+        {
+            if (_showNameError != value)
+            {
+                _showNameError = value;
+                OnPropertyChanged(nameof(ShowNameError));
+            }
         }
     }
 
@@ -78,12 +93,10 @@ public class BusinessService : INotifyPropertyChanged
 
     public async Task SaveBusinessDataAsync()
     {
-        
-        if (string.IsNullOrWhiteSpace(Name))
+        ValidateName();
+        if (ShowNameError || string.IsNullOrWhiteSpace(Name))
         {
-
-            await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo de nombre.", "Aceptar");
-            return; 
+            return;
         }
 
         if (string.IsNullOrEmpty(_authToken))
@@ -123,6 +136,11 @@ public class BusinessService : INotifyPropertyChanged
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
         }
+    }
+
+    private void ValidateName()
+    {
+        ShowNameError = string.IsNullOrWhiteSpace(Name) || !System.Text.RegularExpressions.Regex.IsMatch(Name, @"^[a-zA-Z\s]*$");
     }
 
     protected void OnPropertyChanged(string propertyName)
