@@ -78,7 +78,7 @@ jobs:
           
 
   build-android:
-    #needs: build-and-test
+    needs: build-and-test
     runs-on: windows-2022
     name: Android Build
     steps:
