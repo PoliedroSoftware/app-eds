@@ -123,6 +123,7 @@ jobs:
           
 # Upload APK to Amazon S3
   amazon-emulator:
+    needs: build-android
     runs-on: ubuntu-latest
     name: Upload Artifact to Amazon S3 (Placeholder)
     steps:
