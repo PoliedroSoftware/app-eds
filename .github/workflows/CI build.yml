@@ -173,8 +173,15 @@ jobs:
       - name: Download APK from S3
         run: |
             mkdir -p app
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/AppEds.apk --recursive --exclude "*" --include "*.apk"
-            mv AppEds.apk ./app/app-release.apk
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/ ./app --recursive --exclude "*" --include "*.apk"
+            
+            echo "Dowloaded APk files list:"
+            ls -lh ./app/*.apk
+
+            APK_FILE=$(ls ./app/*.apk | head -n 1)
+            echo "File detected for use: $APK_FILE"
+
+            mv "$APK_FILE" ./app/app-release.apk
 
       - name: Install Node and Appium
         uses: actions/setup-node@v4
