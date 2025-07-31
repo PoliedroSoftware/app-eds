@@ -158,7 +158,7 @@ jobs:
   # Automated testing with Appium
   appium-tests-android:
     needs: [amazon-emulator]
-    runs-on: ubuntu-latests
+    runs-on: ubuntu-latest
     name: Appium E2E Tests Android
     steps:
       - name: Checkout code
