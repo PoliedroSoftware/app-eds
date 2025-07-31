@@ -1,6 +1,9 @@
 name: CI Build
 
 on:
+  push:
+    branches:
+      - 'feature/ci'
   pull_request:
     branches:
       - 'releasecandidate/*'
@@ -121,7 +124,6 @@ jobs:
           
 # Automated testing with Appium
   appium-tests-android:
-    needs: [amazon-emulator]
     runs-on: macos-latest
     name: Appium E2E Tests Android
     steps:
@@ -174,6 +176,7 @@ jobs:
 
 # Upload APK to Amazon S3
   amazon-emulator:
+    needs: [appium-tests-android]
     runs-on: ubuntu-latest
     name: Upload Artifact to Amazon S3 (Placeholder)
     steps:
