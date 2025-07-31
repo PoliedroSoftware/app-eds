@@ -14,12 +14,11 @@ permissions:
   contents: read
 
 env:
-  DOTNET_NOLOGO: true                     # Disable the .NET logo
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience
-  DOTNET_CLI_TELEMETRY_OPTOUT: true       # Disable sending .NET CLI telemetry
+  DOTNET_NOLOGO: true                    
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
+  DOTNET_CLI_TELEMETRY_OPTOUT: true      
 
 jobs:
-# General Build
   build-and-test:
     runs-on: windows-2022
     name: General Build and Test
@@ -60,7 +59,7 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test APP.Eds/APP.Eds.sln --no-build --verbosity normal
 
-# Software Quality Check with Sonar
+
   sonar:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -77,7 +76,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
           
-# MAUI Android Build
+
   build-android:
     needs: build-and-test
     runs-on: windows-2022
@@ -122,8 +121,41 @@ jobs:
           name: app.eds-android-ci-build
           path: APP.Eds/APP.Eds/bin/Release/net8.0-android/*Signed.a*
           
-# Automated testing with Appium
+# Upload APK to Amazon S3
+  amazon-emulator:
+    runs-on: ubuntu-latest
+    name: Upload Artifact to Amazon S3 (Placeholder)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4  
+        with:
+          name: app.eds-android-ci-build 
+          path: ./downloaded-artifacts  
+
+      - name: Upload APK to S3
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          APK_FILE=$(find ./downloaded-artifacts -name "*Signed.apk" -print -quit)
+          if [ -z "$APK_FILE" ]; then
+            echo "Error: No se encontró ningún archivo APK firmado en ./downloaded-artifacts"
+            exit 1
+          fi
+          NEW_APK_NAME="App-Eds-${TIMESTAMP}.apk"
+          mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
+          aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
+
   appium-tests-android:
+    needs: [amazon-emulator]
     runs-on: macos-latest
     name: Appium E2E Tests Android
     steps:
@@ -174,40 +206,6 @@ jobs:
       - name: Run Appium E2E 
         run: dotnet test Mobile_tests/Mobile_tests.csproj --no-build --verbosity normal
 
-# Upload APK to Amazon S3
-  amazon-emulator:
-    needs: [appium-tests-android]
-    runs-on: ubuntu-latest
-    name: Upload Artifact to Amazon S3 (Placeholder)
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Download Android Artifact
-        uses: actions/download-artifact@v4  # Download artifact
-        with:
-          name: app.eds-android-ci-build  # Artifact name
-          path: ./downloaded-artifacts  # Artifacts folder
-
-      - name: Upload APK to S3
-        run: |
-          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          APK_FILE=$(find ./downloaded-artifacts -name "*Signed.apk" -print -quit)
-          if [ -z "$APK_FILE" ]; then
-            echo "Error: No se encontró ningún archivo APK firmado en ./downloaded-artifacts"
-            exit 1
-          fi
-          NEW_APK_NAME="App-Eds-${TIMESTAMP}.apk"
-          mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
-          aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
-        
 # MAUI Windows Build
   build-windows:
     needs: build-and-test
