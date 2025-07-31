@@ -201,6 +201,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel
+          disable-animations: true
           script: |
             echo "Waiting for emulator to start"
             adb wait-for-device
