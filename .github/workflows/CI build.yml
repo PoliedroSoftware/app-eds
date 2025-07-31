@@ -121,12 +121,56 @@ jobs:
           
 # Automated testing with Appium
   appium-tests-android:
-    needs: [build-android]
+    needs: [amazon-emulator]
     runs-on: macos-latest
-    name: Appium E2E Tests Android (Placeholder)
+    name: Appium E2E Tests Android
     steps:
-      - name: Placeholder Step
-        run: echo "This job is reserved for future Appium tests."
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentails
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download APK from S3
+        run: |
+            mkdir -p app
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/AppEds.apk --recursive --exclude "*" --include "*.apk"
+            mv AppEds.apk ./app/app-release.apk
+
+      - name: Install Node and Appium
+        uses: actions/setup-node@v4
+        with:
+              node-version: '20'
+
+      - name: Install Appium CLI and Drivers
+        run: |
+          npm install -g appium
+          appium driver install uiautomator2
+  
+      - name: Start Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          profile: Pixel_4
+          script: |
+            echo "Installing APK"
+            adb install ./app/app-release.apk
+            echo "Starting Appium"
+            nohup appium &
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Run Appium E2E 
+        run: dotnet test Mobile_tests/Mobile_tests.csproj --no-build --verbosity normal
 
 # Upload APK to Amazon S3
   amazon-emulator:
