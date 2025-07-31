@@ -158,7 +158,7 @@ jobs:
   # Automated testing with Appium
   appium-tests-android:
     needs: [amazon-emulator]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latests
     name: Appium E2E Tests Android
     steps:
       - name: Checkout code
@@ -199,11 +199,11 @@ jobs:
         with:
           api-level: 31
           target: google_apis
-          arch: x86
+          arch: x86_64
           profile: pixel
           script: |
             echo "Waiting for emulator to start"
-            adb wait-fro-device
+            adb wait-for-device
             adb devices
             echo "Installing APK"
             adb install ./app/app-release.apk || { echo "APK installation failed"; exit 1; }
