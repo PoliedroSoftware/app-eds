@@ -254,7 +254,7 @@ jobs:
 
 # Automated testing with Appium
   appium-tests-windows:
-    needs: [build-windows]
+    needs: [windows-emulator]
     runs-on: windows-2022
     name: Appium E2E Tests Windows (Placeholder)
     steps:
@@ -263,7 +263,7 @@ jobs:
 
 # Upload APK to Amazon S3
   windows-emulator:
-    needs: [appium-tests-windows]
+    needs: [build-windows]
     runs-on: windows-2022
     name: Upload Artifact to Windows Emulation (Placeholder)
     steps:
