@@ -203,24 +203,24 @@ jobs:
           profile: pixel
           disable-animations: true
           force-avd-creation: true
+
           script: |
             echo "Waiting for emulator to start"
-            adb wait-for-device
 
-            boot-complete=""
+            boot_completed=""
             until [[ "$boot_completed" == "1" ]]; do
               sleep 5
               boot_completed=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+              echo "Current Status: $boot_completed"
             done
 
             adb devices
-
             echo "Installing APK"
             adb install ./app/app-release.apk || { echo "APK installation failed"; exit 1; }
 
             echo "Starting Appium"
             nohup appium &> appium.log &
-            sleep 5
+            sleep 10
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
