@@ -206,6 +206,22 @@ jobs:
           script: |
             echo "Emulador iniciado correctamente y en espera..."
             tail -f /dev/null
+      
+      - name: Esperar que el emulador esté listo para ADB
+        run: |
+            echo "Esperando que el dispositivo pase de 'offline' a 'device'..."
+            boot_status=""
+            timeout=$((SECONDS+120))
+            while [[ "$boot_status" != "device" && $SECONDS -lt $timeout ]]; do
+              sleep 5
+              boot_status=$(adb get-state 2>/dev/null | tr -d '\r')
+              echo "Estado ADB actual: $boot_status"
+            done
+            if [[ "$boot_status" != "device" ]]; then
+              echo "Error: el emulador no está listo"
+              adb devices
+              exit 1
+            fi
                
       - name: Install APK
         run: |
