@@ -204,17 +204,16 @@ jobs:
           disable-animations: true
           force-avd-creation: true
           script: |
-            echo "Esperando a que el emulador arranque..."
-            boot_completed=""
-            until [[ "$boot_completed" == "1" ]]; do
-              sleep 5
-              boot_completed=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-              echo "Estado actual: $boot_completed"
-            done
-
+            echo "Emulador iniciado correctamente y en espera..."
+            tail -f /dev/null
+               
+      - name: Install APK
+        run: |
             echo "Instalando APK"
             adb install ./app/app-release.apk || { echo "Falló la instalación del APK"; exit 1; }
 
+      - name: Start Appium Server
+        run: |
             echo "Iniciando Appium"
             nohup appium --base-path /wd/hub &> appium.log &
             sleep 10
