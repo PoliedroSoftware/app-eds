@@ -155,7 +155,7 @@ jobs:
           mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
           aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
 
-  # Automated testing with Appium
+# Automated testing with Appium
   appium-tests-android:
     needs: [amazon-emulator]
     runs-on: macos-latest
@@ -195,32 +195,27 @@ jobs:
           appium driver install uiautomator2
   
       - name: Start Android Emulator
-        run: |
-            echo "Creating and starting Android Emulator"
-
-            export ANDROID_SDK_ROOT=$HOME/Library/Android/sdk
-            export PATH=$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
-
-            echo "no" | avdmanager create avd -n testEmulator -k "system-images;android-31;google_apis;arm64-v8a" -d "pixel"
-            emulator -avd testEmulator -no-window -no-audio -no-snapshot -gpu swiftshader_indirect &
-            adb wait-for-device
-
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          profile: pixel
+          disable-animations: true
+          force-avd-creation: true
+          script: |
+            echo "Esperando a que el emulador arranque..."
             boot_completed=""
             until [[ "$boot_completed" == "1" ]]; do
               sleep 5
               boot_completed=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-              echo "Current Status: $boot_completed"
+              echo "Estado actual: $boot_completed"
             done
 
-            adb devices
-      - name: Install APK
-        run: |
-            echo "Installing APK"
-            adb install ./app/app-release.apk
+            echo "Instalando APK"
+            adb install ./app/app-release.apk || { echo "Falló la instalación del APK"; exit 1; }
 
-      - name: Start Appium Server
-        run: |
-            echo "Starting Appium"
+            echo "Iniciando Appium"
             nohup appium --base-path /wd/hub &> appium.log &
             sleep 10
             tail -n 20 appium.log || true
