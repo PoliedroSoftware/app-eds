@@ -208,7 +208,7 @@ jobs:
         run: |
           echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
             --name test-avd \
-            --package "system-images;android-30;google_apis;x86_64" \
+            --package "system-images;android-30;google_apis;arm64-v8a" \
             --device "pixel"
 
       - name: Start Emulator
