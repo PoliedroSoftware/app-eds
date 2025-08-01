@@ -158,7 +158,7 @@ jobs:
 # Automated testing with Appium
   appium-tests-android:
     needs: [amazon-emulator]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     name: Appium E2E Tests Android
     steps:
       - name: Checkout code
@@ -184,7 +184,7 @@ jobs:
 
             mv "$APK_FILE" ./app/app-release.apk
 
-      - name: Install Node and Appium
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
               node-version: '20'
@@ -194,34 +194,31 @@ jobs:
           npm install -g appium
           appium driver install uiautomator2
   
-      - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 30
-          target: google_apis
-          arch: x86_64
-          profile: Nexus 6
-          disable-animations: true
-          force-avd-creation: true
-          script: |
-            echo "Emulador iniciado correctamente y en espera..."
-            tail -f /dev/null
-      
-      - name: Esperar que el emulador esté listo para ADB
+      - name: Start and create Android Emulator
         run: |
-            echo "Esperando que el dispositivo pase de 'offline' a 'device'..."
-            boot_status=""
-            timeout=$((SECONDS+120))
-            while [[ "$boot_status" != "device" && $SECONDS -lt $timeout ]]; do
-              sleep 5
-              boot_status=$(adb get-state 2>/dev/null | tr -d '\r')
-              echo "Estado ADB actual: $boot_status"
+            echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager --install "system-images;android-30;google_apis;x86_64"
+
+            echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --device "pixel"
+
+            $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-boot-anim -gpu auto -no-snapshot -netdelay none -netspeed full -no-window &
+      
+      - name: Wait for emulator to boot
+        run: |
+            echo "Waiting to the emulator starting...."
+            export PATH=$PATH:$ANDROID_HOME/platform-tools
+          
+            timeout=$((SECONDS + 300))
+            until adb shell getprop sys.boot_completed | grep -m 1 "1"; do
+                if [[ $SECONDS -gt $timeout ]]; then
+                    echo "Timeout waiting for emulator to boot"
+                    adb devices
+                    exit 1
+                fi
+                echo "Waiting..."
+                sleep 5
             done
-            if [[ "$boot_status" != "device" ]]; then
-              echo "Error: el emulador no está listo"
-              adb devices
-              exit 1
-            fi
+            echo "Emulator is ready"
+            
                
       - name: Install APK
         run: |
@@ -231,9 +228,9 @@ jobs:
       - name: Start Appium Server
         run: |
             echo "Iniciando Appium"
-            nohup appium --base-path /wd/hub &> appium.log &
-            sleep 10
-            tail -n 20 appium.log || true
+            nohup appium --base-path /wd/hub > appium.log 2>&1 &
+            sleep 15
+            tail -n 20 appium.log
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
