@@ -81,6 +81,7 @@ jobs:
     needs: build-and-test
     runs-on: windows-2022
     name: Android Build
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -193,15 +194,27 @@ jobs:
         run: |
           npm install -g appium
           appium driver install uiautomator2
-  
-      - name: Start and create Android Emulator
+
+      - name: Install Android SDK components
         run: |
-            echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager --install "system-images;android-30;google_apis;x86_64"
+            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "emulator" \
+            "platforms;android-30" \
+            "system-images;android-30;google_apis;x86_64"
 
-            echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --device "pixel"
+      - name: Create AVD
+        run: |
+          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            --name test-avd \
+            --package "system-images;android-30;google_apis;x86_64" \
+            --device "pixel"
 
-            $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-boot-anim -gpu auto -no-snapshot -netdelay none -netspeed full -no-window &
-      
+      - name: Start Emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd test-avd -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -no-window &
+
       - name: Wait for emulator to boot
         run: |
             echo "Waiting to the emulator starting...."
