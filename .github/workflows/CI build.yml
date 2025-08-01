@@ -158,7 +158,7 @@ jobs:
   # Automated testing with Appium
   appium-tests-android:
     needs: [amazon-emulator]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     name: Appium E2E Tests Android
     steps:
       - name: Checkout code
@@ -195,17 +195,11 @@ jobs:
           appium driver install uiautomator2
   
       - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          target: google_apis
-          arch: x86_64
-          profile: pixel
-          disable-animations: true
-          force-avd-creation: true
-
-          script: |
-            echo "Waiting for emulator to start"
+        run: |
+            echo "Creating and starting Android Emulator"
+            echo "no" | avdmanager create avd -n testEmulator -k "system-images;android-31;google_apis;x86_64" -d "pixel"
+            emulator -avd testEmulator -no-window -no-audio -no-snapshot -gpu swiftshader_indirect &
+            adb wait-for-device
 
             boot_completed=""
             until [[ "$boot_completed" == "1" ]]; do
@@ -215,12 +209,17 @@ jobs:
             done
 
             adb devices
+      - name: Install APK
+        run: |
             echo "Installing APK"
-            adb install ./app/app-release.apk || { echo "APK installation failed"; exit 1; }
+            adb install ./app/app-release.apk
 
+      - name: Start Appium Server
+        run: |
             echo "Starting Appium"
-            nohup appium &> appium.log &
+            nohup appium --base-path /wd/hub &> appium.log &
             sleep 10
+            tail -n 20 appium.log || true
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
