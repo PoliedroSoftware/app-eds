@@ -104,11 +104,11 @@ namespace APP.Eds.Services.Expenditures
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    // Attempt to parse a more user-friendly error message if available in the response
+                   
                     string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo más tarde.";
                     if (!string.IsNullOrEmpty(error))
                     {
-                        // Basic check for common error patterns, could be more sophisticated
+                        
                         if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
                         {
                             userFriendlyError = $"Error de validación: {error}";
