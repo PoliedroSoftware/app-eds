@@ -5,82 +5,126 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
 	CanBeDismissedByTappingOutsideOfPopup="False"
+    x:Name="Root"
     Color="Transparent"
     AutomationId="PopupAddCourtTypeOfCollection">
-	<Frame
-		Padding="20"
-		BorderColor="#6200E8"
-		CornerRadius="15"
-		HasShadow="True"
-		HeightRequest="470"
-		WidthRequest="380"
-        AutomationId="FrameAddCourtTypeOfCollection">
-        
-        
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+	<Frame x:Name="Frame"
+           Padding="20"
+           BorderColor="#6200E8"
+           CornerRadius="15"
+           HasShadow="True"
+           AutomationId="FrameAddCourtTypeOfCollection"
+           WidthRequest="400" MaximumHeightRequest="600"
+           VerticalOptions="Center" HorizontalOptions="Center">
+
+
+        <Grid RowDefinitions="Auto,Auto, *, Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="{Binding AddCollectionType}" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" AutomationId="LabelAddCollectionType"/>
+                <Label Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="22"
+                       Text="{Binding AddCollectionType}"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       AutomationId="LabelAddCollectionType"/>
+
                 <Button Grid.Column="2"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖" TextColor="#6200E8"
-                        HorizontalOptions="End" VerticalOptions="Center" Padding="5,0" AutomationId="ButtonClosePopup"/>
+                        FontSize="18" Text="✖"
+                        TextColor="#6200E8"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Padding="5,0"
+                        AutomationId="ButtonClosePopup"/>
+                
+            </Grid>
+            <Grid Grid.Row="1" ColumnDefinitions="*, Auto, *">
+                <Label Text="{Binding Source={x:Reference Root}, Path=Remaining,  StringFormat='Total del Dia: $ {0:N0}'}"
+                       VerticalOptions="Center"
+                       Grid.Column="1"
+                       Grid.Row="3"
+                       HorizontalOptions="Center" />
             </Grid>
 
+
             <!--  Campos de Entrada  -->
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="0,10">
-                <Frame Padding="10" CornerRadius="10" Margin="0,0,0,10"
-                       AutomationId="FrameTypeOfCollection">
-                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding TypeofCollectionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelTypeofCollectionTranslation"/>
-                            <Picker x:Name="TypeOfCollentionPicker" Title="{Binding Select}" Grid.Row="1" Grid.Column="1"
-                                ItemDisplayBinding="{Binding Description}" ItemsSource="{Binding TypeOfCollectionList}"
-                                SelectedItem="{Binding SelectedTypeOfCollection, Mode=TwoWay}" SelectedIndexChanged="TypeOfCollentionSelected"
-                                HorizontalTextAlignment="Center"
-                                AutomationId="PickerTypeOfCollection"/>
-                    </Grid>
-                </Frame>
-                <Frame Padding="10" CornerRadius="10" Margin="0,0,0,10"
-                       AutomationId="FrameCollectionAmount">
-                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding CollectionAmount}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelCollectionAmount"/>
-                            <Entry x:Name="FirstEntry"   Placeholder="Ingrese el monto" Grid.Row="1" Grid.Column="1"
-                               Text="{Binding CourtTypeOfCollectionAmount,Mode=TwoWay}"
-                               Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
-                               IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"
-                               AutomationId="EntryCourtTypeOfCollectionAmount"/>
-                    </Grid>
-                </Frame>
-                <Frame Padding="10"
-                       CornerRadius="10"
-                       AutomationId="FrameDescription">
-                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding DescriptionTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" AutomationId="LabelDescriptionTranslation"/>
-                            <Entry x:Name="SecondEntry"  Placeholder="{Binding EnterthedescriptionTranslations}" Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding CourtTypeOfCollectionDescription, Mode=TwoWay}"
-                                   Completed="Add_TypeOfCollection"
-                                   IsEnabled="False" HorizontalTextAlignment="Center"
-                                   AutomationId="EntryCourtTypeOfCollectionDescription"/>
-                    </Grid>
-                </Frame>
+            <ScrollView Grid.Row="2">
+                <VerticalStackLayout Padding="0,10"
+                                     Spacing="10"
+                                     BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="10"
+                                   CornerRadius="10">
+
+                                <Grid ColumnDefinitions="Auto,*,90, *"
+                                      RowDefinitions="Auto,Auto"
+                                      ColumnSpacing="8"
+                                      RowSpacing="6">
+
+                                    <CheckBox Grid.Row="0"
+                                          Grid.Column="0"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                          VerticalOptions="Center"/>
+
+                                <Label Text="{Binding Type.Description}"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       AutomationId="LabelTypeofCollectionTranslation"
+                                       VerticalOptions="Center"/>
+
+                                <Entry Grid.Row="0" Grid.Column="2"
+                                       Placeholder="Monto"
+                                       Keyboard="Numeric"
+                                       MaxLength="16"
+                                       HorizontalTextAlignment="Center"
+                                       IsEnabled="{Binding IsSelected}"
+                                       Text="{Binding Amount, Mode=TwoWay, StringFormat='{0s:F2}'}"
+                                       TextChanged="Amount_TextChanged"/>
+                                    <Entry Grid.Row="1"
+                                       Grid.ColumnSpan="4"
+                                       Placeholder="Descripcion"
+                                       IsEnabled="{Binding IsSelected}"
+                                       Text="{Binding Notes, Mode=TwoWay}"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
             </ScrollView>
 
-            <!--  Botón Agregar  -->
-            <Button Grid.Row="2"
-                    x:Name="AddButton"
-                    BackgroundColor="#6200E8"
-                    Clicked="Add_TypeOfCollection"
-                    CornerRadius="10"
-                    FontSize="18"
-                    Text="{Binding Add}"
-                    TextColor="White"
-                    VerticalOptions="Center"
-                    HeightRequest="40"
-                    AutomationId="ButtonAddTypeOfCollection"/>
+    <!--  Botones  -->
+            <Grid Grid.Row="3"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        x:Name="DeleteButton"
+                        BackgroundColor="#6200E8"
+                        Clicked="Clear_All"
+                        CornerRadius="10"
+                        FontSize="18"
+                        Text="Borrar"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        HeightRequest="40"
+                        AutomationId="ButtonAddTypeOfCollection"
+                        HorizontalOptions="Fill"/>
+                <Button Grid.Column="1"
+                        x:Name="AddButton"
+                        BackgroundColor="#6200E8"
+                        CornerRadius="10"
+                        FontSize="18"
+                        Text="{Binding Add}"
+                        TextColor="White"
+                        HeightRequest="40"
+                        Clicked="Add_Selected"
+                        AutomationId="ButtonAddTypeCollection"
+                        HorizontalOptions="Fill"/>
+            </Grid>
         </Grid>
     </Frame>
 </mct:Popup>
