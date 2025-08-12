@@ -6,85 +6,37 @@
              xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestión Historial De Mangueras">
     <ScrollView>
-        <AbsoluteLayout>
-        <VerticalStackLayout 
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Fecha"/>
-            <DatePicker
-                Date="{Binding Date, Mode=TwoWay}"
-                Format="dd/MM/yyyy"
-                AutomationId="DatePickerDate"/>
+        <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Margin="0,0,0,15">
+                        <Frame Padding="0">
+                            <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
+                                <Label Text="Fecha"  Grid.Row="3" Grid.Column="1"/>
+                                <Label Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"  Grid.Row="3" Grid.Column="3"/>
 
-            <Label FontSize="16" Text="Monto Acumulado"/>
-            <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese Monto Acumulado"
-                Text="{Binding AccumulatedAmount, Mode=TwoWay}"
-                AutomationId="EntryAccumulatedAmount"/>
+                                <Label Text="Dispensador #"  Grid.Row="4" Grid.Column="1"/>
+                                <Label Text="{Binding IdDispensers}"  Grid.Row="4" Grid.Column="3"/>
+                                <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
 
-            <Label FontSize="16" Text="Galones Acumulados"/>
-            <Entry
-                Keyboard="Text"
-                Placeholder="Enter AccumulatedGallons"
-                Text="{Binding AccumulatedGallons, Mode=TwoWay}"
-                AutomationId="EntryAccumulatedGallons"/>
+                                <Label Text="Manguera #"  Grid.Row="5" Grid.Column="1"/>
+                                <Label Text="{Binding Number}"  Grid.Row="5" Grid.Column="3"/>
 
-            <Picker Title="Seleccione un Dispensador"
-                ItemsSource="{Binding DispensersList}"
-                ItemDisplayBinding="{Binding DisplayName}"
-                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}"
-                AutomationId="PickerDispensers"/>
+                                <Label Text="Venta Total"  Grid.Row="6" Grid.Column="1"/>
+                                <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}"  Grid.Row="6" Grid.Column="3"/>
 
-            <Picker Title="Seleccione una Manguera"
-                ItemsSource="{Binding HoseList}"
-                ItemDisplayBinding="{Binding Number}"
-                SelectedItem="{Binding SelectHose, Mode=TwoWay}"
-                AutomationId="PickerHose"/>
-
-                <button:HoverButton
-                    BackgroundColor="Green"
-                    Clicked="Button_Clicked_1"
-                    WidthRequest="200"
-                    HeightRequest="60"
-                    CornerRadius="10"
-                    Text="Enviar Datos"
-                    HoverColor="Gray"
-                    PressedColor="AliceBlue"
-                    TextColor="White"
-                    AutomationId="ButtonSendData"/>
-
-                <Label FontSize="18" Text="Historial de Mangueras" />
-
-            <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20"
-                            HeightRequest="400">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Date}" FontSize="14" Grid.Row="1" />
-                            <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
-                            <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
-                            <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />
-                            <Label Text="{Binding IdHose}" FontSize="14" Grid.Row="5" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
+                                <Label Text="Galones Vendidos"  Grid.Row="7" Grid.Column="1"/>
+                                <Label Text="{Binding AccumulatedGallons}"  Grid.Row="7" Grid.Column="3"/>
+                                <BoxView Grid.Row="6" Grid.ColumnSpan="7" ZIndex="-1"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </ScrollView>
 </ContentPage>
+
+
+
+

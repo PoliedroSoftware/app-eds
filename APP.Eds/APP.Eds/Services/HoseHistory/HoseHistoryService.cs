@@ -124,11 +124,9 @@ public class HoseHistoryService : INotifyPropertyChanged
     public HoseHistoryService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        Date = DateTime.Now;
         GetAllDispensersData();
         GetHoseHistoryAsync();
         GetByIdHoseHistoryDataCommand = new Command<int>(async (hosehistoryId) => await GetByIdHoseHistoryDataAsync(hosehistoryId));
-        SaveHoseHistoryDataCommand = new Command(async () => await SaveHoseHistoryDataAsync());
         GetAllHoseData();
         
     }
@@ -175,81 +173,7 @@ public class HoseHistoryService : INotifyPropertyChanged
         }
     }
 
-    public async Task SaveHoseHistoryDataAsync()
-    {
-        if (string.IsNullOrEmpty(_authToken))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
-        }
-        try
-        {
-            if (SelectedDispensers is null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un Dispensers", "OK");
-                return;
-            }
-
-            if (SelectHose is null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de hose", "OK");
-                return;
-            }
-
-            if (Date < DateTime.Now.Date)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "La fecha seleccionada debe ser igual o mayor a la fecha actual", "OK");
-                return;
-            }
-
-            if (AccumulatedAmount <= 0)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "El campo 'AccumulatedAmount' debe ser mayor que 0", "OK");
-                return;
-            }
-
-            if (AccumulatedGallons <= 0)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "El campo 'AccumulatedGallons' debe ser mayor que 0", "OK");
-                return;
-            }
-
-            HoseHistory = new HoseHistoryModel
-            {
-                Date = DateTime.Now,
-                AccumulatedAmount = AccumulatedAmount,
-                AccumulatedGallons = AccumulatedGallons,
-                IdDispensers = SelectedDispensers.IdDispensers,
-                IdHose = SelectHose.IdHose
-            };
-
-            Request = new HoseHistoryRequest
-            {
-                Request = HoseHistory
-            };
-
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/hose-history", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-                await GetHoseHistoryAsync();
-            }
-            else
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
-            }
-        }
-        catch (Exception ex)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
-        }
-    }
+    
 
     private void UpdateDispensersList(IEnumerable<DispenserModelResponse> dispensersData)
     {
@@ -275,7 +199,8 @@ public class HoseHistoryService : INotifyPropertyChanged
             var hosehistorys = JsonSerializer.Deserialize<HoseHistoryApiResponse>(response, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
             HoseList.Clear();
-            foreach (var hosehistory in hosehistorys.Data)
+            var sortedList = hosehistorys.Data.OrderByDescending(h => h.Date).ToList();
+            foreach (var hosehistory in sortedList)
             {
                 HoseHistoryList.Add(hosehistory);
             }

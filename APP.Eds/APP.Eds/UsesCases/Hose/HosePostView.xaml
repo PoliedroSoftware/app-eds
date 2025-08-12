@@ -6,7 +6,6 @@
              xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestión de Mangueras">
     <ScrollView>
-        <AbsoluteLayout>
         <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -58,34 +57,42 @@
 
                 <Label FontSize="18" Text="Lista de Mangueras"/>
 
-            <CollectionView ItemsSource="{Binding HoseList}" Margin="0,20"
-                            HeightRequest="400">
+            <CollectionView ItemsSource="{Binding HoseList}" Margin="0,20,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Number}" FontSize="14" Grid.Row="1" />
-                            <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
-                            <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
-                            <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />
-                            <Label Text="{Binding IdProductType}" FontSize="14" Grid.Row="5" />
-                        </Grid>
+                        <VerticalStackLayout Margin="0,0,0,15">
+                            <Frame Padding="0">
+                                <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
+                                    <!--<Label Text="{Binding Number, StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Center"/>-->
+
+                                    <Label Text="Numero Manguera"  Grid.Row="3" Grid.Column="1"/>
+                                    <Label Text="{Binding Number}"  Grid.Row="3" Grid.Column="3"/>
+
+                                    <Label Text="Capacidad operativa"  Grid.Row="4" Grid.Column="1"/>
+                                    <Label Text="{Binding Operative}"  Grid.Row="4" Grid.Column="3"/>
+                                    <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
+
+                                    <Label Text="Stock"  Grid.Row="5" Grid.Column="1"/>
+                                    <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
+
+                                    <Label Text="Altura"  Grid.Row="6" Grid.Column="1"/>
+                                    <Label Text="{Binding Height}"  Grid.Row="6" Grid.Column="3"/>
+                                    <BoxView Grid.Row="6" Grid.ColumnSpan="5" ZIndex="-1"/>
+
+                                    <Label Text="Tanque"  Grid.Row="7" Grid.Column="1"/>
+                                    <Label Text="{Binding IdTank}"  Grid.Row="7" Grid.Column="3"/>
+
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
                     </DataTemplate>
-                </CollectionView.ItemTemplate> 
+                </CollectionView.ItemTemplate>
             </CollectionView>
-        </VerticalStackLayout>
+
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
                                   AbsoluteLayout.LayoutFlags="All"
                                   AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

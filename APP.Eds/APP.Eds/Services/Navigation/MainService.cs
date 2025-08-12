@@ -56,39 +56,47 @@ namespace APP.Eds.Services.Navigation
             {
                 new("Administración", new List<MenuItemModel>
                 {
-                    new("Corte", typeof(CourtPostView)),
                     new("Negocio", typeof(BusinessPostView)),
-                    new("Proveedor", typeof(ProviderPostView))
+                    new("Registre Una EDS", typeof(EdsPostView)),
+                    new("Corte", typeof(CourtPostView)),
+                    
+                    
                 }),
+                new("Dispensadores y Mangueras", new List<MenuItemModel>
+                {
+                    new("Dispensadores", typeof(DispensersPostView)),
+                    new("Manguera", typeof(HosePostView)),
+                    new("Tipo De Dispensador", typeof(DispenserTypePostView)),
+                    new("Compartimento", typeof(CompartimentPostView)),
+                    
+                    new("Historial De La Manguera", typeof(HoseHistoryPostView))
+                }),
+                            
+                new("Productos y Compras", new List<MenuItemModel>
+                {
+                    new("Producto", typeof(ProductPostView)),
+                    new("Tipo De Producto", typeof(ProductTypePostView)),
+                    new("Compras", typeof(ShoppingPostView)),
+                    new("Proveedor", typeof(ProviderPostView)),
+                    new("Categoría", typeof(CategoryPostView))
+                }),
+
                 new("Tanques y Compartimentos", new List<MenuItemModel>
                 {
                     new("Capacidad", typeof(CapacityPostView)),
-                    new("Compartimento", typeof(CompartimentPostView)),
                     new("Capacidad Del Compartimento", typeof(CompartimentCapacityPostView)),
                     new("Tanque EDS", typeof(EdsTankPostView)),
                     new("Tanque", typeof(TankPostView)),
                     new("Compartimento Del Producto", typeof(ProductCompartimentPostView))
                 }),
-                new("Dispensadores y Mangueras", new List<MenuItemModel>
-                {
-                    new("Dispensadores", typeof(DispensersPostView)),
-                    new("Tipo De Dispensador", typeof(DispenserTypePostView)),
-                    new("Manguera", typeof(HosePostView)),
-                    new("Historial De La Manguera", typeof(HoseHistoryPostView))
-                }),
-                new("Productos y Compras", new List<MenuItemModel>
-                {
-                    new("Producto", typeof(ProductPostView)),
-                    new("Tipo De P1roducto", typeof(ProductTypePostView)),
-                    new("Compras", typeof(ShoppingPostView)),
-                }),
+
                 new("EDS y Otros", new List<MenuItemModel>
                 {
-                    new("Registre Una EDS", typeof(EdsPostView)),
+                    
                     new("Tipo De Gastos", typeof(ExpendituresPostView)),
                     new("Registre Un Islero", typeof(IslanderPostView)),
                      new("Isla", typeof(IslandPostView)),
-                    new("Categoría", typeof(CategoryPostView)),
+                    
                     new("Tipo De Colección", typeof(TypeOfCollectionPostView))
                 }),
                  new("Inventario",
