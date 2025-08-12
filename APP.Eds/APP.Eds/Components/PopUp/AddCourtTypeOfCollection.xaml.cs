@@ -12,6 +12,13 @@ public partial class AddCourtTypeOfCollection : Popup
 {
     private readonly CourtService courtService;
 
+    decimal _remaining;
+    public decimal Remaining
+    {
+        get => _remaining;
+        set { if (_remaining != value) { _remaining = value; OnPropertyChanged(); } }
+    }
+
     public class PaymentOption : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -39,7 +46,30 @@ public partial class AddCourtTypeOfCollection : Popup
         if (courtService.TypeOfCollectionList is not null)
         {
             foreach (var t in courtService.TypeOfCollectionList)
-                PaymentOptions.Add(new PaymentOption { Type = t, IsSelected = false, Amount = 0 });
+            {
+                var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m };
+                opt.PropertyChanged += PaymentOption_PropertyChanged;
+                PaymentOptions.Add(opt);
+            }
+
+            RecalcRemaining();
+                //PaymentOptions.Add(new PaymentOption { Type = t, IsSelected = false, Amount = 0 });
+        }
+
+        void PaymentOption_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PaymentOptions) ||
+                e.PropertyName == nameof(PaymentOption.Amount))
+            {
+                RecalcRemaining();
+            }
+        }
+
+        void RecalcRemaining()
+        {
+            var added = PaymentOptions.Where(p => p.IsSelected).Sum(p => p.Amount);
+            var baseTotal = (decimal)courtService.TotalSales;
+            Remaining = baseTotal - added;
         }
     }
 
@@ -76,10 +106,20 @@ public partial class AddCourtTypeOfCollection : Popup
     private async void Add_Selected(object sender, EventArgs e)
     {
         var selected = PaymentOptions.Where(p => p.IsSelected).ToList();
+        decimal TotalSalesDay = (decimal)courtService.TotalSales;
+        decimal addedNow = (decimal)(courtService.CourtTypeOfCollections?.Sum(p => p.Amount) ?? 0d);
+        decimal dataNew = selected.Sum(p => p.Amount);
+        decimal amountNew = TotalSalesDay - addedNow - dataNew;
 
         if (selected.Count == 0)
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Selecciona al menos un método de pago.", "OK");
+            return;
+        }
+
+        if (amountNew != 0)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "El Total del dia debe estar en $0.", "OK");
             return;
         }
 
