@@ -18,7 +18,7 @@
            VerticalOptions="Center" HorizontalOptions="Center">
 
 
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+        <Grid RowDefinitions="Auto,Auto, *, Auto" ColumnDefinitions="*">
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *">
@@ -40,10 +40,19 @@
                         VerticalOptions="Center"
                         Padding="5,0"
                         AutomationId="ButtonClosePopup"/>
+                
+            </Grid>
+            <Grid Grid.Row="1" ColumnDefinitions="*, Auto, *">
+                <Label Text="{Binding Source={x:Reference Root}, Path=Remaining,  StringFormat='Total del Dia: $ {0:N0}'}"
+                       VerticalOptions="Center"
+                       Grid.Column="1"
+                       Grid.Row="3"
+                       HorizontalOptions="Center" />
             </Grid>
 
+
             <!--  Campos de Entrada  -->
-            <ScrollView Grid.Row="1">
+            <ScrollView Grid.Row="2">
                 <VerticalStackLayout Padding="0,10"
                                      Spacing="10"
                                      BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
@@ -57,7 +66,7 @@
                                       ColumnSpacing="8"
                                       RowSpacing="6">
 
-                                <CheckBox Grid.Row="0"
+                                    <CheckBox Grid.Row="0"
                                           Grid.Column="0"
                                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                           VerticalOptions="Center"/>
@@ -89,8 +98,8 @@
             </ScrollView>
 
     <!--  Botones  -->
-            <Grid Grid.Row="2"
-                  ColumnDefinitions="*,Auto"
+            <Grid Grid.Row="3"
+                  ColumnDefinitions="*,*"
                   ColumnSpacing="10">
                 <Button Grid.Column="0"
                         x:Name="DeleteButton"
@@ -102,7 +111,8 @@
                         TextColor="White"
                         VerticalOptions="Center"
                         HeightRequest="40"
-                        AutomationId="ButtonAddTypeOfCollection"/>
+                        AutomationId="ButtonAddTypeOfCollection"
+                        HorizontalOptions="Fill"/>
                 <Button Grid.Column="1"
                         x:Name="AddButton"
                         BackgroundColor="#6200E8"
@@ -112,7 +122,8 @@
                         TextColor="White"
                         HeightRequest="40"
                         Clicked="Add_Selected"
-                        AutomationId="ButtonAddTypeCollection"/>
+                        AutomationId="ButtonAddTypeCollection"
+                        HorizontalOptions="Fill"/>
             </Grid>
         </Grid>
     </Frame>
