@@ -2841,20 +2841,7 @@ GetAllEdsData()
             }
             try
             {
-                // Disable the button to prevent multiple submissions
-                // This is a common pattern to avoid race conditions or duplicate data entry.
-                // The actual button element is not directly accessible here, so we rely on the ViewModel's properties
-                // that might be bound to the button's IsEnabled state.
-                // If the UI element is directly accessible, we would disable it here.
-                // For now, we assume the UI handles this based on a ViewModel property if needed.
-
-                // The following lines are commented out as they are not directly applicable here
-                // without access to the UI element.
-                // var button = sender as Button; // This would require sender to be passed in.
-                // if (button != null)
-                // {
-                //     button.IsEnabled = false;
-                // }
+               
 
                 if (Court == null)
                 {
