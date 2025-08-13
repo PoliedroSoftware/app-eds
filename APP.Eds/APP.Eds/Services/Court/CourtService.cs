@@ -2262,7 +2262,7 @@ namespace APP.Eds.Services.Court
            
 
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            //OcultarListas
+            
 
             HideLists = new Command(() =>
             {
@@ -2722,7 +2722,7 @@ GetAllEdsData()
             {
                 var newDocument = new CourtDocument
                 {
-                    Descripcion = filesBase64[i], // base64 temporalmente
+                    Descripcion = filesBase64[i], 
                     DocumentName = nombresDocumentos[i],
                 };
 
@@ -2920,7 +2920,25 @@ GetAllEdsData()
                     LastSendWasSuccessful = false;
 
                     var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                    
+                    string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo más tarde.";
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                       
+                        if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
+                        {
+                            userFriendlyError = $"Error de validación: {error}";
+                        }
+                        else if (error.Contains("server error", StringComparison.OrdinalIgnoreCase) || error.Contains("internal server error", StringComparison.OrdinalIgnoreCase))
+                        {
+                            userFriendlyError = $"Error del servidor. Por favor, intente de nuevo más tarde.";
+                        }
+                        else
+                        {
+                            userFriendlyError = $"Error al enviar el dato: {error}";
+                        }
+                    }
+                    await Application.Current.MainPage.DisplayAlert("Error", userFriendlyError, "OK");
                 }
             }
             catch (Exception ex)

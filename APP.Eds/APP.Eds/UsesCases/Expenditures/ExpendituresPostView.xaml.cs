@@ -14,6 +14,11 @@ public partial class ExpendituresPostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        var button = sender as Button;
+        if (button != null)
+        {
+            button.IsEnabled = false;
+        }
         try
         {
             LoadingOverlay.ShowLoading();
@@ -25,8 +30,8 @@ public partial class ExpendituresPostView : ContentPage
 
             Description = string.Empty;
         }
-        
     }
+        
 
     public string Description
     {
