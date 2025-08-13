@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - 'feature/ci'
-  pull_request:
-    branches:
-      - 'releasecandidate/*'
     paths-ignore:
       - '**/*.md'
       - '**/*.gitignore'
