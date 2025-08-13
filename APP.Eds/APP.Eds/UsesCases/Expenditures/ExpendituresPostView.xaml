@@ -11,7 +11,7 @@
             Padding="20" Spacing="15">
             <Label FontSize="16" Text="Gastos"/>
             <Entry
-            Keyboard="Numeric"
+            Keyboard="Text"
             Placeholder="Ingrese Un Gasto"
             Text="{Binding Description, Mode=TwoWay}"
             AutomationId="EntryExpenditures"/>

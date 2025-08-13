@@ -79,13 +79,6 @@ namespace APP.Eds.Services.Expenditures
                 return;
             }
 
-            // Validar que la descripción sea un número
-            if (!decimal.TryParse(Description, out _))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error de Validación", "El campo 'Monto' solo acepta valores numéricos.", "OK");
-                return; // Detener la operación si la validación falla
-            }
-
             try
             {
                 Expenditures = new ExpendituresModel
