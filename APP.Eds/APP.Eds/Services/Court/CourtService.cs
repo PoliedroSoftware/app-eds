@@ -2264,6 +2264,7 @@ namespace APP.Eds.Services.Court
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             
 
+
             HideLists = new Command(() =>
             {
                 VisibleLists = !VisibleLists;
