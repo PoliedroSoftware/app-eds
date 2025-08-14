@@ -30,6 +30,7 @@
             ItemDisplayBinding="{Binding Description}"
             SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" 
             AutomationId="PickerDispenserType"/>
+                <Button Text="Agregar tipo de dispensador" Clicked="OnAddDispenserTypeClicked" AutomationId="ButtonAddDispenserType"/>
 
                 <Picker Title="Seleccione un EDS"
             ItemsSource="{Binding EdsList}"
@@ -84,6 +85,10 @@
                                 <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="4" />
                                 <Label Text="{Binding Description}" FontSize="14" Grid.Row="5" />
                                 <Label Text="{Binding HoseNumber}" FontSize="14" Grid.Row="5" />
+                                <StackLayout Orientation="Horizontal" Grid.Row="6">
+                                    <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserCommand}" CommandParameter="{Binding .}" />
+                                    <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}" CommandParameter="{Binding .}" />
+                                </StackLayout>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

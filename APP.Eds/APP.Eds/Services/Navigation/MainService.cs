@@ -1,11 +1,9 @@
-﻿using APP.Eds.UsesCases.Bussines;
+﻿using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Capacity;
 using APP.Eds.UsesCases.Category;
-using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.CompartimentCapacity;
 using APP.Eds.UsesCases.Court;
 using APP.Eds.UsesCases.Dispensers;
-using APP.Eds.UsesCases.DispenserType;
 using APP.Eds.UsesCases.Eds;
 using APP.Eds.UsesCases.EdsTank;
 using APP.Eds.UsesCases.Expenditures;
@@ -16,10 +14,8 @@ using APP.Eds.UsesCases.Island;
 using APP.Eds.UsesCases.Islander;
 using APP.Eds.UsesCases.Product;
 using APP.Eds.UsesCases.ProductCompartiment;
-using APP.Eds.UsesCases.ProductType;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Shopping;
-using APP.Eds.UsesCases.ShoppingProduct;
 using APP.Eds.UsesCases.Tank;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.UsesCases.Wizard;
@@ -61,11 +57,8 @@ namespace APP.Eds.Services.Navigation
 
             if (userRole == "Admin")
             {
-
                 Categories = new ObservableCollection<CategoryModel>
             {
-                // Categoría especial para Configuración Inicial que navega directamente
-                new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
                 new("Administración", new List<MenuItemModel>
                 {
                     new("Negocio", typeof(BusinessPostView)),
