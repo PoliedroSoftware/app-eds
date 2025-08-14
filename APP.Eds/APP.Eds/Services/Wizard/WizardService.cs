@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using APP.Eds.Models.Wizard;
-using APP.Eds.UsesCases.Bussines;
+using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Product;
 using APP.Eds.UsesCases.Eds;
@@ -271,14 +271,14 @@ namespace APP.Eds.Services.Wizard
         private async Task<bool> ValidateEdsStepAsync()
         {
             var edsService = new EdsService();
-            await edsService.GetEdsAsync();
+            await edsService.GetEdssAsync();
             return edsService.EdsList.Any();
         }
 
         private async Task<bool> ValidateIslandStepAsync()
         {
             var islandService = new IslandService();
-            await islandService.GetIslandsAsync();
+            await islandService.GetIslandAsync();
             return islandService.IslandList.Any();
         }
 
@@ -292,21 +292,21 @@ namespace APP.Eds.Services.Wizard
         private async Task<bool> ValidateHoseStepAsync()
         {
             var hoseService = new HoseService();
-            await hoseService.GetHosesAsync();
+            await hoseService.GetHoseAsync();
             return hoseService.HoseList.Any();
         }
 
         private async Task<bool> ValidateTankStepAsync()
         {
             var tankService = new TankService();
-            await tankService.GetTanksAsync();
+            await tankService.GetTankAsync();
             return tankService.TankList.Any();
         }
 
         private async Task<bool> ValidateCompartmentStepAsync()
         {
             var compartmentService = new CompartimentService();
-            await compartmentService.GetCompartimentsAsync();
+            await compartmentService.GetCompartimentAsync();
             return compartmentService.CompartimentList.Any();
         }
 
