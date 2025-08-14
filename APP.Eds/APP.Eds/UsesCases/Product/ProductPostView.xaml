@@ -24,6 +24,7 @@
                 ItemDisplayBinding="{Binding Description}"
                 SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
                 AutomationId="PickerProductType"/>
+            <Button Text="Agregar tipo de producto" Clicked="OnAddProductTypeClicked" AutomationId="ButtonAddProductType"/>
 
                 <Label Text="Ingrese EL Precio Del Producto" />
             <Entry
@@ -39,6 +40,28 @@
                 Text="Enviar Datos"
                 TextColor="White"
                 AutomationId="ButtonSendData"/>
+
+            <!-- Listado de productos -->
+    <Label Text="Lista de Productos" FontSize="18"/>
+    <CollectionView ItemsSource="{Binding ProductList}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Text="{Binding Name}" FontSize="14" Grid.Row="0" />
+                    <Label Text="{Binding Price}" FontSize="14" Grid.Row="1" />
+                    <StackLayout Orientation="Horizontal" Grid.Row="2">
+                        <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" />
+                        <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" />
+                    </StackLayout>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
         </VerticalStackLayout>
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"

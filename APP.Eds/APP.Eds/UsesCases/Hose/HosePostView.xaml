@@ -56,6 +56,18 @@
                     TextColor="White"
                     AutomationId="ButtonSendData"/>
 
+                <button:HoverButton
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnCompartimentButtonClicked"
+                    WidthRequest="200"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    Text="Compartimento"
+                    HoverColor="Gray"
+                    PressedColor="AliceBlue"
+                    TextColor="White"
+                    AutomationId="ButtonCompartiment"/>
+
                 <Label FontSize="18" Text="Lista de Mangueras"/>
 
             <CollectionView ItemsSource="{Binding HoseList}" Margin="0,20"
