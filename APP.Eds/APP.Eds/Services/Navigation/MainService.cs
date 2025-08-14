@@ -1,4 +1,4 @@
-﻿using APP.Eds.UsesCases.Business;
+﻿using APP.Eds.UsesCases.Bussines;
 using APP.Eds.UsesCases.Capacity;
 using APP.Eds.UsesCases.Category;
 using APP.Eds.UsesCases.Compartiment;
