@@ -55,6 +55,10 @@
                                         <Label Text="Tanque"  Grid.Row="7" Grid.Column="1"/>
                                         <Label Text="{Binding IdTank}"  Grid.Row="7" Grid.Column="3"/>
                                         
+                                        <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="5">
+                                            <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}" CommandParameter="{Binding .}" />
+                                            <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}" CommandParameter="{Binding .}" />
+                                        </StackLayout>
                                     </Grid>
                                 </Frame>
                             </VerticalStackLayout>

@@ -1,11 +1,9 @@
-﻿using APP.Eds.UsesCases.Bussines;
+﻿using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Capacity;
 using APP.Eds.UsesCases.Category;
-using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.CompartimentCapacity;
 using APP.Eds.UsesCases.Court;
 using APP.Eds.UsesCases.Dispensers;
-using APP.Eds.UsesCases.DispenserType;
 using APP.Eds.UsesCases.Eds;
 using APP.Eds.UsesCases.EdsTank;
 using APP.Eds.UsesCases.Expenditures;
@@ -16,10 +14,8 @@ using APP.Eds.UsesCases.Island;
 using APP.Eds.UsesCases.Islander;
 using APP.Eds.UsesCases.Product;
 using APP.Eds.UsesCases.ProductCompartiment;
-using APP.Eds.UsesCases.ProductType;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Shopping;
-using APP.Eds.UsesCases.ShoppingProduct;
 using APP.Eds.UsesCases.Tank;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.Views.Popups;
@@ -51,48 +47,50 @@ namespace APP.Eds.Services.Navigation
 
             if (userRole == "Admin")
             {
-
                 Categories = new ObservableCollection<CategoryModel>
-            {
-                new("Administración", new List<MenuItemModel>
                 {
-                    new("Negocio", typeof(BusinessPostView)),
-                    new("Registre una EDS", typeof(EdsPostView))
-                }),
-                new("Dispensadores y mangueras", new List<MenuItemModel>
-                {
-                    new("Dispensadores", typeof(DispensersPostView)),
-                    new("Manguera", typeof(HosePostView)),
-                    new("Historial de la manguera", typeof(HoseHistoryPostView))
-                }),
-                new("Compras y productos", new List<MenuItemModel>
-                {
-                    new("Agregar productos", typeof(ProductPostView)),
-                    new("Compras", typeof(ShoppingPostView)),
-                    new("Proveedor", typeof(ProviderPostView)),
-                    new("Categoría", typeof(CategoryPostView))
-                }),
-                new("Tanques y compartimentos", new List<MenuItemModel>
-                {
-                    new("Capacidad", typeof(CapacityPostView)),
-                    new("Compartimento", typeof(CompartimentPostView)),
-                    new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
-                    new("Tanque EDS", typeof(EdsTankPostView)),
-                    new("Tanque", typeof(TankPostView)),
-                    new("Compartimento del producto", typeof(ProductCompartimentPostView))
-                }),
-                new("EDS y otros", new List<MenuItemModel>
-                {
-                    new("Tipos de G", typeof(ExpendituresPostView)),
-                    new("Registre un Islero", typeof(IslanderPostView)),
-                    new("Isla", typeof(IslandPostView)),
-                    new("Tipo de colección", typeof(TypeOfCollectionPostView))
-                }),
-                new("Inventario",
-                [
-                    new("Inventario", typeof(InventoryPostView)),
-                ]),
-            };
+                    new("Corte", new List<MenuItemModel>
+                    {
+                        new("Corte", typeof(CourtPostView))
+                    }),
+                    new("Administración", new List<MenuItemModel>
+                    {
+                        new("Negocio", typeof(BusinessPostView)),
+                        new("Registre una EDS", typeof(EdsPostView))
+                    }),
+                    new("Dispensadores y mangueras", new List<MenuItemModel>
+                    {
+                        new("Dispensadores", typeof(DispensersPostView)),
+                        new("Manguera", typeof(HosePostView)),
+                        new("Historial de la manguera", typeof(HoseHistoryPostView))
+                    }),
+                    new("Compras y productos", new List<MenuItemModel>
+                    {
+                        new("Agregar productos", typeof(ProductPostView)),
+                        new("Compras", typeof(ShoppingPostView)),
+                        new("Proveedor", typeof(ProviderPostView)),
+                        new("Categoría", typeof(CategoryPostView))
+                    }),
+                    new("Tanques y compartimentos", new List<MenuItemModel>
+                    {
+                        new("Capacidad", typeof(CapacityPostView)),
+                        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
+                        new("Tanque EDS", typeof(EdsTankPostView)),
+                        new("Tanque", typeof(TankPostView)),
+                        new("Compartimento del producto", typeof(ProductCompartimentPostView))
+                    }),
+                    new("EDS y otros", new List<MenuItemModel>
+                    {
+                        new("Tipos de G", typeof(ExpendituresPostView)),
+                        new("Registre un Islero", typeof(IslanderPostView)),
+                        new("Isla", typeof(IslandPostView)),
+                        new("Tipo de colección", typeof(TypeOfCollectionPostView))
+                    }),
+                    new("Inventario", new List<MenuItemModel>
+                    {
+                        new("Inventario", typeof(InventoryPostView))
+                    })
+                };
             }
             else
             {
