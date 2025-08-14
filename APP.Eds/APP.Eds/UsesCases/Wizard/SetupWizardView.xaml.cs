@@ -15,6 +15,10 @@ namespace APP.Eds.UsesCases.Wizard
         public WizardService WizardService => _wizardService;
         public CopilotService CopilotService => _copilotService;
 
+        public int CompletedSteps => _wizardService.GetCompletedStepsCount();
+        public int TotalSteps => _wizardService.Steps.Count;
+        public double CompletionPercentage => _wizardService.GetCompletionPercentage();
+
         public bool IsLoading
         {
             get => _isLoading;
@@ -116,6 +120,9 @@ namespace APP.Eds.UsesCases.Wizard
                 // Refresh command states
                 ((Command)NextStepCommand).ChangeCanExecute();
                 ((Command)PreviousStepCommand).ChangeCanExecute();
+                
+                // Refresh progress display
+                UpdateProgressDisplay();
             }
             catch (Exception ex)
             {
@@ -183,6 +190,21 @@ namespace APP.Eds.UsesCases.Wizard
             // Update command states
             ((Command)NextStepCommand).ChangeCanExecute();
             ((Command)PreviousStepCommand).ChangeCanExecute();
+            
+            // Refresh progress display
+            UpdateProgressDisplay();
+        }
+
+        private void UpdateProgressDisplay()
+        {
+            OnPropertyChanged(nameof(CompletedSteps));
+            OnPropertyChanged(nameof(CompletionPercentage));
+            
+            // Update progress bar
+            if (OverallProgressBar != null)
+            {
+                OverallProgressBar.Progress = CompletionPercentage / 100.0;
+            }
         }
 
         public new event PropertyChangedEventHandler? PropertyChanged;
