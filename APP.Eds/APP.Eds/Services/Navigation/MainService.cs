@@ -67,8 +67,6 @@ namespace APP.Eds.Services.Navigation
             {
                 Categories = new ObservableCollection<CategoryModel>
             {
-                // Categoría especial para Configuración Inicial que navega directamente
-                new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
                 new("Administración", new List<MenuItemModel>
                 {
                     new("Corte", typeof(CourtPostView)),

@@ -419,6 +419,71 @@ namespace APP.Eds.Services.Dispensers
             }
         }
 
+        // Eliminar dispensador
+        public async Task<bool> DeleteDispenserAsync(int idDispenser)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return false;
+            }
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/dispensers/{idDispenser}");
+                if (response.IsSuccessStatusCode)
+                {
+                    await GetDispensersAsync();
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar: {response.StatusCode}\n{error}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar: {ex.Message}", "OK");
+            }
+            return false;
+        }
+
+        // Actualizar dispensador
+        public async Task<bool> UpdateDispenserAsync(int idDispenser, DispensersModel model)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return false;
+            }
+            try
+            {
+                var request = new DispensersRequest { Request = model };
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/dispensers/{idDispenser}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    await GetDispensersAsync();
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar: {response.StatusCode}\n{error}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+            }
+            return false;
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

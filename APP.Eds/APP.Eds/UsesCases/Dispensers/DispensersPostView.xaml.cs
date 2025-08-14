@@ -8,12 +8,13 @@ namespace APP.Eds.UsesCases.Dispensers;
 public partial class DispensersPostView : ContentPage
 {
     private DispensersService _dispensersService;
-
     public DispensersPostView()
 	{
 		InitializeComponent();
         _dispensersService = new DispensersService();
         BindingContext = _dispensersService;
+        EditDispenserCommand = new Command<object>(OnEditDispenser);
+        DeleteDispenserCommand = new Command<object>(OnDeleteDispenser);
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)
@@ -86,6 +87,34 @@ public partial class DispensersPostView : ContentPage
     private void OnAddDispenserTypeClicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new DispenserTypePostView());
+    }
+
+    private void OnAddDispenserTypeClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new    DispenserTypePostView());
+    }
+
+    private async void OnEditDispenser(object obj)
+    {
+        if (obj is DispenserModelResponse dispenser)
+        {
+            Code = dispenser.Code;
+            Number = dispenser.Number;
+            //HoseNumber = dispenser.HoseNumber;
+            // Aquí puedes cargar los demás campos según tu modelo y UI
+        }
+    }
+
+    private async void OnDeleteDispenser(object obj)
+    {
+        if (obj is DispenserModelResponse dispenser)
+        {
+            bool confirm = await DisplayAlert("Confirmar", $"¿Desea eliminar el dispensador {dispenser.Code}?", "Sí", "No");
+            if (confirm)
+            {
+                await _dispensersService.DeleteDispenserAsync(dispenser.IdDispensers);
+            }
+        }
     }
 
     public string Code

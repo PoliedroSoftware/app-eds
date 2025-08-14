@@ -53,7 +53,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Debe ingresar un número válido mayor que 0.", "OK");
+                    await DisplayAlert("Error", "Debe ingresar un nï¿½mero vï¿½lido mayor que 0.", "OK");
                     return;
                 }
 
@@ -83,7 +83,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.SelectedTank == null || vm.IdTank <= 0)
                 {
-                    await DisplayAlert("Error", "Debe seleccionar un tanque válido.", "OK");
+                    await DisplayAlert("Error", "Debe seleccionar un tanque vï¿½lido.", "OK");
                     return;
                 }
 
@@ -167,34 +167,4 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    private async void OnEditCompartiment(object obj)
-    {
-        if (obj is CompartimentResponse compartiment)
-        {
-            Number = compartiment.Number;
-            Nominal = compartiment.Nominal;
-            Operative = compartiment.Operative;
-            Stock = compartiment.Stock;
-            Height = compartiment.Height;
-            IdTank = compartiment.IdTank;
-        }
-    }
-
-    private async void OnDeleteCompartiment(object obj)
-    {
-        if (obj is CompartimentResponse compartiment)
-        {
-            bool confirm = await DisplayAlert("Confirmar", $"¿Desea eliminar el compartimento {compartiment.Number}?", "Sí", "No");
-            if (confirm)
-            {
-                await _compartimentService.DeleteCompartimentAsync(compartiment.IdCompartment);
-            }
-        }
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 }
