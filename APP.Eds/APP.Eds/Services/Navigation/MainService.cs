@@ -22,6 +22,7 @@ using APP.Eds.UsesCases.Shopping;
 using APP.Eds.UsesCases.ShoppingProduct;
 using APP.Eds.UsesCases.Tank;
 using APP.Eds.UsesCases.TypeOfCollection;
+using APP.Eds.UsesCases.Wizard;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
@@ -54,6 +55,10 @@ namespace APP.Eds.Services.Navigation
 
                 Categories = new ObservableCollection<CategoryModel>
             {
+                new("🧙‍♂️ Configuración Inicial", new List<MenuItemModel>
+                {
+                    new("Asistente de Configuración", typeof(SetupWizardView))
+                }),
                 new("Administración", new List<MenuItemModel>
                 {
                     new("Corte", typeof(CourtPostView)),
