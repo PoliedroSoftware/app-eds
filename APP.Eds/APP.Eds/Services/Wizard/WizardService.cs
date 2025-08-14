@@ -251,8 +251,7 @@ namespace APP.Eds.Services.Wizard
             try
             {
                 var businessService = new BusinessService();
-                // For now, consider step complete if BusinessList has any items
-                // This can be enhanced later with actual API calls if needed
+                await businessService.GetBusinessesAsync(pageNumber: 1, pageSize: 1); // solo verificamos existencia
                 return businessService.BusinessList.Any();
             }
             catch (Exception ex)
@@ -282,7 +281,8 @@ namespace APP.Eds.Services.Wizard
             try
             {
                 var productService = new ProductService();
-                // Check if ProductTypeList has items as a proxy for products
+                // Si el servicio tiene un método de carga, llamarlo (no hay explícito para productos)
+                // Se usa ProductTypeList como proxy de existencia
                 return productService.ProductTypeList.Any();
             }
             catch (Exception ex)
