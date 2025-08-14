@@ -44,6 +44,7 @@ namespace APP.Eds.UsesCases.Wizard
         public ICommand PreviousStepCommand { get; private set; }
         public ICommand ValidateStepCommand { get; private set; }
         public ICommand GetHelpCommand { get; private set; }
+        public ICommand GetContextualHelpCommand { get; private set; }
         public ICommand FinishWizardCommand { get; private set; }
 
         public SetupWizardView()
@@ -66,6 +67,7 @@ namespace APP.Eds.UsesCases.Wizard
             PreviousStepCommand = new Command(async () => await GoPreviousStep(), () => _wizardService.CanGoPrevious);
             ValidateStepCommand = new Command(async () => await ValidateCurrentStep());
             GetHelpCommand = new Command<string>(async (question) => await GetHelp(question));
+            GetContextualHelpCommand = new Command(async () => await GetContextualHelp());
             FinishWizardCommand = new Command(async () => await FinishWizard());
         }
 
@@ -99,6 +101,10 @@ namespace APP.Eds.UsesCases.Wizard
             {
                 _wizardService.SetCurrentStep(_wizardService.CurrentStepIndex + 1);
                 await ValidateCurrentStep();
+                
+                // Refresh command states
+                ((Command)NextStepCommand).ChangeCanExecute();
+                ((Command)PreviousStepCommand).ChangeCanExecute();
             }
         }
 
@@ -107,6 +113,10 @@ namespace APP.Eds.UsesCases.Wizard
             if (_wizardService.CanGoPrevious)
             {
                 _wizardService.SetCurrentStep(_wizardService.CurrentStepIndex - 1);
+                
+                // Refresh command states
+                ((Command)NextStepCommand).ChangeCanExecute();
+                ((Command)PreviousStepCommand).ChangeCanExecute();
             }
         }
 
@@ -144,15 +154,33 @@ namespace APP.Eds.UsesCases.Wizard
 
             try
             {
-                await _copilotService.GetHelpAsync(question);
+                string currentStepContext = _wizardService.CurrentStep?.Title ?? "";
+                await _copilotService.GetHelpAsync(question, currentStepContext);
                 ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
                 
                 // Clear the entry
-                HelpEntry.Text = string.Empty;
+                if (HelpEntry != null)
+                    HelpEntry.Text = string.Empty;
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Error al obtener ayuda: {ex.Message}", "OK");
+            }
+        }
+
+        private async Task GetContextualHelp()
+        {
+            try
+            {
+                string currentStep = _wizardService.CurrentStep?.Title ?? "configuración";
+                string contextualQuestion = $"¿Cómo configuro {currentStep}? ¿Qué debo hacer en este paso?";
+                
+                await _copilotService.GetHelpAsync(contextualQuestion, _wizardService.CurrentStep?.Title ?? "");
+                ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Error al obtener ayuda contextual: {ex.Message}", "OK");
             }
         }
 
