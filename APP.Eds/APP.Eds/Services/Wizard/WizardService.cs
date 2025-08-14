@@ -248,88 +248,215 @@ namespace APP.Eds.Services.Wizard
         // Validation methods for each step
         private async Task<bool> ValidateBusinessStepAsync()
         {
-            var businessService = new BusinessService();
-            // For now, consider step complete if BusinessList has any items
-            // This can be enhanced later with actual API calls
-            return businessService.BusinessList.Any();
+            try
+            {
+                var businessService = new BusinessService();
+                // For now, consider step complete if BusinessList has any items
+                // This can be enhanced later with actual API calls if needed
+                return businessService.BusinessList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando negocio: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateProviderStepAsync()
         {
-            var providerService = new ProviderService();
-            await providerService.GetProvidersAsync();
-            return providerService.ProviderList.Any();
+            try
+            {
+                var providerService = new ProviderService();
+                await providerService.GetProvidersAsync();
+                return providerService.ProviderList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando proveedores: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateProductStepAsync()
         {
-            var productService = new ProductService();
-            // Check if ProductTypeList has items as a proxy for products
-            return productService.ProductTypeList.Any();
+            try
+            {
+                var productService = new ProductService();
+                // Check if ProductTypeList has items as a proxy for products
+                return productService.ProductTypeList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando productos: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateEdsStepAsync()
         {
-            var edsService = new EdsService();
-            await edsService.GetEdssAsync();
-            return edsService.EdsList.Any();
+            try
+            {
+                var edsService = new EdsService();
+                await edsService.GetEdssAsync();
+                return edsService.EdsList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando EDS: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateIslandStepAsync()
         {
-            var islandService = new IslandService();
-            await islandService.GetIslandAsync();
-            return islandService.IslandList.Any();
+            try
+            {
+                var islandService = new IslandService();
+                await islandService.GetIslandAsync();
+                return islandService.IslandList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando islas: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateDispenserStepAsync()
         {
-            var dispenserService = new DispensersService();
-            await dispenserService.GetDispensersAsync();
-            return dispenserService.DispensersList.Any();
+            try
+            {
+                var dispenserService = new DispensersService();
+                await dispenserService.GetDispensersAsync();
+                return dispenserService.DispensersList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando dispensadores: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateHoseStepAsync()
         {
-            var hoseService = new HoseService();
-            await hoseService.GetHoseAsync();
-            return hoseService.HoseList.Any();
+            try
+            {
+                var hoseService = new HoseService();
+                await hoseService.GetHoseAsync();
+                return hoseService.HoseList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando mangueras: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateTankStepAsync()
         {
-            var tankService = new TankService();
-            await tankService.GetTankAsync();
-            return tankService.TankList.Any();
+            try
+            {
+                var tankService = new TankService();
+                await tankService.GetTankAsync();
+                return tankService.TankList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando tanques: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateCompartmentStepAsync()
         {
-            var compartmentService = new CompartimentService();
-            await compartmentService.GetCompartimentAsync();
-            return compartmentService.CompartimentList.Any();
+            try
+            {
+                var compartmentService = new CompartimentService();
+                await compartmentService.GetCompartimentAsync();
+                return compartmentService.CompartimentList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando compartimientos: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         private async Task<bool> ValidateIslanderStepAsync()
         {
-            var islanderService = new IslanderService();
-            await islanderService.GetIslandersAsync();
-            return islanderService.IslanderList.Any();
+            try
+            {
+                var islanderService = new IslanderService();
+                await islanderService.GetIslandersAsync();
+                return islanderService.IslanderList.Any();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error validando isleros: {ex.Message}", "OK");
+                return false;
+            }
         }
 
         public async Task RefreshValidationAsync()
         {
-            for (int i = 0; i <= CurrentStepIndex; i++)
+            try
             {
-                var previousStep = CurrentStep;
-                SetCurrentStep(i);
-                await ValidateCurrentStepAsync();
+                for (int i = 0; i < Steps.Count; i++)
+                {
+                    var previousStep = CurrentStep;
+                    SetCurrentStep(i);
+                    await ValidateCurrentStepAsync();
+                    
+                    // Return to previous step if it was valid
+                    if (previousStep != null && previousStep.Order <= Steps.Count)
+                    {
+                        SetCurrentStep(previousStep.Order - 1);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al refrescar validación: {ex.Message}", "OK");
+            }
+        }
+
+        public bool CanNavigateToStep(int stepIndex)
+        {
+            if (stepIndex < 0 || stepIndex >= Steps.Count) return false;
+            
+            // Can always navigate to the first step
+            if (stepIndex == 0) return true;
+            
+            // Can navigate to a step if all previous steps are completed
+            for (int i = 0; i < stepIndex; i++)
+            {
+                if (!Steps[i].IsCompleted) return false;
             }
             
-            if (previousStep != null)
+            return true;
+        }
+
+        public void NavigateToStep(string stepId)
+        {
+            var step = Steps.FirstOrDefault(s => s.Id == stepId);
+            if (step != null)
             {
-                SetCurrentStep(previousStep.Order - 1);
+                var index = Steps.IndexOf(step);
+                if (CanNavigateToStep(index))
+                {
+                    SetCurrentStep(index);
+                }
             }
+        }
+
+        public int GetCompletedStepsCount()
+        {
+            return Steps.Count(s => s.IsCompleted);
+        }
+
+        public double GetCompletionPercentage()
+        {
+            return (double)GetCompletedStepsCount() / Steps.Count * 100;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

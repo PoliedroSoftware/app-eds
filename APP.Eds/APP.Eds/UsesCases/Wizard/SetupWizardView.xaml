@@ -19,6 +19,15 @@
                                FontSize="14"
                                TextColor="White"
                                HorizontalOptions="Center" />
+                        <Label Text="{Binding CompletedSteps, StringFormat='Pasos completados: {0} de 10'}"
+                               FontSize="12"
+                               TextColor="LightGray"
+                               HorizontalOptions="Center" />
+                        <ProgressBar x:Name="OverallProgressBar"
+                                     Progress="0.0"
+                                     ProgressColor="LightGreen"
+                                     BackgroundColor="DarkPurple"
+                                     HeightRequest="6" />
                     </VerticalStackLayout>
                 </Frame>
 
