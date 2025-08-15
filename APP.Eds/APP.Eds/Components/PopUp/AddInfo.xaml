@@ -44,6 +44,12 @@
                         AutomationId="EditorDescription"/>
                 </VerticalStackLayout>
             </Frame>
+            
+            <!-- Botones de Acción -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                <Button Grid.Column="0" Text="Cancelar" Clicked="OnCloseTapped" BackgroundColor="#E0E0E0" TextColor="#6200E8" CornerRadius="10" AutomationId="ButtonCancelAddInfo"/>
+                <Button Grid.Column="1" Text="Guardar" Clicked="OnSaveTapped" BackgroundColor="#6200E8" TextColor="White" CornerRadius="10" AutomationId="ButtonSaveAddInfo"/>
+            </Grid>
         </Grid>
     </Frame>
 </mct:Popup>
