@@ -2526,6 +2526,12 @@ GetAllEdsData()
             }
         }
 
+        public async Task SaveAdditionalInfoAsync(string description)
+        {
+            AdditionalInfoDescription = description;
+            OnPropertyChanged(nameof(AdditionalInfoDescription));
+        }
+
         private void UpdateDateEndtime()
         {
             if (Endtime < Starttime)
