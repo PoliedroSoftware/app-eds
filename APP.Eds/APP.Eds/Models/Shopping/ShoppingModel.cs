@@ -25,5 +25,5 @@ public class ShoppingProductNestedModel
 public class SellPriceProductModel
 {
     public int IdProduct { get; set; }
-    public double? SellPrice { get; set; }
+    public double? Price { get; set; }
 }
