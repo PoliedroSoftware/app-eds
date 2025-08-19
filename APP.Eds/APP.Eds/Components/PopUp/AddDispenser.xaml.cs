@@ -10,12 +10,25 @@ public partial class AddDispenser : Popup
 {
     private readonly CourtService courtService;
     private bool isGallonsEditable = false;
+    private bool isAdmin = false;
 
     public AddDispenser(CourtService courtService)
     {
         InitializeComponent();
         this.courtService = courtService;
         SecondEntry.IsEnabled = isGallonsEditable;
+        
+        // Check if the current user is an administrator
+        CheckUserRole();
+    }
+
+    private void CheckUserRole()
+    {
+        var userRole = Preferences.Get("userRole", "User");
+        isAdmin = userRole == "Admin";
+        
+        // Update UI visibility after role is determined and UI is loaded
+        Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
     }
     private void EditGallonsButton_Clicked(object sender, EventArgs e)
     {
@@ -137,15 +150,81 @@ public partial class AddDispenser : Popup
             {
                 double price = vm.SelectedHose.Price;
                 PricePerGallonLabel.Text = $"{price:C2}";
+                
+                // For admin users, also set the editable price entry
+                if (isAdmin && PriceEditEntry != null)
+                {
+                    PriceEditEntry.Text = price.ToString("F2");
+                }
             }
             else
             {
                 PricePerGallonLabel.Text = "##.###";
+                if (isAdmin && PriceEditEntry != null)
+                {
+                    PriceEditEntry.Text = "";
+                }
             }
+            
+            // Update UI visibility based on admin status
+            UpdatePriceEditVisibility();
         }
         else
         {
             PricePerGallonLabel.Text = "##.###";
+            if (isAdmin && PriceEditEntry != null)
+            {
+                PriceEditEntry.Text = "";
+            }
+        }
+    }
+
+    private void UpdatePriceEditVisibility()
+    {
+        if (PriceEditEntry != null && PriceEditButton != null)
+        {
+            PriceEditEntry.IsVisible = isAdmin;
+            PriceEditButton.IsVisible = isAdmin;
+            
+            // For admin users, show editable controls and hide read-only label
+            // For non-admin users, show read-only label and hide editable controls
+            if (PricePerGallonLabel != null)
+            {
+                PricePerGallonLabel.IsVisible = !isAdmin;
+            }
+        }
+    }
+
+    private void PriceEditEntry_Completed(object sender, EventArgs e)
+    {
+        UpdateSelectedHosePrice();
+    }
+
+    private void PriceEditButton_Clicked(object sender, EventArgs e)
+    {
+        if (PriceEditEntry != null)
+        {
+            PriceEditEntry.Focus();
+        }
+    }
+
+    private void UpdateSelectedHosePrice()
+    {
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        {
+            if (double.TryParse(PriceEditEntry.Text, out double newPrice) && newPrice > 0)
+            {
+                vm.SelectedHose.Price = newPrice;
+                PricePerGallonLabel.Text = $"{newPrice:C2}";
+                
+                // Recalculate gallons if amount is already entered
+                UpdateAccumulatedValues();
+            }
+            else
+            {
+                // Reset to original price if invalid input
+                PriceEditEntry.Text = vm.SelectedHose.Price.ToString("F2");
+            }
         }
     }
 
