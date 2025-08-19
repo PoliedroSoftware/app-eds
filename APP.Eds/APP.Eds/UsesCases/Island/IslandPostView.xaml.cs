@@ -16,9 +16,9 @@ public partial class IslandPostView : ContentPage
     {
         if (BindingContext is IslandService vm)
         {
-            if (string.IsNullOrWhiteSpace(vm.Description))
+            if (vm.NumberOfIslands <= 0)
             {
-                await DisplayAlert("Error", "Por favor, ingrese una Description", "OK");
+                await DisplayAlert("Error", "Por favor, ingrese un número válido de islas (mayor a 0)", "OK");
                 return;
             }
 
