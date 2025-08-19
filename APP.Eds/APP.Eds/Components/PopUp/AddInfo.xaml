@@ -19,7 +19,6 @@
 
             <!--  Encabezado  -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="Agregar Informacion Extra" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" AutomationId="LabelAddInfo"/>
                 <Button Grid.Column="2" Margin="10,0,0,0"
                         BackgroundColor="Transparent"
                         Clicked="OnCloseTapped"
