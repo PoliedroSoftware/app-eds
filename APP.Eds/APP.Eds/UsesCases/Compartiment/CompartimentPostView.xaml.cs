@@ -167,4 +167,29 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private async void OnEditCompartiment(object obj)
+    {
+        if (obj is CompartimentResponse compartiment)
+        {
+            // Cargar los datos en el formulario para editar
+            Number = compartiment.Number;
+            Nominal = compartiment.Nominal;
+            Operative = compartiment.Operative;
+            Stock = compartiment.Stock;
+            Height = compartiment.Height;
+            IdTank = compartiment.IdTank;
+        }
+    }
+
+    private async void OnDeleteCompartiment(object obj)
+    {
+        if (obj is CompartimentResponse compartiment)
+        {
+            bool confirm = await DisplayAlert("Confirmar", $"�Desea eliminar el compartimento {compartiment.Number}?", "S�", "No");
+            if (confirm)
+            {
+                await _compartimentService.DeleteCompartimentAsync(compartiment.IdCompartment);
+            }
+        }
+    }
 }
