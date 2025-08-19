@@ -568,7 +568,7 @@ public class ShoppingService : INotifyPropertyChanged
             var sellPriceProducts = SellPriceProduct.Select(s => new SellPriceProductModel
             {
                 IdProduct = s.IdProduct,
-                SellPrice = s.SellPrice,
+                Price = s.Price,
             }).ToList();
 
             Shopping = new ShoppingModel
@@ -617,19 +617,26 @@ public class ShoppingService : INotifyPropertyChanged
 
     public async Task AddShoppingProductFromPopup()
     {
+        if (SelectedCompartiment == null)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Por favor seleccione un compartimento", "OK");
+            return;
+        }
+
         var newProduct = new ShoppingProductNestedModel
         {
             IdProduct = SelectedProduct.IdProduct,
             Quantity = Quantity,
             Price = Price,
             Name = SelectedProduct.Name,
-            TotalPrice = CurrentTotalPrice
+            TotalPrice = CurrentTotalPrice,
+            IdCompartment = SelectedCompartiment.IdCompartment
         };
 
         var newSellPrice = new SellPriceProductModel
         {
             IdProduct = SelectedProduct.IdProduct,
-            SellPrice = SellPrice,
+            Price = Price,
         };
 
         ShoppingProduct.Add(newProduct);
@@ -704,7 +711,7 @@ public class ShoppingService : INotifyPropertyChanged
         SelectedCompartiment = null;
         Price = 0;
         Quantity = 0;
-        SellPrice = 0;
+        Price = 0;
         OnPropertyChanged(nameof(Price));
         OnPropertyChanged(nameof(Quantity));
         OnPropertyChanged(nameof(CurrentTotalPrice));
