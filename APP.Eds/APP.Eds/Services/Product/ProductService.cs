@@ -191,6 +191,71 @@ public class ProductService : INotifyPropertyChanged
         }
     }
 
+    // Eliminar producto
+    public async Task<bool> DeleteProductAsync(int idProduct)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return false;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/product/{idProduct}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Aquí podrías refrescar la lista si tienes un método GetAll
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar: {ex.Message}", "OK");
+        }
+        return false;
+    }
+
+    // Actualizar producto
+    public async Task<bool> UpdateProductAsync(int idProduct, ProductModel model)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return false;
+        }
+        try
+        {
+            var request = new ProductRequest { Request = model };
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/product/{idProduct}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                // Aquí podrías refrescar la lista si tienes un método GetAll
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+        }
+        return false;
+    }
+
    
     public ICommand GetByIdProductDataCommand { get; }
     public ICommand SaveProductDataCommand { get; }

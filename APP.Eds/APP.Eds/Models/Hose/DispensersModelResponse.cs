@@ -26,4 +26,8 @@ public class DispenserModelResponse
     public int NumberHose { get; set; }
 
     public string DisplayName => $" Number:{Number} - Code:{Code} ";
+
+    public string DispenserTypeDescription { get; set; }
+    public string EdsName { get; set; }
+    public string IslandDescription { get; set; }
 }
