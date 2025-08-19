@@ -31,7 +31,10 @@ namespace APP.Eds.Models.Inventory
         public int IdProduct { get; set; }
 
         [JsonPropertyName("product")]
-        public string Product { get; set; }
+        public string Product { get; set; } = string.Empty;
+
+        [JsonPropertyName("productType")]
+        public string ProductType { get; set; } = string.Empty;
 
         [JsonPropertyName("stock")]
         public double Stock { get; set; }

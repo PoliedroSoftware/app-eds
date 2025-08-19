@@ -3,62 +3,168 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.ProductCompartiment.ProductCompartimentPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Del Producto En El Compartimento"
-             BackgroundColor="Transparent">
+             xmlns:converters="clr-namespace:APP.Eds.Converters"
+             Title="Gestión Del Producto En El Compartimento"
+             BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ProductDisplayConverter x:Key="ProductDisplayConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
-      <AbsoluteLayout>
-        <VerticalStackLayout 
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20">
+        <AbsoluteLayout>
+            <StackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All"
+                        Padding="20" 
+                        Spacing="20">
 
-            <Frame  
-                BorderColor="Transparent"
-                CornerRadius="15"
-                HasShadow="False"
-                Padding="20"
-                BackgroundColor="Transparent">
+                <!-- Header Card -->
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="24">
+                    <StackLayout Spacing="8">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="12">
+                            <Label Text="📦" FontSize="24" VerticalOptions="Center" />
+                            <Label Text="Asignación de Productos" 
+                                   FontSize="20" 
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        <Label Text="Asigna productos específicos a compartimentos de tanques" 
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Frame>
 
-                    <VerticalStackLayout>
+                <!-- Product Selection Card -->
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="20">
 
-                        <Picker Title="Seleccione Un Producto"
-                            ItemsSource="{Binding ProductList}"
-                            ItemDisplayBinding="{Binding Name}"
-                            SelectedItem="{Binding SelectProduct, Mode=TwoWay}"
-                            Margin="0,6,0,6"
-                            AutomationId="PickerProduct"/>
+                    <StackLayout Spacing="20">
 
-                    <Picker Title="Seleccione Un Compartimento"
-                            ItemsSource="{Binding CompartimentList}"
-                            ItemDisplayBinding="{Binding Number}"
-                            SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}" 
-                            Margin="0,6,0,6"
-                            AutomationId="PickerCompartiment"/>
+                        <!-- Product Picker Section -->
+                        <StackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🏷️" FontSize="16" VerticalOptions="Center" />
+                                <Label Text="Seleccionar Producto" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
 
-                        <Label Text="Existencia" Margin="0,11,0,11"/>
-                        
-                        <Entry                       
-                        Keyboard="Text"
-                        Placeholder="Enter Stock"
-                        Text="{Binding Stock, Mode=TwoWay}"
-                        Margin="0,6,0,6"
-                        AutomationId="EntryStock"/>
+                            <Picker Title="Seleccione Un Producto"
+                                    ItemsSource="{Binding ProductList}"
+                                    SelectedItem="{Binding SelectProduct, Mode=TwoWay}"
+                                    BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                    TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                    AutomationId="PickerProduct">
+                                <Picker.ItemDisplayBinding>
+                                    <Binding Converter="{StaticResource ProductDisplayConverter}" />
+                                </Picker.ItemDisplayBinding>
+                            </Picker>
+                        </StackLayout>
 
-                    <Button
-                        BackgroundColor="Green"
-                        Clicked="Button_Clicked"
-                        CornerRadius="10"
-                        Text="Enviar Datos"
-                        TextColor="White"
-                        Margin="0,11,0,11"
-                        AutomationId="ButtonSendData"/>
+                        <!-- Product Details -->
+                        <Frame BackgroundColor="{AppThemeBinding Light=#F0F9FF, Dark=#1E3A8A}"
+                               HasShadow="False"
+                               CornerRadius="12"
+                               Padding="16"
+                               IsVisible="{Binding SelectProduct, Converter={StaticResource NullToBoolConverter}}">
+                            
+                            <StackLayout Spacing="12">
+                                <Label Text="📋 Información del Producto" 
+                                       FontAttributes="Bold" 
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#1E40AF, Dark=#DBEAFE}" />
+                                
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+                                    <!-- Name -->
+                                    <Label Grid.Row="0" Grid.Column="0" Text="Nombre:" FontAttributes="Bold" FontSize="13" />
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding SelectProduct.Name}" FontSize="13" />
+                                    
+                                    <!-- Price -->
+                                    <Label Grid.Row="1" Grid.Column="0" Text="Precio:" FontAttributes="Bold" FontSize="13" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectProduct.Price, StringFormat='{0:C}'}" FontSize="13" />
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
 
-                </VerticalStackLayout>
+                        <!-- Compartment Selection -->
+                        <StackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="📦" FontSize="16" VerticalOptions="Center" />
+                                <Label Text="Seleccionar Compartimento" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
 
-            </Frame>
+                            <Picker Title="Seleccione Un Compartimento"
+                                    ItemsSource="{Binding CompartimentList}"
+                                    ItemDisplayBinding="{Binding Number}"
+                                    SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
+                                    BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                    TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                    AutomationId="PickerCompartiment"/>
+                        </StackLayout>
 
-        </VerticalStackLayout>
+                        <!-- Stock Section -->
+                        <StackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="📊" FontSize="16" VerticalOptions="Center" />
+                                <Label Text="Existencia Inicial" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            
+                            <Frame BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                   HasShadow="False"
+                                   CornerRadius="8"
+                                   Padding="0">
+                                <Entry Placeholder="Ingrese la cantidad en litros"
+                                       Text="{Binding Stock, Mode=TwoWay}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                       AutomationId="EntryStock"/>
+                            </Frame>
+                            
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="4">
+                                <Label Text="ℹ️" FontSize="12" />
+                                <Label Text="La existencia se registra en litros" 
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Submit Button -->
+                        <Button Text="💾 Guardar Asignación"
+                                Clicked="Button_Clicked"
+                                BackgroundColor="{AppThemeBinding Light=#10B981, Dark=#059669}"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="48"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                AutomationId="ButtonSendData"/>
+
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+            
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
                                   AbsoluteLayout.LayoutFlags="All"
