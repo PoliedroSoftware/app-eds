@@ -99,7 +99,24 @@ public class IslandService : INotifyPropertyChanged
 
             // Get current islands to determine the starting number
             await GetIslandAsync();
-            int startNumber = IslandList.Count + 1;
+            
+            // Find the next available island number
+            var existingNumbers = IslandList
+                .Where(i => i.Description.StartsWith("isla "))
+                .Select(i => {
+                    var parts = i.Description.Split(' ');
+                    if (parts.Length >= 2 && int.TryParse(parts[1], out int num))
+                        return num;
+                    return 0;
+                })
+                .Where(n => n > 0)
+                .ToList();
+            
+            int startNumber = 1;
+            if (existingNumbers.Any())
+            {
+                startNumber = existingNumbers.Max() + 1;
+            }
 
             for (int i = 0; i < NumberOfIslands; i++)
             {
