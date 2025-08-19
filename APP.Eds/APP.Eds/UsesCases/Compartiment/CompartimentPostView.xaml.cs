@@ -1,7 +1,9 @@
+using APP.Eds.Models.Compartiment;
 using APP.Eds.Services.Compartiment;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.Compartiment;
 
@@ -11,11 +13,16 @@ public partial class CompartimentPostView : ContentPage
     private string _newDispenserNumber;
     private string _newDispenserNominal;
 
+    public ICommand EditCompartimentCommand { get; }
+    public ICommand DeleteCompartimentCommand { get; }
+
     public CompartimentPostView()
 	{
 		InitializeComponent();
         _compartimentService = new CompartimentService();
         BindingContext = _compartimentService;
+        EditCompartimentCommand = new Command<object>(OnEditCompartiment);
+        DeleteCompartimentCommand = new Command<object>(OnDeleteCompartiment);
     }
 
     private void NumericEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -160,4 +167,29 @@ public partial class CompartimentPostView : ContentPage
         }
     }
 
+    private async void OnEditCompartiment(object obj)
+    {
+        if (obj is CompartimentResponse compartiment)
+        {
+            // Cargar los datos en el formulario para editar
+            Number = compartiment.Number;
+            Nominal = compartiment.Nominal;
+            Operative = compartiment.Operative;
+            Stock = compartiment.Stock;
+            Height = compartiment.Height;
+            IdTank = compartiment.IdTank;
+        }
+    }
+
+    private async void OnDeleteCompartiment(object obj)
+    {
+        if (obj is CompartimentResponse compartiment)
+        {
+            bool confirm = await DisplayAlert("Confirmar", $"¿Desea eliminar el compartimento {compartiment.Number}?", "Sí", "No");
+            if (confirm)
+            {
+                await _compartimentService.DeleteCompartimentAsync(compartiment.IdCompartment);
+            }
+        }
+    }
 }

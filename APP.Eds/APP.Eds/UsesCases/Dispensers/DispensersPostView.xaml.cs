@@ -1,10 +1,14 @@
+using APP.Eds.Models.Dispenser;
 using APP.Eds.Services.Dispensers;
+using APP.Eds.UsesCases.DispenserType;
+using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.Dispensers;
 
 public partial class DispensersPostView : ContentPage
 {
     private DispensersService _dispensersService;
+
     public DispensersPostView()
 	{
 		InitializeComponent();
@@ -77,6 +81,11 @@ public partial class DispensersPostView : ContentPage
         
     }
 
+    private void OnAddDispenserTypeClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new    DispenserTypePostView());
+    }
+
     public string Code
     {
         get => _dispensersService.Code;
@@ -107,4 +116,9 @@ public partial class DispensersPostView : ContentPage
         }
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _dispensersService.GetDispensersAsync();
+    }
 }
