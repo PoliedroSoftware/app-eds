@@ -181,7 +181,6 @@ namespace APP.Eds.Services.Wizard
         {
             if (index >= 0 && index < Steps.Count)
             {
-                // Deactivate all steps
                 foreach (var step in Steps)
                 {
                     step.IsActive = false;
@@ -245,13 +244,12 @@ namespace APP.Eds.Services.Wizard
             OnPropertyChanged(nameof(IsComplete));
         }
 
-        // Validation methods for each step
         private async Task<bool> ValidateBusinessStepAsync()
         {
             try
             {
                 var businessService = new BusinessService();
-                await businessService.GetBusinessesAsync(pageNumber: 1, pageSize: 1); // solo verificamos existencia
+                await businessService.GetBusinessesAsync(pageNumber: 1, pageSize: 1);
                 return businessService.BusinessList.Any();
             }
             catch (Exception ex)
@@ -281,8 +279,6 @@ namespace APP.Eds.Services.Wizard
             try
             {
                 var productService = new ProductService();
-                // Si el servicio tiene un método de carga, llamarlo (no hay explícito para productos)
-                // Se usa ProductTypeList como proxy de existencia
                 return productService.ProductTypeList.Any();
             }
             catch (Exception ex)
@@ -407,7 +403,6 @@ namespace APP.Eds.Services.Wizard
                     SetCurrentStep(i);
                     await ValidateCurrentStepAsync();
                     
-                    // Return to previous step if it was valid
                     if (previousStep != null && previousStep.Order <= Steps.Count)
                     {
                         SetCurrentStep(previousStep.Order - 1);
@@ -424,10 +419,8 @@ namespace APP.Eds.Services.Wizard
         {
             if (stepIndex < 0 || stepIndex >= Steps.Count) return false;
             
-            // Can always navigate to the first step
             if (stepIndex == 0) return true;
             
-            // Can navigate to a step if all previous steps are completed
             for (int i = 0; i < stepIndex; i++)
             {
                 if (!Steps[i].IsCompleted) return false;

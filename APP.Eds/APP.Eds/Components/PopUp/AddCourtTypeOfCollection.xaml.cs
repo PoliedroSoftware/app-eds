@@ -53,7 +53,6 @@ public partial class AddCourtTypeOfCollection : Popup
             }
 
             RecalcRemaining();
-                //PaymentOptions.Add(new PaymentOption { Type = t, IsSelected = false, Amount = 0 });
         }
 
         void PaymentOption_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -85,13 +84,11 @@ public partial class AddCourtTypeOfCollection : Popup
             var newText = e.NewTextValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(newText)) return;
 
-            // Permitir formato local (ej: es-CO)
             if (!decimal.TryParse(newText, NumberStyles.Number, new CultureInfo("es-CO"), out _))
-                entry.Text = e.OldTextValue; // revertir
+                entry.Text = e.OldTextValue;
         }
     }
 
-    // Borrar todo (desmarca y limpia)
     private void Clear_All(object sender, EventArgs e)
     {
         foreach (var p in PaymentOptions)
@@ -102,7 +99,6 @@ public partial class AddCourtTypeOfCollection : Popup
         }
     }
 
-    // Guardar/Agregar
     private async void Add_Selected(object sender, EventArgs e)
     {
         var selected = PaymentOptions.Where(p => p.IsSelected).ToList();
@@ -123,7 +119,6 @@ public partial class AddCourtTypeOfCollection : Popup
             return;
         }
 
-        // Validaciones por cada método
         foreach (var p in selected)
         {
             if (p.Amount <= 0m)

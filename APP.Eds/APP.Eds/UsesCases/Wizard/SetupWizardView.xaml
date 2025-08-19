@@ -16,7 +16,6 @@
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
                 
-                <!-- Header -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#F3E8FF, Dark=#2A263B}"
                        BorderColor="{AppThemeBinding Light=#E9D5FF, Dark=#3B3757}"
                        HasShadow="False"
@@ -44,7 +43,6 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Progress Indicator -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1F2937}"
                        BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
                        CornerRadius="12" Padding="15">
@@ -70,7 +68,6 @@
                                             <ColumnDefinition Width="30" />
                                         </Grid.ColumnDefinitions>
                                         
-                                        <!-- Step Number -->
                                         <Frame Grid.Column="0"
                                                WidthRequest="30"
                                                HeightRequest="30"
@@ -100,14 +97,12 @@
                                                    VerticalOptions="Center" />
                                         </Frame>
                                         
-                                        <!-- Icon -->
                                         <Label Grid.Column="1"
                                                Text="{Binding Icon}"
                                                FontSize="20"
                                                VerticalOptions="Center"
                                                HorizontalOptions="Center" />
                                         
-                                        <!-- Step Info -->
                                         <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
                                             <Label Text="{Binding Title}"
                                                    FontSize="16"
@@ -130,7 +125,6 @@
                                                    TextColor="{AppThemeBinding Light=#475569, Dark=#94A3B8}" />
                                         </VerticalStackLayout>
                                         
-                                        <!-- Status Icon -->
                                         <Label Grid.Column="3"
                                                VerticalOptions="Center"
                                                HorizontalOptions="Center"
@@ -162,7 +156,6 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Current Step Content -->
                 <Frame BackgroundColor="White" HasShadow="True" CornerRadius="10" Padding="20">
                     <VerticalStackLayout Spacing="15">
                         <Label Text="{Binding WizardService.CurrentStep.Title, StringFormat='📌 Paso Actual: {0}'}"
@@ -184,7 +177,6 @@
                                     HeightRequest="45"
                                     IsEnabled="{Binding WizardService.CurrentStep.IsEnabled}" />
                             
-                            <!-- Botón de ayuda contextual con icono de AI -->
                             <Button Grid.Column="1"
                                     Text="✨"
                                     Command="{Binding GetContextualHelpCommand}"
@@ -198,10 +190,8 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Simplified AI Chat -->
                 <Frame BackgroundColor="#F0F8FF" CornerRadius="15" Padding="20" HasShadow="True">
                     <VerticalStackLayout Spacing="15">
-                        <!-- Header simple con estrella sin fondo -->
                         <HorizontalStackLayout Spacing="8" HorizontalOptions="Start">
                             <Label Text="⭐" 
                                    FontSize="20" 
@@ -213,7 +203,6 @@
                                    VerticalOptions="Center" />
                         </HorizontalStackLayout>
 
-                        <!-- Campo de entrada con icono de envío integrado -->
                         <Grid ColumnDefinitions="*,Auto">
                             <Entry x:Name="HelpEntry"
                                    Grid.Column="0"
@@ -226,7 +215,6 @@
                                    ReturnCommand="{Binding GetHelpCommand}"
                                    ReturnCommandParameter="{Binding Source={x:Reference HelpEntry}, Path=Text}" />
                             
-                            <!-- Botón de envío con icono de cometa -->
                             <Button Grid.Column="1"
                                     Text="🚀"
                                     Command="{Binding GetHelpCommand}"
@@ -241,7 +229,6 @@
                                     VerticalOptions="Center" />
                         </Grid>
                         
-                        <!-- Indicador de carga simple -->
                         <StackLayout IsVisible="{Binding CopilotService.IsLoading}" 
                                      HorizontalOptions="Center"
                                      Orientation="Horizontal"
@@ -256,7 +243,6 @@
                                    VerticalOptions="Center" />
                         </StackLayout>
                         
-                        <!-- Respuesta en Markdown -->
                         <Frame BackgroundColor="White"
                                IsVisible="{Binding ShowHelpResponse}"
                                CornerRadius="10"
@@ -264,7 +250,6 @@
                                HasShadow="True"
                                BorderColor="#E5E7EB">
                             <VerticalStackLayout Spacing="10">
-                                <!-- Header simple -->
                                 <HorizontalStackLayout Spacing="8">
                                     <Label Text="🤖" FontSize="16" VerticalOptions="Center" />
                                     <Label Text="Respuesta del Asistente IA"
@@ -274,10 +259,8 @@
                                            VerticalOptions="Center" />
                                 </HorizontalStackLayout>
                                 
-                                <!-- Línea separadora -->
                                 <BoxView BackgroundColor="#E5E7EB" HeightRequest="1" />
                                 
-                                <!-- Contenido en Markdown -->
                                 <ScrollView MaximumHeightRequest="250">
                                     <controls:SimpleMarkdownLabel MarkdownText="{Binding CopilotService.MarkdownResponse}" />
                                 </ScrollView>
@@ -287,7 +270,6 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Navigation Buttons -->
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                     <Button Grid.Column="0"
                             Text="← Anterior"
@@ -316,7 +298,6 @@
                             IsEnabled="{Binding WizardService.CanGoNext}" />
                 </Grid>
 
-                <!-- Completion Message -->
                 <Frame BackgroundColor="Green"
                        IsVisible="{Binding WizardService.IsComplete}"
                        CornerRadius="10"
@@ -345,7 +326,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Loading Overlay -->
         <Grid x:Name="LoadingOverlay"
               BackgroundColor="#80000000"
               IsVisible="{Binding IsLoading}"
