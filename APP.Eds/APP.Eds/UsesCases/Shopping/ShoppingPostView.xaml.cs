@@ -20,7 +20,6 @@ public partial class ShoppingPostView : ContentPage
         this.ShowPopup(new AddShopping(_shoppingService));
     }
     
-
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         if (BindingContext is not ShoppingService vm)
@@ -54,6 +53,19 @@ public partial class ShoppingPostView : ContentPage
 
         }
         
+    }
+
+    private void InvoiceEntryCompleted(object sender, EventArgs e)
+    {
+        ProviderPicker.Focus();
+    }
+
+    private void ProviderSelected(object sender, EventArgs e)
+    {
+        if (ProviderPicker.SelectedIndex != -1)
+        {
+            CategoryPicker.Focus();
+        }
     }
 
     public string Invoice

@@ -17,32 +17,35 @@ public partial class AddShopping : Popup
     private void OnCloseTapped(object sender, EventArgs e)
     {
         Close();
+    }
 
+    private ShoppingService GetShoppingService()
+    {
+        return shoppingService;
     }
 
     private async void Add_Product(object sender, EventArgs e)
     {
-        if (BindingContext is ShoppingService vm && vm.SelectedProduct is not null)
-        {
-            var selectedExpenditure = vm.SelectedProduct.IdProduct;
-            await shoppingService.AddShoppingProductFromPopup();
-        }
-        else
+        if (BindingContext is not ShoppingService vm || vm.SelectedProductCompartimentPair is null)
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un Producto", "OK");
             return;
         }
-        if (vm.Quantity <= 0 || vm.Price <= 0 || /*vm.SelectedCompartiment == null ||*/ vm.SellPrice <= 0)
+        else if (vm.Quantity <= 0 || vm.Price <= 0 || vm.SellPrice <= 0)
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Complete todos los campos", "OK");
             return;
         }
 
-        ProductPicker.SelectedItem = null;
+
+
+        await shoppingService.AddShoppingProductFromPopup();
+
+
+        ProductCompartimentPicker.SelectedItem = null;
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
         ThirdEntry.IsEnabled = false;
-        CompartimentPicker.SelectedItem = null;
 
         Close();
     }
@@ -65,22 +68,10 @@ public partial class AddShopping : Popup
         }
     }
 
-    private void ProductSelected(object sender, EventArgs e)
+    private void ProductCompartimentPickerSelected(object sender, EventArgs e)
     {
-        if (ProductPicker.SelectedIndex != -1)
+        if (ProductCompartimentPicker.SelectedIndex != -1)
         {
-            CompartimentPicker.IsEnabled = true;
-            CompartimentPicker.Focus();
-        }
-    }
-
-    private void CompartimentSelected(object sender, EventArgs e)
-    {
-        if (ProductPicker.SelectedIndex != -1)
-        {
-            FirstEntry.IsEnabled = true;
-            SecondEntry.IsEnabled = true;
-            ThirdEntry.IsEnabled = true;
             FirstEntry.Focus();
             FirstEntry.CursorPosition = FirstEntry.Text.Length;
         }
