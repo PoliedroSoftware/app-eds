@@ -66,6 +66,48 @@ public class BusinessService : INotifyPropertyChanged
         SaveBusinessDataCommand = new Command(async () => await SaveBusinessDataAsync());
     }
 
+    public async Task GetBusinessesAsync(int pageNumber = 1, int pageSize = 100)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/business?PageNumber={pageNumber}&PageSize={pageSize}";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            BusinessList.Clear();
+            IEnumerable<BusinessModel> data;
+            if (businessList != null && businessList.Data != null)
+            {
+                data = businessList.Data.Select(b => new BusinessModel
+                {
+                    IdBusiness = b.IdBusiness,
+                    Name = b.Name
+                });
+            }
+            else
+            {
+                data = Array.Empty<BusinessModel>();
+            }
+
+            foreach (var b in data)
+            {
+                BusinessList.Add(b);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando negocios: {ex.Message}");
+        }
+    }
+
     public async Task GetByIdBusinessDataAsync(int businessId)
     {
         if (string.IsNullOrEmpty(_authToken))

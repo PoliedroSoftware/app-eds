@@ -18,6 +18,7 @@ using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Shopping;
 using APP.Eds.UsesCases.Tank;
 using APP.Eds.UsesCases.TypeOfCollection;
+using APP.Eds.UsesCases.Wizard;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
@@ -31,6 +32,8 @@ namespace APP.Eds.Services.Navigation
         public bool IsIslander => Preferences.Get("userRole", "") == "User";
 
         public ICommand NavigateToCourtCommand { get; }
+        public ICommand NavigateToWizardCommand { get; }
+        
         public MainService()
         {
            var userRole = Preferences.Get("userRole", "");
@@ -43,18 +46,22 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
-            
+            NavigateToWizardCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new SetupWizardView());
+                }
+            });
 
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
-                    new("Corte", new List<MenuItemModel>
-                    {
-                        new("Corte", typeof(CourtPostView))
-                    }),
+                    new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
                     new("Administración", new List<MenuItemModel>
                     {
+                        new("Corte", typeof(CourtPostView)),
                         new("Negocio", typeof(BusinessPostView)),
                         new("Registre una EDS", typeof(EdsPostView))
                     }),
@@ -102,18 +109,27 @@ namespace APP.Eds.Services.Navigation
         {
             public string Title { get; set; }
             public ICommand ShowPopupCommand { get; }
-
             public List<MenuItemModel> Items { get; set; }
+            public bool IsDirectNavigation { get; set; }
 
             public CategoryModel(string title, List<MenuItemModel> items)
             {
                 Title = title;
                 Items = items;
+                IsDirectNavigation = false;
                 ShowPopupCommand = new Command(() =>
                 {
                     var popup = new CategoryPopup(items, title);
                     Application.Current?.MainPage?.ShowPopup(popup);
                 });
+            }
+
+            public CategoryModel(string title, ICommand directCommand, bool isDirectNavigation = false)
+            {
+                Title = title;
+                Items = new List<MenuItemModel>();
+                IsDirectNavigation = isDirectNavigation;
+                ShowPopupCommand = directCommand;
             }
         }
 

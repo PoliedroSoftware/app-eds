@@ -63,13 +63,10 @@ namespace APP.Eds.Components.PopUp
             {
                 if (!string.IsNullOrEmpty(FileBase64))
                 {
-                    // Crear listas para los documentos y nombres
                     List<string> filesBase64 = new List<string> { FileBase64 };
                     List<string> nombresDocuments = new List<string> { SelectedFileName };
 
-                    // Llamar al método que maneja múltiples documentos
                      _courtService.AddDocumentsFromPopup(filesBase64, nombresDocuments);
-                    // close
                 }
                 else
                 {
