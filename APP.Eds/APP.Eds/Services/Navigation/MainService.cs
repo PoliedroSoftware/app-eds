@@ -54,6 +54,15 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
+            // Comando directo para Inventario
+            var NavigateToInventoryCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new InventoryPostView());
+                }
+            });
+
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
@@ -93,10 +102,8 @@ namespace APP.Eds.Services.Navigation
                         new("Isla", typeof(IslandPostView)),
                         new("Tipo de colección", typeof(TypeOfCollectionPostView))
                     }),
-                    new("Inventario", new List<MenuItemModel>
-                    {
-                        new("Inventario", typeof(InventoryPostView))
-                    })
+                    // Cambio de modal a navegación directa
+                    new("Inventario", NavigateToInventoryCommand, isDirectNavigation: true)
                 };
             }
             else
