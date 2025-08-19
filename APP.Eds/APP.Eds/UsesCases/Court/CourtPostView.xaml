@@ -310,7 +310,6 @@
 
                 <!-- Informacion Adicional -->
                 <Grid ColumnDefinitions="*, auto" x:Name="AdditionalInformation">
-                    <Label Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" FontAttributes="Bold" FontSize="18" Text="{Binding AdditionalInformation}" />
                     <Button Grid.Column="1"
                             HorizontalOptions="End"
                             FontSize="Medium"
