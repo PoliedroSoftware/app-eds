@@ -1,9 +1,9 @@
 name: CI Build
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'feature/ci'
+      - 'releasecandidate/*'
     paths-ignore:
       - '**/*.md'
       - '**/*.gitignore'
@@ -11,11 +11,12 @@ permissions:
   contents: read
 
 env:
-  DOTNET_NOLOGO: true                    
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
-  DOTNET_CLI_TELEMETRY_OPTOUT: true      
+  DOTNET_NOLOGO: true                     # Disable the .NET logo
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience
+  DOTNET_CLI_TELEMETRY_OPTOUT: true       # Disable sending .NET CLI telemetry
 
 jobs:
+# General Build
   build-and-test:
     runs-on: windows-2022
     name: General Build and Test
@@ -56,29 +57,28 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test APP.Eds/APP.Eds.sln --no-build --verbosity normal
 
+# Software Quality Check with Sonar
+  sonar:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  # sonar:
-  #   needs: build-and-test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-  #     - name: SonarCloud Scan
-  #       uses: SonarSource/sonarcloud-github-action@v2
-  #       with:
-  #         args: >
-  #           -Dsonar.projectKey=PoliedroSoftware_app-eds
-  #           -Dsonar.organization=poliedro-software-sonarqube
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=PoliedroSoftware_app-eds
+            -Dsonar.organization=poliedro-software-sonarqube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
           
-
+# MAUI Android Build
   build-android:
     needs: build-and-test
     runs-on: windows-2022
     name: Android Build
-    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -119,9 +119,64 @@ jobs:
           name: app.eds-android-ci-build
           path: APP.Eds/APP.Eds/bin/Release/net8.0-android/*Signed.a*
           
+# Automated testing with Appium
+  appium-tests-android:
+    needs: build-android
+    runs-on: ubuntu-latest
+    name: Appium E2E Tests Android (Placeholder)
+    # runs-on: macos-latest
+    # name: Appium E2E Tests Android
+    # steps:
+    #   - name: Checkout code
+    #     uses: actions/checkout@v3
+
+    #   - name: Configure AWS credentails
+    #     uses: aws-actions/configure-aws-credentials@v2
+    #     with:
+    #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #       aws-region: ${{ secrets.AWS_REGION }}
+
+    #   - name: Download APK from S3
+    #     run: |
+    #         mkdir -p app
+    #         aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/AppEds.apk --recursive --exclude "*" --include "*.apk"
+    #         mv AppEds.apk ./app/app-release.apk
+
+    #   - name: Install Node and Appium
+    #     uses: actions/setup-node@v4
+    #     with:
+    #           node-version: '20'
+
+    #   - name: Install Appium CLI and Drivers
+    #     run: |
+    #       npm install -g appium
+    #       appium driver install uiautomator2
+  
+    #   - name: Start Android Emulator
+    #     uses: reactivecircus/android-emulator-runner@v2
+    #     with:
+    #       api-level: 31
+    #       target: google_apis
+    #       arch: x86_64
+    #       profile: Pixel_4
+    #       script: |
+    #         echo "Installing APK"
+    #         adb install ./app/app-release.apk
+    #         echo "Starting Appium"
+    #         nohup appium &
+
+    #   - name: Setup .NET
+    #     uses: actions/setup-dotnet@v2
+    #     with:
+    #       dotnet-version: 8.0.x
+
+    #   - name: Run Appium E2E 
+    #     run: dotnet test Mobile_tests/Mobile_tests.csproj --no-build --verbosity normal
+
 # Upload APK to Amazon S3
   amazon-emulator:
-    needs: build-android
+    needs: appium-tests-android
     runs-on: ubuntu-latest
     name: Upload Artifact to Amazon S3 (Placeholder)
     steps:
@@ -131,15 +186,15 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download Android Artifact
-        uses: actions/download-artifact@v4  
+        uses: actions/download-artifact@v4  # Download artifact
         with:
-          name: app.eds-android-ci-build 
-          path: ./downloaded-artifacts  
+          name: app.eds-android-ci-build  # Artifact name
+          path: ./downloaded-artifacts  # Artifacts folder
 
       - name: Upload APK to S3
         run: |
@@ -152,162 +207,66 @@ jobs:
           NEW_APK_NAME="App-Eds-${TIMESTAMP}.apk"
           mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
           aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
-
-# Automated testing with Appium
-  appium-tests-android:
-    needs: [amazon-emulator]
-    runs-on: macos-latest
-    name: Appium E2E Tests Android
+        
+# MAUI Windows Build
+  build-windows:
+    needs: build-and-test
+    runs-on: windows-2022
+    name: Windows Build
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Download APK from S3
-        run: |
-            mkdir -p app
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/ ./app --recursive --exclude "*" --include "*.apk"
-            
-            echo "Downloaded APK files list:"
-            ls -lh ./app/*.apk
-
-            APK_FILE=$(ls ./app/*.apk | head -n 1)
-            echo "File detected"
-
-            mv "$APK_FILE" ./app/app-release.apk
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-              node-version: '20'
-
-      - name: Install Appium CLI and Drivers
-        run: |
-          npm install -g appium
-          appium driver install uiautomator2
-
-      - name: Install Android SDK components
-        run: |
-            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
-            "platform-tools" \
-            "emulator" \
-            "platforms;android-33" \
-            "system-images;android-33;google_apis;arm64-v8a"
-
-      - name: Create AVD
-        run: |
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-            --name test-avd \
-            --package "system-images;android-33;google_apis;arm64-v8a" \
-            --device "pixel"
-
-      - name: Start Emulator
-        run: |
-          $ANDROID_HOME/emulator/emulator -avd test-avd -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -no-window &
-
-      - name: Wait for emulator to boot
-        run: |
-            echo "Waiting to the emulator starting...."
-            export PATH=$PATH:$ANDROID_HOME/platform-tools
-          
-            timeout=$((SECONDS + 300))
-            until adb shell getprop sys.boot_completed | grep -m 1 "1"; do
-                if [[ $SECONDS -gt $timeout ]]; then
-                    echo "Timeout waiting for emulator to boot"
-                    adb devices
-                    exit 1
-                fi
-                echo "Waiting..."
-                sleep 5
-            done
-            echo "Emulator is ready"
-                  
-      - name: Install APK
-        run: |
-            echo "Instalando APK"
-            adb install ./app/app-release.apk || { echo "Falló la instalación del APK"; exit 1; }
-
-      - name: Start Appium Server
-        run: |
-            echo "Iniciando Appium"
-            nohup appium --base-path /wd/hub > appium.log 2>&1 &
-            sleep 15
-            tail -n 20 appium.log
-
-      - name: Setup .NET
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 8.0.x
 
-      - name: Run Appium E2E 
-        run: dotnet test Mobile_tests/Mobile_tests.csproj --no-build --verbosity normal
+      - name: Cache .NET dependencies (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-windows-dotnet-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-windows-dotnet-
 
-# # MAUI Windows Build
-#   build-windows:
-#     needs: build-and-test
-#     runs-on: windows-2022
-#     name: Windows Build
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
-
-#       - name: Setup .NET 8
-#         uses: actions/setup-dotnet@v2
-#         with:
-#           dotnet-version: 8.0.x
-
-#       - name: Cache .NET dependencies (Windows)
-#         uses: actions/cache@v3
-#         with:
-#           path: ~/.nuget/packages
-#           key: ${{ runner.os }}-windows-dotnet-${{ hashFiles('**/*.csproj') }}
-#           restore-keys: |
-#             ${{ runner.os }}-windows-dotnet-
-
-#       - name: Cache MAUI Workloads (Windows)
-#         uses: actions/cache@v3
-#         with:
-#           path: ~/.dotnet
-#           key: ${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
-#           restore-keys: |
-#             ${{ runner.os }}-maui-
+      - name: Cache MAUI Workloads (Windows)
+        uses: actions/cache@v3
+        with:
+          path: ~/.dotnet
+          key: ${{ runner.os }}-maui-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-maui-
             
-#       - name: Install MAUI Workload
-#         run: dotnet workload install maui --ignore-failed-sources
+      - name: Install MAUI Workload
+        run: dotnet workload install maui --ignore-failed-sources
 
-#       - name: Restore Dependencies
-#         run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj --runtime win-x64
+      - name: Restore Dependencies
+        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj --runtime win-x64
 
-#       - name: Build MAUI Windows
-#         run: dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj -c Release -f net8.0-windows10.0.19041.0 --no-restore
+      - name: Build MAUI Windows
+        run: dotnet publish APP.Eds/APP.Eds/APP.Eds.csproj -c Release -f net8.0-windows10.0.19041.0 --no-restore
 
-#       - name: Upload Windows Artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: app-eds-windows-ci-build
-#           path: APP.Eds/APP.Eds/bin/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-eds-windows-ci-build
+          path: APP.Eds/APP.Eds/bin/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
 
 # Automated testing with Appium
-  # appium-tests-windows:
-  #   needs: [windows-emulator]
-  #   runs-on: windows-2022
-  #   name: Appium E2E Tests Windows (Placeholder)
-  #   steps:
-  #     - name: Placeholder Step
-  #       run: echo "This job is reserved for future Appium tests."
+  appium-tests-windows:
+    needs: build-windows
+    runs-on: windows-2022
+    name: Appium E2E Tests Windows (Placeholder)
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future Appium tests."
 
 # Upload APK to Amazon S3
-  # windows-emulator:
-  #   needs: [build-windows]
-  #   runs-on: windows-2022
-  #   name: Upload Artifact to Windows Emulation (Placeholder)
-  #   steps:
-  #     - name: Placeholder Step
-  #       run: echo "This job is reserved for future S3 uploads."
+  windows-emulator:
+    needs: [appium-tests-windows]
+    runs-on: windows-2022
+    name: Upload Artifact to Windows Emulation (Placeholder)
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future S3 uploads."
