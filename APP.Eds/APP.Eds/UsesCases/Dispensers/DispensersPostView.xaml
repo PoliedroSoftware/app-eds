@@ -3,107 +3,307 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Dispensers.DispensersPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestión de Dispensadores">
-    <ScrollView>
-        <VerticalStackLayout 
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-                <Label FontSize="16" Text="Código"/>
-                <Entry
-            Keyboard="Text"
-            Placeholder="Ingresar Dispensador"
-            Text="{Binding Code, Mode=TwoWay}" 
-            AutomationId="EntryDispenserCode"/>
+             Title="Gestión de Dispensadores"
+             BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}">
 
-                <Label FontSize="16" Text="Numero"/>
-                <Entry
-            Keyboard="Numeric"
-            Placeholder="Digite Numero"
-            Text="{Binding Number, Mode=TwoWay}" 
-            AutomationId="EntryDispenserNumber"/>
-
-                <Picker Title="Seleccione un Dispensador"
-            ItemsSource="{Binding DispenserTypeList}"
-            ItemDisplayBinding="{Binding Description}"
-            SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}" 
-            AutomationId="PickerDispenserType"/>
-                <Button Text="Agregar tipo de dispensador" Clicked="OnAddDispenserTypeClicked" AutomationId="ButtonAddDispenserType"/>
-
-                <Picker Title="Seleccione un EDS"
-            ItemsSource="{Binding EdsList}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
-            AutomationId="PickerEds"/>
-
-                <Picker Title="Seleccione una Isla"
-            ItemsSource="{Binding IslandList}"
-            ItemDisplayBinding="{Binding Description}"
-            SelectedItem="{Binding SelectedIsland, Mode=TwoWay}"
-            AutomationId="PickerIsland"/>
-
-                <Label FontSize="16" Text="Numero de Manguera"/>
-                <Entry
-            Keyboard="Numeric"
-            Placeholder="Enter Hose Number"
-            Text="{Binding HoseNumber, Mode=TwoWay}"
-            AutomationId="EntryHoseNumber"/>
-
-                <button:HoverButton
-                    BackgroundColor="Green"
-                    Clicked="Button_Clicked_1"
-                    WidthRequest="200"
-                    HeightRequest="60"
-                    CornerRadius="10"
-                    Text="Enviar Datos"
-                    HoverColor="Gray"
-                    PressedColor="AliceBlue"
-                    TextColor="White" 
-                    AutomationId="ButtonSendData"/>
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    Padding="16">
+            
+            <StackLayout Spacing="20">
                 
-                <Label FontSize="18" Text="Lista de Dispensadores"/>
+                <!-- Header Card -->
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="24">
+                    <StackLayout Spacing="8">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="12">
+                            <Label Text="🔧" FontSize="24" VerticalOptions="Center" />
+                            <Label Text="Gestión de Dispensadores" 
+                                   FontSize="20" 
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        <Label Text="Configure dispensadores para cada isla de su EDS" 
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                </Frame>
 
-                <CollectionView ItemsSource="{Binding DispensersList}" Margin="0,20"
-                            HeightRequest="400">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame CornerRadius="10" BorderColor="#DDD" Padding="10" Margin="5">
-                                <Grid RowSpacing="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="Código:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Code}" Grid.Row="0" Grid.Column="1" />
-                                    <Label Text="Número:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Number}" Grid.Row="1" Grid.Column="1" />
-                                    <Label Text="Tipo Dispensador:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding DispenserTypeDescription}" Grid.Row="2" Grid.Column="1" />
-                                    <Label Text="EDS:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding EdsName}" Grid.Row="3" Grid.Column="1" />
-                                    <Label Text="Isla:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding IslandDescription}" Grid.Row="4" Grid.Column="1" />
-                                    <Label Text="Cantidad de Mangueras:" Grid.Row="5" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding NumberHose}" Grid.Row="5" Grid.Column="1" />
-                                </Grid>
+                <!-- Form Card -->
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="20">
+
+                    <StackLayout Spacing="20">
+                        
+                        <!-- Codigo Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🏷️" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Código del Dispensador" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Frame BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                   HasShadow="False"
+                                   CornerRadius="8"
+                                   Padding="0">
+                                <Entry Placeholder="Ingrese el código único del dispensador"
+                                       Text="{Binding Code, Mode=TwoWay}"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                       AutomationId="EntryDispenserCode"/>
                             </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                        </StackLayout>
 
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </VerticalStackLayout>
-    </ScrollView>
+                        <!-- Number Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🔢" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Número del Dispensador" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Frame BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                   HasShadow="False"
+                                   CornerRadius="8"
+                                   Padding="0">
+                                <Entry Placeholder="Ingrese el número del dispensador"
+                                       Text="{Binding Number, Mode=TwoWay}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                       AutomationId="EntryDispenserNumber"/>
+                            </Frame>
+                        </StackLayout>
+
+                        <!-- Dispenser Type Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="⚙️" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Tipo de Dispensador" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Picker Title="Seleccione el tipo de dispensador"
+                                    ItemsSource="{Binding DispenserTypeList}"
+                                    ItemDisplayBinding="{Binding Description}"
+                                    SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}"
+                                    BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                    TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                    AutomationId="PickerDispenserType"/>
+                            
+                            <Button Text="+ Agregar Nuevo Tipo" 
+                                    Clicked="OnAddDispenserTypeClicked"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{AppThemeBinding Light=#3B82F6, Dark=#60A5FA}"
+                                    FontSize="12"
+                                    HorizontalOptions="Start"
+                                    AutomationId="ButtonAddDispenserType"/>
+                        </StackLayout>
+
+                        <!-- EDS Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="⛽" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Estación de Servicio (EDS)" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Picker Title="Seleccione una EDS"
+                                    ItemsSource="{Binding EdsList}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                    BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                    TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                    AutomationId="PickerEds"/>
+                        </StackLayout>
+
+                        <!-- Island Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🏝️" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Isla de Combustible" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Picker Title="Seleccione una isla"
+                                    ItemsSource="{Binding IslandList}"
+                                    ItemDisplayBinding="{Binding Description}"
+                                    SelectedItem="{Binding SelectedIsland, Mode=TwoWay}"
+                                    BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                    TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                    AutomationId="PickerIsland"/>
+                        </StackLayout>
+
+                        <!-- Hose Number Section -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🔗" FontSize="14" VerticalOptions="Center" />
+                                <Label Text="Número de Mangueras" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}" />
+                            </StackLayout>
+                            <Frame BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}"
+                                   HasShadow="False"
+                                   CornerRadius="8"
+                                   Padding="0">
+                                <Entry Placeholder="Cantidad de mangueras en este dispensador"
+                                       Text="{Binding HoseNumber, Mode=TwoWay}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                       AutomationId="EntryHoseNumber"/>
+                            </Frame>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="4">
+                                <Label Text="ℹ️" FontSize="10" />
+                                <Label Text="Indique cuántas mangueras tendrá este dispensador" 
+                                       FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Submit Button -->
+                        <Button Text="💾 Guardar Dispensador"
+                                Clicked="Button_Clicked_1"
+                                BackgroundColor="{AppThemeBinding Light=#10B981, Dark=#059669}"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="48"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                AutomationId="ButtonSendData"/>
+
+                    </StackLayout>
+                </Frame>
+
+                <!-- Dispensers List Card -->
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}"
+                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+                       CornerRadius="16"
+                       HasShadow="False"
+                       Padding="20">
+
+                    <StackLayout Spacing="16">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="8">
+                            <Label Text="📋" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Lista de Dispensadores" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <CollectionView ItemsSource="{Binding DispensersList}"
+                                        BackgroundColor="Transparent">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="{AppThemeBinding Light=#FEFEFE, Dark=#111827}" 
+                                           BorderColor="{AppThemeBinding Light=#F3F4F6, Dark=#374151}"
+                                           CornerRadius="12" 
+                                           Padding="16" 
+                                           Margin="0,0,0,8"
+                                           HasShadow="False">
+                                        
+                                        <Grid RowSpacing="8">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            
+                                            <!-- Header Row -->
+                                            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+                                                <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                                                    <Label Text="🔧" FontSize="16" VerticalOptions="Center" />
+                                                    <Label Text="{Binding Code}" 
+                                                           FontAttributes="Bold" 
+                                                           FontSize="16"
+                                                           TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                                           VerticalOptions="Center" />
+                                                </StackLayout>
+                                                
+                                                <Frame Grid.Column="2"
+                                                       BackgroundColor="{AppThemeBinding Light=#EFF6FF, Dark=#1E3A8A}"
+                                                       HasShadow="False"
+                                                       CornerRadius="8"
+                                                       Padding="6,3">
+                                                    <Label Text="{Binding Number, StringFormat='#{0}'}"
+                                                           FontSize="10"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{AppThemeBinding Light=#3B82F6, Dark=#DBEAFE}" />
+                                                </Frame>
+                                            </Grid>
+
+                                            <!-- Details Grid -->
+                                            <Grid Grid.Row="1" ColumnDefinitions="*,*" RowSpacing="4">
+                                                
+                                                <!-- Left Column -->
+                                                <StackLayout Grid.Column="0" Spacing="4">
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="⚙️" FontSize="11" />
+                                                        <Label Text="{Binding DispenserTypeDescription}" 
+                                                               FontSize="11"
+                                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                                    </StackLayout>
+                                                    
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="⛽" FontSize="11" />
+                                                        <Label Text="{Binding EdsName}" 
+                                                               FontSize="11"
+                                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                                    </StackLayout>
+                                                </StackLayout>
+
+                                                <!-- Right Column -->
+                                                <StackLayout Grid.Column="1" Spacing="4">
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="🏝️" FontSize="11" />
+                                                        <Label Text="{Binding IslandDescription}" 
+                                                               FontSize="11"
+                                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                                                    </StackLayout>
+                                                    
+                                                    <StackLayout Orientation="Horizontal" Spacing="4" HorizontalOptions="Start">
+                                                        <Label Text="🔗" FontSize="11" />
+                                                        <Label Text="{Binding NumberHose, StringFormat='{0} mangueras'}" 
+                                                               FontSize="11"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{AppThemeBinding Light=#059669, Dark=#34D399}" />
+                                                    </StackLayout>
+                                                </StackLayout>
+                                            </Grid>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
 </ContentPage>

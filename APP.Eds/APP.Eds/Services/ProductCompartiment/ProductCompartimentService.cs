@@ -126,7 +126,7 @@ public class ProductCompartimentService : INotifyPropertyChanged
         }
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/product";
+            string url = $"{Configuration.BaseUrl}/api/v1/product?includeProductType=true";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
