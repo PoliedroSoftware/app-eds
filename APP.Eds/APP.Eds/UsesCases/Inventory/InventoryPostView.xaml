@@ -1,8 +1,6 @@
 <ContentPage 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:local="clr-namespace:APP.Eds.Converters"
     x:Class="APP.Eds.UsesCases.Inventory.InventoryPostView"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     x:Name="ThisPage"
@@ -10,104 +8,145 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:BoolToSignConverter x:Key="BoolToSignConverter"/>
+            <!-- Add any needed resources here -->
         </ResourceDictionary>
     </ContentPage.Resources>
   <AbsoluteLayout>
-    <CollectionView ItemsSource="{Binding Businesses}" Margin="10"
-                    AutomationId="CollectionViewBusinesses">
-        <CollectionView.ItemTemplate>
+    <ScrollView Margin="15">
+      <StackLayout Spacing="15">
+        <!-- Business Header -->
+        <CollectionView ItemsSource="{Binding Businesses}" 
+                        AutomationId="CollectionViewBusinesses">
+          <CollectionView.ItemTemplate>
             <DataTemplate>
-                <Frame Padding="15" Margin="5" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="10">
-                                              
-                        <!-- Expander for EDS -->
-                        <toolkit:Expander>
-                            <toolkit:Expander.Header>
-                                <Label Text="{Binding BusinessName}" FontAttributes="Bold" FontSize="20"
-                                       AutomationId="LabelBusinessName"/>
-                            </toolkit:Expander.Header>
-
-                            <StackLayout Padding="10,5,0,0" Spacing="8">
-                                <CollectionView ItemsSource="{Binding Eds}"
-                                                AutomationId="CollectionViewEds">
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Frame Padding="10" CornerRadius="8" HasShadow="False" Margin="0,0,0,5">
-                                                <StackLayout>
-                                                                                                       
-                                                    <!-- Expander for Tanks -->
-                                                    <toolkit:Expander>
-                                                        <toolkit:Expander.Header>
-                                                            <Label Text="{Binding EdsName}" FontAttributes="Bold" FontSize="16"
-                                                                   AutomationId="LabelEdsName"/>
-                                                        </toolkit:Expander.Header>
-
-                                                        <StackLayout Padding="10,5,0,0" Spacing="5">
-                                                            <CollectionView ItemsSource="{Binding Tanks}"
-                                                                            AutomationId="CollectionViewTanks">
-                                                                <CollectionView.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Frame Padding="8" CornerRadius="6" HasShadow="True" Margin="0,5,0,0">
-                                                                            <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
-                                                                                <!-- Tank icon -->
-                                                                                <Image Source="tank_icon.png" WidthRequest="24" HeightRequest="24" />
-
-                                                                                <StackLayout Padding="10,0,0,0">
-                                                                                        <Label Text="{Binding TankName}" FontAttributes="Bold" AutomationId="LabelTankName" />
-                                                                                        <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" AutomationId="LabelStock" />
-                                                                                        <Label Text="{Binding CompartmentsCount, StringFormat='Compartimentos: {0}'}" AutomationId="LabelCompartmentsCount" />
-                                                                                </StackLayout>
-                                                                            </Grid>
-
-                                                                            <!-- Expander for Compartments -->
-                                                                            <toolkit:Expander>
-                                                                                <toolkit:Expander.Header>
-                                                                                    <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                                                                                            <Label Text="Tanque " FontAttributes="Italic" FontSize="14" Margin="0,5,0,0" AutomationId="LabelTank"/>
-                                                                                            <Label Text="{Binding TankNumber}" FontAttributes="Italic" FontSize="14" Margin="0,5,0,0" AutomationId="LabelTankNumber"/>
-                                                                                    </StackLayout>
-
-                                                                                </toolkit:Expander.Header>
-
-                                                                                <StackLayout Padding="10,5,0,0" Spacing="3">
-                                                                                        <CollectionView ItemsSource="{Binding Compartments}" 
-                                                                                                        AutomationId="CollectionViewCompartments">
-                                                                                        <CollectionView.ItemTemplate>
-                                                                                            <DataTemplate>
-                                                                                                <Frame Padding="5" CornerRadius="4" Margin="0,2,0,2">
-                                                                                                    <StackLayout>
-                                                                                                            <Label Text="{Binding Product}" FontAttributes="Bold" 
-                                                                                                                   AutomationId="LabelProduct"/>
-                                                                                                            <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}"
-                                                                                                                   AutomationId="LabelCompartmentStock"/>
-                                                                                                            <Label Text="{Binding CompartmentNumber, StringFormat='Compartimento: {0}'}"
-                                                                                                                   AutomationId="LabelCompartmentNumber"/>
-                                                                                                    </StackLayout>
-                                                                                                </Frame>
-                                                                                            </DataTemplate>
-                                                                                        </CollectionView.ItemTemplate>
-                                                                                    </CollectionView>
-                                                                                </StackLayout>
-                                                                            </toolkit:Expander>
-                                                                        </Frame>
-                                                                    </DataTemplate>
-                                                                </CollectionView.ItemTemplate>
-                                                            </CollectionView>
-                                                        </StackLayout>
-                                                    </toolkit:Expander>
-                                                </StackLayout>
-                                            </Frame>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </StackLayout>
-                        </toolkit:Expander>
-                    </StackLayout>
+              <StackLayout Spacing="10" Margin="0,0,0,20">
+                
+                <!-- Business Name Header -->
+                <Frame BackgroundColor="#f0f7ff" Padding="15" CornerRadius="12" HasShadow="False">
+                  <Label Text="{Binding BusinessName}" 
+                         FontAttributes="Bold" 
+                         FontSize="18" 
+                         TextColor="#2c5aa0"
+                         HorizontalOptions="Center"
+                         AutomationId="LabelBusinessName"/>
                 </Frame>
+
+                <!-- EDS Collection -->
+                <CollectionView ItemsSource="{Binding Eds}" AutomationId="CollectionViewEds">
+                  <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                      <StackLayout Spacing="8" Margin="0,0,0,15">
+                        
+                        <!-- EDS Header -->
+                        <Frame BackgroundColor="#e8f4fd" Padding="12" CornerRadius="10" HasShadow="False">
+                          <Label Text="{Binding EdsName}" 
+                                 FontAttributes="Bold" 
+                                 FontSize="16" 
+                                 TextColor="#1e40af"
+                                 AutomationId="LabelEdsName"/>
+                        </Frame>
+
+                        <!-- Tanks Collection - Simplified -->
+                        <CollectionView ItemsSource="{Binding Tanks}" AutomationId="CollectionViewTanks">
+                          <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                              <Frame BackgroundColor="White" 
+                                     Padding="15" 
+                                     CornerRadius="8" 
+                                     HasShadow="True" 
+                                     Margin="0,3,0,3">
+                                <StackLayout Spacing="12">
+                                  
+                                  <!-- Tank Header -->
+                                  <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                                    <Label Grid.Column="0" 
+                                           Text="{Binding TankNumber, StringFormat='Tanque {0}'}" 
+                                           FontAttributes="Bold" 
+                                           FontSize="14" 
+                                           TextColor="#374151"
+                                           VerticalOptions="Center"
+                                           AutomationId="LabelTankNumber"/>
+                                    
+                                    <Label Grid.Column="2" 
+                                           Text="{Binding TankCapacity, StringFormat='Cap: {0:N0} L'}" 
+                                           FontSize="12" 
+                                           TextColor="#6b7280"
+                                           VerticalOptions="Center"/>
+                                  </Grid>
+
+                                  <!-- Products in this tank -->
+                                  <CollectionView ItemsSource="{Binding Compartments}" 
+                                                  AutomationId="CollectionViewCompartments">
+                                    <CollectionView.ItemTemplate>
+                                      <DataTemplate>
+                                        <Frame BackgroundColor="#f9fafb" 
+                                               Padding="12" 
+                                               CornerRadius="6" 
+                                               HasShadow="False" 
+                                               Margin="0,2,0,2">
+                                          <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                                            
+                                            <!-- Product Name -->
+                                            <Label Grid.Column="0" 
+                                                   Grid.Row="0" 
+                                                   Text="{Binding Product}" 
+                                                   FontAttributes="Bold" 
+                                                   FontSize="14"
+                                                   TextColor="#111827"
+                                                   VerticalOptions="Center"
+                                                   AutomationId="LabelProduct"/>
+                                            
+                                            <!-- Stock Amount -->
+                                            <Label Grid.Column="1" 
+                                                   Grid.Row="0" 
+                                                   Text="{Binding Stock, StringFormat='{0:N0}'}" 
+                                                   FontAttributes="Bold" 
+                                                   FontSize="16"
+                                                   TextColor="#059669"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="End"
+                                                   AutomationId="LabelCompartmentStock"/>
+                                            
+                                            <!-- Unit Label -->
+                                            <Label Grid.Column="2" 
+                                                   Grid.Row="0" 
+                                                   Text="L" 
+                                                   FontSize="12"
+                                                   TextColor="#6b7280"
+                                                   VerticalOptions="Center"
+                                                   Margin="3,0,0,0"/>
+                                            
+                                            <!-- Compartment Number -->
+                                            <Label Grid.Column="0" 
+                                                   Grid.Row="1" 
+                                                   Text="{Binding CompartmentNumber, StringFormat='Compartimento {0}'}" 
+                                                   FontSize="11"
+                                                   TextColor="#9ca3af"
+                                                   Margin="0,2,0,0"
+                                                   AutomationId="LabelCompartmentNumber"/>
+                                          </Grid>
+                                        </Frame>
+                                      </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                  </CollectionView>
+                                  
+                                </StackLayout>
+                              </Frame>
+                            </DataTemplate>
+                          </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        
+                      </StackLayout>
+                    </DataTemplate>
+                  </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+              </StackLayout>
             </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+          </CollectionView.ItemTemplate>
+        </CollectionView>
+      </StackLayout>
+    </ScrollView>
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
                               AbsoluteLayout.LayoutFlags="All"

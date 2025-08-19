@@ -4,7 +4,6 @@ using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.Inventory
 {
@@ -13,38 +12,9 @@ namespace APP.Eds.UsesCases.Inventory
         private string? _authToken;
         public ObservableCollection<Models.Inventory.Business> Businesses { get; } = new();
 
-        public ICommand ToggleExpandBusinessCommand { get; }
-        public ICommand ToggleExpandEdsCommand { get; }
-        public ICommand ToggleExpandTankCommand { get; }
-        public ICommand ToggleExpandCompartmentCommand { get; }
-
         public InventoryViewModel()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-
-            ToggleExpandBusinessCommand = new Command<Models.Inventory.Business>(b =>
-            {
-                if (b != null)
-                    b.IsExpanded = !b.IsExpanded;
-            });
-
-            ToggleExpandEdsCommand = new Command<Models.Inventory.Eds>(e =>
-            {
-                if (e != null)
-                    e.IsExpanded = !e.IsExpanded;
-            });
-
-            ToggleExpandTankCommand = new Command<Models.Inventory.Tank>(t =>
-            {
-                if (t != null)
-                    t.IsExpanded = !t.IsExpanded;
-            });
-
-            ToggleExpandCompartmentCommand = new Command<Compartment>(c =>
-            {
-                if (c != null)
-                    c.IsExpanded = !c.IsExpanded;
-            });
         }
 
         public async Task LoadDataAsync()
