@@ -6,8 +6,7 @@
              xmlns:button="clr-namespace:APP.Eds.Controls"
              Title="Gestión de Dispensadores">
     <ScrollView>
-       <AbsoluteLayout>
-            <VerticalStackLayout 
+        <VerticalStackLayout 
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Padding="20" Spacing="15">
@@ -65,39 +64,46 @@
                 
                 <Label FontSize="18" Text="Lista de Dispensadores"/>
 
-                <CollectionView ItemsSource="{Binding DispenserList}" Margin="0,20"
+                <CollectionView ItemsSource="{Binding DispensersList}" Margin="0,20"
                             HeightRequest="400">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                                <Label Text="{Binding Code}" FontSize="14" Grid.Row="1" />
-                                <Label Text="{Binding Number}" FontSize="14" Grid.Row="2" />
-                                <Label Text="{Binding DispenserTypeId}" FontSize="14" Grid.Row="3" />
-                                <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="4" />
-                                <Label Text="{Binding Description}" FontSize="14" Grid.Row="5" />
-                                <Label Text="{Binding HoseNumber}" FontSize="14" Grid.Row="5" />
-                                <StackLayout Orientation="Horizontal" Grid.Row="6">
-                                    <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserCommand}" CommandParameter="{Binding .}" />
-                                    <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}" CommandParameter="{Binding .}" />
-                                </StackLayout>
-                            </Grid>
+                            <Frame CornerRadius="10" BorderColor="#DDD" Padding="10" Margin="5">
+                                <Grid RowSpacing="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="Código:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Code}" Grid.Row="0" Grid.Column="1" />
+                                    <Label Text="Número:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Number}" Grid.Row="1" Grid.Column="1" />
+                                    <Label Text="Tipo Dispensador:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding DispenserTypeDescription}" Grid.Row="2" Grid.Column="1" />
+                                    <Label Text="EDS:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding EdsName}" Grid.Row="3" Grid.Column="1" />
+                                    <Label Text="Isla:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding IslandDescription}" Grid.Row="4" Grid.Column="1" />
+                                    <Label Text="Cantidad de Mangueras:" Grid.Row="5" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding NumberHose}" Grid.Row="5" Grid.Column="1" />
+                                </Grid>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </VerticalStackLayout>
+
             <controls:LoadingView x:Name="LoadingOverlay"
                                   AbsoluteLayout.LayoutBounds="0,0,1,1"
                                   AbsoluteLayout.LayoutFlags="All"
                                   AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
- </ScrollView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

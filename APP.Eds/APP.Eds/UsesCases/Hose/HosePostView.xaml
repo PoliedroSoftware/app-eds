@@ -74,22 +74,31 @@
                             HeightRequest="400">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Number}" FontSize="14" Grid.Row="1" />
-                            <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
-                            <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
-                            <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />
-                            <Label Text="{Binding IdProductType}" FontSize="14" Grid.Row="5" />
-                        </Grid>
+                        <Frame CornerRadius="10" BorderColor="#DDD" Padding="10" Margin="5">
+                            <Grid RowSpacing="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="N° Manguera:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding Number}" Grid.Row="0" Grid.Column="1" />
+                                <Label Text="Dispensador:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding DispenserName}" Grid.Row="1" Grid.Column="1" />
+                                <Label Text="Tipo de Producto:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding ProductTypeName}" Grid.Row="2" Grid.Column="1" />
+                                <Label Text="Dinero Acumulado:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding AccumulatedAmount}" Grid.Row="3" Grid.Column="1" />
+                                <Label Text="Galones Acumulados:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding AccumulatedGallons}" Grid.Row="4" Grid.Column="1" />
+                            </Grid>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate> 
             </CollectionView>
