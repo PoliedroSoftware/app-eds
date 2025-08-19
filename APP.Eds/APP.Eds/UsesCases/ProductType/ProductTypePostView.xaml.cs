@@ -22,19 +22,6 @@ public partial class ProductTypePostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            Description = string.Empty;
-        }
-        
-    }
-
-    public string Description
-    {
-        get => _productTypeService.Description;
-        set
-        {
-            _productTypeService.Description = value;
-            OnPropertyChanged();
         }
     }
 }

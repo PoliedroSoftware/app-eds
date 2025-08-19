@@ -9,12 +9,44 @@
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
         Padding="20" Spacing="15">
+        
         <Label FontSize="16" Text="Tipo De Producto"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingreser El Tipo De Producto"
-            Text="{Binding Description, Mode=TwoWay}"
-            AutomationId="EntryProductType"/>
+        
+        <!-- Picker for existing product types -->
+        <StackLayout IsVisible="{Binding IsNotAddingNew}">
+            <Picker 
+                ItemsSource="{Binding ProductTypeList}"
+                ItemDisplayBinding="{Binding Description}"
+                SelectedItem="{Binding SelectedProductType, Mode=TwoWay}"
+                Title="Seleccione un tipo de producto"
+                AutomationId="PickerProductType"/>
+            <Button 
+                Text="Agregar Nuevo Tipo"
+                Command="{Binding AddNewProductTypeCommand}"
+                BackgroundColor="LightBlue"
+                TextColor="Black"
+                CornerRadius="5"
+                Margin="0,10,0,0"
+                AutomationId="ButtonAddNew"/>
+        </StackLayout>
+        
+        <!-- Entry for new product type -->
+        <StackLayout IsVisible="{Binding IsAddingNew}">
+            <Entry
+                Keyboard="Text"
+                Placeholder="Ingresar El Nuevo Tipo De Producto"
+                Text="{Binding Description, Mode=TwoWay}"
+                AutomationId="EntryProductType"/>
+            <Button 
+                Text="Cancelar"
+                Command="{Binding CancelAddNewCommand}"
+                BackgroundColor="LightCoral"
+                TextColor="White"
+                CornerRadius="5"
+                Margin="0,5,0,0"
+                AutomationId="ButtonCancel"/>
+        </StackLayout>
+        
         <Button
             BackgroundColor="Green"
             Clicked="Button_Clicked_1"
