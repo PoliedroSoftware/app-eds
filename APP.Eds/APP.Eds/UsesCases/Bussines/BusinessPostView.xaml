@@ -29,7 +29,7 @@
              BackgroundColor="Green"
              Clicked="Button_Clicked_1"
              CornerRadius="10"
-             Text="Enviar Datos"
+             Text="Registrar Negocio"
              TextColor="White"
              AutomationId="ButtonSendBusinessData"/>
          </VerticalStackLayout>

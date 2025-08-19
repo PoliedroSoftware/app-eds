@@ -10,16 +10,16 @@
             <VerticalStackLayout Padding="20" Spacing="15">
 
                 <Label FontSize="16" Text="Factura"/>
-                <Entry Keyboard="Text" Placeholder="Ingrese Numero De Factura" Text="{Binding Invoice, Mode=TwoWay}" AutomationId="EntryInvoice"/>
+                <Entry x:Name="FirstEntry" Keyboard="Text" Placeholder="Ingrese Numero De Factura" Text="{Binding Invoice, Mode=TwoWay}" Completed="InvoiceEntryCompleted" AutomationId="EntryInvoice"/>
 
                 <Label FontSize="16" Text="Fecha"/>
                 <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31" AutomationId="DatePickerDate"/>
 
                 <Label FontSize="16" Text="Proveedor"/>
-                <Picker Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}" AutomationId="PickerProvider"/>
+                <Picker x:Name="ProviderPicker" Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}" SelectedIndexChanged="ProviderSelected" AutomationId="PickerProvider"/>
 
                 <Label FontSize="16" Text="Categoria"/>
-                <Picker Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" AutomationId="PickerCategory"/>
+                <Picker x:Name="CategoryPicker" Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" AutomationId="PickerCategory"/>
 
 
                 <Frame Padding="10" BorderColor="Gray" CornerRadius="10">
@@ -41,7 +41,7 @@
 
                 <!-- Products con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto">
-                    <Label  Text="{Binding AddeProducts}"  FontAttributes="Bold"  FontSize="18" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" AutomationId="LabelAddeProducts"/>
+                    <Label  Text="Productos Comprados"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center" AutomationId="LabelAddeProducts"/>
                     <Button  Text="�️"  Command="{Binding HideProducts}"
                              WidthRequest="46"  HeightRequest="46"
                              BackgroundColor="Transparent"
@@ -58,20 +58,23 @@
                     </Button>
                 </Grid>
 
-                <CollectionView ItemsSource="{Binding ShoppingProduct}" AutomationId="CollectionViewShoppingProduct" >
+                <CollectionView ItemsSource="{Binding ShoppingProduct}" IsVisible="{Binding VisibleProducts}" AutomationId="CollectionViewShoppingProduct" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*, *, *" RowSpacing="5">
+                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*,*,*,*" RowSpacing="5">
 
-                                    <Label Text="Name" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductName" />
-                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductNameValue"/>
+                                    <Label Text="Producto" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductName" />
+                                    <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductNameValue"/>
 
-                                    <Label Text="Price" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
-                                    <Label Text="{Binding Price}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
+                                    <Label Text="Precio de compra" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
+                                    <Label Text="{Binding Price, StringFormat='$ {0}'}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
 
-                                    <Label Text="Quantity" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductQuantity"/>
-                                    <Label Text="{Binding Quantity}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductQuantityValue"/>
+                                    <Label Text="Precio de venta" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
+                                    <Label Text="{Binding SellPrice, StringFormat='$ {0}'}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
+
+                                    <Label Text="Galones" FontAttributes="Bold" Grid.Row="3" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductQuantity"/>
+                                    <Label Text="{Binding Quantity}" Grid.Row="3" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductQuantityValue"/>
 
                                     <!-- Botón eliminar -->
                                     <Button Text="X"  Grid.Column="3" Grid.RowSpan="3"
@@ -93,7 +96,7 @@
                 <Button BackgroundColor="Green"
                         Clicked="Button_Clicked_1"
                         CornerRadius="10"
-                        Text="Enviar Datos"
+                        Text="Registrar Compra"
                         TextColor="White"
                         AutomationId="ButtonSendData"/>
 

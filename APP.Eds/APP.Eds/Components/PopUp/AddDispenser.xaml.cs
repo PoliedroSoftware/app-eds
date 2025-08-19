@@ -1,10 +1,7 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using APP.Eds.Services.Court;
+﻿using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
-
 
 public partial class AddDispenser : Popup
 {
@@ -103,7 +100,7 @@ public partial class AddDispenser : Popup
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price), 2);
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
             }
             UpdateAccumulatedColors();
         }
@@ -136,7 +133,7 @@ public partial class AddDispenser : Popup
             if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
                 double price = vm.SelectedHose.Price;
-                PricePerGallonLabel.Text = $"{price:C2}";
+                PricePerGallonLabel.Text = $"{price:C3}";
             }
             else
             {

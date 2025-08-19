@@ -49,7 +49,7 @@
                             <Label Text="Precio por galón" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
                             <Label x:Name="PricePerGallonLabel" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2"/>
                             <Label Text="{Binding LastAccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
-                            <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
+                            <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
                             <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
 
                             <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
@@ -61,14 +61,14 @@
                                    IsEnabled="False"/>
 
                             <Label Text="Venta en dinero" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
-                            <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N0}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
+                            <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N3}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
                         </Grid>
                         
                     </Frame>
                     <Frame Padding="10" CornerRadius="10" HasShadow="True">
                         <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
                             <Label Text="{Binding LastAccumulatedGallonsTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
-                            <Label Text="{Binding LastAccumulatedGallons, StringFormat='  {0:N2}'}" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                            <Label Text="{Binding LastAccumulatedGallons, StringFormat='  {0:N3}'}" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
                             <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
 
                             <BoxView x:Name="GallonBoxView" BackgroundColor="Transparent" CornerRadius="5" Grid.Row="1" Grid.Column="2"/>
@@ -80,7 +80,7 @@
                                    IsEnabled="False"/>
 
                             <Label Text="Venta en galones" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
-                            <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N2}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
+                            <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N3}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
 
                             <Button Text="✎"
                                     Clicked="EditGallonsButton_Clicked"
