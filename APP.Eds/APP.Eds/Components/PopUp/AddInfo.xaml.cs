@@ -17,5 +17,19 @@ public partial class AddInfo : Popup
     {
         Close();
     }
-}   
 
+    private async void OnSaveTapped(object sender, EventArgs e)
+    {
+        var editor = this.FindByName<Editor>("EditorDescription");
+
+        if (editor != null && !string.IsNullOrWhiteSpace(editor.Text))
+        {
+            await courtService.SaveAdditionalInfoAsync(editor.Text);
+            Close();
+        }
+        else
+        {
+            Close();
+        }
+    }
+}

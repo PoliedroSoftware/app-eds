@@ -2264,6 +2264,7 @@ namespace APP.Eds.Services.Court
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             
 
+
             HideLists = new Command(() =>
             {
                 VisibleLists = !VisibleLists;
@@ -2523,6 +2524,12 @@ GetAllEdsData()
             {
                 BusinessList.Add(business);
             }
+        }
+
+        public async Task SaveAdditionalInfoAsync(string description)
+        {
+            AdditionalInfoDescription = description;
+            OnPropertyChanged(nameof(AdditionalInfoDescription));
         }
 
         private void UpdateDateEndtime()
