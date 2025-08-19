@@ -79,33 +79,11 @@ namespace APP.Eds.Services.Wizard
 
             Steps.Add(new WizardStep
             {
-                Id = "provider",
-                Title = "Proveedor",
-                Description = "Agregar al menos un proveedor",
-                ViewType = typeof(ProviderPostView),
-                Order = 2,
-                Icon = "🚚",
-                IsEnabled = false
-            });
-
-            Steps.Add(new WizardStep
-            {
-                Id = "product",
-                Title = "Productos",
-                Description = "Agregar productos y sus precios",
-                ViewType = typeof(ProductPostView),
-                Order = 3,
-                Icon = "📦",
-                IsEnabled = false
-            });
-
-            Steps.Add(new WizardStep
-            {
                 Id = "eds",
                 Title = "EDS",
                 Description = "Crear estaciones de servicio",
                 ViewType = typeof(EdsPostView),
-                Order = 4,
+                Order = 2,
                 Icon = "⛽",
                 IsEnabled = false
             });
@@ -116,8 +94,30 @@ namespace APP.Eds.Services.Wizard
                 Title = "Islas",
                 Description = "Crear islas por cada EDS",
                 ViewType = typeof(IslandPostView),
-                Order = 5,
+                Order = 3,
                 Icon = "🏝️",
+                IsEnabled = false
+            });
+
+            Steps.Add(new WizardStep
+            {
+                Id = "tank",
+                Title = "Tanques",
+                Description = "Crear tanques por EDS",
+                ViewType = typeof(TankPostView),
+                Order = 4,
+                Icon = "🛢️",
+                IsEnabled = false
+            });
+
+            Steps.Add(new WizardStep
+            {
+                Id = "compartment",
+                Title = "Compartimientos",
+                Description = "Crear compartimientos por tanque",
+                ViewType = typeof(CompartimentPostView),
+                Order = 5,
+                Icon = "📦",
                 IsEnabled = false
             });
 
@@ -145,22 +145,11 @@ namespace APP.Eds.Services.Wizard
 
             Steps.Add(new WizardStep
             {
-                Id = "tank",
-                Title = "Tanques",
-                Description = "Crear tanques por EDS",
-                ViewType = typeof(TankPostView),
+                Id = "product",
+                Title = "Productos",
+                Description = "Agregar productos y sus precios",
+                ViewType = typeof(ProductPostView),
                 Order = 8,
-                Icon = "🛢️",
-                IsEnabled = false
-            });
-
-            Steps.Add(new WizardStep
-            {
-                Id = "compartment",
-                Title = "Compartimientos",
-                Description = "Crear compartimientos por tanque",
-                ViewType = typeof(CompartimentPostView),
-                Order = 9,
                 Icon = "📦",
                 IsEnabled = false
             });
@@ -171,8 +160,19 @@ namespace APP.Eds.Services.Wizard
                 Title = "Isleros",
                 Description = "Asignar operarios por EDS",
                 ViewType = typeof(IslanderPostView),
-                Order = 10,
+                Order = 9,
                 Icon = "👷",
+                IsEnabled = false
+            });
+
+            Steps.Add(new WizardStep
+            {
+                Id = "provider",
+                Title = "Proveedor",
+                Description = "Agregar al menos un proveedor",
+                ViewType = typeof(ProviderPostView),
+                Order = 10,
+                Icon = "🚚",
                 IsEnabled = false
             });
         }
