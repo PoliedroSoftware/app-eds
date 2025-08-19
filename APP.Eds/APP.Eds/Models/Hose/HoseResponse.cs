@@ -8,7 +8,7 @@ public class HoseResponse
     public int IdHose { get; set; }
 
     [JsonProperty("idDispensers")]
-    public int IdDispensers { get; set; }
+    public int IdDispensers {   get; set; }
 
     [JsonProperty("number")]
     public int Number { get; set; }
@@ -24,4 +24,9 @@ public class HoseResponse
 
     [JsonProperty("price")]
     public double Price { get; set; }
+
+    // Propiedad para mostrar el nombre del dispensador
+    public string DispenserName { get; set; }
+    // Propiedad para mostrar el nombre del tipo de producto
+    public string ProductTypeName { get; set; }
 }
