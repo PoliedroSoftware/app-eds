@@ -125,10 +125,18 @@ namespace APP.Eds.Services.ProductType
                 return;
             }
             
-            // If we're not adding new and have selected an existing type, just show success
+            // If we're not adding new and have selected an existing type
             if (!IsAddingNew && SelectedProductType != null)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", $"Tipo de producto '{SelectedProductType.Description}' seleccionado correctamente", "OK");
+                // If it's an offline type (negative ID), we need to create it first
+                if (SelectedProductType.IdProductType < 0)
+                {
+                    await CreateProductTypeFromOfflineSelection();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Éxito", $"Tipo de producto '{SelectedProductType.Description}' seleccionado correctamente", "OK");
+                }
                 return;
             }
             
@@ -139,11 +147,18 @@ namespace APP.Eds.Services.ProductType
                 return;
             }
             
+            // Check for duplicates
+            if (ProductTypeList.Any(pt => string.Equals(pt.Description.Trim(), Description.Trim(), StringComparison.OrdinalIgnoreCase)))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Este tipo de producto ya existe. Por favor selecciónelo de la lista o ingrese un nombre diferente.", "OK");
+                return;
+            }
+            
             try
             {
                 ProductType = new ProductTypeModel
                 {
-                    Description = Description
+                    Description = Description.Trim()
                 };
 
                 Request = new ProductTypeRequest
@@ -178,11 +193,65 @@ namespace APP.Eds.Services.ProductType
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
             }
         }
+        
+        private async Task CreateProductTypeFromOfflineSelection()
+        {
+            try
+            {
+                var productType = new ProductTypeModel { Description = SelectedProductType.Description.Trim() };
+                var request = new ProductTypeRequest { Request = productType };
+
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/producttype", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Éxito", $"Tipo de producto '{SelectedProductType.Description}' creado y seleccionado correctamente", "OK");
+                    // Refresh the list to get the real ID from server
+                    await GetAllProductTypesAsync();
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo crear el tipo de producto: {response.StatusCode}\n{error}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al crear el tipo de producto: {ex.Message}", "OK");
+            }
+        }
 
         private async Task InitializeProductTypesAsync()
         {
-            await GetAllProductTypesAsync();
-            await EnsureDefaultProductTypesExistAsync();
+            try
+            {
+                await GetAllProductTypesAsync();
+                await EnsureDefaultProductTypesExistAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during initialization: {ex.Message}");
+                // If initialization fails, add default types to the local list for offline functionality
+                AddOfflineDefaultTypes();
+            }
+        }
+        
+        private void AddOfflineDefaultTypes()
+        {
+            var offlineDefaults = DefaultProductTypes.Select((desc, index) => new ProductTypeModelResponse
+            {
+                IdProductType = -(index + 1), // Use negative IDs for offline entries
+                Description = desc
+            });
+            
+            foreach (var defaultType in offlineDefaults)
+            {
+                ProductTypeList.Add(defaultType);
+            }
         }
         
         public async Task GetAllProductTypesAsync()
@@ -219,12 +288,19 @@ namespace APP.Eds.Services.ProductType
         
         private async Task EnsureDefaultProductTypesExistAsync()
         {
-            foreach (var defaultType in DefaultProductTypes)
+            try
             {
-                if (!ProductTypeList.Any(pt => pt.Description.Equals(defaultType, StringComparison.OrdinalIgnoreCase)))
+                foreach (var defaultType in DefaultProductTypes)
                 {
-                    await CreateDefaultProductTypeAsync(defaultType);
+                    if (!ProductTypeList.Any(pt => string.Equals(pt.Description.Trim(), defaultType.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        await CreateDefaultProductTypeAsync(defaultType);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error ensuring default product types: {ex.Message}");
             }
         }
         
