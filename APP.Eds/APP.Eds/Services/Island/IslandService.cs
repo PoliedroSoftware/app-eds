@@ -30,14 +30,14 @@ public class IslandService : INotifyPropertyChanged
         }
     }
 
-    private string _description;
-    public string Description
+    private int _numberOfIslands = 1;
+    public int NumberOfIslands
     {
-        get => _description;
+        get => _numberOfIslands;
         set
         {
-            _description = value;
-            OnPropertyChanged(nameof(Description));
+            _numberOfIslands = value;
+            OnPropertyChanged(nameof(NumberOfIslands));
         }
     }
 
@@ -51,6 +51,9 @@ public class IslandService : INotifyPropertyChanged
 
         GetByIdIslandDataCommand = new Command<int>(async (islandId) => await GetByIdIslandDataAsync(islandId));
         SaveIslandDataCommand = new Command(async () => await SaveIslandDataAsync());
+        
+        // Load existing islands
+        _ = Task.Run(async () => await GetIslandAsync());
     }
 
     public async Task GetByIdIslandDataAsync(int islandId)
@@ -75,42 +78,92 @@ public class IslandService : INotifyPropertyChanged
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(Description))
+            if (NumberOfIslands <= 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Description' no puede estar vacío.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "El número de islas debe ser mayor a 0.", "OK");
                 return;
             }
 
-            Island = new IslandModel
+            if (NumberOfIslands > 50)
             {
-                Description = Description
-            };
-
-            Request = new IslandRequest
-            {
-                Request = Island
-            };
+                await Application.Current.MainPage.DisplayAlert("Error", "El número máximo de islas permitido es 50.", "OK");
+                return;
+            }
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/island", content);
 
-            if (response.IsSuccessStatusCode)
+            int successCount = 0;
+            int failCount = 0;
+            List<string> errors = new List<string>();
+
+            // Get current islands to determine the starting number
+            await GetIslandAsync();
+            int startNumber = IslandList.Count + 1;
+
+            for (int i = 0; i < NumberOfIslands; i++)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-                await GetIslandAsync();
+                try
+                {
+                    var islandDescription = $"isla {startNumber + i}";
+                    
+                    Island = new IslandModel
+                    {
+                        Description = islandDescription
+                    };
+
+                    Request = new IslandRequest
+                    {
+                        Request = Island
+                    };
+
+                    var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/island", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        failCount++;
+                        var error = await response.Content.ReadAsStringAsync();
+                        errors.Add($"Error creando {islandDescription}: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    failCount++;
+                    errors.Add($"Error creando isla {startNumber + i}: {ex.Message}");
+                }
+            }
+
+            // Show results
+            if (successCount > 0 && failCount == 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Éxito", $"Se crearon {successCount} islas correctamente", "OK");
+            }
+            else if (successCount > 0 && failCount > 0)
+            {
+                var errorDetails = string.Join("\n", errors.Take(3));
+                await Application.Current.MainPage.DisplayAlert("Parcial", $"Se crearon {successCount} islas. {failCount} fallaron.\n{errorDetails}", "OK");
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                var errorDetails = string.Join("\n", errors.Take(3));
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo crear ninguna isla.\n{errorDetails}", "OK");
             }
+
+            // Refresh the island list
+            await GetIslandAsync();
+            
+            // Reset the form
+            NumberOfIslands = 1;
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al crear las islas: {ex.Message}", "OK");
         }
     }
 

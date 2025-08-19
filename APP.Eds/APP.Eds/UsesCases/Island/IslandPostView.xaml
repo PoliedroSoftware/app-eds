@@ -7,12 +7,12 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label FontSize="16" Text="Descripción" />
+            <Label FontSize="16" Text="Número de Islas" />
             <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese la descripción"
-                Text="{Binding Description, Mode=TwoWay}"
-                AutomationId="EntryDescription"/>
+                Keyboard="Numeric"
+                Placeholder="Ingrese el número de islas a crear"
+                Text="{Binding NumberOfIslands, Mode=TwoWay}"
+                AutomationId="EntryNumberOfIslands"/>
 
             <Button
                 BackgroundColor="Green"
