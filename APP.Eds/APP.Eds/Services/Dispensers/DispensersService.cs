@@ -11,6 +11,7 @@ using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Island;
+using System.Linq;
 
 namespace APP.Eds.Services.Dispensers
 {
@@ -248,6 +249,7 @@ namespace APP.Eds.Services.Dispensers
             {
                 DispenserTypeList.Add(item);
             }
+            EnrichDispensersList();
         }
 
         private void UpdateEdsList(IEnumerable<EdsModel> edsData)
@@ -257,6 +259,7 @@ namespace APP.Eds.Services.Dispensers
             {
                 EdsList.Add(eds);
             }
+            EnrichDispensersList();
         }
 
         private void UpdateIslandList(IEnumerable<IslandResponse> Island)
@@ -266,6 +269,7 @@ namespace APP.Eds.Services.Dispensers
             {
                 IslandList.Add(item);
             }
+            EnrichDispensersList();
         }
         public async Task GetByIdDispensersDataAsync(int DispensersId)
         {
@@ -313,6 +317,7 @@ namespace APP.Eds.Services.Dispensers
                 {
                     DispensersList.Add(dispensers);
                 }
+                EnrichDispensersList();
             }
             catch (Exception ex)
             {
@@ -404,6 +409,15 @@ namespace APP.Eds.Services.Dispensers
             }
         }
 
+        public void EnrichDispensersList()
+        {
+            foreach (var dispenser in DispensersList)
+            {
+                dispenser.DispenserTypeDescription = DispenserTypeList.FirstOrDefault(x => x.IdType == dispenser.IdDispenserType)?.Description ?? string.Empty;
+                dispenser.EdsName = EdsList.FirstOrDefault(x => x.IdEds == dispenser.IdEds)?.Name ?? string.Empty;
+                dispenser.IslandDescription = IslandList.FirstOrDefault(x => x.Idisland == dispenser.IdIsland)?.Description ?? string.Empty;
+            }
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {

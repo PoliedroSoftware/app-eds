@@ -475,6 +475,71 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
+        // Eliminar compartimento
+        public async Task<bool> DeleteCompartimentAsync(int idCompartment)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return false;
+            }
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/compartiment/{idCompartment}");
+                if (response.IsSuccessStatusCode)
+                {
+                    await GetCompartimentAsync();
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar: {response.StatusCode}\n{error}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar: {ex.Message}", "OK");
+            }
+            return false;
+        }
+
+        // Actualizar compartimento
+        public async Task<bool> UpdateCompartimentAsync(int idCompartment, CompartimentModel model)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return false;
+            }
+            try
+            {
+                var request = new CompartimentRequest { Request = model };
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/compartiment/{idCompartment}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    await GetCompartimentAsync();
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar: {response.StatusCode}\n{error}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+            }
+            return false;
+        }
+
 
         protected void OnPropertyChanged(string propertyName)
         {

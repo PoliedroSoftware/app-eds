@@ -1,4 +1,5 @@
 using APP.Eds.Services.Hose;
+using APP.Eds.UsesCases.Compartiment;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APP.Eds.UsesCases.Hose;
@@ -12,6 +13,11 @@ public partial class HosePostView : ContentPage
         InitializeComponent();
         _hoseService = new HoseService();
         BindingContext = _hoseService;
+    }
+
+    private async void OnCompartimentButtonClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new CompartimentPostView());
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)

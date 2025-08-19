@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using System.Linq;
 
 namespace APP.Eds.Services.Hose;
 
@@ -262,6 +263,17 @@ public class HoseService : INotifyPropertyChanged
         {
             DispensersList.Add(dispensers);
         }
+        EnrichHoseListWithNames();
+    }
+
+    private void UpdateProducTypeList(IEnumerable<ProductTypeModelResponse> Data)
+    {
+        ProductTypeList.Clear();
+        foreach (var eds in Data)
+        {
+            ProductTypeList.Add(eds);
+        }
+        EnrichHoseListWithNames();
     }
 
     public async Task GetHoseAsync()
@@ -286,10 +298,20 @@ public class HoseService : INotifyPropertyChanged
             {
                 HoseList.Add(hose);
             }
+            EnrichHoseListWithNames();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private void EnrichHoseListWithNames()
+    {
+        foreach (var hose in HoseList)
+        {
+            hose.DispenserName = DispensersList.FirstOrDefault(d => d.IdDispensers == hose.IdDispensers)?.Code ?? string.Empty;
+            hose.ProductTypeName = ProductTypeList.FirstOrDefault(p => p.IdProductType == hose.IdProductType)?.Description ?? string.Empty;
         }
     }
 
@@ -313,15 +335,6 @@ public class HoseService : INotifyPropertyChanged
         catch (Exception ex)
         {
             Console.WriteLine($"Error cargando los datos: {ex.Message}");
-        }
-    }
-
-    private void UpdateProducTypeList(IEnumerable<ProductTypeModelResponse> Data)
-    {
-        ProductTypeList.Clear();
-        foreach (var eds in Data)
-        {
-            ProductTypeList.Add(eds);
         }
     }
 
