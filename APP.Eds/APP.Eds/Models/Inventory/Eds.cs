@@ -26,10 +26,10 @@ namespace APP.Eds.Models.Inventory
         public int IdEds { get; set; }
 
         [JsonPropertyName("eds")]
-        public string EdsName { get; set; }
+        public string EdsName { get; set; } = string.Empty;
 
         [JsonPropertyName("tanks")]
-        public List<Tank> Tanks { get; set; }
+        public List<Tank> Tanks { get; set; } = new List<Tank>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
