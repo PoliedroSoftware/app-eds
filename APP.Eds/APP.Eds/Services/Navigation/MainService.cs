@@ -46,7 +46,6 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
-            // Comando directo para navegar al wizard sin popup
             NavigateToWizardCommand = new Command(async () =>
             {
                 if (Application.Current?.MainPage is NavigationPage navPage)
@@ -59,13 +58,10 @@ namespace APP.Eds.Services.Navigation
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
-                // Categoría especial para Configuración Inicial que navega directamente
-                new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
-                    {
-                        new("Corte", typeof(CourtPostView))
-                    }),
+                    new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
                     new("Administración", new List<MenuItemModel>
                     {
+                        new("Corte", typeof(CourtPostView)),
                         new("Negocio", typeof(BusinessPostView)),
                         new("Registre una EDS", typeof(EdsPostView))
                     }),
@@ -116,7 +112,6 @@ namespace APP.Eds.Services.Navigation
             public List<MenuItemModel> Items { get; set; }
             public bool IsDirectNavigation { get; set; }
 
-            // Constructor para categorías normales que muestran popup
             public CategoryModel(string title, List<MenuItemModel> items)
             {
                 Title = title;
@@ -129,7 +124,6 @@ namespace APP.Eds.Services.Navigation
                 });
             }
 
-            // Constructor para categorías que navegan directamente (como Configuración Inicial)
             public CategoryModel(string title, ICommand directCommand, bool isDirectNavigation = false)
             {
                 Title = title;
