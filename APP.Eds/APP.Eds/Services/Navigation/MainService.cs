@@ -66,9 +66,8 @@ namespace APP.Eds.Services.Navigation
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
-            {
-                new("Administración", new List<MenuItemModel>
                 {
+<<<<<<< HEAD
                     new("Corte", typeof(CourtPostView)),
                     new("Negocio", typeof(BusinessPostView)),
                     new("Proveedor", typeof(ProviderPostView))
@@ -110,6 +109,51 @@ namespace APP.Eds.Services.Navigation
                  
                 ]),
             };
+=======
+                // Categoría especial para Configuración Inicial que navega directamente
+                new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
+                    {
+                        new("Corte", typeof(CourtPostView))
+                    }),
+                    new("Administración", new List<MenuItemModel>
+                    {
+                        new("Negocio", typeof(BusinessPostView)),
+                        new("Registre una EDS", typeof(EdsPostView))
+                    }),
+                    new("Dispensadores y mangueras", new List<MenuItemModel>
+                    {
+                        new("Dispensadores", typeof(DispensersPostView)),
+                        new("Manguera", typeof(HosePostView)),
+                        new("Historial de la manguera", typeof(HoseHistoryPostView))
+                    }),
+                    new("Compras y productos", new List<MenuItemModel>
+                    {
+                        new("Agregar productos", typeof(ProductPostView)),
+                        new("Compras", typeof(ShoppingPostView)),
+                        new("Proveedor", typeof(ProviderPostView)),
+                        new("Categoría", typeof(CategoryPostView))
+                    }),
+                    new("Tanques y compartimentos", new List<MenuItemModel>
+                    {
+                        new("Capacidad", typeof(CapacityPostView)),
+                        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
+                        new("Tanque EDS", typeof(EdsTankPostView)),
+                        new("Tanque", typeof(TankPostView)),
+                        new("Compartimento del producto", typeof(ProductCompartimentPostView))
+                    }),
+                    new("EDS y otros", new List<MenuItemModel>
+                    {
+                        new("Tipos de G", typeof(ExpendituresPostView)),
+                        new("Registre un Islero", typeof(IslanderPostView)),
+                        new("Isla", typeof(IslandPostView)),
+                        new("Tipo de colección", typeof(TypeOfCollectionPostView))
+                    }),
+                    new("Inventario", new List<MenuItemModel>
+                    {
+                        new("Inventario", typeof(InventoryPostView))
+                    })
+                };
+>>>>>>> e20e9eb (feat(wizard): step to step)
             }
             else
             {
