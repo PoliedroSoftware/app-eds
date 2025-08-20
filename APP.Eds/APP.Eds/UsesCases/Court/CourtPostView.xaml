@@ -86,7 +86,7 @@
                 </Frame>
 
                 <!-- Dispensers con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto"  x:Name="AddedDispensers">
+                <Grid ColumnDefinitions="*, Auto"  x:Name="AddedDispensers" IsVisible="{Binding VisibleDispenser}">
                     <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️" 
                              Command="{Binding HideListDispenser}"
@@ -145,7 +145,7 @@
                 </CollectionView>
 
                 <!-- Collections con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections">
+                <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections" IsVisible="{Binding VisibleReceipts}">
                     <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button Text="💬"
                             Command="{Binding HideCollectionList}"
@@ -202,7 +202,7 @@
                 </CollectionView>
 
                 <!-- Documents con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments">
+                <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
                     <Label Text="Comprobantes" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️"
                              Command="{Binding HideDocumentList}"
@@ -252,7 +252,7 @@
                 </CollectionView>
 
                 <!-- Expenses con botón de eliminar -->
-                <Grid ColumnDefinitions="*, Auto"  x:Name="AddedExpenses">
+                <Grid ColumnDefinitions="*, Auto"  x:Name="AddedExpenses" IsVisible="{Binding VisibleExpenses}">
                     <Label  Text="{Binding AddedExpenses}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                     <Button  Text="�️"  
                              Command="{Binding HideExpenseList}"
