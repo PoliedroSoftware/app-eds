@@ -9,32 +9,32 @@
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
             <VerticalStackLayout Padding="20" Spacing="15">
 
-                <Label FontSize="16" Text="Factura"/>
+                <Label FontSize="16" Text="Factura" HorizontalOptions="Center"/>
                 <Entry x:Name="FirstEntry" Keyboard="Text" Placeholder="Ingrese Numero De Factura" Text="{Binding Invoice, Mode=TwoWay}" Completed="InvoiceEntryCompleted" AutomationId="EntryInvoice"/>
 
-                <Label FontSize="16" Text="Fecha"/>
+                <Label FontSize="16" Text="Fecha" HorizontalOptions="Center"/>
                 <DatePicker Date="{Binding Date, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="2000-01-01" MaximumDate="2100-12-31" AutomationId="DatePickerDate"/>
 
-                <Label FontSize="16" Text="Proveedor"/>
+                <Label FontSize="16" Text="Proveedor" HorizontalOptions="Center"/>
                 <Picker x:Name="ProviderPicker" Title="Seleccione un Proveedor" ItemsSource="{Binding ProviderList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedProvider, Mode=TwoWay}" SelectedIndexChanged="ProviderSelected" AutomationId="PickerProvider"/>
 
-                <Label FontSize="16" Text="Categoria"/>
-                <Picker x:Name="CategoryPicker" Title="Seleccione una Categoria" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" AutomationId="PickerCategory"/>
+                <Label FontSize="16" Text="Categoria de Combustible" HorizontalOptions="Center"/>
+                <Picker x:Name="CategoryPicker" Title="Seleccione una Categoria de Combustible" ItemsSource="{Binding CategoryList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" AutomationId="PickerCategory"/>
 
 
                 <Frame Padding="10" BorderColor="Gray" CornerRadius="10">
-                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,10,*,*" RowSpacing="5">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,10,*,*" RowSpacing="5">
                         <!-- Mostrar los totales acumulados -->
-                        <Label FontAttributes="Bold" FontSize="18" Text="Compras Totales" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" AutomationId="LabelTotalPurchases"/>
+                        <Label FontAttributes="Bold" FontSize="18" Text="Compras Totales" Grid.ColumnSpan="3" Grid.Row="0" HorizontalOptions="Center" AutomationId="LabelTotalPurchases"/>
 
-                        <Label Text="Cantidad Total" FontAttributes="Bold" Grid.Column="0" Grid.Row="2" AutomationId="LabelTotalQuantity"/>
-                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0}'}" Grid.Column="0" Grid.Row="3" AutomationId="LabelTotalAccumulatedQuantity"/>
+                        <Label Text="Total De Galones Comprados" FontAttributes="Bold" HorizontalOptions="Center" Grid.Column="0" Grid.Row="2" AutomationId="LabelTotalQuantity"/>
+                        <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0:N2}'}" HorizontalOptions="Center" Grid.Column="0" Grid.Row="3" AutomationId="LabelTotalAccumulatedQuantity"/>
 
-                        <Label Text="Precio Total" FontAttributes="Bold" Grid.Column="1" Grid.Row="2" AutomationId="LabelTotalPrice"/>
-                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0}'}" Grid.Column="1" Grid.Row="3" AutomationId="LabelTotalAccumulatedPrice"/>
+                        <!--<Label Text="Precio Total" FontAttributes="Bold" Grid.Column="1" Grid.Row="2" AutomationId="LabelTotalPrice"/>
+                        <Label Text="{Binding TotalAccumulatedPrice, StringFormat='$ {0:N3}'}" Grid.Column="1" Grid.Row="3" AutomationId="LabelTotalAccumulatedPrice"/>-->
 
-                        <Label Text="Monto Total" FontAttributes="Bold" Grid.Column="2" Grid.Row="2" AutomationId="LabelTotalAmount"/>
-                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0}'}" Grid.Column="2" Grid.Row="3" AutomationId="LabelTotalAccumulatedAmount"/>
+                        <Label Text="Monto Total" FontAttributes="Bold" HorizontalOptions="Center" Grid.Column="2" Grid.Row="2" AutomationId="LabelTotalAmount"/>
+                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N2}'}" HorizontalOptions="Center" Grid.Column="2" Grid.Row="3" AutomationId="LabelTotalAccumulatedAmount"/>
                     </Grid>
                 </Frame>
 
@@ -62,22 +62,26 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Margin="0,5" Padding="10" BorderColor="LightGray" CornerRadius="8">
-                                <Grid ColumnDefinitions="Auto,20,*,Auto" RowDefinitions="*,*,*,*" RowSpacing="5">
+                                <Grid ColumnDefinitions="*,20,*,Auto" RowDefinitions="*,*,*,*,*" RowSpacing="5">
 
-                                    <Label Text="Producto" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductName" />
-                                    <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductNameValue"/>
+                                    <Label Text="Producto" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" AutomationId="LabelProductName" />
+                                    <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center" AutomationId="LabelProductNameValue"/>
 
-                                    <Label Text="Precio de compra" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
-                                    <Label Text="{Binding Price, StringFormat='$ {0}'}" Grid.Row="1" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
+                                    <Label Text="Galones" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" AutomationId="LabelProductQuantity"/>
+                                    <Label Text="{Binding Quantity, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" AutomationId="LabelProductQuantityValue"/>
+                                    <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3" ZIndex="-1" CornerRadius="10"/>
 
-                                    <Label Text="Precio de venta" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductPrice"/>
-                                    <Label Text="{Binding SellPrice, StringFormat='$ {0}'}" Grid.Row="2" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductPriceValue"/>
+                                    <Label Text="Precio de compra" FontAttributes="Bold" Grid.Row="3" Grid.Column="0" HorizontalOptions="Center" AutomationId="LabelProductPrice"/>
+                                    <Label Text="{Binding Price, StringFormat='$ {0:N2}'}" Grid.Row="4" Grid.Column="0" HorizontalOptions="Center" AutomationId="LabelProductPriceValue"/>
+                                    <!--<BoxView Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2" ZIndex="-1"/>-->
 
-                                    <Label Text="Galones" FontAttributes="Bold" Grid.Row="3" Grid.Column="0" VerticalOptions="Center" AutomationId="LabelProductQuantity"/>
-                                    <Label Text="{Binding Quantity}" Grid.Row="3" Grid.Column="2" VerticalOptions="Center" AutomationId="LabelProductQuantityValue"/>
+                                    <Label Text="Precio de venta" FontAttributes="Bold" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" AutomationId="LabelProductPrice"/>
+                                    <Label Text="{Binding SellPrice, StringFormat='$ {0:N2}'}" Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" AutomationId="LabelProductPriceValue"/>
+                                    <BoxView Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3" ZIndex="-1" CornerRadius="10"/>
+                                    
 
                                     <!-- Botón eliminar -->
-                                    <Button Text="X"  Grid.Column="3" Grid.RowSpan="3"
+                                    <Button Text="X"  Grid.Column="8" Grid.RowSpan="10"
                                         WidthRequest="50" HeightRequest="50"
                                         BackgroundColor="Transparent" TextColor="#6A1B9A" CornerRadius="0"
                                         VerticalOptions="Center" HorizontalOptions="Center"
@@ -90,7 +94,7 @@
 
 
                 <VerticalStackLayout Spacing="10">
-                    <Button Clicked="OpenShoppingPopUp" Text="Producto Nuevo" AutomationId="ButtonNewProduct"/>
+                    <Button Clicked="OpenShoppingPopUp" Text="Comprar Producto" AutomationId="ButtonNewProduct"/>
                 </VerticalStackLayout>
 
                 <Button BackgroundColor="Green"
