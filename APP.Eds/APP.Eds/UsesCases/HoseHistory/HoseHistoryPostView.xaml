@@ -4,7 +4,14 @@
              x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:button="clr-namespace:APP.Eds.Controls"
+             xmlns:converters="clr-namespace:APP.Eds.Converters"
              Title="Gestión Historial De Mangueras">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateFormatConverter x:Key="DateFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ScrollView>
         <AbsoluteLayout>
         <VerticalStackLayout 
@@ -71,7 +78,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Date}" FontSize="14" Grid.Row="1" />
+                            <Label Text="{Binding Date, Converter={StaticResource DateFormatConverter}}" FontSize="14" Grid.Row="1" />
                             <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
                             <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
                             <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />

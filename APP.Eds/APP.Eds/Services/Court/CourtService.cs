@@ -2871,9 +2871,9 @@ GetAllEdsData()
             
                
                 Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
-                Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
+                Court.Starttime = Starttime.ToString(@"HH\:mm\:ss");
                 Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
-                Court.Endtime = Endtime.ToString(@"hh\:mm\:ss");
+                Court.Endtime = Endtime.ToString(@"HH\:mm\:ss");
                 Court.Descripcion = AdditionalInfoDescription;
                 Court.Distintic = Distintic;
                 Court.CourtDocuments = CourtDocuments?.ToList();

@@ -242,4 +242,30 @@ public partial class CourtPostView : ContentPage
         });
     }
 
+    private void OnStartTimeDisplayTapped(object sender, EventArgs e)
+    {
+        StartTimeDisplay.IsVisible = false;
+        StartTimePicker.IsVisible = true;
+        StartTimePicker.Focus();
+    }
+
+    private void OnEndTimeDisplayTapped(object sender, EventArgs e)
+    {
+        EndTimeDisplay.IsVisible = false;
+        EndTimePicker.IsVisible = true;
+        EndTimePicker.Focus();
+    }
+
+    private void OnStartTimePickerUnfocused(object sender, FocusEventArgs e)
+    {
+        StartTimePicker.IsVisible = false;
+        StartTimeDisplay.IsVisible = true;
+    }
+
+    private void OnEndTimePickerUnfocused(object sender, FocusEventArgs e)
+    {
+        EndTimePicker.IsVisible = false;
+        EndTimeDisplay.IsVisible = true;
+    }
+
 }

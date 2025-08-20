@@ -3,7 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Shopping.ShoppingPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             xmlns:converters="clr-namespace:APP.Eds.Converters"
              Title="Gestion De Compras">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateFormatConverter x:Key="DateFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">

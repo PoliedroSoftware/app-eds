@@ -4,7 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TimeFormatConverter x:Key="TimeFormatConverter" />
+            <converters:DateFormatConverter x:Key="DateFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"  x:Name="MainContent">
@@ -44,13 +52,31 @@
                         <Label FontAttributes="Bold" FontSize="18" Text="{Binding Time}" HorizontalOptions="Center"/>
                         <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*,*">
                             <Label Text="{Binding DateTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0"/>
-                            <DatePicker x:Name="datePicker" AutomationId="DatePicker" Date="{Binding DateStarttime, Mode=TwoWay}" MinimumDate="1900-01-01" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center"/>
+                            <DatePicker x:Name="datePicker" AutomationId="DatePicker" Date="{Binding DateStarttime, Mode=TwoWay}" Format="dd/MM/yyyy" MinimumDate="1900-01-01" Grid.Row="1" Grid.Column="0" HorizontalOptions="Center"/>
 
                             <Label Text="{Binding StartTime}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <TimePicker AutomationId="StartTimePicker" Time="{Binding Starttime, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center"/>
+                            <!-- Display time in 12-hour AM/PM format, but store as 24-hour TimeSpan -->
+                            <Label x:Name="StartTimeDisplay" Text="{Binding Starttime, Converter={StaticResource TimeFormatConverter}}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="LightGray" Padding="10,5">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStartTimeDisplayTapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
 
                             <Label Text="{Binding EndTime }" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="2"/>
-                            <TimePicker AutomationId="EndTimePicker" Time="{Binding Endtime, Mode=TwoWay}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center"/>
+                            <!-- Display time in 12-hour AM/PM format, but store as 24-hour TimeSpan -->
+                            <Label x:Name="EndTimeDisplay" Text="{Binding Endtime, Converter={StaticResource TimeFormatConverter}}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="LightGray" Padding="10,5">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEndTimeDisplayTapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            
+                            <!-- Time pickers for editing - these will be hidden initially -->
+                            <TimePicker x:Name="StartTimePicker" AutomationId="StartTimePicker" Time="{Binding Starttime, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" IsVisible="False" Unfocused="OnStartTimePickerUnfocused"/>
+                            <TimePicker x:Name="EndTimePicker" AutomationId="EndTimePicker" Time="{Binding Endtime, Mode=TwoWay}" Grid.Row="2" Grid.Column="2" HorizontalOptions="Center" IsVisible="False" Unfocused="OnEndTimePickerUnfocused"/>
+                            
+                            <!-- Tap gestures to show time pickers -->
+                            <Label Text="Toque para editar" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" FontSize="10" TextColor="Gray"/>
+                            <Label Text="Toque para editar" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" FontSize="10" TextColor="Gray"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Frame>
