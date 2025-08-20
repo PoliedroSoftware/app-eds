@@ -4,7 +4,15 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Cortes">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TimeFormatConverter x:Key="TimeFormatConverter" />
+            <converters:DateFormatConverter x:Key="DateFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout>
         <CollectionView ItemsSource="{Binding CourtList}" SelectionChanged="OnCourtSelected" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <CollectionView.ItemTemplate>
@@ -14,14 +22,14 @@
                             <Label Text="{Binding Islander}" FontAttributes="Bold"  Grid.Row="1" Grid.ColumnSpan="6" Margin="10,0,0,10"/>
 
                             <Label Text="Fecha"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
-                            <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
+                            <Label Text="{Binding DateStarttime, Converter={StaticResource DateFormatConverter}}"  Grid.Row="2" Grid.Column="3"/>
 
                             <Label Text="Inicio" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
-                            <Label Text="{Binding Starttime}"  Grid.Row="3" Grid.Column="3"/>
+                            <Label Text="{Binding Starttime, Converter={StaticResource TimeFormatConverter}}"  Grid.Row="3" Grid.Column="3"/>
                             <BoxView Grid.Row="3" Grid.ColumnSpan="6" ZIndex="-1"/>
 
                             <Label Text="Fin"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
-                            <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="3"/>
+                            <Label Text="{Binding Endtime, Converter={StaticResource TimeFormatConverter}}"  Grid.Row="4" Grid.Column="3"/>
 
                             <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
                             <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}"  Grid.Row="5" Grid.Column="3"/>
