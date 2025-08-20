@@ -1,14 +1,15 @@
-﻿using APP.Eds.Models.Shopping;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using APP.Eds.Services.Config;
-using APP.Eds.Models.ShoppingProduct;
 using System.Linq;
-using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
+using System.Xml.Linq;
+using APP.Eds.Helpers;
+using APP.Eds.Models.Shopping;
+using APP.Eds.Models.ShoppingProduct;
+using APP.Eds.Services.Config;
 
 namespace APP.Eds.Services.Shopping;
 
@@ -25,6 +26,7 @@ public class ShoppingService : INotifyPropertyChanged
     public ObservableCollection<ProductResponse> ProductList { get; set; } = [];
     public ObservableCollection<ShoppingResponse> ShoppingList { get; set; } = [];
     public ObservableCollection<CompartimentResponse> CompartimentList { get; set; } = [];
+    public ObservableCollection<ProductCompartimentPairModel> ProductCompartimentPairs { get; set; } = [];
     private ShoppingRequest Request { get; set; }
 
 
@@ -175,6 +177,17 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    private string? _productName;
+    public string? ProductName
+    {
+        get => _productName;
+        set
+        {
+            _productName = value;
+            OnPropertyChanged(nameof(ProductName));
+        }
+    }
+
     private ProviderModel _selectedProvider;
     public ProviderModel SelectedProvider
     {
@@ -274,8 +287,8 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    private ProductResponse _selectedProduct;
-    public ProductResponse SelectedProduct
+    private ProductCompartimentPairModel _selectedProduct;
+    public ProductCompartimentPairModel SelectedProduct
     {
         get => _selectedProduct;
         set
@@ -289,8 +302,8 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    private CompartimentResponse _selectedCompartiment;
-    public CompartimentResponse SelectedCompartiment
+    private ProductCompartimentPairModel _selectedCompartiment;
+    public ProductCompartimentPairModel SelectedCompartiment
     {
         get => _selectedCompartiment;
         set
@@ -301,6 +314,32 @@ public class ShoppingService : INotifyPropertyChanged
             {
                 IdCompartment = _selectedCompartiment.IdCompartment;
             }
+        }
+    }
+
+    private ProductCompartimentPairModel _selectedName;
+    public ProductCompartimentPairModel SelectedName
+    {
+        get => _selectedName;
+        set
+        {
+            _selectedName = value;
+            OnPropertyChanged(nameof(SelectedName));
+            if (_selectedName != null)
+            {
+                ProductName = _selectedName.ProductName;
+            }
+        }
+    }
+
+    private ProductCompartimentPairModel _selectedProductCompartimentPair;
+    public ProductCompartimentPairModel SelectedProductCompartimentPair
+    {
+        get => _selectedProductCompartimentPair;
+        set
+        {
+            _selectedProductCompartimentPair = value;
+            OnPropertyChanged(nameof(SelectedProductCompartimentPair));
         }
     }
 
@@ -339,14 +378,11 @@ public class ShoppingService : INotifyPropertyChanged
 
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
 
-        
 
         GetAllProviderData();
         GetAllCategoryData();
         GetAllShoppingData();
-        GetAllProductData();
-        GetAllCompartimentData();
-        GetShoppingProductAsync();
+        GetAllProductCompartimentPairsAsync();
 
         GetByIdShoppingDataCommand = new Command<int>(async (shoppingId) => await GetByIdShoppingDataAsync(shoppingId));
         SaveShoppingDataCommand = new Command(async () => await SaveShoppingDataAsync());
@@ -422,7 +458,7 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    private async void GetAllProductData()
+    public async Task GetAllProductCompartimentPairsAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -431,38 +467,35 @@ public class ShoppingService : INotifyPropertyChanged
         }
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
+            string url = $"{Configuration.BaseUrl}/api/v1/dashboard/compartiments?PageNumber=1&PageSize=100";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
-            var productList = JsonSerializer.Deserialize<ProductApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            UpdateProductList(productList?.Data ?? new List<ProductResponse>());
+            var apiResponse = JsonSerializer.Deserialize<ProducCompartimentPairApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var rawList = apiResponse?.Data ?? new List<ProductCompartimentPairModelRaw>();
+            var mappedList = rawList.Select(x => new ProductCompartimentPairModel
+            {
+                IdProduct = int.TryParse(x.idProduct, out var idProd) ? idProd : 0,
+                ProductName = x.productName,
+                IdCompartment = int.TryParse(x.idCompartment, out var idComp) ? idComp : 0,
+                Number = x.number,
+                Operative = x.operative,
+                Stock = x.stock,
+            }).ToList();
+            ProductCompartimentPairs.Clear();
+            foreach (var item in mappedList)
+            {
+                ProductCompartimentPairs.Add(item);
+            }
+            ProductCompartimentPairs.Clear();
+            foreach (var item in mappedList)
+            {
+                ProductCompartimentPairs.Add(item);
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando productos: {ex.Message}");
-        }
-    }
-
-    private async void GetAllCompartimentData()
-    {
-        if (string.IsNullOrEmpty(_authToken))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
-        }
-        try
-        {
-            string url = $"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100";
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync(url);
-            var compartimentList = JsonSerializer.Deserialize<CompartimentApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            UpdateCompartimentList(compartimentList?.Data ?? new List<CompartimentResponse>());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando combinaciones: {ex.Message}", "OK");
         }
     }
 
@@ -562,14 +595,15 @@ public class ShoppingService : INotifyPropertyChanged
                 IdProduct = p.IdProduct,
                 Quantity = p.Quantity,
                 Price = p.Price,
-                IdCompartment = p.IdCompartment
+                IdCompartment = p.IdCompartment,
+                SellPrice = p.SellPrice,
             }).ToList();
 
-            var sellPriceProducts = SellPriceProduct.Select(s => new SellPriceProductModel
-            {
-                IdProduct = s.IdProduct,
-                Price = s.Price,
-            }).ToList();
+            //var sellPriceProducts = SellPriceProduct.Select(s => new SellPriceProductModel
+            //{
+            //    IdProduct = s.IdProduct,
+            //    SellPrice = s.SellPrice,
+            //}).ToList();
 
             Shopping = new ShoppingModel
             {
@@ -578,8 +612,8 @@ public class ShoppingService : INotifyPropertyChanged
                 Amount = Amount,
                 IdProvider = SelectedProvider.IdProvider,
                 IdCategory = SelectedCategory.IdCategory,
-                ShoppingProducts = shoppingProducts,
-                SellPriceProducts = sellPriceProducts
+                ShoppingProducts = shoppingProducts
+                //SellPriceProducts = sellPriceProducts
             };
 
             Request = new ShoppingRequest { Request = Shopping };
@@ -599,7 +633,7 @@ public class ShoppingService : INotifyPropertyChanged
                 SelectedProvider = null;
                 SelectedCategory = null;
                 ShoppingProduct.Clear();
-                SellPriceProduct.Clear();
+                //SellPriceProduct.Clear();
                 UpdateAccumulatedTotals();
             }
             else
@@ -617,34 +651,27 @@ public class ShoppingService : INotifyPropertyChanged
 
     public async Task AddShoppingProductFromPopup()
     {
-        if (SelectedCompartiment == null)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor seleccione un compartimento", "OK");
-            return;
-        }
-
         var newProduct = new ShoppingProductNestedModel
         {
-            IdProduct = SelectedProduct.IdProduct,
+            IdProduct = SelectedProductCompartimentPair.IdProduct,
+            Name = SelectedProductCompartimentPair.ProductName,
+            IdCompartment = SelectedProductCompartimentPair.IdCompartment,
             Quantity = Quantity,
             Price = Price,
-            Name = SelectedProduct.Name,
             TotalPrice = CurrentTotalPrice,
-            IdCompartment = SelectedCompartiment.IdCompartment
+            SellPrice = SellPrice
         };
 
-        var newSellPrice = new SellPriceProductModel
-        {
-            IdProduct = SelectedProduct.IdProduct,
-            Price = Price,
-        };
+        //var newSellPrice = new SellPriceProductModel
+        //{
+        //    IdProduct = SelectedProductCompartimentPair.IdProduct,
+        //    SellPrice = SellPrice,
+        //};
 
         ShoppingProduct.Add(newProduct);
-        SellPriceProduct.Add(newSellPrice);
+        //SellPriceProduct.Add(newSellPrice);
         UpdateAccumulatedTotals();
     }
-
-
 
     private void UpdateAccumulatedTotals()
     {
@@ -677,7 +704,7 @@ public class ShoppingService : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
+
     private void UpdateProductList(IEnumerable<ProductResponse> Product)
     {
         ProductList.Clear();
@@ -704,14 +731,14 @@ public class ShoppingService : INotifyPropertyChanged
             CompartimentList.Add(island);
         }
     }
- 
+
     public void ResetProductForm()
     {
         SelectedProduct = null;
         SelectedCompartiment = null;
         Price = 0;
         Quantity = 0;
-        Price = 0;
+        SellPrice = 0;
         OnPropertyChanged(nameof(Price));
         OnPropertyChanged(nameof(Quantity));
         OnPropertyChanged(nameof(CurrentTotalPrice));

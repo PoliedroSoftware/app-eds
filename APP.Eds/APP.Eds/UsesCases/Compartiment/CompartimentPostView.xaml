@@ -46,7 +46,7 @@
                                         <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
 
                                         <Label Text="Stock"  Grid.Row="5" Grid.Column="1"/>
-                                    <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
+                                        <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
 
                                         <Label Text="Altura"  Grid.Row="6" Grid.Column="1"/>
                                         <Label Text="{Binding Height}"  Grid.Row="6" Grid.Column="3"/>
