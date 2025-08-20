@@ -5,7 +5,6 @@ using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
 
-
 public partial class AddDispenser : Popup
 {
     private readonly CourtService courtService;
@@ -116,7 +115,7 @@ public partial class AddDispenser : Popup
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price), 2);
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
             }
             UpdateAccumulatedColors();
         }
@@ -149,7 +148,7 @@ public partial class AddDispenser : Popup
             if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
                 double price = vm.SelectedHose.Price;
-                PricePerGallonLabel.Text = $"{price:C2}";
+                PricePerGallonLabel.Text = $"{price:C3}";
                 
                 // For admin users, also set the editable price entry
                 if (isAdmin && PriceEditEntry != null)
