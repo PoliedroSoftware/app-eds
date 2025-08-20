@@ -111,11 +111,18 @@ public partial class AddDispenser : Popup
 
     private void UpdateAccumulatedValues()
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null)
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+                // Calculate amount difference directly
+                double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                
+                // Use the CURRENT price from SelectedHose (which may have been updated)
+                double currentPrice = vm.SelectedHose.Price;
+                
+                // Calculate gallons using current price
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / currentPrice);
             }
             UpdateAccumulatedColors();
         }
@@ -199,6 +206,27 @@ public partial class AddDispenser : Popup
         UpdateSelectedHosePrice();
     }
 
+    private void PriceEditEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        // Recalculate in real-time as the user types (optional for better UX)
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        {
+            if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
+            {
+                vm.SelectedHose.Price = newPrice;
+                PricePerGallonLabel.Text = $"{newPrice:C2}";
+                
+                // Recalculate gallons with new price if amount is already entered
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    UpdateAccumulatedColors();
+                }
+            }
+        }
+    }
+
     private void PriceEditButton_Clicked(object sender, EventArgs e)
     {
         if (PriceEditEntry != null)
@@ -216,8 +244,15 @@ public partial class AddDispenser : Popup
                 vm.SelectedHose.Price = newPrice;
                 PricePerGallonLabel.Text = $"{newPrice:C2}";
                 
-                // Recalculate gallons if amount is already entered
-                UpdateAccumulatedValues();
+                // Recalculate gallons using the NEW price instead of relying on AmountDifferenceResult
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    
+                    // Update color indicators after recalculation
+                    UpdateAccumulatedColors();
+                }
             }
             else
             {

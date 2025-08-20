@@ -60,7 +60,8 @@
                                    HorizontalOptions="FillAndExpand"
                                    Grid.Row="0" Grid.Column="2"
                                    IsVisible="False"
-                                   Completed="PriceEditEntry_Completed"/>
+                                   Completed="PriceEditEntry_Completed"
+                                   TextChanged="PriceEditEntry_TextChanged"/>
                             
                             <!-- Edit price button (visible only for admin users) -->
                             <Button x:Name="PriceEditButton" Text="✎"
