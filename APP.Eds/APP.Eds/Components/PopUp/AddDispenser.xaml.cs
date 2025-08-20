@@ -17,16 +17,12 @@ public partial class AddDispenser : Popup
         this.courtService = courtService;
         SecondEntry.IsEnabled = isGallonsEditable;
         
-        // Check if the current user is an administrator
+        
         CheckUserRole();
     }
 
     private void CheckUserRole()
     {
-        var userRole = Preferences.Get("userRole", "User");
-        isAdmin = userRole == "Admin";
-        
-        // Update UI visibility after role is determined and UI is loaded
         Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
     }
     private void EditGallonsButton_Clicked(object sender, EventArgs e)
@@ -111,11 +107,14 @@ public partial class AddDispenser : Popup
 
     private void UpdateAccumulatedValues()
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null)
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price);
+               
+                double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                double currentPrice = vm.SelectedHose.Price;
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / currentPrice);
             }
             UpdateAccumulatedColors();
         }
@@ -150,8 +149,7 @@ public partial class AddDispenser : Popup
                 double price = vm.SelectedHose.Price;
                 PricePerGallonLabel.Text = $"{price:C3}";
                 
-                // For admin users, also set the editable price entry
-                if (isAdmin && PriceEditEntry != null)
+                if (PriceEditEntry != null)
                 {
                     PriceEditEntry.Text = price.ToString("F2");
                 }
@@ -159,13 +157,13 @@ public partial class AddDispenser : Popup
             else
             {
                 PricePerGallonLabel.Text = "##.###";
-                if (isAdmin && PriceEditEntry != null)
+                if (PriceEditEntry != null)
                 {
                     PriceEditEntry.Text = "";
                 }
             }
             
-            // Update UI visibility based on admin status
+           
             UpdatePriceEditVisibility();
         }
         else
@@ -185,8 +183,6 @@ public partial class AddDispenser : Popup
             PriceEditEntry.IsVisible = isAdmin;
             PriceEditButton.IsVisible = isAdmin;
             
-            // For admin users, show editable controls and hide read-only label
-            // For non-admin users, show read-only label and hide editable controls
             if (PricePerGallonLabel != null)
             {
                 PricePerGallonLabel.IsVisible = !isAdmin;
@@ -197,6 +193,27 @@ public partial class AddDispenser : Popup
     private void PriceEditEntry_Completed(object sender, EventArgs e)
     {
         UpdateSelectedHosePrice();
+    }
+
+    private void PriceEditEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+       
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        {
+            if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
+            {
+                vm.SelectedHose.Price = newPrice;
+                PricePerGallonLabel.Text = $"{newPrice:C2}";
+                
+               
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    UpdateAccumulatedColors();
+                }
+            }
+        }
     }
 
     private void PriceEditButton_Clicked(object sender, EventArgs e)
@@ -216,12 +233,16 @@ public partial class AddDispenser : Popup
                 vm.SelectedHose.Price = newPrice;
                 PricePerGallonLabel.Text = $"{newPrice:C2}";
                 
-                // Recalculate gallons if amount is already entered
-                UpdateAccumulatedValues();
+               
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    UpdateAccumulatedColors();
+                }
             }
             else
             {
-                // Reset to original price if invalid input
                 PriceEditEntry.Text = vm.SelectedHose.Price.ToString("F2");
             }
         }
