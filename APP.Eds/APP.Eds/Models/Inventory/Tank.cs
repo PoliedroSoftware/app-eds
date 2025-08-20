@@ -26,13 +26,13 @@ namespace APP.Eds.Models.Inventory
         public int IdTank { get; set; }
 
         [JsonPropertyName("tank")]
-        public string TankNumber { get; set; }
+        public string TankNumber { get; set; } = string.Empty;
 
         [JsonPropertyName("tankCapacity")]
         public int TankCapacity { get; set; }
 
         [JsonPropertyName("compartments")]
-        public List<Compartment> Compartments { get; set; }
+        public List<Compartment> Compartments { get; set; } = new List<Compartment>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

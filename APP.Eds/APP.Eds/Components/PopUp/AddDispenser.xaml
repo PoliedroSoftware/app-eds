@@ -47,7 +47,29 @@
                     <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
                         <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
                             <Label Text="Precio por galón" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            
+                            <!-- Read-only price label (visible for non-admin users) -->
                             <Label x:Name="PricePerGallonLabel" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2"/>
+                            
+                            <!-- Editable price entry (visible only for admin users) -->
+                            <Entry x:Name="PriceEditEntry" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Editar precio"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="FillAndExpand"
+                                   Grid.Row="0" Grid.Column="2"
+                                   IsVisible="False"
+                                   Completed="PriceEditEntry_Completed"/>
+                            
+                            <!-- Edit price button (visible only for admin users) -->
+                            <Button x:Name="PriceEditButton" Text="✎"
+                                    Clicked="PriceEditButton_Clicked"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center" HorizontalOptions="End"
+                                    Grid.Row="0" Grid.Column="2"
+                                    IsVisible="False"/>
+                                    
                             <Label Text="{Binding LastAccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
                             <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>

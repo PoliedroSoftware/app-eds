@@ -19,10 +19,20 @@ namespace APP.Eds.UsesCases.Inventory
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            if (ViewModel != null)
-                await ViewModel.LoadDataAsync();
+            try
+            {
+                LoadingOverlay.ShowLoading();
+                if (ViewModel != null)
+                    await ViewModel.LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Error al cargar inventario: {ex.Message}", "OK");
+            }
+            finally
+            {
+                LoadingOverlay.HideLoading();
+            }
         }
-
     }
-
 }

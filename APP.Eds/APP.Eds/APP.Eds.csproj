@@ -164,6 +164,9 @@
 	  <Compile Update="UsesCases\TypeOfCollection\TypeOfCollectionPostView.xaml.cs">
 	    <DependentUpon>TypeOfCollectionPostView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UsesCases\Wizard\SetupWizardView.xaml.cs">
+	    <DependentUpon>SetupWizardView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -258,6 +261,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UsesCases\Product\ProductPostView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UsesCases\Wizard\SetupWizardView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
