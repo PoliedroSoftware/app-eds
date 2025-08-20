@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.Compartiment;
 
-public partial class CompartimentPostView : ContentPage
+public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 {
     private CompartimentService _compartimentService;
     private string _newDispenserNumber;
@@ -171,7 +171,6 @@ public partial class CompartimentPostView : ContentPage
     {
         if (obj is CompartimentResponse compartiment)
         {
-            // Cargar los datos en el formulario para editar
             Number = compartiment.Number;
             Nominal = compartiment.Nominal;
             Operative = compartiment.Operative;
@@ -191,5 +190,11 @@ public partial class CompartimentPostView : ContentPage
                 await _compartimentService.DeleteCompartimentAsync(compartiment.IdCompartment);
             }
         }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

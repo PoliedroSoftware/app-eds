@@ -26,39 +26,40 @@ public partial class DispensersPostView : ContentPage
 
                 if (string.IsNullOrWhiteSpace(vm.Code))
                 {
-                    await DisplayAlert("Error", "Por favor ingrese un código valido!", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un código válido!", "OK");
                     return;
                 }
 
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor Ingrese un número valido y/o mayor a 0!", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un número válido mayor a 0!", "OK");
                     return;
                 }
 
                 if (vm.SelectedDispenserType is null)
                 {
-                    await DisplayAlert("Error", "Por favor ingrese un dispensador valido!", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione un tipo de dispensador!", "OK");
                     return;
                 }
 
                 if (vm.HoseNumber <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor ingrese un número de manguera valido y/o mayor a 0!", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un número de mangueras válido mayor a 0!", "OK");
                     return;
                 }
 
                 if (vm.SelectedEds is null)
                 {
-                    await DisplayAlert("Error", "Por favor seleccione un EDS valido!", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione una EDS válida!", "OK");
                     return;
                 }
 
                 if (vm.SelectedIsland is null)
                 {
-                    await DisplayAlert("Error", "Por favor seleccione una isla valida!", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione una isla válida!", "OK");
                     return;
                 }
+
                 await vm.SaveDispensersDataAsync();
 
                 _dispensersService.SelectedDispenserType = null;
@@ -67,23 +68,24 @@ public partial class DispensersPostView : ContentPage
                 Code = string.Empty;
                 Number = 0;
                 HoseNumber = 0;
+
+                await _dispensersService.GetDispensersAsync();
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"error: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", "Error de Conexion", "OK");
+            Console.WriteLine($"Error: {ex.Message}");
+            await DisplayAlert("Error", $"Error de conexión: {ex.Message}", "OK");
         }
         finally
         {
             LoadingOverlay.HideLoading();
         }   
-        
     }
 
     private void OnAddDispenserTypeClicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new    DispenserTypePostView());
+        Navigation.PushAsync(new DispenserTypePostView());
     }
 
     public string Code
@@ -116,9 +118,21 @@ public partial class DispensersPostView : ContentPage
         }
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _dispensersService.GetDispensersAsync();
+        try
+        {
+            LoadingOverlay.ShowLoading();
+            await _dispensersService.GetDispensersAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error cargando datos: {ex.Message}", "OK");
+        }
+        finally
+        {
+            LoadingOverlay.HideLoading();
+        }
     }
 }
