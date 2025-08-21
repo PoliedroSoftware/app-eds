@@ -1,15 +1,17 @@
-﻿using APP.Eds.Models.Business;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using APP.Eds.Services.Config;
-using System.Collections.ObjectModel;
-using APP.Eds.Models.Eds;
-using BusinessModel = APP.Eds.Models.Business.BusinessModel;
-using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
+using APP.Eds.Components.PopUp;
+using APP.Eds.Helpers;
+using APP.Eds.Models.Business;
+using APP.Eds.Models.Eds;
+using APP.Eds.Services.Config;
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls; 
+using BusinessModel = APP.Eds.Models.Business.BusinessModel;
 
 namespace APP.Eds.Services.Business;
 
@@ -166,7 +168,7 @@ public class BusinessService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                await Application.Current.MainPage.ShowPopupAsync(new OkBusiness(this));
             }
             else
             {

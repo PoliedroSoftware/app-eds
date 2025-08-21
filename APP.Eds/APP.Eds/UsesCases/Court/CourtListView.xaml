@@ -24,11 +24,11 @@
                             <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="3"/>
 
                             <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
-                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}"  Grid.Row="5" Grid.Column="3"/>
+                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="5" Grid.Column="3"/>
                             <BoxView Grid.Row="5" Grid.ColumnSpan="6" ZIndex="-1"/>
 
                             <Label Text="Galones"  FontAttributes="Bold" Grid.Row="6" Grid.Column="1"/>
-                            <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N2}'}"  Grid.Row="6" Grid.Column="3"/>
+                            <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N3}'}"  Grid.Row="6" Grid.Column="3"/>
 
                             <Button Text="ℹ️"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
