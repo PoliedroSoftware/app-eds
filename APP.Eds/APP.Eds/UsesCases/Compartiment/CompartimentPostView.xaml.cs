@@ -16,6 +16,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     public ICommand EditCompartimentCommand { get; }
     public ICommand DeleteCompartimentCommand { get; }
 
+
     public CompartimentPostView()
 	{
 		InitializeComponent();
