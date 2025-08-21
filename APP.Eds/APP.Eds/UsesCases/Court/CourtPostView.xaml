@@ -88,21 +88,13 @@
                 <!-- Dispensers con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedDispensers" IsVisible="{Binding VisibleDispenser}">
                     <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="�️" 
+                    <Button  Text="➖"
                              Command="{Binding HideListDispenser}"
                              AutomationId="HideDispenserListButton"
-                             WidthRequest="46" HeightRequest="46" 
+                             WidthRequest="46" HeightRequest="46"
                              BackgroundColor="Transparent"
                              HorizontalOptions="End"
                              Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger TargetType="Button" Binding="{Binding VisibleDispenser}" Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Button" Binding="{Binding VisibleDispenser}" Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
                     </Button>
                 </Grid>
 
@@ -147,27 +139,13 @@
                 <!-- Collections con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections" IsVisible="{Binding VisibleReceipts}">
                     <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button Text="💬"
+                    <Button Text="➖"
                             Command="{Binding HideCollectionList}"
                             AutomationId="HideCollectionListButton"
-                            WidthRequest="46"  HeightRequest="46" 
+                            WidthRequest="46"  HeightRequest="46"
                             BackgroundColor="Transparent"
                             HorizontalOptions="End"
                             Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleReceipts}"
-                                Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
                     </Button>
                 </Grid>
 
@@ -204,26 +182,12 @@
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
                     <Label Text="Comprobantes" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="�️"
+                    <Button  Text="➖"
                              Command="{Binding HideDocumentList}"
                              AutomationId="HideDocumentListButton"
                              WidthRequest="46"  HeightRequest="46"
                              BackgroundColor="Transparent" HorizontalOptions="End"
                              Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleDocuments}"
-                                Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleDocuments}"
-                                Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
                     </Button>
                 </Grid>
 
@@ -254,27 +218,13 @@
                 <!-- Expenses con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedExpenses" IsVisible="{Binding VisibleExpenses}">
                     <Label  Text="{Binding AddedExpenses}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="�️"  
+                    <Button  Text="➖"
                              Command="{Binding HideExpenseList}"
                              AutomationId="HideExpenseListButton"
-                             WidthRequest="46" HeightRequest="46" 
+                             WidthRequest="46" HeightRequest="46"
                              BackgroundColor="Transparent"
                              HorizontalOptions="End"
                              Grid.Column="1">
-                        <Button.Triggers>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleExpenses}"
-                                Value="True">
-                                <Setter Property="Text" Value="➖" />
-                            </DataTrigger>
-                            <DataTrigger
-                                TargetType="Button"
-                                Binding="{Binding VisibleExpenses}"
-                                Value="False">
-                                <Setter Property="Text" Value="👁️" />
-                            </DataTrigger>
-                        </Button.Triggers>
                     </Button>
                 </Grid>
 

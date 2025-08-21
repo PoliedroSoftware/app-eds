@@ -2727,7 +2727,7 @@ GetAllEdsData()
 
             CourtDispensers.Add(newDispenser);
             Court.CourtDispensers = CourtDispensers.ToList();
-            VisibleDispenser = true; // Make visible after data is added
+            VisibleDispenser = true;
 
             AddAmountDifferenceResult(AccumulatedAmount, LastAccumulatedAmount);
             AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
@@ -2782,7 +2782,7 @@ GetAllEdsData()
 
             CourtExpenditures.Add(newCourtExpenditure);
             Court.CourtExpenditures = CourtExpenditures.ToList();
-            VisibleExpenses = true; // Make visible after data is added
+            VisibleExpenses = true;
 
             TotalSales = GetTotalSales();
             CourtExpenditureAmount = 0;
@@ -2811,6 +2811,7 @@ GetAllEdsData()
 
             CourtTypeOfCollections.Add(newCourtTypeOfCollection);
             Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
+            VisibleReceipts = true;
 
             TotalSales = GetTotalSales();
             CourtTypeOfCollectionAmount = 0;
