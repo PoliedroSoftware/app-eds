@@ -70,11 +70,7 @@ public partial class TankPostView : ContentPage
                     return;
                 }
 
-                if (vm.Stock <= 0)
-                {
-                    await DisplayAlert(_tankService.Error, _tankService.ErrorStockNegative, "OK");
-                    return;
-                }
+               
 
                 if (vm.Ability <= 0)
                 {
