@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+	x:Class="APP.Eds.Components.PopUp.OkBusiness"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+
+
+    <Frame x:Name="Frame"
+       Padding="20"
+       BorderColor="#6200E8"
+       CornerRadius="15"
+       HasShadow="True"
+       WidthRequest="400" MaximumHeightRequest="300"
+       VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*,*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="Agregar Dispensador"
+               HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
+            <!--  Botón Redirigir A Eds  -->
+            <Button Grid.Row="1" Grid.Column="0"
+                    x:Name="BttnGoToEds"
+                    AutomationId="ButtonGoToEds" 
+                    BackgroundColor="#6200E8"
+                    Clicked="GoToEds"
+                    CornerRadius="10"
+                    FontSize="18" Text="Registrar EDS" TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="40"/>
+
+            <Button Grid.Row="1" Grid.Column="1"
+                    x:Name="BttnOkBusiness"
+                    AutomationId="ButtonOkBusiness"
+                    BackgroundColor="#6200E8"
+                    Clicked="OnCloseTapped"
+                    CornerRadius="10"
+                    FontSize="18" Text="Ok" TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="40"/>
+
+        </Grid>
+    </Frame>
+</mct:Popup>

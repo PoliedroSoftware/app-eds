@@ -11,14 +11,12 @@
                 <Label FontSize="16" Text="Numero"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
-                <Label FontSize="16" Text="Nominal"/>
+            <Label FontSize="16" Text="Capacidad nominal"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
 
-                <Label FontSize="16" Text="Operativo"/>
+            <Label FontSize="16" Text="Capacidad operativa"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
 
-                <Label FontSize="16" Text="Existencia"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterStock}" Text="{Binding Stock, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentStock"/>
 
                 <Label FontSize="16" Text="Altura"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
@@ -46,7 +44,7 @@
                                         <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
 
                                         <Label Text="Stock"  Grid.Row="5" Grid.Column="1"/>
-                                    <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
+                                        <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
 
                                         <Label Text="Altura"  Grid.Row="6" Grid.Column="1"/>
                                         <Label Text="{Binding Height}"  Grid.Row="6" Grid.Column="3"/>
