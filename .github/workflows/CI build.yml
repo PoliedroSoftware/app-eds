@@ -11,12 +11,11 @@ permissions:
   contents: read
 
 env:
-  DOTNET_NOLOGO: true                     # Disable the .NET logo
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience
-  DOTNET_CLI_TELEMETRY_OPTOUT: true       # Disable sending .NET CLI telemetry
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-# General Build
   build-and-test:
     runs-on: windows-2022
     name: General Build and Test
@@ -57,7 +56,6 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test APP.Eds/APP.Eds.sln --no-build --verbosity normal
 
-# Software Quality Check with Sonar
   sonar:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -74,7 +72,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
           
-# MAUI Android Build
   build-android:
     needs: build-and-test
     runs-on: windows-2022
@@ -119,62 +116,14 @@ jobs:
           name: app.eds-android-ci-build
           path: APP.Eds/APP.Eds/bin/Release/net8.0-android/*Signed.a*
           
-# Automated testing with Appium
   appium-tests-android:
     needs: build-android
     runs-on: ubuntu-latest
     name: Appium E2E Tests Android (Placeholder)
-    # runs-on: macos-latest
-    # name: Appium E2E Tests Android
-    # steps:
-    #   - name: Checkout code
-    #     uses: actions/checkout@v3
+    steps:
+      - name: Placeholder Step
+        run: echo "This job is reserved for future Appium tests."
 
-    #   - name: Configure AWS credentails
-    #     uses: aws-actions/configure-aws-credentials@v2
-    #     with:
-    #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #       aws-region: ${{ secrets.AWS_REGION }}
-
-    #   - name: Download APK from S3
-    #     run: |
-    #         mkdir -p app
-    #         aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/android/AppEds.apk --recursive --exclude "*" --include "*.apk"
-    #         mv AppEds.apk ./app/app-release.apk
-
-    #   - name: Install Node and Appium
-    #     uses: actions/setup-node@v4
-    #     with:
-    #           node-version: '20'
-
-    #   - name: Install Appium CLI and Drivers
-    #     run: |
-    #       npm install -g appium
-    #       appium driver install uiautomator2
-  
-    #   - name: Start Android Emulator
-    #     uses: reactivecircus/android-emulator-runner@v2
-    #     with:
-    #       api-level: 31
-    #       target: google_apis
-    #       arch: x86_64
-    #       profile: Pixel_4
-    #       script: |
-    #         echo "Installing APK"
-    #         adb install ./app/app-release.apk
-    #         echo "Starting Appium"
-    #         nohup appium &
-
-    #   - name: Setup .NET
-    #     uses: actions/setup-dotnet@v2
-    #     with:
-    #       dotnet-version: 8.0.x
-
-    #   - name: Run Appium E2E 
-    #     run: dotnet test Mobile_tests/Mobile_tests.csproj --no-build --verbosity normal
-
-# Upload APK to Amazon S3
   amazon-emulator:
     needs: appium-tests-android
     runs-on: ubuntu-latest
@@ -191,10 +140,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download Android Artifact
-        uses: actions/download-artifact@v4  # Download artifact
+        uses: actions/download-artifact@v4
         with:
-          name: app.eds-android-ci-build  # Artifact name
-          path: ./downloaded-artifacts  # Artifacts folder
+          name: app.eds-android-ci-build
+          path: ./downloaded-artifacts
 
       - name: Upload APK to S3
         run: |
@@ -208,7 +157,6 @@ jobs:
           mv "$APK_FILE" "./downloaded-artifacts/$NEW_APK_NAME"
           aws s3 cp "./downloaded-artifacts/$NEW_APK_NAME" s3://${{ secrets.S3_BUCKET_NAME }}/android/${NEW_APK_NAME} --acl private
         
-# MAUI Windows Build
   build-windows:
     needs: build-and-test
     runs-on: windows-2022
@@ -253,7 +201,6 @@ jobs:
           name: app-eds-windows-ci-build
           path: APP.Eds/APP.Eds/bin/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
 
-# Automated testing with Appium
   appium-tests-windows:
     needs: build-windows
     runs-on: windows-2022
@@ -262,11 +209,10 @@ jobs:
       - name: Placeholder Step
         run: echo "This job is reserved for future Appium tests."
 
-# Upload APK to Amazon S3
   windows-emulator:
     needs: [appium-tests-windows]
     runs-on: windows-2022
     name: Upload Artifact to Windows Emulation (Placeholder)
     steps:
       - name: Placeholder Step
-        run: echo "This job is reserved for future S3 uploads."
+        run: echo "This job is reserved for future Windows artifact uploads."
