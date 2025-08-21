@@ -31,12 +31,6 @@
                 Text="{Binding Ability, Mode=TwoWay}"
                 AutomationId="EntryCapacity"/>
 
-                <Label FontSize="16" Text="{Binding StockLabel}"/>
-                <Entry
-                Keyboard="Text"
-                Placeholder="{Binding StockPlaceholder}"
-                Text="{Binding Stock, Mode=TwoWay}"
-                AutomationId="EntryStock"/>
 
                 <Button
                 BackgroundColor="Green"

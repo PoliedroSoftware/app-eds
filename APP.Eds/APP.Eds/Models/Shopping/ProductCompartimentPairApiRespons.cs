@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace APP.Eds.Models.ShoppingProduct;
+namespace APP.Eds.Models.Shopping;
 
-public class CompartimentApiResponse
+public class ProducCompartimentPairApiResponse
 {
     [JsonPropertyName("statusCode")]
     public int StatusCode { get; set; }
@@ -14,5 +14,5 @@ public class CompartimentApiResponse
     public string Message { get; set; }
 
     [JsonPropertyName("data")]
-    public List<CompartimentResponse> Data { get; set; }
+    public List<ProductCompartimentPairModelRaw> Data { get; set; }
 }

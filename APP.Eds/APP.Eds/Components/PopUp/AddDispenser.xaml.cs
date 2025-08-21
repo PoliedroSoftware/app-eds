@@ -1,16 +1,13 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using APP.Eds.Services.Court;
+﻿using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
-
 
 public partial class AddDispenser : Popup
 {
     private readonly CourtService courtService;
     private bool isGallonsEditable = false;
-    private bool isAdmin = false;
+    private bool canEditPrice = false;
 
     public AddDispenser(CourtService courtService)
     {
@@ -18,16 +15,14 @@ public partial class AddDispenser : Popup
         this.courtService = courtService;
         SecondEntry.IsEnabled = isGallonsEditable;
         
-        // Check if the current user is an administrator
         CheckUserRole();
     }
 
     private void CheckUserRole()
     {
         var userRole = Preferences.Get("userRole", "User");
-        isAdmin = userRole == "Admin";
+        canEditPrice = userRole == "Admin" || userRole == "User";
         
-        // Update UI visibility after role is determined and UI is loaded
         Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
     }
     private void EditGallonsButton_Clicked(object sender, EventArgs e)
@@ -112,11 +107,15 @@ public partial class AddDispenser : Popup
 
     private void UpdateAccumulatedValues()
     {
-        if (BindingContext is CourtService vm)
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null)
         {
             if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
             {
-                vm.AccumulatedGallons = Math.Round(vm.LastAccumulatedGallons + (vm.AmountDifferenceResult / vm.SelectedHose.Price), 2);
+                double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                
+                double currentPrice = vm.SelectedHose.Price;
+                
+                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / currentPrice);
             }
             UpdateAccumulatedColors();
         }
@@ -149,10 +148,9 @@ public partial class AddDispenser : Popup
             if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
                 double price = vm.SelectedHose.Price;
-                PricePerGallonLabel.Text = $"{price:C2}";
+                PricePerGallonLabel.Text = $"{price:C3}";
                 
-                // For admin users, also set the editable price entry
-                if (isAdmin && PriceEditEntry != null)
+                if (canEditPrice && PriceEditEntry != null)
                 {
                     PriceEditEntry.Text = price.ToString("F2");
                 }
@@ -160,19 +158,18 @@ public partial class AddDispenser : Popup
             else
             {
                 PricePerGallonLabel.Text = "##.###";
-                if (isAdmin && PriceEditEntry != null)
+                if (canEditPrice && PriceEditEntry != null)
                 {
                     PriceEditEntry.Text = "";
                 }
             }
             
-            // Update UI visibility based on admin status
             UpdatePriceEditVisibility();
         }
         else
         {
             PricePerGallonLabel.Text = "##.###";
-            if (isAdmin && PriceEditEntry != null)
+            if (canEditPrice && PriceEditEntry != null)
             {
                 PriceEditEntry.Text = "";
             }
@@ -183,14 +180,12 @@ public partial class AddDispenser : Popup
     {
         if (PriceEditEntry != null && PriceEditButton != null)
         {
-            PriceEditEntry.IsVisible = isAdmin;
-            PriceEditButton.IsVisible = isAdmin;
+            PriceEditEntry.IsVisible = canEditPrice;
+            PriceEditButton.IsVisible = canEditPrice;
             
-            // For admin users, show editable controls and hide read-only label
-            // For non-admin users, show read-only label and hide editable controls
             if (PricePerGallonLabel != null)
             {
-                PricePerGallonLabel.IsVisible = !isAdmin;
+                PricePerGallonLabel.IsVisible = !canEditPrice;
             }
         }
     }
@@ -198,6 +193,25 @@ public partial class AddDispenser : Popup
     private void PriceEditEntry_Completed(object sender, EventArgs e)
     {
         UpdateSelectedHosePrice();
+    }
+
+    private void PriceEditEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        {
+            if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
+            {
+                vm.SelectedHose.Price = newPrice;
+                PricePerGallonLabel.Text = $"{newPrice:C2}";
+                
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    UpdateAccumulatedColors();
+                }
+            }
+        }
     }
 
     private void PriceEditButton_Clicked(object sender, EventArgs e)
@@ -217,12 +231,16 @@ public partial class AddDispenser : Popup
                 vm.SelectedHose.Price = newPrice;
                 PricePerGallonLabel.Text = $"{newPrice:C2}";
                 
-                // Recalculate gallons if amount is already entered
-                UpdateAccumulatedValues();
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    
+                    UpdateAccumulatedColors();
+                }
             }
             else
             {
-                // Reset to original price if invalid input
                 PriceEditEntry.Text = vm.SelectedHose.Price.ToString("F2");
             }
         }
