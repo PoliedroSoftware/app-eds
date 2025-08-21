@@ -16,6 +16,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     public ICommand EditCompartimentCommand { get; }
     public ICommand DeleteCompartimentCommand { get; }
 
+
     public CompartimentPostView()
 	{
 		InitializeComponent();
@@ -53,7 +54,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Debe ingresar un número válido mayor que 0.", "OK");
+                    await DisplayAlert("Error", "Debe ingresar un nÃºmero valido mayor que 0.", "OK");
                     return;
                 }
 
@@ -78,7 +79,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.SelectedTank == null || vm.IdTank <= 0)
                 {
-                    await DisplayAlert("Error", "Debe seleccionar un tanque válido.", "OK");
+                    await DisplayAlert("Error", "Debe seleccionar un tanque valido.", "OK");
                     return;
                 }
 
@@ -179,7 +180,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     {
         if (obj is CompartimentResponse compartiment)
         {
-            bool confirm = await DisplayAlert("Confirmar", $"¿Desea eliminar el compartimento {compartiment.Number}?", "Sí", "No");
+            bool confirm = await DisplayAlert("Confirmar", $"ï¿½Desea eliminar el compartimento {compartiment.Number}?", "Sï¿½", "No");
             if (confirm)
             {
                 await _compartimentService.DeleteCompartimentAsync(compartiment.IdCompartment);

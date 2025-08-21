@@ -8,7 +8,9 @@
     
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="15">
-                <Label FontSize="16" Text="Numero"/>
+            <Picker Title="{Binding SelectTank}" ItemsSource="{Binding TankList}" ItemDisplayBinding="{Binding Number}" SelectedItem="{Binding SelectedTank, Mode=TwoWay}" AutomationId="PickerTank"/>
+
+            <Label FontSize="16" Text="Numero"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
 
             <Label FontSize="16" Text="Capacidad nominal"/>
@@ -20,8 +22,6 @@
 
                 <Label FontSize="16" Text="Altura"/>
                 <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
-
-                <Picker Title="{Binding SelectTank}" ItemsSource="{Binding TankList}" ItemDisplayBinding="{Binding Number}" SelectedItem="{Binding SelectedTank, Mode=TwoWay}" AutomationId="PickerTank"/>
 
                 <Button BackgroundColor="Green" Clicked="Button_Clicked_1"
                         Text="{Binding SendData}" TextColor="White" CornerRadius="10"
