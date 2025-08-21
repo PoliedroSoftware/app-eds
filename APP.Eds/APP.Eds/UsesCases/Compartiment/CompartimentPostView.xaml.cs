@@ -69,12 +69,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                     return;
                 }
 
-                if (vm.Stock <= 0)
-                {
-                    await DisplayAlert("Error", "Debe ingresar un stock mayor que 0.", "OK");
-                    return;
-                }
-
+               
                 if (vm.Height <= 0)
                 {
                     await DisplayAlert("Error", "Debe ingresar una altura mayor que 0.", "OK");
