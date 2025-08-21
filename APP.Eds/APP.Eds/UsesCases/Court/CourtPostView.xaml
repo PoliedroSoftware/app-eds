@@ -63,21 +63,21 @@
                         <Label FontAttributes="Bold" FontSize="18" Text="{Binding CashCount}" HorizontalOptions="Center"/>
                         <Grid RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="20,*,*,20" RowSpacing="15">
                             <Label Text="{Binding SalesInMoney}" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center"/>
-                            <Label Text="{Binding TotalAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalAmount, StringFormat='$ {0:N3}'}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
 
                             <Label Text="{Binding SalesInGallons}" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalGallons, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalGallons, StringFormat='{0:N3}'}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
 
                             
                             <Label Text="{Binding Expenses}" FontAttributes="Bold" VerticalOptions="End" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" />
 
                             <Label Text="{Binding Collections}" FontAttributes="Bold" Grid.Row="2" Grid.Column="2" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" />
 
                             
                             <Label Text="{Binding TotalForTheDay}" FontAttributes="Bold" Grid.Row="4" Grid.Column="1" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalSales, StringFormat='$ {0:N0}'}" VerticalOptions="Center" Grid.Row="5" Grid.Column="1" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalSales, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="5" Grid.Column="1" HorizontalOptions="Center" />
                  
                             <Label Text="{Binding DistinticDescription}" Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" />
                             <Entry Keyboard="Numeric" Placeholder="Ingrese el distintic" Text="{Binding Distintic, Mode=TwoWay}" Grid.Row="5" Grid.Column="2" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
@@ -116,17 +116,17 @@
                                     <BoxView Grid.Row="1" Grid.ColumnSpan="4" ZIndex="-1"/>
 
                                     <Label Text="Monto acumulado" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
+                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N3}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Venta en dinero" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
-                                    <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N0}'}" Grid.Row="2" Grid.Column="2"/>
+                                    <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N3}'}" Grid.Row="2" Grid.Column="2"/>
                                     <BoxView Grid.Row="3" Grid.ColumnSpan="4" ZIndex="-1"/>
 
                                     <Label Text="Galones acumulados" FontAttributes="Bold" Grid.Row="3" Grid.Column="0"/>
-                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N2}'}" Grid.Row="3" Grid.Column="2"/>
+                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" Grid.Row="3" Grid.Column="2"/>
 
                                     <Label Text="Venta en galones" FontAttributes="Bold" Grid.Row="4" Grid.Column="0"/>
-                                    <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N2}'}" Grid.Row="4" Grid.Column="2"/>
+                                    <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N3}'}" Grid.Row="4" Grid.Column="2"/>
 
                                     <Button Text="X" 
                                         AutomationId="DeleteDispenserButton"
@@ -180,7 +180,7 @@
                                     <Label Text="{Binding TypeOfCollectionName}" Grid.Row="0" Grid.Column="2"/>
 
                                     <Label Text="Monto" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Descricion" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
@@ -287,7 +287,7 @@
                                     <Label Text="{Binding ExpenditureName}" Grid.Row="0" Grid.Column="2"/>
 
                                     <Label Text="Monto" FontAttributes="Bold" Grid.Row="1" Grid.Column="0"/>
-                                    <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" Grid.Row="1" Grid.Column="2"/>
+                                    <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" Grid.Row="1" Grid.Column="2"/>
 
                                     <Label Text="Descricion" FontAttributes="Bold" Grid.Row="2" Grid.Column="0"/>
                                     <Label Text="{Binding Description}" Grid.Row="2" Grid.Column="2"/>
