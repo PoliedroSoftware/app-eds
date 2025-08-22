@@ -128,6 +128,7 @@ namespace APP.Eds
         private void ShowError(string message, string color = "Red")
         {
             ErrorLabel.Text = message;
+            ErrorLabel.TextColor = color == "Red" ? Colors.Red : Colors.Green;
             ErrorSection.IsVisible = true;
         }
 
