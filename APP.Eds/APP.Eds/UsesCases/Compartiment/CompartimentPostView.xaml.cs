@@ -16,6 +16,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     public ICommand EditCompartimentCommand { get; }
     public ICommand DeleteCompartimentCommand { get; }
 
+
     public CompartimentPostView()
 	{
 		InitializeComponent();
@@ -53,7 +54,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Debe ingresar un n�mero v�lido mayor que 0.", "OK");
+
                     return;
                 }
 
@@ -78,7 +79,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.SelectedTank == null || vm.IdTank <= 0)
                 {
-                    await DisplayAlert("Error", "Debe seleccionar un tanque v�lido.", "OK");
+
                     return;
                 }
 
