@@ -68,27 +68,27 @@ namespace APP.Eds.Services.Navigation
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
-                    new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
-                    new("Administración", new List<MenuItemModel>
+                    new("🧙‍♂️ Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
+                    new("Administración", "⚙️", new List<MenuItemModel>
                     {
                         new("Corte", typeof(CourtPostView)),
                         new("Negocio", typeof(BusinessPostView)),
                         new("Registre una EDS", typeof(EdsPostView))
                     }),
-                    new("Dispensadores y mangueras", new List<MenuItemModel>
+                    new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
                         new("Dispensadores", typeof(DispensersPostView)),
                         new("Manguera", typeof(HosePostView)),
                         new("Historial de la manguera", typeof(HoseHistoryPostView))
                     }),
-                    new("Compras y productos", new List<MenuItemModel>
+                    new("Compras y productos", "🛒", new List<MenuItemModel>
                     {
                         new("Agregar productos", typeof(ProductPostView)),
                         new("Compras", typeof(ShoppingPostView)),
                         new("Proveedor", typeof(ProviderPostView)),
                         new("Categoría", typeof(CategoryPostView))
                     }),
-                    new("Tanques y compartimentos", new List<MenuItemModel>
+                    new("Tanques y compartimentos", "🛢️", new List<MenuItemModel>
                     {
                         new("Capacidad", typeof(CapacityPostView)),
                         new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
@@ -97,7 +97,7 @@ namespace APP.Eds.Services.Navigation
                         new("Compartimento", typeof(CompartimentPostView)),
                         new("Compartimento del producto", typeof(ProductCompartimentPostView))
                     }),
-                    new("EDS y otros", new List<MenuItemModel>
+                    new("EDS y otros", "🏪", new List<MenuItemModel>
                     {
                         new("Tipos de G", typeof(ExpendituresPostView)),
                         new("Registre un Islero", typeof(IslanderPostView)),
@@ -105,7 +105,7 @@ namespace APP.Eds.Services.Navigation
                         new("Tipo de colección", typeof(TypeOfCollectionPostView))
                     }),
                     // Cambio de modal a navegación directa
-                    new("Inventario", NavigateToInventoryCommand, isDirectNavigation: true)
+                    new("Inventario", "📦", NavigateToInventoryCommand, isDirectNavigation: true)
                 };
             }
             else
@@ -117,13 +117,15 @@ namespace APP.Eds.Services.Navigation
         public class CategoryModel
         {
             public string Title { get; set; }
+            public string Icon { get; set; }
             public ICommand ShowPopupCommand { get; }
             public List<MenuItemModel> Items { get; set; }
             public bool IsDirectNavigation { get; set; }
 
-            public CategoryModel(string title, List<MenuItemModel> items)
+            public CategoryModel(string title, string icon, List<MenuItemModel> items)
             {
                 Title = title;
+                Icon = icon;
                 Items = items;
                 IsDirectNavigation = false;
                 ShowPopupCommand = new Command(() =>
@@ -133,9 +135,10 @@ namespace APP.Eds.Services.Navigation
                 });
             }
 
-            public CategoryModel(string title, ICommand directCommand, bool isDirectNavigation = false)
+            public CategoryModel(string title, string icon, ICommand directCommand, bool isDirectNavigation = false)
             {
                 Title = title;
+                Icon = icon;
                 Items = new List<MenuItemModel>();
                 IsDirectNavigation = isDirectNavigation;
                 ShowPopupCommand = directCommand;
@@ -144,29 +147,13 @@ namespace APP.Eds.Services.Navigation
 
         public class MenuItemModel
         {
-            public string Name { get; set; }
-            public Type Page { get; set; }
-            public Page PageInstance { get; set; }
-            public ICommand NavigateCommand { get; }
+            public string Title { get; set; }
+            public Type PageType { get; set; }
 
-            public MenuItemModel(string name, Type page)
+            public MenuItemModel(string title, Type pageType)
             {
-                Name = name;
-                Page = page;
-                NavigateCommand = new Command(async () =>
-                {
-                    if (Application.Current?.MainPage is NavigationPage navPage)
-                    {
-
-                        if (PageInstance == null)
-                        {
-                            PageInstance = (Page)Activator.CreateInstance(Page);
-                        }
-
-                        await navPage.PushAsync(PageInstance);
-                    }
-                });
-
+                Title = title;
+                PageType = pageType;
             }
         }
     }
