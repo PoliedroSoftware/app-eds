@@ -451,4 +451,53 @@
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
+    <!-- Custom Login Styles -->
+    <Style x:Key="LoginCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="30" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{StaticResource Black}" 
+                        Offset="0,8" 
+                        Radius="24" 
+                        Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LoginInputStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Gray50}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{StaticResource Gray200}" />
+    </Style>
+
+    <Style x:Key="LoginTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource Gray900}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="LoginSubtitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource Gray500}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="InputLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontAttributes" Value="Medium" />
+        <Setter Property="TextColor" Value="{StaticResource Gray700}" />
+    </Style>
+
+    <Style x:Key="IconLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextColor" Value="{StaticResource Gray400}" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+    </Style>
+
 </ResourceDictionary>

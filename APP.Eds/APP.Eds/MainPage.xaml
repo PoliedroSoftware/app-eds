@@ -58,50 +58,28 @@
             
             <!-- Login Card -->
             <Border Grid.Row="1" 
-                    BackgroundColor="{StaticResource White}"
-                    StrokeShape="RoundRectangle 16"
-                    StrokeThickness="0"
-                    Padding="30"
+                    Style="{StaticResource LoginCardStyle}"
                     Margin="0,40,0,20"
                     VerticalOptions="Center">
-                <Border.Shadow>
-                    <Shadow Brush="{StaticResource Black}" 
-                            Offset="0,8" 
-                            Radius="24" 
-                            Opacity="0.1"/>
-                </Border.Shadow>
                 
                 <StackLayout Spacing="25">
                     <!-- Welcome Text -->
                     <StackLayout Spacing="8">
                         <Label Text="¡Bienvenido de vuelta!"
-                               FontSize="22"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Gray900}"
-                               HorizontalOptions="Center"/>
+                               Style="{StaticResource LoginTitleStyle}"/>
                         <Label Text="Ingresa tus credenciales para continuar"
-                               FontSize="14"
-                               TextColor="{StaticResource Gray500}"
-                               HorizontalOptions="Center"/>
+                               Style="{StaticResource LoginSubtitleStyle}"/>
                     </StackLayout>
                     
                     <!-- Username Field -->
                     <StackLayout Spacing="8">
                         <Label Text="Nombre de Usuario"
-                               FontSize="14"
-                               FontAttributes="Medium"
-                               TextColor="{StaticResource Gray700}"/>
-                        <Border BackgroundColor="{StaticResource Gray50}"
-                                StrokeShape="RoundRectangle 8"
-                                StrokeThickness="1"
-                                Stroke="{StaticResource Gray200}">
+                               Style="{StaticResource InputLabelStyle}"/>
+                        <Border Style="{StaticResource LoginInputStyle}">
                             <Grid ColumnDefinitions="Auto,*" Padding="15,12">
                                 <Label Grid.Column="0" 
                                        Text="👤" 
-                                       FontSize="18"
-                                       TextColor="{StaticResource Gray400}"
-                                       VerticalOptions="Center"
-                                       Margin="0,0,12,0"/>
+                                       Style="{StaticResource IconLabelStyle}"/>
                                 <Entry x:Name="UsernameEntry"
                                        Grid.Column="1"
                                        Placeholder="Ingresa tu usuario"
@@ -119,20 +97,12 @@
                     <!-- Password Field -->
                     <StackLayout Spacing="8">
                         <Label Text="Contraseña"
-                               FontSize="14"
-                               FontAttributes="Medium"
-                               TextColor="{StaticResource Gray700}"/>
-                        <Border BackgroundColor="{StaticResource Gray50}"
-                                StrokeShape="RoundRectangle 8"
-                                StrokeThickness="1"
-                                Stroke="{StaticResource Gray200}">
+                               Style="{StaticResource InputLabelStyle}"/>
+                        <Border Style="{StaticResource LoginInputStyle}">
                             <Grid ColumnDefinitions="Auto,*" Padding="15,12">
                                 <Label Grid.Column="0" 
                                        Text="🔒" 
-                                       FontSize="18"
-                                       TextColor="{StaticResource Gray400}"
-                                       VerticalOptions="Center"
-                                       Margin="0,0,12,0"/>
+                                       Style="{StaticResource IconLabelStyle}"/>
                                 <Entry x:Name="PasswordEntry"
                                        Grid.Column="1"
                                        Placeholder="Ingresa tu contraseña"
@@ -145,6 +115,21 @@
                                        AutomationId="EntryPassword"/>
                             </Grid>
                         </Border>
+                    </StackLayout>
+                    
+                    <!-- Remember Me Option -->
+                    <StackLayout Orientation="Horizontal" Spacing="8" Margin="0,5,0,0">
+                        <CheckBox x:Name="RememberMeCheckBox" 
+                                  Color="{StaticResource Primary}"
+                                  VerticalOptions="Center"/>
+                        <Label Text="Recordar mis credenciales"
+                               FontSize="14"
+                               TextColor="{StaticResource Gray600}"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRememberMeTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
                     </StackLayout>
                     
                     <!-- Login Button -->

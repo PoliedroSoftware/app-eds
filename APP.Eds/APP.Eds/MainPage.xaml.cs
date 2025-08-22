@@ -146,5 +146,10 @@ namespace APP.Eds
         {
             PasswordEntry.Focus();
         }
+
+        private void OnRememberMeTapped(object sender, EventArgs e)
+        {
+            RememberMeCheckBox.IsChecked = !RememberMeCheckBox.IsChecked;
+        }
     }
 }
