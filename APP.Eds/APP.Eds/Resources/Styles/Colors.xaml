@@ -16,6 +16,12 @@
     <!-- Custom Green Colors for Login Button -->
     <Color x:Key="LoginGreen">#4CAF50</Color>
     <Color x:Key="LoginGreenDark">#388E3C</Color>
+    
+    <!-- Semantic Colors -->
+    <Color x:Key="Success">#4CAF50</Color>
+    <Color x:Key="Warning">#FF9800</Color>
+    <Color x:Key="Error">#F44336</Color>
+    <Color x:Key="Info">#2196F3</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
@@ -38,6 +44,7 @@
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
     <SolidColorBrush x:Key="LoginGreenBrush" Color="{StaticResource LoginGreen}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
 
