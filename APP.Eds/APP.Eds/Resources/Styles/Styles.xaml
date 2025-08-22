@@ -178,4 +178,196 @@
         <Setter Property="Margin" Value="0,0,12,0" />
     </Style>
 
+    <!-- Bottom Navigation Styles -->
+    <Style x:Key="BottomNavContainerStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 24, 24, 0, 0" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray950}}" 
+                        Offset="0,-3" 
+                        Radius="25" 
+                        Opacity="0.12"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NavItemIndicatorStyle" TargetType="Border">
+        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="WidthRequest" Value="56" />
+        <Setter Property="HeightRequest" Value="36" />
+        <Setter Property="Opacity" Value="0.8" />
+    </Style>
+
+    <Style x:Key="NavItemLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="ActiveLineStyle" TargetType="BoxView">
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="3" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,-12" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="SlidingIndicatorStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 2" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="HeightRequest" Value="4" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="HorizontalOptions" Value="Start" />
+        <Setter Property="Margin" Value="0,0,0,-14" />
+        <Setter Property="Opacity" Value="0.9" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{StaticResource Primary}" 
+                        Offset="0,2" 
+                        Radius="6" 
+                        Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Enhanced Button Hover Effects -->
+    <Style x:Key="ModernActionButtonStyle" TargetType="Button">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="BorderWidth" Value="0"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="MinimumHeightRequest" Value="52"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{Binding BackgroundColor, Source={RelativeSource Self}}" 
+                        Offset="0,3" 
+                        Radius="6" 
+                        Opacity="0.3"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Enhanced Card Styles -->
+    <Style x:Key="ModernCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray950}}" 
+                        Offset="0,2" 
+                        Radius="8" 
+                        Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HeaderCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{StaticResource Primary}" 
+                        Offset="0,4" 
+                        Radius="12" 
+                        Opacity="0.3"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Enhanced Bottom Navigation Styles -->
+    <Style x:Key="EnhancedBottomNavContainerStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 28, 28, 0, 0" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray950}}" 
+                        Offset="0,-4" 
+                        Radius="28" 
+                        Opacity="0.12"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NavCircleIndicatorStyle" TargetType="Ellipse">
+        <Setter Property="WidthRequest" Value="52" />
+        <Setter Property="HeightRequest" Value="52" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="NavDotIndicatorStyle" TargetType="Ellipse">
+        <Setter Property="WidthRequest" Value="6" />
+        <Setter Property="HeightRequest" Value="6" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="Margin" Value="0,0,0,-8" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="PrimarySendButtonStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Success}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{StaticResource Success}" 
+                        Offset="0,8" 
+                        Radius="24" 
+                        Opacity="0.3"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RequiredActionsCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="Stroke" Value="#F44336" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="#F44336" 
+                        Offset="0,3" 
+                        Radius="12" 
+                        Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Compact Action Button Style -->
+    <Style x:Key="CompactActionButtonStyle" TargetType="Button">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="BorderWidth" Value="0"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="HeightRequest" Value="48"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="{Binding BackgroundColor, Source={RelativeSource Self}}" 
+                        Offset="0,2" 
+                        Radius="8" 
+                        Opacity="0.25"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
