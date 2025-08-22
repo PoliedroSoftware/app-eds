@@ -87,15 +87,7 @@
 
                 <!-- Dispensers con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedDispensers" IsVisible="{Binding VisibleDispenser}">
-                    <Label  Text="{Binding AddedDispensers}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="➖"
-                             Command="{Binding HideListDispenser}"
-                             AutomationId="HideDispenserListButton"
-                             WidthRequest="46" HeightRequest="46"
-                             BackgroundColor="Transparent"
-                             HorizontalOptions="End"
-                             Grid.Column="1">
-                    </Button>
+                    <Label Text="Ventas por mangueras" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Grid>
 
                 <CollectionView ItemsSource="{Binding CourtDispensers}" IsVisible="{Binding VisibleDispenser}" x:Name="CourtDispensers">
@@ -138,15 +130,7 @@
 
                 <!-- Collections con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="TypesofAggregateCollections" IsVisible="{Binding VisibleReceipts}">
-                    <Label  Text="{Binding TypesofAggregateCollections}" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button Text="➖"
-                            Command="{Binding HideCollectionList}"
-                            AutomationId="HideCollectionListButton"
-                            WidthRequest="46"  HeightRequest="46"
-                            BackgroundColor="Transparent"
-                            HorizontalOptions="End"
-                            Grid.Column="1">
-                    </Button>
+                    <Label Text="Formas de pago" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Grid>
 
                 <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" IsVisible="{Binding VisibleReceipts}"  x:Name="CourtTypeOfCollections">
@@ -182,13 +166,6 @@
                 <!-- Documents con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto" x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
                     <Label Text="Comprobantes" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="➖"
-                             Command="{Binding HideDocumentList}"
-                             AutomationId="HideDocumentListButton"
-                             WidthRequest="46"  HeightRequest="46"
-                             BackgroundColor="Transparent" HorizontalOptions="End"
-                             Grid.Column="1">
-                    </Button>
                 </Grid>
 
                 <CollectionView ItemsSource="{Binding CourtDocuments}" IsVisible="{Binding VisibleDocuments}" x:Name="CourtDocuments">
@@ -217,15 +194,7 @@
 
                 <!-- Expenses con botón de eliminar -->
                 <Grid ColumnDefinitions="*, Auto"  x:Name="AddedExpenses" IsVisible="{Binding VisibleExpenses}">
-                    <Label  Text="{Binding AddedExpenses}"  FontAttributes="Bold"  FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
-                    <Button  Text="➖"
-                             Command="{Binding HideExpenseList}"
-                             AutomationId="HideExpenseListButton"
-                             WidthRequest="46" HeightRequest="46"
-                             BackgroundColor="Transparent"
-                             HorizontalOptions="End"
-                             Grid.Column="1">
-                    </Button>
+                    <Label Text="Gastos" FontAttributes="Bold" FontSize="18" Grid.ColumnSpan="2" VerticalOptions="Center" HorizontalOptions="Center"/>
                 </Grid>
 
                 <CollectionView ItemsSource="{Binding CourtExpenditures}" IsVisible="{Binding VisibleExpenses}"  x:Name="CourtExpenditures">
