@@ -4,59 +4,167 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="APP.Eds.Views.Popups.CategoryPopup"
-    xmlns:button="clr-namespace:APP.Eds.Controls"
-    CanBeDismissedByTappingOutsideOfPopup="False"
+    CanBeDismissedByTappingOutsideOfPopup="True"
     Color="Transparent"
     VerticalOptions="Center"
     HorizontalOptions="Center"
     AutomationId="PopupCategory">
 
-    <Frame x:Name="Frame"
-           BorderColor="#6200E8"          
-           WidthRequest="400"
-           VerticalOptions="Center" HorizontalOptions="Center"
-           CornerRadius="15"
-           HasShadow="False"
-           AutomationId="FrameCategory">
+    <Border x:Name="Frame"
+            BackgroundColor="{StaticResource White}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0"
+            WidthRequest="380"
+            Padding="0"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            AutomationId="FrameCategory">
+        
+        <Border.Shadow>
+            <Shadow Brush="{StaticResource Primary}" 
+                    Offset="0,8" 
+                    Radius="25" 
+                    Opacity="0.3"/>
+        </Border.Shadow>
 
         <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
 
-            <!-- Encabezado fijo -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,25">
-                <Label Grid.Column="1" x:Name="CategoryTitle"
-                       FontAttributes="Bold" FontSize="21"
-                       HorizontalOptions="Center" VerticalOptions="Center"
-                       AutomationId="LabelCategoryTitle"/>
+            <!-- Encabezado moderno -->
+            <Border Grid.Row="0"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0"
+                    Padding="25,20">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource Secondary}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                
+                <Grid ColumnDefinitions="*, Auto">
+                    <StackLayout Grid.Column="0" Spacing="4">
+                        <Label x:Name="CategoryTitle"
+                               FontAttributes="Bold" 
+                               FontSize="20"
+                               TextColor="{StaticResource White}"
+                               AutomationId="LabelCategoryTitle"/>
+                        <Label Text="Selecciona una opción"
+                               FontSize="14"
+                               TextColor="{StaticResource White}"
+                               Opacity="0.8"/>
+                    </StackLayout>
 
-                <Button Grid.Column="2"                      
-                        Clicked="OnCloseTapped"
-                        FontSize="20" Text="✖" TextColor="#6200E8"
-                        WidthRequest="25" HeightRequest="25" Padding="-10"
-                        HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,0,0"
-                        BackgroundColor="Transparent"
-                        AutomationId="ButtonClosePopup"/>
-            </Grid>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource White}"
+                            StrokeShape="RoundRectangle 15"
+                            StrokeThickness="0"
+                            WidthRequest="30" 
+                            HeightRequest="30"
+                            Padding="0"
+                            VerticalOptions="Center"
+                            AutomationId="ButtonClosePopup">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="✕"
+                               FontSize="16" 
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"/>
+                    </Border>
+                </Grid>
+            </Border>
             
-            <!-- Menu -->
-            <CollectionView Grid.Row="1"
-                            x:Name="MenuItemsList"
-                            ItemSizingStrategy="MeasureAllItems"
-                            MaximumHeightRequest="550"
-                            Margin="0,20,0,0"
-                            AutomationId="CollectionViewMenuItems">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <button:HoverButtonPopup
-                            Text="{Binding Name}" 
-                            Command="{Binding NavigateCommand}" 
-                            Margin="0,0,0,10"
-                            Clicked="OnMenuItemClicked"
-                            Padding="10,5,10,10"
-                            AutomationId="ButtonMenuItem"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <!-- Lista de elementos del menú -->
+            <ScrollView Grid.Row="1" 
+                        Padding="20,15,20,20">
+                <CollectionView x:Name="MenuItemsList"
+                                ItemSizingStrategy="MeasureAllItems"
+                                AutomationId="CollectionViewMenuItems">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,4"
+                                    BackgroundColor="{StaticResource Gray50}"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="1"
+                                    Stroke="{StaticResource Gray200}"
+                                    Padding="18,14"
+                                    AutomationId="ButtonMenuItem">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding .}" Value="{x:Null}">
+                                        <Setter Property="IsVisible" Value="False"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding NavigateCommand}" 
+                                                          Tapped="OnMenuItemClicked"/>
+                                </Border.GestureRecognizers>
+                                
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Gray50}"/>
+                                                <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                                                <Setter Property="Scale" Value="1"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Scale" Value="0.96"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                    <!-- Icono del elemento -->
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="{StaticResource Secondary}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            WidthRequest="32"
+                                            HeightRequest="32"
+                                            Margin="0,0,12,0"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding Icon}"
+                                               FontSize="14"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Border>
+                                    
+                                    <!-- Línea indicadora -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{StaticResource Primary}"
+                                            StrokeShape="RoundRectangle 2"
+                                            StrokeThickness="0"
+                                            WidthRequest="4"
+                                            HeightRequest="24"
+                                            Margin="0,0,15,0"
+                                            VerticalOptions="Center"/>
+                                    
+                                    <!-- Texto del elemento -->
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Name}"
+                                           FontSize="16"
+                                           TextColor="{StaticResource Gray900}"
+                                           VerticalOptions="Center"/>
+                                    
+                                    <!-- Flecha -->
+                                    <Label Grid.Column="3"
+                                           Text="▶"
+                                           FontSize="12"
+                                           TextColor="{StaticResource Primary}"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
         </Grid>
-    </Frame>
+    </Border>
 
 </toolkit:Popup>
