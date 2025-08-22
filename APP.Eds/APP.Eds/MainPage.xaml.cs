@@ -37,9 +37,11 @@ namespace APP.Eds
         {
             try
             {
+                LoadingSection.IsVisible = true;
                 LoadingIndicator.IsVisible = true;
                 LoadingIndicator.IsRunning = true;
-                ErrorLabel.IsVisible = false;
+                ErrorSection.IsVisible = false;
+                LoginButton.IsEnabled = false;
 
                 string username = UsernameEntry.Text;
                 string password = PasswordEntry.Text;
@@ -115,8 +117,10 @@ namespace APP.Eds
             }
             finally
             {
+                LoadingSection.IsVisible = false;
                 LoadingIndicator.IsVisible = false;
                 LoadingIndicator.IsRunning = false;
+                LoginButton.IsEnabled = true;
             }
         }
 
@@ -124,8 +128,7 @@ namespace APP.Eds
         private void ShowError(string message, string color = "Red")
         {
             ErrorLabel.Text = message;
-            ErrorLabel.TextColor = color == "Red" ? Colors.Red : Colors.Green;
-            ErrorLabel.IsVisible = true;
+            ErrorSection.IsVisible = true;
         }
 
         private string PadBase64(string base64)
