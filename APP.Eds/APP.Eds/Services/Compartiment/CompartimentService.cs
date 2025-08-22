@@ -8,6 +8,7 @@ using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
+using System.Linq;
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -437,6 +438,24 @@ namespace APP.Eds.Services.Compartiment
                     await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tanque", "OK");
                     return;
                 }
+
+                // Validar si el compartimiento ya existe para el tanque seleccionado
+                var existingCompartment = CompartimentList.FirstOrDefault(c => 
+                    c.Number == Number && c.IdTank == SelectedTank.IdTank);
+                if (existingCompartment != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Información", "Este compartimiento ya fue registrado para el tanque.", "OK");
+                    return;
+                }
+
+                // Validar si el tanque ya tiene todos sus compartimientos registrados
+                var existingCompartmentsCount = CompartimentList.Count(c => c.IdTank == SelectedTank.IdTank);
+                if (existingCompartmentsCount >= SelectedTank.Compartment)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Información", "El tanque ya tiene todos sus compartimientos registrados. No es posible agregar más.", "OK");
+                    return;
+                }
+
                 Compartiment = new CompartimentModel
                 {
                     Number = Number,

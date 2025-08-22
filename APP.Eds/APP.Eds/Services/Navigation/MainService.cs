@@ -17,6 +17,7 @@ using APP.Eds.UsesCases.ProductCompartiment;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Shopping;
 using APP.Eds.UsesCases.Tank;
+using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.UsesCases.Wizard;
 using APP.Eds.Views.Popups;
@@ -93,6 +94,7 @@ namespace APP.Eds.Services.Navigation
                         new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
                         new("Tanque EDS", typeof(EdsTankPostView)),
                         new("Tanque", typeof(TankPostView)),
+                        new("Compartimento", typeof(CompartimentPostView)),
                         new("Compartimento del producto", typeof(ProductCompartimentPostView))
                     }),
                     new("EDS y otros", new List<MenuItemModel>
