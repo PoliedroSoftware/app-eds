@@ -17,49 +17,57 @@
     </ContentPage.Background>
     
     <ScrollView>
-        <Grid RowDefinitions="Auto,*,Auto" Padding="30,40">
+        <Grid RowDefinitions="Auto,*,Auto" Padding="30,30">
             
             <!-- Logo/Branding Section -->
-            <StackLayout Grid.Row="0" Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
-                <!-- Logo placeholder - using icon font -->
+            <StackLayout Grid.Row="0" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
+                <!-- Poliedro Logo -->
                 <Border BackgroundColor="{StaticResource White}"
-                        StrokeShape="RoundRectangle 30"
-                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 25"
+                        StrokeThickness="2"
+                        Stroke="{StaticResource Primary}"
                         HeightRequest="80"
-                        WidthRequest="80"
-                        HorizontalOptions="Center">
+                        WidthRequest="160"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
                     <Border.Shadow>
                         <Shadow Brush="{StaticResource Primary}" 
-                                Offset="0,4" 
-                                Radius="8" 
+                                Offset="0,6" 
+                                Radius="20" 
                                 Opacity="0.3"/>
                     </Border.Shadow>
-                    <Label Text="🏢" 
-                           FontSize="40"
+                    <Image Source="poliedro.jpeg" 
+                           Aspect="AspectFit"
+                           HeightRequest="60"
+                           WidthRequest="140"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="{StaticResource Primary}"/>
+                           BackgroundColor="Transparent"/>
                 </Border>
                 
                 <!-- App Title -->
-                <Label Text=" POLIEDRO EDS"
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="{StaticResource White}"
-                       HorizontalOptions="Center"/>
-                       
-                <Label Text="Sistema de Gestión de Estaciones de Servicio"
-                       FontSize="14"
-                       TextColor="{StaticResource White}"
-                       Opacity="0.8"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"/>
+                <StackLayout Spacing="3" HorizontalOptions="Center">
+                    <Label Text="POLIEDRO EDS"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                           
+                    <Label Text="Sistema de Gestión de Estaciones de Servicio"
+                           FontSize="13"
+                           TextColor="{StaticResource Gray900}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,5"/>
+                </StackLayout>
             </StackLayout>
             
             <!-- Login Card -->
             <Border Grid.Row="1" 
                     Style="{StaticResource LoginCardStyle}"
-                    Margin="0,40,0,20"
+                    Margin="0,10,0,20"
                     VerticalOptions="Center">
                 
                 <StackLayout Spacing="25">
@@ -143,6 +151,7 @@
                                           NormalColor="{StaticResource Primary}"
                                           HoverColor="{StaticResource Tertiary}"
                                           PressedColor="{StaticResource PrimaryDark}"
+                                          TextColor="{StaticResource White}"
                                           Margin="0,10,0,0"
                                           AutomationId="ButtonLogin">
                         <controls:HoverButton.Shadow>
