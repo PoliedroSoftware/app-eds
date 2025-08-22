@@ -42,7 +42,7 @@
                 </Border>
                 
                 <!-- App Title -->
-                <Label Text="EDS Manager"
+                <Label Text=" POLIEDRO EDS"
                        FontSize="28"
                        FontAttributes="Bold"
                        TextColor="{StaticResource White}"
@@ -137,7 +137,7 @@
                                           Text="Iniciar Sesión"
                                           Clicked="OnLoginClicked"
                                           FontSize="16"
-                                          FontAttributes="Medium"
+                                          FontAttributes="Bold"
                                           HeightRequest="50"
                                           CornerRadius="8"
                                           NormalColor="{StaticResource Primary}"
