@@ -54,7 +54,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Debe ingresar un número valido mayor que 0.", "OK");
+
                     return;
                 }
 
@@ -79,7 +79,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.SelectedTank == null || vm.IdTank <= 0)
                 {
-                    await DisplayAlert("Error", "Debe seleccionar un tanque valido.", "OK");
+
                     return;
                 }
 

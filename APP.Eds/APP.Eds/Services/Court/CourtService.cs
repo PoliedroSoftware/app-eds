@@ -718,7 +718,18 @@ namespace APP.Eds.Services.Court
             }
         }
 
-
+        private bool _visibleAdditionalInfo = false;
+        public bool VisibleAdditionalInfo
+        {
+            get => _visibleAdditionalInfo;
+            set
+            {
+                _visibleAdditionalInfo = value;
+                OnPropertyChanged(nameof(VisibleAdditionalInfo));
+            }
+        }
+ 
+ 
         //VALIDATION PICKER
 
         private bool _isBusinessSelected;
@@ -2259,8 +2270,13 @@ namespace APP.Eds.Services.Court
 
         public CourtService()
         {
+            VisibleDispenser = false;
+            VisibleDocuments = false;
+            VisibleExpenses = false;
+            VisibleReceipts = false;
+            VisibleAdditionalInfo = false;
            
-
+ 
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             
 
@@ -2529,6 +2545,7 @@ GetAllEdsData()
         public async Task SaveAdditionalInfoAsync(string description)
         {
             AdditionalInfoDescription = description;
+            VisibleAdditionalInfo = !string.IsNullOrEmpty(description);
             OnPropertyChanged(nameof(AdditionalInfoDescription));
         }
 
@@ -2710,7 +2727,7 @@ GetAllEdsData()
 
             CourtDispensers.Add(newDispenser);
             Court.CourtDispensers = CourtDispensers.ToList();
-            VisibleDispenser = true; // Make visible after data is added
+            VisibleDispenser = true;
 
             AddAmountDifferenceResult(AccumulatedAmount, LastAccumulatedAmount);
             AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
@@ -2738,6 +2755,7 @@ GetAllEdsData()
             }
 
             Court.CourtDocuments = CourtDocuments.ToList();
+            VisibleDocuments = true;
         }
 
 
@@ -2764,7 +2782,7 @@ GetAllEdsData()
 
             CourtExpenditures.Add(newCourtExpenditure);
             Court.CourtExpenditures = CourtExpenditures.ToList();
-            VisibleExpenses = true; // Make visible after data is added
+            VisibleExpenses = true;
 
             TotalSales = GetTotalSales();
             CourtExpenditureAmount = 0;
@@ -2793,6 +2811,7 @@ GetAllEdsData()
 
             CourtTypeOfCollections.Add(newCourtTypeOfCollection);
             Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
+            VisibleReceipts = true;
 
             TotalSales = GetTotalSales();
             CourtTypeOfCollectionAmount = 0;
