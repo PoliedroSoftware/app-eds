@@ -5,9 +5,9 @@ namespace APP.Eds.Controls
     public class HoverButton : MauiButton
     {
         // Propiedades para los colores personalizables
-        public Color NormalColor { get; set; } = Colors.Green;
-        public Color HoverColor { get; set; } = Colors.DarkGreen;
-        public Color PressedColor { get; set; } = Colors.White;
+        public Color NormalColor { get; set; } = Colors.Purple;
+        public Color HoverColor { get; set; } = Colors.DarkMagenta;
+        public Color PressedColor { get; set; } = Colors.Plum;
 
         public HoverButton()
         {
@@ -66,6 +66,8 @@ namespace APP.Eds.Controls
 
         private Color InterpolateColor(Color from, Color to, double t)
         {
+            if (from.IsDefault()) from = Colors.Transparent;
+            if (to.IsDefault()) to = Colors.Transparent;
 
             return Color.FromRgba(
                 from.Red + (to.Red - from.Red) * t,
@@ -151,6 +153,6 @@ namespace APP.Eds.Controls
                 from.Green + (to.Green - from.Green) * t,
                 from.Blue + (to.Blue - from.Blue) * t,
                 from.Alpha + (to.Alpha - from.Alpha) * t);
+            }
         }
     }
-}
