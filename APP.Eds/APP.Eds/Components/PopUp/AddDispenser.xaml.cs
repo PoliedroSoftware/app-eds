@@ -1,5 +1,6 @@
 ﻿using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
+using System.Diagnostics;
 
 namespace APP.Eds.Components.PopUp;
 
@@ -8,6 +9,8 @@ public partial class AddDispenser : Popup
     private readonly CourtService courtService;
     private bool isGallonsEditable = false;
     private bool canEditPrice = false;
+    private bool _isDisposed = false;
+    private readonly object _disposeLock = new object();
 
     public AddDispenser(CourtService courtService)
     {
@@ -16,144 +19,174 @@ public partial class AddDispenser : Popup
         SecondEntry.IsEnabled = isGallonsEditable;
         
         CheckUserRole();
+        
+        // Configurar binding context de forma segura
+        BindingContext = courtService;
     }
 
     private void CheckUserRole()
     {
-        var userRole = Preferences.Get("userRole", "User");
-        canEditPrice = userRole == "Admin" || userRole == "User";
-        
-        Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
+        ExecuteSafely(() =>
+        {
+            var userRole = Preferences.Get("userRole", "User");
+            canEditPrice = userRole == "Admin" || userRole == "User";
+            
+            Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
+        });
     }
+
     private void EditGallonsButton_Clicked(object sender, EventArgs e)
     {
-        isGallonsEditable = !isGallonsEditable;
-        SecondEntry.IsEnabled = isGallonsEditable;
-        if (isGallonsEditable)
+        ExecuteSafely(() =>
         {
-            SecondEntry.Focus();
-            SecondEntry.CursorPosition = SecondEntry.Text?.Length ?? 0;
-        }
+            isGallonsEditable = !isGallonsEditable;
+            SecondEntry.IsEnabled = isGallonsEditable;
+            if (isGallonsEditable)
+            {
+                SecondEntry.Focus();
+                SecondEntry.CursorPosition = SecondEntry.Text?.Length ?? 0;
+            }
+        });
     }
+
     private void OnCloseTapped(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm)
+        ExecuteSafely(() =>
         {
-            vm.AccumulatedAmount = 0;
-            vm.AccumulatedGallons = 0;
-            vm.LastAccumulatedAmount = 0;
-            vm.LastAccumulatedGallons = 0;
-        }
-        Close();
+            ResetViewModel();
+            ClosePopupSafely();
+        });
     }
 
     private async void Add_Dispenser(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm && vm.SelectedHose is not null)
+        if (!IsAvailable()) return;
+
+        await ExecuteSafelyAsync(async () =>
         {
-
-            var selectedHoseId = vm.SelectedHose.IdHose;
-
-            if (vm.AccumulatedAmount == 0)
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
-                await Application.Current.MainPage.DisplayAlert("Eror", "Debe ingresar el monto de la venta", "OK");
-            }
+                var selectedHoseId = vm.SelectedHose.IdHose;
 
-            if (vm.AccumulatedGallons == 0)
+                if (vm.AccumulatedAmount == 0)
+                {
+                    await DisplayAlertSafely("Error", "Debe ingresar el monto de la venta", "OK");
+                    return;
+                }
+
+                if (vm.AccumulatedGallons == 0)
+                {
+                    await DisplayAlertSafely("Error", "Debe ingresar el número de galones vendidos", "OK");
+                    return;
+                }
+
+                if (vm.AccumulatedAmount < vm.LastAccumulatedAmount)
+                {
+                    await DisplayAlertSafely("Error", "El monto acumulado debe ser mayor que el último monto acumulado.", "OK");
+                    return;
+                }
+
+                if (vm.AccumulatedGallons < vm.LastAccumulatedGallons)
+                {
+                    await DisplayAlertSafely("Error", "Los galones acumulados deben ser mayores que los últimos galones acumulados.", "OK");
+                    return;
+                }
+
+                await courtService.AddDispenserFromPopup();
+                vm.AddSelectedHose(vm.SelectedHose);
+                ResetViewModel();
+
+                ClosePopupSafely();
+            }
+            else
             {
-                await Application.Current.MainPage.DisplayAlert("Eror", "Debe ingresar el número de galones vendidos", "OK");
+                await DisplayAlertSafely("Error", "Por favor, seleccione una Manguera", "OK");
             }
-
-            if (vm.AccumulatedAmount < vm.LastAccumulatedAmount)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "El monto acumulado debe ser mayor que el último monto acumulado.", "OK");
-                return;
-            }
-
-            if (vm.AccumulatedGallons < vm.LastAccumulatedGallons)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Los galones acumulados deben ser mayores que los últimos galones acumulados.", "OK");
-                return;
-            }
-
-            
-            await courtService.AddDispenserFromPopup();
-
-            vm.AddSelectedHose(vm.SelectedHose);
-
-            vm.AccumulatedAmount = 0;
-            vm.AccumulatedGallons = 0;
-            vm.LastAccumulatedAmount = 0;
-            vm.LastAccumulatedGallons = 0;
-
-            await CloseAsync();
-
-        }
-        else
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione una Manguera", "OK");
-        }
+        });
     }
 
     private void EntryAccumulatedCompleted(object sender, EventArgs e)
     {
-        UpdateAccumulatedValues();
+        ExecuteSafely(() => UpdateAccumulatedValues());
     }
    
     private void OnEntryUnfocused(object sender, FocusEventArgs e)
     {
-        UpdateAccumulatedValues();
+        ExecuteSafely(() => UpdateAccumulatedValues());
     }
 
     private void UpdateAccumulatedValues()
     {
-        if (BindingContext is CourtService vm && vm.SelectedHose is not null)
+        ExecuteSafely(() =>
         {
-            if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null)
             {
-                double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
-                
-                double currentPrice = vm.SelectedHose.Price;
-                
-                vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / currentPrice);
+                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                {
+                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                    double currentPrice = vm.SelectedHose.Price;
+                    
+                    if (currentPrice > 0)
+                    {
+                        vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / currentPrice);
+                    }
+                }
+                UpdateAccumulatedColors();
             }
-            UpdateAccumulatedColors();
-        }
+        });
     }
 
     private void UpdateAccumulatedColors()
     {
-        if (BindingContext is CourtService vm)
+        ExecuteSafely(() =>
         {
-            AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
-            GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
-        }
+            if (BindingContext is CourtService vm)
+            {
+                AmountBoxView.Color = vm.AccumulatedAmount >= vm.LastAccumulatedAmount ? Colors.Green : Colors.Red;
+                GallonBoxView.Color = vm.AccumulatedGallons >= vm.LastAccumulatedGallons ? Colors.Green : Colors.Red;
+            }
+        });
     }
-
 
     private void EntryGallonsCompleted(object sender, EventArgs e)
     {
-        UpdateAccumulatedColors();
-        AddButton.Focus();
+        ExecuteSafely(() =>
+        {
+            UpdateAccumulatedColors();
+            AddButton?.Focus();
+        });
     }
 
     private void HoseSelected(object sender, EventArgs e)
     {
-        if (HosePicker.SelectedIndex != -1)
+        ExecuteSafely(() =>
         {
-            FirstEntry.IsEnabled = true;
-            FirstEntry.Focus();
-            FirstEntry.CursorPosition = FirstEntry.Text.Length;
-
-            if (BindingContext is CourtService vm && vm.SelectedHose is not null)
+            if (HosePicker.SelectedIndex != -1)
             {
-                double price = vm.SelectedHose.Price;
-                PricePerGallonLabel.Text = $"{price:C3}";
-                
-                if (canEditPrice && PriceEditEntry != null)
+                FirstEntry.IsEnabled = true;
+                FirstEntry.Focus();
+                FirstEntry.CursorPosition = FirstEntry.Text?.Length ?? 0;
+
+                if (BindingContext is CourtService vm && vm.SelectedHose is not null)
                 {
-                    PriceEditEntry.Text = price.ToString("F2");
+                    double price = vm.SelectedHose.Price;
+                    PricePerGallonLabel.Text = $"{price:C3}";
+                    
+                    if (canEditPrice && PriceEditEntry != null)
+                    {
+                        PriceEditEntry.Text = price.ToString("F2");
+                    }
                 }
+                else
+                {
+                    PricePerGallonLabel.Text = "##.###";
+                    if (canEditPrice && PriceEditEntry != null)
+                    {
+                        PriceEditEntry.Text = "";
+                    }
+                }
+                
+                UpdatePriceEditVisibility();
             }
             else
             {
@@ -163,87 +196,193 @@ public partial class AddDispenser : Popup
                     PriceEditEntry.Text = "";
                 }
             }
-            
-            UpdatePriceEditVisibility();
-        }
-        else
-        {
-            PricePerGallonLabel.Text = "##.###";
-            if (canEditPrice && PriceEditEntry != null)
-            {
-                PriceEditEntry.Text = "";
-            }
-        }
+        });
     }
 
     private void UpdatePriceEditVisibility()
     {
-        if (PriceEditEntry != null && PriceEditButton != null)
+        ExecuteSafely(() =>
         {
-            PriceEditEntry.IsVisible = canEditPrice;
-            PriceEditButton.IsVisible = canEditPrice;
-            
-            if (PricePerGallonLabel != null)
+            if (PriceEditEntry != null && PriceEditButton != null)
             {
-                PricePerGallonLabel.IsVisible = !canEditPrice;
+                PriceEditEntry.IsVisible = canEditPrice;
+                PriceEditButton.IsVisible = canEditPrice;
+                
+                if (PricePerGallonLabel != null)
+                {
+                    PricePerGallonLabel.IsVisible = !canEditPrice;
+                }
             }
-        }
+        });
     }
 
     private void PriceEditEntry_Completed(object sender, EventArgs e)
     {
-        UpdateSelectedHosePrice();
+        ExecuteSafely(() => UpdateSelectedHosePrice());
     }
 
     private void PriceEditEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        ExecuteSafely(() =>
         {
-            if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
             {
-                vm.SelectedHose.Price = newPrice;
-                PricePerGallonLabel.Text = $"{newPrice:C2}";
-                
-                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
                 {
-                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
-                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
-                    UpdateAccumulatedColors();
+                    vm.SelectedHose.Price = newPrice;
+                    PricePerGallonLabel.Text = $"{newPrice:C2}";
+                    
+                    if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                    {
+                        double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                        vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                        UpdateAccumulatedColors();
+                    }
                 }
             }
-        }
+        });
     }
 
     private void PriceEditButton_Clicked(object sender, EventArgs e)
     {
-        if (PriceEditEntry != null)
-        {
-            PriceEditEntry.Focus();
-        }
+        ExecuteSafely(() => PriceEditEntry?.Focus());
     }
 
     private void UpdateSelectedHosePrice()
     {
-        if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
+        ExecuteSafely(() =>
         {
-            if (double.TryParse(PriceEditEntry.Text, out double newPrice) && newPrice > 0)
+            if (BindingContext is CourtService vm && vm.SelectedHose is not null && PriceEditEntry != null)
             {
-                vm.SelectedHose.Price = newPrice;
-                PricePerGallonLabel.Text = $"{newPrice:C2}";
-                
-                if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                if (double.TryParse(PriceEditEntry.Text, out double newPrice) && newPrice > 0)
                 {
-                    double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
-                    vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                    vm.SelectedHose.Price = newPrice;
+                    PricePerGallonLabel.Text = $"{newPrice:C2}";
                     
-                    UpdateAccumulatedColors();
+                    if (vm.AccumulatedAmount > vm.LastAccumulatedAmount)
+                    {
+                        double amountDifference = vm.AccumulatedAmount - vm.LastAccumulatedAmount;
+                        vm.AccumulatedGallons = vm.LastAccumulatedGallons + (amountDifference / newPrice);
+                        
+                        UpdateAccumulatedColors();
+                    }
+                }
+                else
+                {
+                    PriceEditEntry.Text = vm.SelectedHose.Price.ToString("F2");
                 }
             }
-            else
+        });
+    }
+
+    // Métodos de seguridad integrados en la clase
+    private void ExecuteSafely(Action action)
+    {
+        lock (_disposeLock)
+        {
+            if (_isDisposed) return;
+            
+            try
             {
-                PriceEditEntry.Text = vm.SelectedHose.Price.ToString("F2");
+                action?.Invoke();
+            }
+            catch (ObjectDisposedException)
+            {
+                _isDisposed = true;
+                Debug.WriteLine($"{GetType().Name}: Object was disposed during operation");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{GetType().Name}: Error in safe execution - {ex.Message}");
             }
         }
     }
 
+    private async Task ExecuteSafelyAsync(Func<Task> asyncAction)
+    {
+        lock (_disposeLock)
+        {
+            if (_isDisposed) return;
+        }
+        
+        try
+        {
+            await asyncAction?.Invoke();
+        }
+        catch (ObjectDisposedException)
+        {
+            lock (_disposeLock)
+            {
+                _isDisposed = true;
+            }
+            Debug.WriteLine($"{GetType().Name}: Object was disposed during async operation");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"{GetType().Name}: Error in safe async execution - {ex.Message}");
+        }
+    }
+
+    private bool IsAvailable()
+    {
+        lock (_disposeLock)
+        {
+            return !_isDisposed;
+        }
+    }
+
+    private void ClosePopupSafely()
+    {
+        lock (_disposeLock)
+        {
+            if (_isDisposed) return;
+            
+            try
+            {
+                _isDisposed = true;
+                Close();
+            }
+            catch (ObjectDisposedException)
+            {
+                // El popup ya fue dispuesto, esto es normal
+                Debug.WriteLine($"{GetType().Name}: Popup was already disposed");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{GetType().Name}: Error closing popup - {ex.Message}");
+            }
+        }
+    }
+
+    private async Task DisplayAlertSafely(string title, string message, string cancel)
+    {
+        try
+        {
+            if (!_isDisposed && Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert(title, message, cancel);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"{GetType().Name}: Error displaying alert - {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Resetea el ViewModel a valores por defecto
+    /// </summary>
+    private void ResetViewModel()
+    {
+        ExecuteSafely(() =>
+        {
+            if (BindingContext is CourtService vm)
+            {
+                vm.AccumulatedAmount = 0;
+                vm.AccumulatedGallons = 0;
+                vm.LastAccumulatedAmount = 0;
+                vm.LastAccumulatedGallons = 0;
+            }
+        });
+    }
 }
