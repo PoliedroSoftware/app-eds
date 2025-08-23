@@ -1,6 +1,6 @@
 using APP.Eds.Services.Hose;
 using APP.Eds.UsesCases.Compartiment;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using APP.Eds.Controls;
 
 namespace APP.Eds.UsesCases.Hose;
 
@@ -26,34 +26,42 @@ public partial class HosePostView : ContentPage
         {
             try
             {
+                // Disable button to prevent multiple submissions
+                if (sender is HoverButton hoverButton)
+                {
+                    hoverButton.IsEnabled = false;
+                }
+
                 LoadingOverlay.ShowLoading();
+                
+                // Validate required fields
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Please enter a valid number (must be greater than 0)", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un número válido (debe ser mayor que 0)", "OK");
                     return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await DisplayAlert("Error", "Please enter a valid accumulated amount (must be greater than 0)", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un monto acumulado válido (debe ser mayor que 0)", "OK");
                     return;
                 }
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await DisplayAlert("Error", "Please enter valid accumulated gallons (must be greater than 0)", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese galones acumulados válidos (debe ser mayor que 0)", "OK");
                     return;
                 }
 
                 if (vm.SelectedDispensers is null)
                 {
-                    await DisplayAlert("Error", "Please select a Dispenser", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione un Dispensador", "OK");
                     return;
                 }
 
                 if (vm.SelectProductType is null)
                 {
-                    await DisplayAlert("Error", "Please select a Product Type", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione un Tipo de Producto", "OK");
                     return;
                 }
 
@@ -63,16 +71,23 @@ public partial class HosePostView : ContentPage
             {
                 LoadingOverlay.HideLoading();
 
+                // Clear form fields after successful submission
                 Number = 0;
                 AccumulatedAmount = 0;
                 AccumulatedGallons = 0;
                 _hoseService.SelectedDispensers = null;
                 _hoseService.SelectProductType = null;
+
+                // Re-enable button
+                if (sender is HoverButton hoverButton)
+                {
+                    hoverButton.IsEnabled = true;
+                }
             }
         }
         else
         {
-            await DisplayAlert("Error", "Context error", "OK");
+            await DisplayAlert("Error", "Error de contexto", "OK");
         }
     }
 
