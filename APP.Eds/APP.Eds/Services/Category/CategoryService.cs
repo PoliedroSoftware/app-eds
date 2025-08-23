@@ -168,6 +168,13 @@ namespace APP.Eds.Services.Category
             }
             try
             {
+                // Validate before making the request
+                if (string.IsNullOrWhiteSpace(Description))
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo categoría.", "Aceptar");
+                    return; 
+                }
+
                 Category = new CategoryModel
                 {
                     Description = Description
@@ -184,13 +191,15 @@ namespace APP.Eds.Services.Category
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/category", content);
 
-
-                if (string.IsNullOrWhiteSpace(Description))
+                if (response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo categoria.", "Aceptar");
-                    return; 
+                    await Application.Current.MainPage.DisplayAlert("Éxito", "Categoría guardada correctamente", "OK");
                 }
-
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo guardar la categoría: {response.StatusCode}\n{error}", "OK");
+                }
             }
             catch (Exception ex)
             {
