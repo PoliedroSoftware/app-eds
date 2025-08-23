@@ -6,6 +6,7 @@ namespace APP.Eds.UsesCases.Category;
 public partial class CategoryPostView : ContentPage
 {
     private CategoryService _categoryService;
+    
     public CategoryPostView()
 	{
 		InitializeComponent();
@@ -17,8 +18,8 @@ public partial class CategoryPostView : ContentPage
     {
         if (sender is Entry entry)
         {
-
-            string newText = Regex.Replace(e.NewTextValue, @"[^a-zA-Z\s]", "");
+            // Only allow letters, spaces, and some common characters for category names
+            string newText = Regex.Replace(e.NewTextValue, @"[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s-]", "");
 
             if (newText != e.NewTextValue)
             {
@@ -27,20 +28,58 @@ public partial class CategoryPostView : ContentPage
             }
         }
     }
+    
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try
         {
+            // Disable button to prevent multiple submissions
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+                button.Text = "Enviando...";
+            }
+
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(_categoryService.Description))
+            {
+                await DisplayAlert("Error", "Por favor ingrese la descripción de la categoría", "OK");
+                return;
+            }
+
+            if (_categoryService.Description.Length < 3)
+            {
+                await DisplayAlert("Error", "La descripción de la categoría debe tener al menos 3 caracteres", "OK");
+                return;
+            }
+
+            if (_categoryService.Description.Length > 50)
+            {
+                await DisplayAlert("Error", "La descripción de la categoría no puede exceder 50 caracteres", "OK");
+                return;
+            }
+
             LoadingOverlay.ShowLoading();
             await _categoryService.SaveCategoryDataAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error al guardar la categoría: {ex.Message}", "OK");
         }
         finally
         {
             LoadingOverlay.HideLoading();
 
+            // Clear form field after successful submission
             Description = string.Empty;
+
+            // Re-enable button
+            if (sender is Button button)
+            {
+                button.IsEnabled = true;
+                button.Text = _categoryService.SendData; // Restore original text from translations
+            }
         }
-        
     }
 
     public string Description
