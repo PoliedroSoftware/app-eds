@@ -1,90 +1,370 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="Gestión Historial De Mangueras">
-    <ScrollView>
-        <AbsoluteLayout>
-        <VerticalStackLayout 
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Fecha"/>
-            <DatePicker
-                Date="{Binding Date, Mode=TwoWay}"
-                Format="dd/MM/yyyy"
-                AutomationId="DatePickerDate"/>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.HoseHistory.HoseHistoryPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:button="clr-namespace:APP.Eds.Controls"
+    Title="Gestión Historial De Mangueras"
+    BackgroundColor="#F8F9FA">
 
-            <Label FontSize="16" Text="Monto Acumulado"/>
-            <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese Monto Acumulado"
-                Text="{Binding AccumulatedAmount, Mode=TwoWay}"
-                AutomationId="EntryAccumulatedAmount"/>
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="📊 Historial de Mangueras" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Registre el historial de lecturas de mangueras" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-            <Label FontSize="16" Text="Galones Acumulados"/>
-            <Entry
-                Keyboard="Text"
-                Placeholder="Enter AccumulatedGallons"
-                Text="{Binding AccumulatedGallons, Mode=TwoWay}"
-                AutomationId="EntryAccumulatedGallons"/>
+                <!-- Hose History Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📈" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nuevo Registro de Historial" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Ingrese los datos de lectura de la manguera" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
 
-            <Picker Title="Seleccione un Dispensador"
-                ItemsSource="{Binding DispensersList}"
-                ItemDisplayBinding="{Binding DisplayName}"
-                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}"
-                AutomationId="PickerDispensers"/>
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Date Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Fecha de Registro" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#FFF3CD" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#F39C12"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📅" 
+                                               FontSize="18" 
+                                               TextColor="#E67E22" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <DatePicker Date="{Binding Date, Mode=TwoWay}"
+                                                    Format="dd/MM/yyyy"
+                                                    AutomationId="DatePickerDate"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="#D68910"
+                                                    FontSize="16"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
 
-            <Picker Title="Seleccione una Manguera"
-                ItemsSource="{Binding HoseList}"
-                ItemDisplayBinding="{Binding Number}"
-                SelectedItem="{Binding SelectHose, Mode=TwoWay}"
-                AutomationId="PickerHose"/>
+                            <!-- Grid for Amount and Gallons -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                
+                                <!-- Accumulated Amount Field -->
+                                <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                    <Label Text="Monto Acumulado" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                           
+                                    <Border BackgroundColor="#F8F9FA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#DDD6FE"
+                                            StrokeThickness="2"
+                                            Padding="0">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                            <Label Text="💰" 
+                                                   FontSize="16" 
+                                                   TextColor="#4CAF50" 
+                                                   VerticalOptions="Center"/>
+                                            
+                                            <Entry Keyboard="Numeric"
+                                                   Placeholder="0.00"
+                                                   PlaceholderColor="#9CA3AF"
+                                                   Text="{Binding AccumulatedAmount, Mode=TwoWay}"
+                                                   AutomationId="EntryAccumulatedAmount"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="14"
+                                                   TextColor="#374151"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="FillAndExpand"/>
+                                        </StackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
 
-                <button:HoverButton
-                    BackgroundColor="Green"
-                    Clicked="Button_Clicked_1"
-                    WidthRequest="200"
-                    HeightRequest="60"
-                    CornerRadius="10"
-                    Text="Enviar Datos"
-                    HoverColor="Gray"
-                    PressedColor="AliceBlue"
-                    TextColor="White"
-                    AutomationId="ButtonSendData"/>
+                                <!-- Accumulated Gallons Field -->
+                                <VerticalStackLayout Spacing="8" Grid.Column="1">
+                                    <Label Text="Galones Acumulados" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                           
+                                    <Border BackgroundColor="#F8F9FA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#DDD6FE"
+                                            StrokeThickness="2"
+                                            Padding="0">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                            <Label Text="⛽" 
+                                                   FontSize="16" 
+                                                   TextColor="#2196F3" 
+                                                   VerticalOptions="Center"/>
+                                            
+                                            <Entry Keyboard="Numeric"
+                                                   Placeholder="0.000"
+                                                   PlaceholderColor="#9CA3AF"
+                                                   Text="{Binding AccumulatedGallons, Mode=TwoWay}"
+                                                   AutomationId="EntryAccumulatedGallons"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="14"
+                                                   TextColor="#374151"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="FillAndExpand"/>
+                                        </StackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
 
-                <Label FontSize="18" Text="Historial de Mangueras" />
+                            <!-- Dispenser Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Dispensador" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🔧" 
+                                               FontSize="18" 
+                                               TextColor="#FF9800" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="Seleccione un Dispensador"
+                                                ItemsSource="{Binding DispensersList}"
+                                                ItemDisplayBinding="{Binding DisplayName}"
+                                                SelectedItem="{Binding SelectedDispensers, Mode=TwoWay}"
+                                                AutomationId="PickerDispensers"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
 
-            <CollectionView ItemsSource="{Binding HoseHistoryList}" Margin="0,20"
-                            HeightRequest="400">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Date}" FontSize="14" Grid.Row="1" />
-                            <Label Text="{Binding IdDispensers}" FontSize="14" Grid.Row="2" />
-                            <Label Text="{Binding AccumulatedAmount}" FontSize="14" Grid.Row="3" />
-                            <Label Text="{Binding AccumulatedGallons}" FontSize="14" Grid.Row="4" />
-                            <Label Text="{Binding IdHose}" FontSize="14" Grid.Row="5" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
-    </ScrollView>
+                            <!-- Hose Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Manguera" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🔗" 
+                                               FontSize="18" 
+                                               TextColor="#9C27B0" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="Seleccione una Manguera"
+                                                ItemsSource="{Binding HoseList}"
+                                                ItemDisplayBinding="{Binding Number}"
+                                                SelectedItem="{Binding SelectHose, Mode=TwoWay}"
+                                                AutomationId="PickerHose"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="El historial de mangueras registra las lecturas de acumulados para generar reportes de ventas y controlar el inventario de combustible."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <button:HoverButton
+                                    Text="📊 Registrar Historial"
+                                    TextColor="White" 
+                                    BackgroundColor="Transparent"
+                                    Clicked="Button_Clicked_1"
+                                    AutomationId="ButtonSendData"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    HeightRequest="56"
+                                    CornerRadius="16"
+                                    HoverColor="Gray"
+                                    PressedColor="AliceBlue"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- History List Section -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Historial de Mangueras" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Registros históricos de lecturas" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- History List -->
+                        <CollectionView ItemsSource="{Binding HoseHistoryList}" HeightRequest="400">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- History Icon -->
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    Grid.RowSpan="6" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="📊" 
+                                                       FontSize="18" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- History Info -->
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
+                                                <Label Text="ID:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Id}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
+                                                <Label Text="Fecha:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Date, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
+                                                <Label Text="Dispensador:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding IdDispensers}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
+                                                <Label Text="Manguera:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding IdHose}" FontSize="12" TextColor="#9C27B0" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
+                                                <Label Text="Dinero:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="5" Grid.Column="1">
+                                                <Label Text="Galones:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
 </ContentPage>

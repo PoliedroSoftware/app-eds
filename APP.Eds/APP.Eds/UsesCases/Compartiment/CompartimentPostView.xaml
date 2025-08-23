@@ -1,71 +1,420 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.Compartiment.CompartimentPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="{Binding CompartimentManagement}">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Compartiment.CompartimentPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="{Binding CompartimentManagement}"
+    BackgroundColor="#F8F9FA">
 
-    
-        <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="15">
-            <Picker Title="{Binding SelectTank}" ItemsSource="{Binding TankList}" ItemDisplayBinding="{Binding Number}" SelectedItem="{Binding SelectedTank, Mode=TwoWay}" AutomationId="PickerTank"/>
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="📦 Gestión de Compartimentos" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre los compartimentos de los tanques" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-            <Label FontSize="16" Text="Numero"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNumber}" Text="{Binding Number, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNumber"/>
+                <!-- Compartment Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="⚙️" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nuevo Compartimento" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Configure un nuevo compartimento del tanque" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
 
-            <Label FontSize="16" Text="Capacidad nominal"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterNominal}" Text="{Binding Nominal, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentNominal"/>
-
-            <Label FontSize="16" Text="Capacidad operativa"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterOperative}" Text="{Binding Operative, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentOperative"/>
-
-
-                <Label FontSize="16" Text="Altura"/>
-                <Entry Keyboard="Numeric" Placeholder="{Binding EnterHeight}" Text="{Binding Height, Mode=TwoWay}" TextChanged="NumericEntry_TextChanged" AutomationId="EntryCompartimentHeight"/>
-
-                <Button BackgroundColor="Green" Clicked="Button_Clicked_1"
-                        Text="{Binding SendData}" TextColor="White" CornerRadius="10"
-                        AutomationId="ButtonSendCompartimentData"/>
-
-                <CollectionView ItemsSource="{Binding CompartimentList}" Margin="0,20,0,0">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Number,StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.Column="3" HorizontalOptions="Center" Margin="0,20,0,5"/>
-                                <Frame Padding="0">
-                                    <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
-                                        <!--<Label Text="{Binding Number, StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Center"/>-->
-
-                                        <Label Text="Capacidad nominal"  Grid.Row="3" Grid.Column="1"/>
-                                        <Label Text="{Binding Nominal}"  Grid.Row="3" Grid.Column="3"/>
-
-                                        <Label Text="Capacidad operativa"  Grid.Row="4" Grid.Column="1"/>
-                                        <Label Text="{Binding Operative}"  Grid.Row="4" Grid.Column="3"/>
-                                        <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
-
-                                        <Label Text="Stock"  Grid.Row="5" Grid.Column="1"/>
-                                        <Label Text="{Binding Stock, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
-
-                                        <Label Text="Altura"  Grid.Row="6" Grid.Column="1"/>
-                                        <Label Text="{Binding Height}"  Grid.Row="6" Grid.Column="3"/>
-                                        <BoxView Grid.Row="6" Grid.ColumnSpan="5" ZIndex="-1"/>
-
-                                        <Label Text="Tanque"  Grid.Row="7" Grid.Column="1"/>
-                                        <Label Text="{Binding IdTank}"  Grid.Row="7" Grid.Column="3"/>
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Tank Selection Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding SelectTank}" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🛢️" 
+                                               FontSize="18" 
+                                               TextColor="#6A1B9A" 
+                                               VerticalOptions="Center"/>
                                         
-                                        <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="5">
-                                            <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}" CommandParameter="{Binding .}" />
-                                            <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}" CommandParameter="{Binding .}" />
-                                        </StackLayout>
-                                    </Grid>
-                                </Frame>
+                                        <Picker Title="{Binding SelectTank}"
+                                                ItemsSource="{Binding TankList}" 
+                                                ItemDisplayBinding="{Binding Number}" 
+                                                SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                                                AutomationId="PickerTank"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
                             </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
 
+                            <!-- Grid for Number and Height -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                
+                                <!-- Number Field -->
+                                <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                    <Label Text="Número" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                           
+                                    <Border BackgroundColor="#F8F9FA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#DDD6FE"
+                                            StrokeThickness="2"
+                                            Padding="0">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                            <Label Text="🔢" 
+                                                   FontSize="16" 
+                                                   TextColor="#2196F3" 
+                                                   VerticalOptions="Center"/>
+                                            
+                                            <Entry Keyboard="Numeric"
+                                                   Placeholder="{Binding EnterNumber}"
+                                                   PlaceholderColor="#9CA3AF"
+                                                   Text="{Binding Number, Mode=TwoWay}"
+                                                   TextChanged="NumericEntry_TextChanged"
+                                                   AutomationId="EntryCompartimentNumber"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="14"
+                                                   TextColor="#374151"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="FillAndExpand"/>
+                                        </StackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <!-- Height Field -->
+                                <VerticalStackLayout Spacing="8" Grid.Column="1">
+                                    <Label Text="Altura (m)" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                           
+                                    <Border BackgroundColor="#F8F9FA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#DDD6FE"
+                                            StrokeThickness="2"
+                                            Padding="0">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                            <Label Text="📏" 
+                                                   FontSize="16" 
+                                                   TextColor="#FF9800" 
+                                                   VerticalOptions="Center"/>
+                                            
+                                            <Entry Keyboard="Numeric"
+                                                   Placeholder="{Binding EnterHeight}"
+                                                   PlaceholderColor="#9CA3AF"
+                                                   Text="{Binding Height, Mode=TwoWay}"
+                                                   TextChanged="NumericEntry_TextChanged"
+                                                   AutomationId="EntryCompartimentHeight"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="14"
+                                                   TextColor="#374151"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="FillAndExpand"/>
+                                        </StackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <!-- Capacities Section -->
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Capacidades" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       HorizontalOptions="Center"/>
+
+                                <!-- Grid for Capacities -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="12">
+                                    
+                                    <!-- Nominal Capacity -->
+                                    <VerticalStackLayout Spacing="8" Grid.Column="0" Grid.Row="0">
+                                        <Label Text="Capacidad Nominal" 
+                                               FontSize="13" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#2D3436"
+                                               HorizontalOptions="Center"/>
+                                               
+                                        <Border BackgroundColor="#E8F5E8" 
+                                                StrokeShape="RoundRectangle 12"
+                                                Stroke="#4CAF50"
+                                                StrokeThickness="2"
+                                                Padding="0">
+                                            <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,10">
+                                                <Label Text="🟢" 
+                                                       FontSize="14" 
+                                                       VerticalOptions="Center"/>
+                                                
+                                                <Entry Keyboard="Numeric"
+                                                       Placeholder="{Binding EnterNominal}"
+                                                       PlaceholderColor="#9CA3AF"
+                                                       Text="{Binding Nominal, Mode=TwoWay}"
+                                                       TextChanged="NumericEntry_TextChanged"
+                                                       AutomationId="EntryCompartimentNominal"
+                                                       BackgroundColor="Transparent"
+                                                       FontSize="13"
+                                                       TextColor="#2E7D32"
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="FillAndExpand"/>
+                                            </StackLayout>
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                    <!-- Operative Capacity -->
+                                    <VerticalStackLayout Spacing="8" Grid.Column="1" Grid.Row="0">
+                                        <Label Text="Capacidad Operativa" 
+                                               FontSize="13" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#2D3436"
+                                               HorizontalOptions="Center"/>
+                                               
+                                        <Border BackgroundColor="#E3F2FD" 
+                                                StrokeShape="RoundRectangle 12"
+                                                Stroke="#2196F3"
+                                                StrokeThickness="2"
+                                                Padding="0">
+                                            <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,10">
+                                                <Label Text="🔵" 
+                                                       FontSize="14" 
+                                                       VerticalOptions="Center"/>
+                                                
+                                                <Entry Keyboard="Numeric"
+                                                       Placeholder="{Binding EnterOperative}"
+                                                       PlaceholderColor="#9CA3AF"
+                                                       Text="{Binding Operative, Mode=TwoWay}"
+                                                       TextChanged="NumericEntry_TextChanged"
+                                                       AutomationId="EntryCompartimentOperative"
+                                                       BackgroundColor="Transparent"
+                                                       FontSize="13"
+                                                       TextColor="#1976D2"
+                                                       VerticalOptions="Center"
+                                                       HorizontalOptions="FillAndExpand"/>
+                                            </StackLayout>
+                                        </Border>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="Los compartimentos dividen los tanques para almacenar diferentes tipos de combustible. Cada compartimento debe tener capacidades nominal y operativa definidas."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <Button Text="{Binding SendData}"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="Button_Clicked_1"
+                                        AutomationId="ButtonSendCompartimentData"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        HeightRequest="56"
+                                        CornerRadius="16"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Compartments List Section -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Lista de Compartimentos" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Compartimentos registrados en el sistema" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Compartments List -->
+                        <CollectionView ItemsSource="{Binding CompartimentList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- Compartment Icon -->
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    Grid.RowSpan="3" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="📦" 
+                                                       FontSize="18" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Compartment Info Header -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                                                <Label Text="{Binding Number, StringFormat='Compartimento #{0}'}" 
+                                                       FontSize="16" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#2D3436"/>
+                                                <Label Text="{Binding IdTank, StringFormat='Tanque ID: {0}'}" 
+                                                       FontSize="12" 
+                                                       TextColor="#6A1B9A"
+                                                       FontAttributes="Bold"/>
+                                            </StackLayout>
+
+                                            <!-- Details Grid -->
+                                            <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="16">
+                                                <!-- Nominal Capacity -->
+                                                <StackLayout Grid.Row="0" Grid.Column="0">
+                                                    <Label Text="Cap. Nominal" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="{Binding Nominal, StringFormat='{0:N2} L'}" 
+                                                           FontSize="12" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                </StackLayout>
+
+                                                <!-- Operative Capacity -->
+                                                <StackLayout Grid.Row="0" Grid.Column="1">
+                                                    <Label Text="Cap. Operativa" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="{Binding Operative, StringFormat='{0:N2} L'}" 
+                                                           FontSize="12" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                </StackLayout>
+
+                                                <!-- Stock -->
+                                                <StackLayout Grid.Row="1" Grid.Column="0">
+                                                    <Label Text="Stock Actual" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="{Binding Stock, StringFormat='{0:N2} L'}" 
+                                                           FontSize="12" TextColor="#FF9800" FontAttributes="Bold"/>
+                                                </StackLayout>
+
+                                                <!-- Height -->
+                                                <StackLayout Grid.Row="1" Grid.Column="1">
+                                                    <Label Text="Altura" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="{Binding Height, StringFormat='{0:N2} m'}" 
+                                                           FontSize="12" TextColor="#9C27B0" FontAttributes="Bold"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Border BackgroundColor="#E3F2FD" 
+                                                        StrokeShape="RoundRectangle 16"
+                                                        Padding="8,4">
+                                                    <Button Text="✏️ Editar"
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#2196F3"
+                                                            FontSize="11"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                                
+                                                <Border BackgroundColor="#FFEBEE" 
+                                                        StrokeShape="RoundRectangle 16"
+                                                        Padding="8,4">
+                                                    <Button Text="🗑️ Eliminar"
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#F44336"
+                                                            FontSize="11"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
                               IsVisible="{Binding IsLoading}"/>
-        </VerticalStackLayout>
-    </ScrollView>
+    </AbsoluteLayout>
 </ContentPage>

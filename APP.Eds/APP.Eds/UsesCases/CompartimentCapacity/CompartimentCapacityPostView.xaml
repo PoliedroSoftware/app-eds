@@ -1,48 +1,345 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Capacidad Compartimento">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestión Capacidad Compartimento"
+    BackgroundColor="#F8F9FA">
 
-    <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
-      <AbsoluteLayout>
-            <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All">
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="⚡ Gestión Capacidad Compartimento" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Configure las capacidades de los compartimentos" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-                <Picker Title="Seleccione Un Tanque"
-                    ItemsSource="{Binding CapacityList}"
-                    ItemDisplayBinding="{Binding Code}"
-                    SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
-                    Margin="0,6,0,6"
-                    AutomationId="PickerCapacity"/>
+                <!-- Capacity Configuration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="⚙️" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nueva Configuración" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Asigne capacidades a los compartimentos" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
 
-            <Picker Title="Seleccione Un Compartimento"
-                    ItemsSource="{Binding CompartimentList}"
-                    ItemDisplayBinding="{Binding Number}"
-                    SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
-                    Margin="0,6,0,6"
-                    AutomationId="PickerCompartiment"/>
-            
-                <Label Text="Ingrese La Capacidad Del Compartimento" Margin="0,11,0,11"/>
-            <Entry  Keyboard="Text"
-                    Placeholder="Enter Default"
-                    Text="{Binding Default, Mode=TwoWay}" 
-                    AutomationId="EntryDefault"/>
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Tank Selection Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Seleccionar Tanque" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🛢️" 
+                                               FontSize="18" 
+                                               TextColor="#6A1B9A" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="Seleccione un tanque"
+                                                ItemsSource="{Binding CapacityList}"
+                                                ItemDisplayBinding="{Binding Code}"
+                                                SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
+                                                AutomationId="PickerCapacity"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
 
-            <Button BackgroundColor="Green"
-                    Clicked="Button_Clicked"
-                    CornerRadius="10"
-                    Text="Enviar Datos"
-                    TextColor="White"
-                    Margin="0,11,0,11"
-                    AutomationId="ButtonSendData"/>
+                            <!-- Compartment Selection Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Seleccionar Compartimento" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📦" 
+                                               FontSize="18" 
+                                               TextColor="#2196F3" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="Seleccione un compartimento"
+                                                ItemsSource="{Binding CompartimentList}"
+                                                ItemDisplayBinding="{Binding Number}"
+                                                SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
+                                                AutomationId="PickerCompartiment"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
 
-        </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"/>
-        </AbsoluteLayout>
-    </Frame>
+                            <!-- Capacity Value Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Capacidad del Compartimento" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#FFF3E0" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#FF9800"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📏" 
+                                               FontSize="18" 
+                                               TextColor="#FF9800" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Numeric"
+                                               Placeholder="Ingrese la capacidad por defecto"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Default, Mode=TwoWay}"
+                                               AutomationId="EntryDefault"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#F57C00"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="La capacidad del compartimento define el valor por defecto que se utilizará para cálculos de inventario y gestión de combustible en el sistema."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <Button Text="🚀 Enviar Datos"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="Button_Clicked"
+                                        AutomationId="ButtonSendData"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        HeightRequest="56"
+                                        CornerRadius="16"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Configuration Guidelines Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- Guidelines Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Guía de Configuración" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Pasos para configurar correctamente" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Guidelines List -->
+                        <VerticalStackLayout Spacing="12">
+                            
+                            <!-- Step 1 -->
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="1️⃣" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Seleccione el tanque que contiene el compartimento"
+                                           FontSize="13"
+                                           TextColor="#2E7D32"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Step 2 -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="2️⃣" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Elija el compartimento específico a configurar"
+                                           FontSize="13"
+                                           TextColor="#1976D2"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Step 3 -->
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#FF9800"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="3️⃣" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Ingrese el valor de capacidad por defecto en litros"
+                                           FontSize="13"
+                                           TextColor="#F57C00"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Step 4 -->
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#9C27B0"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="4️⃣" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Confirme los datos y envíe la configuración"
+                                           FontSize="13"
+                                           TextColor="#7B1FA2"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Requirements Card -->
+                <Border BackgroundColor="#FFF3CD" 
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="#FFC107"
+                        Padding="16">
+                    <StackLayout Spacing="12">
+                        <!-- Warning Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="⚠️" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="Requisitos Importantes" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#8A6914"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                        
+                        <!-- Requirements List -->
+                        <StackLayout Spacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="El tanque debe estar previamente registrado en el sistema"
+                                       FontSize="12" TextColor="#8A6914" 
+                                       VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                            
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="El compartimento debe existir y estar vinculado al tanque"
+                                       FontSize="12" TextColor="#8A6914" 
+                                       VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                            
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="La capacidad debe ser un valor positivo mayor que cero"
+                                       FontSize="12" TextColor="#8A6914" 
+                                       VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </StackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
 </ContentPage>
