@@ -1,72 +1,322 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             x:Class="APP.Eds.UsesCases.Product.ProductPostView"
-             Title="Gestion De Productos">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Product.ProductPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestión de Productos"
+    BackgroundColor="#F8F9FA">
 
-    <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
-        <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All">
-            <Label FontSize="16" Text="Ingrese El Producto" />
-
-            <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese EL Producto"
-                Text="{Binding Name, Mode=TwoWay}"
-                AutomationId="EntryProductName"/>
-
-            <Picker 
-                Title="Seleccione Un Tipo De Producto"
-                ItemsSource="{Binding ProductTypeList}"
-                ItemDisplayBinding="{Binding Description}"
-                SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
-                AutomationId="PickerProductType"/>
-            <Button Text="Agregar tipo de producto" Clicked="OnAddProductTypeClicked" AutomationId="ButtonAddProductType"/>
-
-                <Label Text="Ingrese EL Precio Del Producto" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="Enter Price"
-                Text="{Binding Price, Mode=TwoWay}"
-                AutomationId="EntryPrice"/>
-
-            <Button
-                BackgroundColor="Green"
-                Clicked="Button_Clicked"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White"
-                AutomationId="ButtonSendData"/>
-
-            <!-- Listado de productos -->
-    <Label Text="Lista de Productos" FontSize="18"/>
-    <CollectionView ItemsSource="{Binding ProductList}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Grid Padding="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Text="{Binding Name}" FontSize="14" Grid.Row="0" />
-                    <Label Text="{Binding Price}" FontSize="14" Grid.Row="1" />
-                    <StackLayout Orientation="Horizontal" Grid.Row="2">
-                        <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" />
-                        <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" />
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="📦 Gestión de Productos" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre los productos y sus precios" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
                     </StackLayout>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
-        </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
-    </Frame>
+                </Border>
+
+                <!-- Product Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📦" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nuevo Producto" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Registre un nuevo producto con su precio" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Product Name Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Nombre del Producto" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏷️" 
+                                               FontSize="18" 
+                                               TextColor="#6A1B9A" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Text"
+                                               Placeholder="Ingrese el nombre del producto"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Name, Mode=TwoWay}"
+                                               AutomationId="EntryProductName"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Product Type Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Tipo de Producto" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📋" 
+                                               FontSize="18" 
+                                               TextColor="#2196F3" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="Seleccione un tipo de producto"
+                                                ItemsSource="{Binding ProductTypeList}"
+                                                ItemDisplayBinding="{Binding Description}"
+                                                SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
+                                                AutomationId="PickerProductType"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Add Product Type Button -->
+                            <Border BackgroundColor="#6A1B9A" 
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    Padding="4">
+                                <Border.Shadow>
+                                    <Shadow Brush="#6A1B9A" 
+                                            Offset="0,3" 
+                                            Radius="8" 
+                                            Opacity="0.3"/>
+                                </Border.Shadow>
+                                <Button Text="➕ Agregar Tipo de Producto"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnAddProductTypeClicked"
+                                        AutomationId="ButtonAddProductType"
+                                        FontSize="14"
+                                        FontAttributes="Bold"
+                                        HeightRequest="44"
+                                        CornerRadius="12"/>
+                            </Border>
+
+                            <!-- Price Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Precio del Producto" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="💰" 
+                                               FontSize="18" 
+                                               TextColor="#4CAF50" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Numeric"
+                                               Placeholder="0.00"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Price, Mode=TwoWay}"
+                                               AutomationId="EntryPrice"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="Los productos son los combustibles y lubricantes que se venden en las estaciones de servicio. Cada producto debe tener un tipo y precio definido."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <Button Text="🚀 Registrar Producto"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="Button_Clicked"
+                                        AutomationId="ButtonSendData"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        HeightRequest="56"
+                                        CornerRadius="16"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Products List Section (if ProductList exists in the service) -->
+                <!-- Uncomment this section if you add ProductList to the service
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Lista de Productos" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Productos registrados en el sistema" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <CollectionView ItemsSource="{Binding ProductList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    Grid.RowSpan="3" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="📦" 
+                                                       FontSize="18" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
+                                                <Label Text="Producto:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Name}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
+                                                <Label Text="Precio:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Price, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="2" Grid.Column="1">
+                                                <Border BackgroundColor="#E3F2FD" 
+                                                        StrokeShape="RoundRectangle 16"
+                                                        Padding="8,4">
+                                                    <Button Text="✏️ Editar"
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#2196F3"
+                                                            FontSize="12"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                                
+                                                <Border BackgroundColor="#FFEBEE" 
+                                                        StrokeShape="RoundRectangle 16"
+                                                        Padding="8,4">
+                                                    <Button Text="🗑️ Eliminar"
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#F44336"
+                                                            FontSize="12"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+                -->
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
 </ContentPage>
