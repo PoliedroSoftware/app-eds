@@ -1,44 +1,225 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.Provider.ProviderPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion De Proveedor">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Provider.ProviderPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestión de Proveedores"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
-                    AbsoluteLayout.LayoutFlags="All">
-            <VerticalStackLayout Padding="20" Spacing="15">
-                <Label FontSize="16" Text="Proveedor"/>
-                <Entry Keyboard="Text" Placeholder="Ingrese Un Proveedor" Text="{Binding Name, Mode=TwoWay}" AutomationId="EntryProvider"/>
-                <Button BackgroundColor="Green"
-                        Clicked="Button_Clicked_1"
-                        CornerRadius="10"
-                        Text="Guardar Proveedor"
-                        TextColor="White"
-                        AutomationId="ButtonSendData"/>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="🚚 Gestión de Proveedores" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre los proveedores de combustible" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
+                <!-- Provider Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="🏭" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nuevo Proveedor" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Registre un nuevo proveedor de combustible" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
 
-                <Label FontSize="16" Text="Lista de Proveedores" Margin="0,20,0,0"/>
-
-                <CollectionView ItemsSource="{Binding ProviderList}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout>
-                                <!--<Label Text="{Binding Number,StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.Column="3" HorizontalOptions="Center" Margin="0,20,0,5"/>-->
-                                <Frame Padding="0">
-                                    <Grid ColumnDefinitions="20,*,10" RowDefinitions="10,*,10">
-                                        <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="1"/>
-                                    </Grid>
-                                </Frame>
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Provider Name Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Nombre del Proveedor" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏷️" 
+                                               FontSize="18" 
+                                               TextColor="#FF9800" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Text"
+                                               Placeholder="Ingrese el nombre del proveedor"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Name, Mode=TwoWay}"
+                                               AutomationId="EntryProvider"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
                             </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="Los proveedores son las empresas que suministran combustible y productos a las estaciones de servicio. Es importante mantener un registro actualizado."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <Button Text="🚀 Guardar Proveedor"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="Button_Clicked_1"
+                                        AutomationId="ButtonSendData"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        HeightRequest="56"
+                                        CornerRadius="16"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Providers List Section -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Lista de Proveedores" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Proveedores registrados en el sistema" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Providers List -->
+                        <CollectionView ItemsSource="{Binding ProviderList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- Provider Icon -->
+                                            <Border BackgroundColor="#FFF3E0" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    Grid.RowSpan="2" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="🚚" 
+                                                       FontSize="18" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Provider Info -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                                                <Label Text="{Binding Name}" 
+                                                       FontSize="16" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#2D3436"/>
+                                                <Label Text="Proveedor de combustible" 
+                                                       FontSize="12" 
+                                                       TextColor="#636E72"/>
+                                            </StackLayout>
+
+                                            <!-- Status Indicator -->
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 12"
+                                                    Stroke="#4CAF50"
+                                                    Padding="8,4"
+                                                    Grid.Column="2" Grid.Row="0"
+                                                    VerticalOptions="Center">
+                                                <Label Text="✓ Activo" 
+                                                       FontSize="10" 
+                                                       TextColor="#2E7D32"
+                                                       FontAttributes="Bold"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-              AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All"
-              AutomationId="LoadingOverlay"/>
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>
