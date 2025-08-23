@@ -120,7 +120,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
         SaveCompartimentCapacityDataCommand = new Command(async () => await SaveCompartimentCapacityDataAsync());
     }
     //GuardaCapacity
-    private async void GetAllCapacityData()
+    public async Task GetAllCapacityDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -134,14 +134,20 @@ public class CompartimentCapacityService : INotifyPropertyChanged
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
-            var CapacityList = JsonSerializer.Deserialize<CapacityResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var capacityResponse = JsonSerializer.Deserialize<CapacityResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            UpdateCapacityList(CapacityList.Data);
+            UpdateCapacityList(capacityResponse?.Data ?? new List<CapacityModelResponse>());
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            Console.WriteLine($"Error cargando los datos de capacidad: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando tanques: {ex.Message}", "OK");
         }
+    }
+
+    private async void GetAllCapacityData()
+    {
+        await GetAllCapacityDataAsync();
     }
 
     private void UpdateCapacityList(IEnumerable<CapacityModelResponse> Data)
@@ -154,8 +160,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     }
 
     //GuardaCompartiment
-
-    private async void GetAllCompartimentData()
+    public async Task GetAllCompartimentDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -168,14 +173,20 @@ public class CompartimentCapacityService : INotifyPropertyChanged
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
-            var CompartimentList = JsonSerializer.Deserialize<compartimentResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var compartimentResponse = JsonSerializer.Deserialize<compartimentResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            UpdateCompartimentList(CompartimentList.Data);
+            UpdateCompartimentList(compartimentResponse?.Data ?? new List<CompartimentModelResponse>());
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            Console.WriteLine($"Error cargando los datos de compartimentos: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando compartimentos: {ex.Message}", "OK");
         }
+    }
+
+    private async void GetAllCompartimentData()
+    {
+        await GetAllCompartimentDataAsync();
     }
 
     private void UpdateCompartimentList(IEnumerable<CompartimentModelResponse> Data)
