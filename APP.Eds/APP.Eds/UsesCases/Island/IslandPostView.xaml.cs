@@ -1,10 +1,8 @@
 using APP.Eds.Services.Island;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace APP.Eds.UsesCases.Island;
 
-public partial class IslandPostView : ContentPage, INotifyPropertyChanged
+public partial class IslandPostView : ContentPage
 {
     private IslandService _islandService;
     
@@ -15,110 +13,44 @@ public partial class IslandPostView : ContentPage, INotifyPropertyChanged
         BindingContext = _islandService;
     }
 
-    protected override async void OnAppearing()
+    private async void OnBackButtonClicked(object sender, EventArgs e)
     {
-        base.OnAppearing();
         try
         {
-            LoadingOverlay?.ShowLoading();
-            await _islandService.InitializeAsync();
+            await Navigation.PopAsync();
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await DisplayAlert("Error", $"Error al navegar: {ex.Message}", "OK");
         }
-        finally
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        // Refresh islands list when page appears
+        if (_islandService != null)
         {
-            LoadingOverlay?.HideLoading();
+            await _islandService.GetIslandAsync();
         }
     }
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
-        var button = sender as Button;
-        if (button != null)
+        if (BindingContext is IslandService vm)
         {
-            button.IsEnabled = false;
-        }
+            if (string.IsNullOrWhiteSpace(vm.Description))
+            {
+                await DisplayAlert("Error", "Por favor, ingrese una Description", "OK");
+                return;
+            }
 
-        try
+            await vm.SaveIslandDataAsync();
+        }
+        else
         {
-            // Enhanced validation
-            if (string.IsNullOrWhiteSpace(_islandService.IslandName))
-            {
-                await DisplayAlert("Error", "Por favor, ingrese un nombre para la isla", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_islandService.SelectedLocation))
-            {
-                await DisplayAlert("Error", "Por favor, seleccione la ubicacion de la isla", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_islandService.SelectedType))
-            {
-                await DisplayAlert("Error", "Por favor, seleccione el tipo de isla", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_islandService.SelectedCapacity))
-            {
-                await DisplayAlert("Error", "Por favor, seleccione la capacidad de dispensadores", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_islandService.SelectedStatus))
-            {
-                await DisplayAlert("Error", "Por favor, seleccione el estado operativo", "OK");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_islandService.Description))
-            {
-                await DisplayAlert("Error", "Por favor, agregue una descripcion de la isla", "OK");
-                return;
-            }
-
-            LoadingOverlay?.ShowLoading();
-            
-            await _islandService.SaveIslandDataAsync();
-            
-            // Clear form after successful save
-            ClearForm();
+            await DisplayAlert("Error", "Context error", "OK");
         }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
-        }
-        finally
-        {
-            LoadingOverlay?.HideLoading();
-            if (button != null)
-            {
-                button.IsEnabled = true;
-            }
-        }
-    }
-
-    private void ClearForm()
-    {
-        if (_islandService != null)
-        {
-            _islandService.IslandName = string.Empty;
-            _islandService.SelectedLocation = null;
-            _islandService.SelectedType = null;
-            _islandService.SelectedCapacity = null;
-            _islandService.SelectedStatus = null;
-            _islandService.Description = string.Empty;
-            _islandService.InstallationDate = DateTime.Now;
-        }
-    }
-
-    public new event PropertyChangedEventHandler? PropertyChanged;
-
-    protected new virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

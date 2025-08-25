@@ -10,29 +10,91 @@ using System.Windows.Input;
 
 namespace APP.Eds.Services.Island;
 
-public class IslandItemExtended
+// Model class for editable pending islands
+public class EditablePendingIsland : INotifyPropertyChanged
 {
-    public int Idisland { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string Location { get; set; } = string.Empty;
-    public string Type { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
-    public string Capacity { get; set; } = string.Empty;
-    public DateTime InstallationDate { get; set; }
+    private string _name;
+    private int _number;
+
+    public string Name 
+    { 
+        get => _name; 
+        set 
+        { 
+            _name = value; 
+            OnPropertyChanged(nameof(Name)); 
+        } 
+    }
+
+    public int Number
+    {
+        get => _number;
+        set
+        {
+            _number = value;
+            Name = $"Isla {value}";
+            OnPropertyChanged(nameof(Number));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+// Model class for editable existing islands
+public class EditableIsland : INotifyPropertyChanged
+{
+    private int _id;
+    private string _description;
+    private bool _isEditing;
+
+    public int Id
+    {
+        get => _id;
+        set
+        {
+            _id = value;
+            OnPropertyChanged(nameof(Id));
+        }
+    }
+
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            _description = value;
+            OnPropertyChanged(nameof(Description));
+        }
+    }
+
+    public bool IsEditing
+    {
+        get => _isEditing;
+        set
+        {
+            _isEditing = value;
+            OnPropertyChanged(nameof(IsEditing));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
 
 public class IslandService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
-    
-    // Collections
-    public ObservableCollection<IslandResponse> IslandList { get; set; } = [];
-    public ObservableCollection<IslandItemExtended> EnhancedIslandList { get; set; } = [];
-    public ObservableCollection<string> LocationOptions { get; set; } = new();
-    public ObservableCollection<string> IslandTypes { get; set; } = new();
-    public ObservableCollection<string> CapacityOptions { get; set; } = new();
-    public ObservableCollection<string> StatusOptions { get; set; } = new();
+    public ObservableCollection<EditableIsland> IslandList { get; set; } = [];
+    public ObservableCollection<EditablePendingIsland> PendingIslands { get; set; } = [];
 
     private string? _authToken;
     private IslandRequest Request { get; set; }
@@ -48,70 +110,15 @@ public class IslandService : INotifyPropertyChanged
         }
     }
 
-    // Enhanced Form Properties
-    private string _islandName;
-    public string IslandName
+    private int _numberOfIslands = 0;
+    public int NumberOfIslands
     {
-        get => _islandName;
+        get => _numberOfIslands;
         set
         {
-            _islandName = value;
-            OnPropertyChanged(nameof(IslandName));
-        }
-    }
-
-    private string _selectedLocation;
-    public string SelectedLocation
-    {
-        get => _selectedLocation;
-        set
-        {
-            _selectedLocation = value;
-            OnPropertyChanged(nameof(SelectedLocation));
-        }
-    }
-
-    private string _selectedType;
-    public string SelectedType
-    {
-        get => _selectedType;
-        set
-        {
-            _selectedType = value;
-            OnPropertyChanged(nameof(SelectedType));
-        }
-    }
-
-    private string _selectedCapacity;
-    public string SelectedCapacity
-    {
-        get => _selectedCapacity;
-        set
-        {
-            _selectedCapacity = value;
-            OnPropertyChanged(nameof(SelectedCapacity));
-        }
-    }
-
-    private string _selectedStatus;
-    public string SelectedStatus
-    {
-        get => _selectedStatus;
-        set
-        {
-            _selectedStatus = value;
-            OnPropertyChanged(nameof(SelectedStatus));
-        }
-    }
-
-    private DateTime _installationDate = DateTime.Now;
-    public DateTime InstallationDate
-    {
-        get => _installationDate;
-        set
-        {
-            _installationDate = value;
-            OnPropertyChanged(nameof(InstallationDate));
+            _numberOfIslands = value;
+            OnPropertyChanged(nameof(NumberOfIslands));
+            GeneratePendingIslands();
         }
     }
 
@@ -126,278 +133,329 @@ public class IslandService : INotifyPropertyChanged
         }
     }
 
-    // Statistics Properties
-    private int _totalIslands;
-    public int TotalIslands
-    {
-        get => _totalIslands;
-        set
-        {
-            _totalIslands = value;
-            OnPropertyChanged(nameof(TotalIslands));
-        }
-    }
+    // Property for the islands counter
+    public int TotalIslandsCreated => IslandList.Count;
 
-    private int _activeIslands;
-    public int ActiveIslands
-    {
-        get => _activeIslands;
-        set
-        {
-            _activeIslands = value;
-            OnPropertyChanged(nameof(ActiveIslands));
-        }
-    }
+    // Property for displaying counter text with emoji and formatting
+    public string IslandCounterText => $"📊 Total de Islas:";
 
-    private int _maintenanceIslands;
-    public int MaintenanceIslands
-    {
-        get => _maintenanceIslands;
-        set
-        {
-            _maintenanceIslands = value;
-            OnPropertyChanged(nameof(MaintenanceIslands));
-        }
-    }
-
-    private int _inactiveIslands;
-    public int InactiveIslands
-    {
-        get => _inactiveIslands;
-        set
-        {
-            _inactiveIslands = value;
-            OnPropertyChanged(nameof(InactiveIslands));
-        }
-    }
-
-    // Filter Properties
-    private Color _filterAllColor = Color.FromArgb("#1976D2");
-    public Color FilterAllColor
-    {
-        get => _filterAllColor;
-        set
-        {
-            _filterAllColor = value;
-            OnPropertyChanged(nameof(FilterAllColor));
-        }
-    }
-
-    private Color _filterActiveColor = Color.FromArgb("#9E9E9E");
-    public Color FilterActiveColor
-    {
-        get => _filterActiveColor;
-        set
-        {
-            _filterActiveColor = value;
-            OnPropertyChanged(nameof(FilterActiveColor));
-        }
-    }
-
-    private Color _filterMaintenanceColor = Color.FromArgb("#9E9E9E");
-    public Color FilterMaintenanceColor
-    {
-        get => _filterMaintenanceColor;
-        set
-        {
-            _filterMaintenanceColor = value;
-            OnPropertyChanged(nameof(FilterMaintenanceColor));
-        }
-    }
-
-    // Commands
-    public ICommand GetByIdIslandDataCommand { get; private set; }
-    public ICommand SaveIslandDataCommand { get; private set; }
-    public ICommand FilterAllCommand { get; private set; }
-    public ICommand FilterActiveCommand { get; private set; }
-    public ICommand FilterMaintenanceCommand { get; private set; }
-    public ICommand EditIslandCommand { get; private set; }
-    public ICommand DeleteIslandCommand { get; private set; }
+    public ICommand GetByIdIslandDataCommand { get; }
+    public ICommand SaveIslandDataCommand { get; }
+    public ICommand SaveAllIslandsCommand { get; }
+    public ICommand RemoveIslandCommand { get; }
+    public ICommand ClearAllIslandsCommand { get; }
+    public ICommand AddSingleIslandCommand { get; }
+    public ICommand EditIslandCommand { get; }
+    public ICommand SaveEditIslandCommand { get; }
+    public ICommand CancelEditIslandCommand { get; }
+    public ICommand DeleteIslandCommand { get; }
 
     public IslandService()
     {
-        InitializeCommands();
-        InitializeOptions();
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-    }
 
-    private void InitializeCommands()
-    {
         GetByIdIslandDataCommand = new Command<int>(async (islandId) => await GetByIdIslandDataAsync(islandId));
         SaveIslandDataCommand = new Command(async () => await SaveIslandDataAsync());
-        FilterAllCommand = new Command(() => FilterIslands("all"));
-        FilterActiveCommand = new Command(() => FilterIslands("active"));
-        FilterMaintenanceCommand = new Command(() => FilterIslands("maintenance"));
-        EditIslandCommand = new Command<IslandItemExtended>(async (island) => await EditIslandAsync(island));
-        DeleteIslandCommand = new Command<IslandItemExtended>(async (island) => await DeleteIslandAsync(island));
+        SaveAllIslandsCommand = new Command(async () => await SaveAllIslandsAsync());
+        RemoveIslandCommand = new Command<EditablePendingIsland>(RemoveIsland);
+        ClearAllIslandsCommand = new Command(ClearAllIslands);
+        AddSingleIslandCommand = new Command(AddSingleIsland);
+        EditIslandCommand = new Command<EditableIsland>(EditIsland);
+        SaveEditIslandCommand = new Command<EditableIsland>(async (island) => await SaveEditIslandAsync(island));
+        CancelEditIslandCommand = new Command<EditableIsland>(CancelEditIsland);
+        DeleteIslandCommand = new Command<EditableIsland>(async (island) => await DeleteIslandAsync(island));
+
+        // Load existing islands first, then generate pending islands
+        _ = Task.Run(async () => 
+        {
+            await GetIslandAsync();
+            GeneratePendingIslands();
+        });
     }
 
-    private void InitializeOptions()
+    private void EditIsland(EditableIsland island)
     {
-        // Location Options
-        LocationOptions.Clear();
-        LocationOptions.Add("Entrada Principal");
-        LocationOptions.Add("Area Central");
-        LocationOptions.Add("Lado Derecho");
-        LocationOptions.Add("Lado Izquierdo");
-        LocationOptions.Add("Zona Posterior");
-        LocationOptions.Add("Area de Servicio");
-
-        // Island Types
-        IslandTypes.Clear();
-        IslandTypes.Add("Gasolina Regular");
-        IslandTypes.Add("Gasolina Premium");
-        IslandTypes.Add("Diesel");
-        IslandTypes.Add("Mixta (Gas/Diesel)");
-        IslandTypes.Add("GLP/Gas Natural");
-        IslandTypes.Add("Electrica");
-
-        // Capacity Options
-        CapacityOptions.Clear();
-        CapacityOptions.Add("2 Dispensadores");
-        CapacityOptions.Add("4 Dispensadores");
-        CapacityOptions.Add("6 Dispensadores");
-        CapacityOptions.Add("8 Dispensadores");
-        CapacityOptions.Add("10+ Dispensadores");
-
-        // Status Options
-        StatusOptions.Clear();
-        StatusOptions.Add("Activa");
-        StatusOptions.Add("Mantenimiento");
-        StatusOptions.Add("Inactiva");
-        StatusOptions.Add("En Construccion");
+        // Cancel any other editing
+        foreach (var item in IslandList)
+        {
+            if (item != island)
+                item.IsEditing = false;
+        }
+        
+        island.IsEditing = true;
     }
 
-    public async Task InitializeAsync()
+    private void CancelEditIsland(EditableIsland island)
     {
-        await GetIslandAsync();
-        await LoadEnhancedIslands();
-        UpdateStatistics();
-        FilterIslands("all"); // Default filter
+        island.IsEditing = false;
+        // Reload original data to cancel changes
+        _ = Task.Run(async () => await GetIslandAsync());
     }
 
-    private async Task LoadEnhancedIslands()
+    private async Task SaveEditIslandAsync(EditableIsland island)
     {
         try
         {
-            // Create enhanced islands with additional information
-            // In real implementation, this would come from the API
-            var enhancedIslands = new List<IslandItemExtended>();
-
-            foreach (var island in IslandList)
+            if (string.IsNullOrWhiteSpace(island.Description))
             {
-                var enhanced = new IslandItemExtended
+                await Application.Current.MainPage.DisplayAlert("Error", "La descripción no puede estar vacía.", "OK");
+                return;
+            }
+
+            var updateModel = new IslandModel
+            {
+                Description = island.Description
+            };
+
+            var updateRequest = new IslandRequest
+            {
+                Request = updateModel
+            };
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(updateRequest, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/island/{island.Id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await Application.Current.MainPage.DisplayAlert("Éxito", "Isla actualizada correctamente", "OK");
+                island.IsEditing = false;
+                await GetIslandAsync();
+                GeneratePendingIslands();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar la isla: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar la isla: {ex.Message}", "OK");
+        }
+    }
+
+    private async Task DeleteIslandAsync(EditableIsland island)
+    {
+        try
+        {
+            bool confirm = await Application.Current.MainPage.DisplayAlert("Confirmar", 
+                $"¿Desea eliminar la isla '{island.Description}'?", "Sí", "No");
+            
+            if (!confirm)
+                return;
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/island/{island.Id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                await Application.Current.MainPage.DisplayAlert("Éxito", "Isla eliminada correctamente", "OK");
+                await GetIslandAsync();
+                GeneratePendingIslands();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar la isla: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar la isla: {ex.Message}", "OK");
+        }
+    }
+
+    private void GeneratePendingIslands()
+    {
+        PendingIslands.Clear();
+        
+        if (NumberOfIslands <= 0)
+        {
+            return;
+        }
+
+        int lastNumber = GetLastIslandNumber();
+        
+        for (int i = 1; i <= NumberOfIslands; i++)
+        {
+            int newNumber = lastNumber + i;
+            PendingIslands.Add(new EditablePendingIsland 
+            { 
+                Number = newNumber 
+            });
+        }
+    }
+
+    private int GetLastIslandNumber()
+    {
+        if (!IslandList.Any())
+        {
+            return 0;
+        }
+
+        int maxNumber = 0;
+        foreach (var island in IslandList)
+        {
+            if (island.Description.StartsWith("Isla "))
+            {
+                string numberPart = island.Description.Substring(5);
+                if (int.TryParse(numberPart, out int number))
                 {
-                    Idisland = island.Idisland,
-                    Name = $"Isla {island.Idisland}",
-                    Description = island.Description,
-                    Location = LocationOptions[new Random().Next(LocationOptions.Count)],
-                    Type = IslandTypes[new Random().Next(IslandTypes.Count)],
-                    Status = StatusOptions[new Random().Next(StatusOptions.Count)],
-                    Capacity = CapacityOptions[new Random().Next(CapacityOptions.Count)],
-                    InstallationDate = DateTime.Now.AddDays(-new Random().Next(365))
-                };
-                enhancedIslands.Add(enhanced);
+                    maxNumber = Math.Max(maxNumber, number);
+                }
+            }
+        }
+        
+        return maxNumber;
+    }
+
+    private void RemoveIsland(EditablePendingIsland island)
+    {
+        if (PendingIslands.Contains(island))
+        {
+            PendingIslands.Remove(island);
+        }
+    }
+
+    private void AddSingleIsland()
+    {
+        int nextNumber = GetLastIslandNumber();
+        if (PendingIslands.Any())
+        {
+            nextNumber = Math.Max(nextNumber, PendingIslands.Max(p => p.Number));
+        }
+        nextNumber++;
+
+        PendingIslands.Add(new EditablePendingIsland 
+        { 
+            Number = nextNumber 
+        });
+    }
+
+    private void ClearAllIslands()
+    {
+        PendingIslands.Clear();
+    }
+
+    private void ClearForm()
+    {
+        NumberOfIslands = 0;
+        Description = string.Empty;
+        PendingIslands.Clear();
+    }
+
+    private void UpdateCounterProperties()
+    {
+        OnPropertyChanged(nameof(TotalIslandsCreated));
+        OnPropertyChanged(nameof(IslandCounterText));
+    }
+
+    public async Task SaveAllIslandsAsync()
+    {
+        try
+        {
+            if (!PendingIslands.Any())
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No hay islas para crear.", "OK");
+                return;
             }
 
-            // Add some sample data if list is empty
-            if (!enhancedIslands.Any())
+            // Check for duplicate numbers
+            var duplicates = PendingIslands.GroupBy(x => x.Number)
+                                          .Where(g => g.Count() > 1)
+                                          .Select(x => x.Key);
+
+            if (duplicates.Any())
             {
-                enhancedIslands.AddRange(new[]
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    $"Hay números duplicados: {string.Join(", ", duplicates)}. Por favor, corrija antes de continuar.", "OK");
+                return;
+            }
+
+            // Check for conflicts with existing islands
+            var existingNumbers = IslandList.Where(i => i.Description.StartsWith("Isla "))
+                                           .Select(i => 
+                                           {
+                                               if (int.TryParse(i.Description.Substring(5), out int num))
+                                                   return num;
+                                               return -1;
+                                           })
+                                           .Where(n => n > 0);
+
+            var conflicts = PendingIslands.Where(p => existingNumbers.Contains(p.Number))
+                                         .Select(p => p.Number);
+
+            if (conflicts.Any())
+            {
+                bool confirm = await Application.Current.MainPage.DisplayAlert("Conflicto", 
+                    $"Las siguientes islas ya existen: {string.Join(", ", conflicts.Select(n => $"Isla {n}"))}. ¿Desea continuar de todas formas?", 
+                    "Sí", "No");
+                
+                if (!confirm)
+                    return;
+            }
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            int successCount = 0;
+            int totalCount = PendingIslands.Count;
+
+            foreach (var pendingIsland in PendingIslands.ToList())
+            {
+                try
                 {
-                    new IslandItemExtended { Idisland = 1, Name = "Isla Principal A", Description = "Isla principal con dispensadores de gasolina regular y premium", Location = "Entrada Principal", Type = "Mixta (Gas/Diesel)", Status = "Activa", Capacity = "4 Dispensadores", InstallationDate = DateTime.Now.AddMonths(-6) },
-                    new IslandItemExtended { Idisland = 2, Name = "Isla Diesel B", Description = "Isla especializada en combustible diesel para vehiculos pesados", Location = "Area Central", Type = "Diesel", Status = "Activa", Capacity = "2 Dispensadores", InstallationDate = DateTime.Now.AddMonths(-8) },
-                    new IslandItemExtended { Idisland = 3, Name = "Isla Premium C", Description = "Isla para combustibles premium y servicios especiales", Location = "Lado Derecho", Type = "Gasolina Premium", Status = "Mantenimiento", Capacity = "6 Dispensadores", InstallationDate = DateTime.Now.AddYears(-1) }
-                });
+                    Island = new IslandModel
+                    {
+                        Description = pendingIsland.Name
+                    };
+
+                    Request = new IslandRequest
+                    {
+                        Request = Island
+                    };
+
+                    var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/island", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        successCount++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error creando isla {pendingIsland.Name}: {ex.Message}");
+                }
             }
 
-            EnhancedIslandList.Clear();
-            foreach (var island in enhancedIslands.OrderBy(x => x.Idisland))
+            if (successCount == totalCount)
             {
-                EnhancedIslandList.Add(island);
+                await Application.Current.MainPage.DisplayAlert("Éxito", $"Se crearon {successCount} islas correctamente", "OK");
+                ClearForm();
+                await GetIslandAsync();
+                GeneratePendingIslands();
             }
-        }
-        catch (Exception ex)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando islas: {ex.Message}", "OK");
-        }
-    }
-
-    private void FilterIslands(string filter)
-    {
-        // Reset filter button colors
-        FilterAllColor = Color.FromArgb("#9E9E9E");
-        FilterActiveColor = Color.FromArgb("#9E9E9E");
-        FilterMaintenanceColor = Color.FromArgb("#9E9E9E");
-
-        // Set active button color and apply filter logic
-        switch (filter)
-        {
-            case "all":
-                FilterAllColor = Color.FromArgb("#1976D2");
-                // Show all islands (no filtering needed for ObservableCollection display)
-                break;
-            case "active":
-                FilterActiveColor = Color.FromArgb("#1976D2");
-                // Filter active islands (implementation would filter the collection)
-                break;
-            case "maintenance":
-                FilterMaintenanceColor = Color.FromArgb("#1976D2");
-                // Filter maintenance islands
-                break;
-        }
-    }
-
-    private async Task EditIslandAsync(IslandItemExtended island)
-    {
-        try
-        {
-            // Load island data into form for editing
-            IslandName = island.Name;
-            SelectedLocation = island.Location;
-            SelectedType = island.Type;
-            SelectedCapacity = island.Capacity;
-            SelectedStatus = island.Status;
-            Description = island.Description;
-            InstallationDate = island.InstallationDate;
-
-            await Application.Current.MainPage.DisplayAlert("Modo Edicion", $"Datos de '{island.Name}' cargados para edicion", "OK");
-        }
-        catch (Exception ex)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error editando isla: {ex.Message}", "OK");
-        }
-    }
-
-    private async Task DeleteIslandAsync(IslandItemExtended island)
-    {
-        try
-        {
-            var result = await Application.Current.MainPage.DisplayAlert(
-                "Confirmar eliminacion",
-                $"¿Esta seguro de eliminar la isla '{island.Name}'?\nEsta accion no se puede deshacer.",
-                "Eliminar",
-                "Cancelar");
-
-            if (result)
+            else if (successCount > 0)
             {
-                EnhancedIslandList.Remove(island);
-                UpdateStatistics();
-                await Application.Current.MainPage.DisplayAlert("Exito", "Isla eliminada correctamente", "OK");
+                await Application.Current.MainPage.DisplayAlert("Parcial", $"Se crearon {successCount} de {totalCount} islas", "OK");
+                await GetIslandAsync();
+                GeneratePendingIslands();
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se pudieron crear las islas", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error eliminando isla: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al crear las islas: {ex.Message}", "OK");
         }
-    }
-
-    private void UpdateStatistics()
-    {
-        TotalIslands = EnhancedIslandList.Count;
-        ActiveIslands = EnhancedIslandList.Count(x => x.Status == "Activa");
-        MaintenanceIslands = EnhancedIslandList.Count(x => x.Status == "Mantenimiento");
-        InactiveIslands = EnhancedIslandList.Count(x => x.Status == "Inactiva" || x.Status == "En Construccion");
     }
 
     public async Task GetByIdIslandDataAsync(int islandId)
@@ -422,12 +480,15 @@ public class IslandService : INotifyPropertyChanged
     {
         try
         {
-            // Create comprehensive island description
-            var fullDescription = $"[{IslandName}] Tipo: {SelectedType}, Ubicacion: {SelectedLocation}, Capacidad: {SelectedCapacity}, Estado: {SelectedStatus} - {Description}";
+            if (string.IsNullOrWhiteSpace(Description))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Description' no puede estar vacío.", "OK");
+                return;
+            }
 
             Island = new IslandModel
             {
-                Description = fullDescription
+                Description = Description
             };
 
             Request = new IslandRequest
@@ -443,35 +504,20 @@ public class IslandService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await Application.Current.MainPage.DisplayAlert("Exito", "Isla registrada correctamente", "OK");
-                
-                // Add to local enhanced list
-                var newIsland = new IslandItemExtended
-                {
-                    Idisland = EnhancedIslandList.Count + 1,
-                    Name = IslandName,
-                    Description = Description,
-                    Location = SelectedLocation,
-                    Type = SelectedType,
-                    Status = SelectedStatus,
-                    Capacity = SelectedCapacity,
-                    InstallationDate = InstallationDate
-                };
-                
-                EnhancedIslandList.Insert(0, newIsland);
-                UpdateStatistics();
-                
+                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                Description = string.Empty;
                 await GetIslandAsync();
+                GeneratePendingIslands();
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo registrar la isla: {response.StatusCode}\n{error}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al registrar la isla: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
         }
     }
 
@@ -488,10 +534,20 @@ public class IslandService : INotifyPropertyChanged
             });
 
             IslandList.Clear();
-            foreach (var island in islands.Data)
+            if (islands?.Data != null)
             {
-                IslandList.Add(island);
+                foreach (var island in islands.Data)
+                {
+                    IslandList.Add(new EditableIsland
+                    {
+                        Id = island.Idisland,
+                        Description = island.Description,
+                        IsEditing = false
+                    });
+                }
             }
+            
+            UpdateCounterProperties();
         }
         catch (Exception ex)
         {
