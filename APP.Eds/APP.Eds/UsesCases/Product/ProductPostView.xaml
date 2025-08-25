@@ -10,26 +10,26 @@
         <VerticalStackLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All">
-            <Label FontSize="16" Text="Ingrese El Producto" />
+            <Label FontSize="16" Text="Ingrese el Producto" />
 
             <Entry
                 Keyboard="Text"
-                Placeholder="Ingrese EL Producto"
+                Placeholder="Ingrese el producto"
                 Text="{Binding Name, Mode=TwoWay}"
                 AutomationId="EntryProductName"/>
 
             <Picker 
-                Title="Seleccione Un Tipo De Producto"
+                Title="Seleccione un tipo de producto"
                 ItemsSource="{Binding ProductTypeList}"
                 ItemDisplayBinding="{Binding Description}"
                 SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
                 AutomationId="PickerProductType"/>
             <Button Text="Agregar tipo de producto" Clicked="OnAddProductTypeClicked" AutomationId="ButtonAddProductType"/>
 
-                <Label Text="Ingrese EL Precio Del Producto" />
+                <Label Text="Ingrese el precio del producto" />
             <Entry
                 Keyboard="Numeric"
-                Placeholder="Enter Price"
+                Placeholder="Ingrese el precio"
                 Text="{Binding Price, Mode=TwoWay}"
                 AutomationId="EntryPrice"/>
 
@@ -46,21 +46,34 @@
     <CollectionView ItemsSource="{Binding ProductList}">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <VerticalStackLayout>
-                    <Label Text="{Binding Name, StringFormat='Producto: {0}'}" FontSize="16" HorizontalOptions="Center" Margin="0,20,0,5"/>
-                    <Frame Padding="0">
-                        <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
-
-                            <Label Text="Precio" Grid.Row="3" Grid.Column="1"/>
-                            <Label Text="{Binding Price, StringFormat='{0:C}'}" Grid.Row="3" Grid.Column="3"/>
-
-                            <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand">
-                                <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
-                                <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
-                            </StackLayout>
-                        </Grid>
-                    </Frame>
-                </VerticalStackLayout>
+                <Frame Padding="10" Margin="0,5">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center"/>
+                            <Label Text="{Binding Price, StringFormat='{0:C}'}" VerticalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="2" 
+                               Text="✏️"
+                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}"
+                               CommandParameter="{Binding .}"
+                               BackgroundColor="Transparent"
+                               FontSize="18"
+                               WidthRequest="40"
+                               HeightRequest="40"
+                               Padding="0"
+                               VerticalOptions="Center"/>
+                        <Button Grid.Column="3" 
+                               Text="❌"
+                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}"
+                               CommandParameter="{Binding .}"
+                               BackgroundColor="Transparent"
+                               FontSize="18"
+                               WidthRequest="40"
+                               HeightRequest="40"
+                               Padding="0"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

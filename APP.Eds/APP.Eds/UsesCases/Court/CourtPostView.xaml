@@ -112,13 +112,13 @@
                                     <Label Text="Venta en galones" FontAttributes="Bold" Grid.Row="4" Grid.Column="0"/>
                                     <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N3}'}" Grid.Row="4" Grid.Column="2"/>
 
-                                    <Button Text="X" 
+                                    <Button Text="❌" 
                                         AutomationId="DeleteDispenserButton"
                                         Grid.Column="3" Grid.RowSpan="5"
-                                        WidthRequest="50" HeightRequest="50"
+                                        WidthRequest="40" HeightRequest="40"
                                         BackgroundColor="Transparent"
-                                        TextColor="#6A1B9A"
-                                        CornerRadius="0"
+                                        FontSize="18"
+                                        Padding="0"
                                         VerticalOptions="Center"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
                                         CommandParameter="{Binding .}"/>
