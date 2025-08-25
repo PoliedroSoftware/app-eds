@@ -32,7 +32,20 @@
              Text="Registrar Negocio"
              TextColor="White"
              AutomationId="ButtonSendBusinessData"/>
-         </VerticalStackLayout>
+           <CollectionView ItemsSource="{Binding BusinessList}" Margin="0,20,0,0">
+               <CollectionView.ItemTemplate>
+                   <DataTemplate>
+                       <Frame Padding="10" Margin="0,5">
+                           <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto">
+                               <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center"/>
+                               <ImageButton Grid.Column="1" Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditBusinessCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                               <ImageButton Grid.Column="2" Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteBusinessCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                           </Grid>
+                       </Frame>
+                   </DataTemplate>
+               </CollectionView.ItemTemplate>
+           </CollectionView>
+       </VerticalStackLayout>
 
         <controls:LoadingView x:Name="LoadingOverlay"
                       AbsoluteLayout.LayoutBounds="0,0,1,1"

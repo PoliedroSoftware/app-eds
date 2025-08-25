@@ -227,6 +227,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
                                             
                                             <!-- Header Row -->
@@ -290,6 +291,24 @@
                                                     </StackLayout>
                                                 </StackLayout>
                                             </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalOptions="End">
+                                                <ImageButton Source="edit.png"
+                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserCommand}"
+                                                             CommandParameter="{Binding .}"
+                                                             HeightRequest="20"
+                                                             WidthRequest="20"
+                                                             BackgroundColor="Transparent"
+                                                             AutomationId="ButtonEditDispenser"/>
+                                                <ImageButton Source="delete.png"
+                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
+                                                             CommandParameter="{Binding .}"
+                                                             HeightRequest="20"
+                                                             WidthRequest="20"
+                                                             BackgroundColor="Transparent"
+                                                             AutomationId="ButtonDeleteDispenser"/>
+                                            </StackLayout>
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>

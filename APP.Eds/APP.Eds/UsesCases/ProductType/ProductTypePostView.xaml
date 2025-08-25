@@ -22,6 +22,31 @@
             Text="Enviar Datos"
             TextColor="White"
             AutomationId="ButtonSendData"/>
+
+        <CollectionView ItemsSource="{Binding ProductTypeList}" Margin="0,20,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="0,5">
+                        <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="Center">
+                            <Label Text="{Binding Description}" FontSize="16" VerticalOptions="Center"/>
+                            <ImageButton Source="edit.png"
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductTypeCommand}"
+                                         CommandParameter="{Binding .}"
+                                         HeightRequest="20"
+                                         WidthRequest="20"
+                                         Grid.Column="1"/>
+                            <ImageButton Source="delete.png"
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductTypeCommand}"
+                                         CommandParameter="{Binding .}"
+                                         HeightRequest="20"
+                                         WidthRequest="20"
+                                         Grid.Column="2"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
     </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"

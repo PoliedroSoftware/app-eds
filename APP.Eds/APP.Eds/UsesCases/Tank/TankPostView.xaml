@@ -46,20 +46,20 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
 
-                            <Grid Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                                <Label Text="{Binding Nmber}" FontSize="14" Grid.Row="1" />
-                                <Label Text="{Binding Compartment}" FontSize="14" Grid.Row="2" />
-                                <Label Text="{Binding Ability}" FontSize="14" Grid.Row="3" />
-                                <Label Text="{Binding Stock}" FontSize="14" Grid.Row="4" />
-                            </Grid>
+                            <Frame Padding="10" Margin="0,5">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackLayout>
+                                        <Label Text="{Binding Nmber, StringFormat='Número: {0}'}" FontSize="14" />
+                                        <Label Text="{Binding Compartment, StringFormat='Compartimiento: {0}'}" FontSize="14" />
+                                        <Label Text="{Binding Ability, StringFormat='Capacidad: {0}'}" FontSize="14" />
+                                        <Label Text="{Binding Stock, StringFormat='Inventario: {0}'}" FontSize="14" />
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalOptions="Center">
+                                        <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTankCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                        <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteTankCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

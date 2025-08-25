@@ -7,6 +7,7 @@ using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
+using System.Collections.ObjectModel;
 
 namespace APP.Eds.Services.Capacity;
 
@@ -18,6 +19,18 @@ public class CapacityService : INotifyPropertyChanged
     private CapacityModel _capacity;
     public ICommand GetByIdCapacityDataCommand { get; }
     public ICommand SaveCapacityDataCommand { get; }
+    public ICommand EditCapacityCommand { get; }
+    public ICommand DeleteCapacityCommand { get; }
+    private ObservableCollection<CapacityModel> _capacityList;
+    public ObservableCollection<CapacityModel> CapacityList
+    {
+        get => _capacityList;
+        set
+        {
+            _capacityList = value;
+            OnPropertyChanged(nameof(CapacityList));
+        }
+    }
     public CapacityModel Capacity
     {
         get => _capacity;
@@ -269,7 +282,10 @@ public class CapacityService : INotifyPropertyChanged
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         GetByIdCapacityDataCommand = new Command<int>(async (capacityId) => await GetByIdCapacityDataAsync(capacityId));
         SaveCapacityDataCommand = new Command(async () => await SaveCapacityDataAsync());
+        EditCapacityCommand = new Command<CapacityModel>(async (capacity) => await EditCapacityAsync(capacity));
+        DeleteCapacityCommand = new Command<CapacityModel>(async (capacity) => await DeleteCapacityAsync(capacity));
         LoadTranslationsAsync();
+        LoadCapacitiesAsync();
     }
     public async Task LoadTranslationsAsync()
     {
@@ -348,6 +364,12 @@ public class CapacityService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var newCapacity = JsonSerializer.Deserialize<CapacityModel>(responseContent, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+                CapacityList.Add(newCapacity);
                 await Application.Current.MainPage.DisplayAlert(Success, SuccessDataSend, "OK");
             }
             else
@@ -362,6 +384,66 @@ public class CapacityService : INotifyPropertyChanged
         }
     }
 
+    public async Task LoadCapacitiesAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert(Error, ErrorTokenNoFound, "OK");
+            return;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/capacity");
+            var capacities = JsonSerializer.Deserialize<List<CapacityModel>>(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            CapacityList = new ObservableCollection<CapacityModel>(capacities);
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert(Error, $"{ErrorDataLoad}, {ex.Message}", "OK");
+        }
+    }
+
+    private async Task EditCapacityAsync(CapacityModel capacity)
+    {
+        // Navegar a la vista de edición o mostrar un popup
+        // Por ahora, solo mostraremos una alerta
+        await Application.Current.MainPage.DisplayAlert("Editar", $"Editando capacidad: {capacity.Code}", "OK");
+    }
+
+    private async Task DeleteCapacityAsync(CapacityModel capacity)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert(Error, ErrorTokenNoFound, "OK");
+            return;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/capacity/{capacity.Id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                CapacityList.Remove(capacity);
+                await Application.Current.MainPage.DisplayAlert(Success, "Capacidad eliminada", "OK");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert(Error, $"{ErrorSendData}, {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert(Error, $"{ErrorSendData}, {ex.Message}", "OK");
+        }
+    }
 
     protected void OnPropertyChanged(string propertyName)
     {

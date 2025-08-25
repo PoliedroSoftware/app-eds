@@ -161,6 +161,8 @@ namespace APP.Eds.Services.Dispensers
 
         public ICommand GetByIdDispensersDataCommand { get; }
         public ICommand SaveDispensersDataCommand { get; }
+        public ICommand EditDispenserCommand { get; }
+        public ICommand DeleteDispenserCommand { get; }
 
         //ejecutando el metodo
         public DispensersService()
@@ -171,7 +173,18 @@ namespace APP.Eds.Services.Dispensers
             GetAllEdsData();
             GetByIdDispensersDataCommand = new Command<int>(async (DispensersId) => await GetByIdDispensersDataAsync(DispensersId));
             SaveDispensersDataCommand = new Command(async () => await SaveDispensersDataAsync());
-            
+            EditDispenserCommand = new Command<DispenserModelResponse>(EditDispenser);
+            DeleteDispenserCommand = new Command<DispenserModelResponse>(DeleteDispenser);
+        }
+
+        private void EditDispenser(DispenserModelResponse dispenser)
+        {
+            // Lógica para editar el dispensador
+        }
+
+        private void DeleteDispenser(DispenserModelResponse dispenser)
+        {
+            // Lógica para eliminar el dispensador
         }
 
         //Data
