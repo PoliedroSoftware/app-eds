@@ -1,30 +1,91 @@
 <ContentView
-	x:Class="APP.Eds.UsesCases.LoadingView.LoadingView"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:vm="clr-namespace:APP.Eds.Services.Court">
+    x:Class="APP.Eds.UsesCases.LoadingView.LoadingView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Grid
-		x:Name="LoadingOverlay"
-		BackgroundColor="#80000000"
-		IsVisible="False"
-		HorizontalOptions="FillAndExpand"
-		VerticalOptions="FillAndExpand"
+        x:Name="LoadingOverlay"
+        BackgroundColor="#80000000"
+        IsVisible="False"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="FillAndExpand"
         AutomationId="GridLoadingOverlay">
 
-        <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <!-- Background blur effect -->
+        <BoxView 
+            BackgroundColor="#F0FFFFFF"
+            Opacity="0.95"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"/>
 
-			<ActivityIndicator x:Name="LoadingIndicator"
-							   IsRunning="False"
-							   Color="DodgerBlue"
-							   WidthRequest="60"
-							   HeightRequest="60"
-                               AutomationId="ActivityIndicatorLoading"/>
-			<Label x:Name="LoadingLabel" Text="Cargando...." FontSize="25"
-				TextColor="Red"
-				IsVisible="False"
-				HorizontalOptions="Center"
-                AutomationId="LabelLoadingText"/>
-		</StackLayout>
-	</Grid>
+        <!-- Main loading container -->
+        <Border
+            x:Name="LoadingContainer"
+            BackgroundColor="White"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="0"
+            WidthRequest="280"
+            HeightRequest="160"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Padding="32,24">
+            <Border.Shadow>
+                <Shadow Brush="#000000" 
+                        Offset="0,8" 
+                        Radius="24" 
+                        Opacity="0.15"/>
+            </Border.Shadow>
+
+            <VerticalStackLayout Spacing="24" HorizontalOptions="Center" VerticalOptions="Center">
+                
+                <!-- Modern loading spinner -->
+                <Grid WidthRequest="56" HeightRequest="56" HorizontalOptions="Center">
+                    
+                    <!-- Background circle -->
+                    <Ellipse 
+                        Fill="Transparent"
+                        Stroke="#E5E7EB"
+                        StrokeThickness="4"
+                        WidthRequest="56"
+                        HeightRequest="56"/>
+                    
+                    <!-- Animated spinner -->
+                    <ActivityIndicator 
+                        x:Name="LoadingIndicator"
+                        IsRunning="False"
+                        Color="#6366F1"
+                        WidthRequest="48"
+                        HeightRequest="48"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        AutomationId="ActivityIndicatorLoading"/>
+                </Grid>
+
+                <!-- Loading content -->
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    
+                    <!-- Primary loading text -->
+                    <Label 
+                        x:Name="LoadingLabel"
+                        Text="Cargando..."
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#1F2937"
+                        HorizontalOptions="Center"
+                        IsVisible="True"
+                        AutomationId="LabelLoadingText"/>
+                    
+                    <!-- Secondary descriptive text -->
+                    <Label 
+                        x:Name="LoadingDescription"
+                        Text="Procesando informacion"
+                        FontSize="14"
+                        TextColor="#6B7280"
+                        HorizontalOptions="Center"
+                        Opacity="0.8"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+            
+    </Grid>
 </ContentView>

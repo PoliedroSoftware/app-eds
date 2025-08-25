@@ -1,36 +1,538 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.TypeOfCollection.TypeOfCollectionPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="{Binding DescriptionTitle}">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.TypeOfCollection.TypeOfCollectionPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:button="clr-namespace:APP.Eds.Controls"
+    Title="Gestion de Formas de Pago"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-        <Label FontSize="16" Text="{Binding DescriptionLabel}"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="{Binding DescriptionPlaceHolder}"
-            Text="{Binding Description, Mode=TwoWay}"
-            AutomationId="EntryDescription"/>
-        <button:HoverButton
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            WidthRequest="200"
-            HeightRequest="60"
-            CornerRadius="10"
-            HoverColor="Gray"
-            PressedColor="AliceBlue"
-            Text="{Binding SendData}"
-            TextColor="White"
-            AutomationId="ButtonSendData"/>
-    </VerticalStackLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="16">
+                
+                <!-- Header Card with Green Gradient -->
+                <Border BackgroundColor="#4CAF50" 
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20"
+                        StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow Brush="#4CAF50" Offset="0,4" Radius="12" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <StackLayout>
+                        <Label Text="💳 Gestion de Formas de Pago" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Configure metodos de pago y procesamiento de transacciones" 
+                               FontSize="14" 
+                               TextColor="#C8E6C9" 
+                               HorizontalOptions="Center"
+                               Margin="0,5,0,0"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Payment Method Registration Form Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Form Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="🏦" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Configurar Nueva Forma de Pago" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Payment Method Information Grid -->
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
+                            
+                            <!-- Payment Type -->
+                            <StackLayout Grid.Row="0" Grid.Column="0">
+                                <Label Text="Tipo de Pago" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Picker Title="Seleccione tipo"
+                                            ItemsSource="{Binding PaymentTypes}"
+                                            SelectedItem="{Binding SelectedPaymentType, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerPaymentType"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Payment Method -->
+                            <StackLayout Grid.Row="0" Grid.Column="1">
+                                <Label Text="Metodo de Pago" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Picker Title="Seleccione metodo"
+                                            ItemsSource="{Binding PaymentMethods}"
+                                            SelectedItem="{Binding SelectedPaymentMethod, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerPaymentMethod"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Name -->
+                            <StackLayout Grid.Row="1" Grid.Column="0">
+                                <Label Text="Nombre/Descripcion" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Ej: Efectivo, Tarjeta Debito"
+                                           Text="{Binding PaymentName, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryPaymentName"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Provider -->
+                            <StackLayout Grid.Row="1" Grid.Column="1">
+                                <Label Text="Proveedor/Procesador" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Ej: Visa, MasterCard, PSE"
+                                           Text="{Binding PaymentProvider, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryPaymentProvider"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Processing Fee -->
+                            <StackLayout Grid.Row="2" Grid.Column="0">
+                                <Label Text="Comision (%)" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Entry Keyboard="Numeric"
+                                           Placeholder="0.00"
+                                           Text="{Binding ProcessingFee, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryProcessingFee"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Status -->
+                            <StackLayout Grid.Row="2" Grid.Column="1">
+                                <Label Text="Estado" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Picker Title="Estado del metodo"
+                                            ItemsSource="{Binding StatusOptions}"
+                                            SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerStatus"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Configuration Settings -->
+                            <StackLayout Grid.Row="3" Grid.ColumnSpan="2">
+                                <Label Text="Configuraciones Especiales" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <StackLayout Orientation="Horizontal" Spacing="16">
+                                    <StackLayout Orientation="Horizontal" Spacing="6">
+                                        <CheckBox IsChecked="{Binding RequiresAuth, Mode=TwoWay}"
+                                                  Color="#4CAF50"
+                                                  AutomationId="CheckBoxRequiresAuth"/>
+                                        <Label Text="Requiere Autorizacion" 
+                                               FontSize="13" 
+                                               TextColor="#636E72"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                    
+                                    <StackLayout Orientation="Horizontal" Spacing="6">
+                                        <CheckBox IsChecked="{Binding IsDefault, Mode=TwoWay}"
+                                                  Color="#4CAF50"
+                                                  AutomationId="CheckBoxIsDefault"/>
+                                        <Label Text="Metodo por Defecto" 
+                                               FontSize="13" 
+                                               TextColor="#636E72"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+
+                            <!-- Description -->
+                            <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
+                                <Label Text="Observaciones/Notas" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#C8E6C9" 
+                                        Padding="4">
+                                    <Editor Placeholder="Configuraciones adicionales, limitaciones, etc."
+                                            Text="{Binding Description, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="EditorDescription"
+                                            PlaceholderColor="#9CA3AF"
+                                            HeightRequest="80"/>
+                                </Border>
+                            </StackLayout>
+                        </Grid>
+
+                        <!-- Action Button -->
+                        <Border BackgroundColor="#4CAF50" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Margin="0,10,0,0">
+                            <Border.Shadow>
+                                <Shadow Brush="#4CAF50" Offset="0,3" Radius="8" Opacity="0.3"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Button_Clicked_1"
+                                    Text="💾 Registrar Forma de Pago"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    AutomationId="ButtonSendData"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Payment Methods Statistics Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        
+                        <!-- Stats Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="📊" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Resumen de Formas de Pago" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Statistics Grid -->
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                            <!-- Total Methods -->
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="12"
+                                    Grid.Column="0">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Total" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#388E3C"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalPaymentMethods}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#2E7D32"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Active Methods -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="12"
+                                    Grid.Column="1">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Activos" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#1976D2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding ActivePaymentMethods}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#0D47A1"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Digital Methods -->
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#9C27B0"
+                                    Padding="12"
+                                    Grid.Column="2">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Digital" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#7B1FA2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding DigitalPaymentMethods}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#4A148C"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Cash Methods -->
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#FF9800"
+                                    Padding="12"
+                                    Grid.Column="3">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Efectivo" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#F57C00"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding CashPaymentMethods}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#E65100"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Payment Methods List Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="💳" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Formas de Pago Configuradas" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Filter Options -->
+                        <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                            <Button Text="Todas" 
+                                    BackgroundColor="{Binding FilterAllColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterAllCommand}"/>
+                            <Button Text="Activas" 
+                                    BackgroundColor="{Binding FilterActiveColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterActiveCommand}"/>
+                            <Button Text="Digitales" 
+                                    BackgroundColor="{Binding FilterDigitalColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterDigitalCommand}"/>
+                        </StackLayout>
+
+                        <!-- Payment Methods Collection -->
+                        <CollectionView ItemsSource="{Binding PaymentMethodsList}" 
+                                        Margin="0,10,0,0"
+                                        AutomationId="CollectionViewPaymentMethods">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FEFEFE" 
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="#E5E7EB"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
+                                            
+                                            <!-- Payment Icon -->
+                                            <Border BackgroundColor="#4CAF50" 
+                                                    StrokeShape="RoundRectangle 25"
+                                                    WidthRequest="50" 
+                                                    HeightRequest="50"
+                                                    Grid.RowSpan="4" 
+                                                    Grid.Column="0"
+                                                    VerticalOptions="Center">
+                                                <Label Text="{Binding Icon, FallbackValue='💳'}" 
+                                                       FontSize="24" 
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Payment Method Information -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                                                <Border BackgroundColor="#E8F5E8"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="{Binding Status}" 
+                                                           FontSize="10" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#4CAF50"/>
+                                                </Border>
+                                                <Border BackgroundColor="#FFF3E0"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center"
+                                                        IsVisible="{Binding IsDefault}">
+                                                    <Label Text="DEFECTO" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#FF9800"/>
+                                                </Border>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="🏦" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Type}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="•" FontSize="12" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Provider}" FontSize="13" TextColor="#6B7280"/>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="📄" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Description}" FontSize="13" TextColor="#374151" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                            </StackLayout>
+
+                                            <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                                <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                                                    <Label Text="💰" FontSize="11" VerticalOptions="Center"/>
+                                                    <Label Text="Comision:" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding ProcessingFee, StringFormat='{0}%'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                </StackLayout>
+                                                
+                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
+                                                    <Label Text="🔐" FontSize="11" VerticalOptions="Center" IsVisible="{Binding RequiresAuth}"/>
+                                                    <Label Text="Auth Req." FontSize="11" TextColor="#9C27B0" VerticalOptions="Center" IsVisible="{Binding RequiresAuth}"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#E8F5E8" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#4CAF50"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#4CAF50"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditPaymentMethodCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                                
+                                                <!-- Delete Button -->
+                                                <Border BackgroundColor="#FFEBEE" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#F44336"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="🗑️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#F44336"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePaymentMethodCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+                                    <Label Text="💳" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="No hay formas de pago configuradas" 
+                                           FontSize="16" 
+                                           TextColor="#6B7280" 
+                                           HorizontalOptions="Center"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="Configure la primera forma de pago usando el formulario superior" 
+                                           FontSize="14" 
+                                           TextColor="#9CA3AF" 
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Margin for Better Scrolling -->
+                <BoxView HeightRequest="20" Color="Transparent"/>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-                          AbsoluteLayout.LayoutBounds="0,0,1,1"
-                          AbsoluteLayout.LayoutFlags="All"
-                          AutomationId="LoadingOverlay"/>
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>
