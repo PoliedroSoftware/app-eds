@@ -46,19 +46,21 @@
     <CollectionView ItemsSource="{Binding ProductList}">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <Grid Padding="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Text="{Binding Name}" FontSize="14" Grid.Row="0" />
-                    <Label Text="{Binding Price}" FontSize="14" Grid.Row="1" />
-                    <StackLayout Orientation="Horizontal" Grid.Row="2">
-                        <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" />
-                        <Button Text="Eliminar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" />
-                    </StackLayout>
-                </Grid>
+                <VerticalStackLayout>
+                    <Label Text="{Binding Name, StringFormat='Producto: {0}'}" FontSize="16" HorizontalOptions="Center" Margin="0,20,0,5"/>
+                    <Frame Padding="0">
+                        <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
+
+                            <Label Text="Precio" Grid.Row="3" Grid.Column="1"/>
+                            <Label Text="{Binding Price, StringFormat='{0:C}'}" Grid.Row="3" Grid.Column="3"/>
+
+                            <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand">
+                                <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

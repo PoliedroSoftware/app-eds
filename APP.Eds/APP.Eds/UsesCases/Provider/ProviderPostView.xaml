@@ -26,8 +26,12 @@
                             <VerticalStackLayout>
                                 <!--<Label Text="{Binding Number,StringFormat='Compartimiento {0:N0}'}" FontSize="16" Grid.Row="1" Grid.Column="3" HorizontalOptions="Center" Margin="0,20,0,5"/>-->
                                 <Frame Padding="0">
-                                    <Grid ColumnDefinitions="20,*,10" RowDefinitions="10,*,10">
+                                    <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
                                         <Label Text="{Binding Name}" Grid.Row="1" Grid.Column="1"/>
+                                        <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.Column="3" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand">
+                                            <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProviderCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                            <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProviderCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                        </StackLayout>
                                     </Grid>
                                 </Frame>
                             </VerticalStackLayout>

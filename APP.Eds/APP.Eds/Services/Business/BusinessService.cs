@@ -60,13 +60,21 @@ public class BusinessService : INotifyPropertyChanged
 
     public ICommand GetByIdBusinessDataCommand { get; }
     public ICommand SaveBusinessDataCommand { get; }
+    public ICommand EditBusinessCommand { get; }
+    public ICommand DeleteBusinessCommand { get; }
 
     public BusinessService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         GetByIdBusinessDataCommand = new Command<int>(async (businessId) => await GetByIdBusinessDataAsync(businessId));
         SaveBusinessDataCommand = new Command(async () => await SaveBusinessDataAsync());
+        EditBusinessCommand = new Command<BusinessModel>(async (business) => await EditBusiness(business));
+        DeleteBusinessCommand = new Command<BusinessModel>(async (business) => await DeleteBusiness(business));
     }
+   public async Task GetBusinessList()
+   {
+       await GetBusinessesAsync();
+   }
 
     public async Task GetBusinessesAsync(int pageNumber = 1, int pageSize = 100)
     {
@@ -181,6 +189,44 @@ public class BusinessService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
         }
     }
+   private async Task EditBusiness(BusinessModel business)
+   {
+      await Application.Current.MainPage.DisplayAlert("Editar", $"Has seleccionado editar a {business.Name}", "OK");
+   }
+
+   private async Task DeleteBusiness(BusinessModel business)
+   {
+      if (string.IsNullOrEmpty(_authToken))
+      {
+          await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+          return;
+      }
+
+      bool-confirmed = await Application.Current.MainPage.DisplayAlert("Confirmar", $"¿Estás seguro de que quieres eliminar a {business.Name}?", "Sí", "No");
+      if (!confirmed)
+          return;
+
+      try
+      {
+          using var httpClient = new HttpClient();
+          httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+          var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/business/{business.IdBusiness}");
+
+          if (response.IsSuccessStatusCode)
+          {
+              await GetBusinessList();
+          }
+          else
+          {
+              var error = await response.Content.ReadAsStringAsync();
+              await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar el negocio: {response.StatusCode}\n{error}", "OK");
+          }
+      }
+      catch (Exception ex)
+      {
+          await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar el negocio: {ex.Message}", "OK");
+      }
+   }
 
     private void ValidateName()
     {

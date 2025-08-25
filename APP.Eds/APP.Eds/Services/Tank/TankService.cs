@@ -242,6 +242,8 @@ public class TankService : INotifyPropertyChanged
 
     public ICommand GetByIdTankDataCommand { get; }
     public ICommand SaveTankDataCommand { get; }
+    public ICommand EditTankCommand { get; }
+    public ICommand DeleteTankCommand { get; }
 
     public TankService()
     {
@@ -250,6 +252,9 @@ public class TankService : INotifyPropertyChanged
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         GetTankAsync();
         LoadTranslationsAsync();
+
+        DeleteTankCommand = new Command<TankResponse>(async (tank) => await DeleteTankAsync(tank.Id));
+        EditTankCommand = new Command<TankResponse>(async (tank) => await EditTankAsync(tank));
     }
 
     public async Task LoadTranslationsAsync()
@@ -388,6 +393,78 @@ public class TankService : INotifyPropertyChanged
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+
+    private async Task EditTankAsync(TankResponse tank)
+    {
+        // TODO: Implement edit logic, e.g., show a popup
+        await Application.Current.MainPage.DisplayAlert("Editar", $"Editar tanque: {tank.Nmber}", "OK");
+    }
+
+    public async Task<bool> DeleteTankAsync(int idTank)
+    {
+        bool answer = await Application.Current.MainPage.DisplayAlert("Confirmación", "¿Está seguro de que desea eliminar este tanque?", "Sí", "No");
+        if (!answer) return false;
+
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return false;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/tank/{idTank}");
+            if (response.IsSuccessStatusCode)
+            {
+                await GetTankAsync();
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar: {ex.Message}", "OK");
+        }
+        return false;
+    }
+
+    public async Task<bool> UpdateTankAsync(int idTank, TankModel model)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return false;
+        }
+        try
+        {
+            var request = new TankRequest { Request = model };
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/tank/{idTank}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                await GetTankAsync();
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar: {response.StatusCode}\n{error}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+        }
+        return false;
     }
 
     protected void OnPropertyChanged(string propertyName)
