@@ -75,28 +75,50 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame CornerRadius="10" BorderColor="#DDD" Padding="10" Margin="5">
-                            <Grid RowSpacing="4">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label Text="N° Manguera:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding Number}" Grid.Row="0" Grid.Column="1" />
-                                <Label Text="Dispensador:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding DispenserName}" Grid.Row="1" Grid.Column="1" />
-                                <Label Text="Tipo de Producto:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding ProductTypeName}" Grid.Row="2" Grid.Column="1" />
-                                <Label Text="Dinero Acumulado:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding AccumulatedAmount}" Grid.Row="3" Grid.Column="1" />
-                                <Label Text="Galones Acumulados:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding AccumulatedGallons}" Grid.Row="4" Grid.Column="1" />
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <Grid Grid.Column="0" RowSpacing="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="N° Manguera:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Number}" Grid.Row="0" Grid.Column="1" />
+                                    <Label Text="Dispensador:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding DispenserName}" Grid.Row="1" Grid.Column="1" />
+                                    <Label Text="Tipo de Producto:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding ProductTypeName}" Grid.Row="2" Grid.Column="1" />
+                                    <Label Text="Dinero Acumulado:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding AccumulatedAmount}" Grid.Row="3" Grid.Column="1" />
+                                    <Label Text="Galones Acumulados:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding AccumulatedGallons}" Grid.Row="4" Grid.Column="1" />
+                                </Grid>
+                                <Button Grid.Column="1" 
+                                       Text="✏️"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditHoseCommand}"
+                                       CommandParameter="{Binding .}"
+                                       BackgroundColor="Transparent"
+                                       FontSize="18"
+                                       WidthRequest="40"
+                                       HeightRequest="40"
+                                       Padding="0"
+                                       VerticalOptions="Center"/>
+                                <Button Grid.Column="2" 
+                                       Text="❌"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteHoseCommand}"
+                                       CommandParameter="{Binding .}"
+                                       BackgroundColor="Transparent"
+                                       FontSize="18"
+                                       WidthRequest="40"
+                                       HeightRequest="40"
+                                       Padding="0"
+                                       VerticalOptions="Center"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>

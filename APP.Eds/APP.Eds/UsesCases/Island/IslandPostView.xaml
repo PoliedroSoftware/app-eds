@@ -28,16 +28,34 @@
                             AutomationId="CollectionViewIslandList">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="ID:" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" Margin="40,0,0,0"/>
-                            <Label Text="Descripción:" FontSize="14" Grid.Row="1" />
-                            <Label Text="{Binding Description}" FontSize="14" Grid.Row="1" Margin="40,0,0,0"/>
-                        </Grid>
+                        <Frame Padding="10" Margin="0,5">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Description}" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="{Binding Id, StringFormat='ID: {0}'}" FontSize="14" TextColor="Gray"/>
+                                </StackLayout>
+                                <Button Grid.Column="1" 
+                                       Text="✏️"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditIslandCommand}"
+                                       CommandParameter="{Binding .}"
+                                       BackgroundColor="Transparent"
+                                       FontSize="18"
+                                       WidthRequest="40"
+                                       HeightRequest="40"
+                                       Padding="0"
+                                       VerticalOptions="Center"/>
+                                <Button Grid.Column="2" 
+                                       Text="❌"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteIslandCommand}"
+                                       CommandParameter="{Binding .}"
+                                       BackgroundColor="Transparent"
+                                       FontSize="18"
+                                       WidthRequest="40"
+                                       HeightRequest="40"
+                                       Padding="0"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

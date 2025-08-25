@@ -53,9 +53,25 @@
                                         <Label Text="Tanque"  Grid.Row="7" Grid.Column="1"/>
                                         <Label Text="{Binding IdTank}"  Grid.Row="7" Grid.Column="3"/>
                                         
-                                        <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand">
-                                            <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
-                                            <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
+                                        <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalOptions="EndAndExpand" Spacing="10">
+                                            <Button Text="✏️" 
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
+                                            <Button Text="❌" 
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
                                         </StackLayout>
                                     </Grid>
                                 </Frame>

@@ -11,27 +11,27 @@
             <VerticalStackLayout Padding="20" Spacing="15">
                 <Entry
                 Keyboard="Text"
-                Placeholder="{Binding NamePlaceHolder}"
+                Placeholder="Ingrese el nombre"
                 Text="{Binding Name, Mode=TwoWay}" 
                 AutomationId="EntryName"/>
                 <Entry
 	            Keyboard="Text"
-	            Placeholder="{Binding NitPlaceHolder}"
+	            Placeholder="Ingrese el NIT"
 	            Text="{Binding Nit, Mode=TwoWay}"
                 AutomationId="EntryNit"/>
                 <Entry
                 Keyboard="Text"
-                Placeholder="{Binding AdreessPlaceHolder}"
+                Placeholder="Ingrese la dirección"
                 Text="{Binding Address, Mode=TwoWay}"
                 AutomationId="EntryAddress"/>
                 <Entry
                 Keyboard="Text"
-                Placeholder="{Binding SicomPlaceHolder}"
+                Placeholder="Ingrese el código SICOM"
                 Text="{Binding Sicom, Mode=TwoWay}"
                 AutomationId="EntrySicom"/>
 
-                <Label FontSize="16" Text="{Binding SelectBusiness}" />
-                <Picker Title="{Binding BusinessPicker}"
+                <Label FontSize="16" Text="Seleccione Negocio" />
+                <Picker Title="Seleccione un negocio"
                 ItemsSource="{Binding BusinessList}"
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
@@ -54,22 +54,37 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
 
-                            <Grid Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="0" />
-                                <Label Text="{Binding Name}" FontSize="14" Grid.Row="1" />
-                                <Label Text="{Binding Nit}" FontSize="14" Grid.Row="2" />
-                                <Label Text="{Binding Address}" FontSize="14" Grid.Row="3" />
-                                <Label Text="{Binding Sicom}" FontSize="14" Grid.Row="4" />
-                                <Label Text="{Binding IdBusiness}" FontSize="14" Grid.Row="5" />
-                            </Grid>
+                            <Frame Padding="10" Margin="0,5">
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Nit}" FontSize="14" />
+                                        <Label Text="{Binding Address}" FontSize="14" />
+                                        <Label Text="{Binding Sicom}" FontSize="14" />
+                                        <Label Text="{Binding IdBusiness}" FontSize="12" TextColor="Gray"/>
+                                    </StackLayout>
+                                    <Button Grid.Column="1" 
+                                           Text="✏️"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditEdsCommand}"
+                                           CommandParameter="{Binding .}"
+                                           BackgroundColor="Transparent"
+                                           FontSize="18"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           Padding="0"
+                                           VerticalOptions="Center"/>
+                                    <Button Grid.Column="2" 
+                                           Text="❌"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteEdsCommand}"
+                                           CommandParameter="{Binding .}"
+                                           BackgroundColor="Transparent"
+                                           FontSize="18"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           Padding="0"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
