@@ -202,7 +202,7 @@ public class BusinessService : INotifyPropertyChanged
           return;
       }
 
-      bool-confirmed = await Application.Current.MainPage.DisplayAlert("Confirmar", $"¿Estás seguro de que quieres eliminar a {business.Name}?", "Sí", "No");
+      bool confirmed = await Application.Current.MainPage.DisplayAlert("Confirmar", $"¿Estás seguro de que quieres eliminar a {business.Name}?", "Sí", "No");
       if (!confirmed)
           return;
 
