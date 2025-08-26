@@ -3,26 +3,112 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.ProductType.ProductTypePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Tipo De Producto">
+             Title="Gestión de Tipos de Producto"
+             BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-    <VerticalStackLayout 
-        AbsoluteLayout.LayoutBounds="0,0,1,1"
-        AbsoluteLayout.LayoutFlags="All"
-        Padding="20" Spacing="15">
-        <Label FontSize="16" Text="Tipo De Producto"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingreser El Tipo De Producto"
-            Text="{Binding Description, Mode=TwoWay}"
-            AutomationId="EntryProductType"/>
-        <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="Enviar Datos"
-            TextColor="White"
-            AutomationId="ButtonSendData"/>
-    </VerticalStackLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="16">
+                
+                <!-- Header Card -->
+                <Border BackgroundColor="#FF6B35" 
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20"
+                        StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow Brush="#FF6B35" Offset="0,4" Radius="12" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <StackLayout>
+                        <Label Text="🏷️ Gestión de Tipos de Producto" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Configure categorías y clasificaciones de productos" 
+                               FontSize="14" 
+                               TextColor="#FFE4D6" 
+                               HorizontalOptions="Center"
+                               Margin="0,5,0,0"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Product Type Registration Form Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Form Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="📝" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Nuevo Tipo de Producto" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Description Field -->
+                        <StackLayout Spacing="8">
+                            <Label Text="Descripción del Tipo de Producto" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#636E72" 
+                                   FontSize="14"/>
+                            <Border BackgroundColor="#F8F9FA" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#DDD6FE" 
+                                    Padding="4">
+                                <Grid ColumnDefinitions="Auto,*" Padding="12">
+                                    <Label Grid.Column="0" 
+                                           Text="🏷️" 
+                                           FontSize="18" 
+                                           TextColor="#FF6B35" 
+                                           VerticalOptions="Center"
+                                           Margin="0,0,12,0"/>
+                                    <Entry Grid.Column="1"
+                                           Keyboard="Text"
+                                           Placeholder="Ej: Combustibles, Lubricantes, Aditivos"
+                                           Text="{Binding Description, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryProductType"
+                                           PlaceholderColor="#9CA3AF"
+                                           FontSize="16"
+                                           TextColor="#374151"/>
+                                </Grid>
+                            </Border>
+                        </StackLayout>
+
+                        <!-- Action Button -->
+                        <Border BackgroundColor="#FF6B35" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Margin="0,10,0,0">
+                            <Border.Shadow>
+                                <Shadow Brush="#FF6B35" Offset="0,3" Radius="8" Opacity="0.3"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Button_Clicked_1"
+                                    Text="🚀 Crear Tipo de Producto"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    AutomationId="ButtonSendData"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Margin for Better Scrolling -->
+                <BoxView HeightRequest="20" Color="Transparent"/>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
                               AbsoluteLayout.LayoutFlags="All"
