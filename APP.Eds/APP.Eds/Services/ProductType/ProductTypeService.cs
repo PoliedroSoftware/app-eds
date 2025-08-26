@@ -24,29 +24,13 @@ namespace APP.Eds.Services.ProductType
             {
                 _productType = value;
                 OnPropertyChanged(nameof(ProductType));
-        private ObservableCollection<ProductTypeModel> _productTypeList;
-        public ObservableCollection<ProductTypeModel> ProductTypeList
-        {
-            get => _productTypeList;
-            set
-            {
-                _productTypeList = value;
-                OnPropertyChanged(nameof(ProductTypeList));
             }
         }
 
-        private ObservableCollection<ProductTypeModel> _product
-            }
-        }
-
-        public ICommand EditProductTypeCommand { get; }
-        public ICommand DeleteProductTypeCommand { get; }
-        private ObservableCollection<ProductTypeModel> _productTypeList;
+        private ObservableCollection<ProductTypeModel> _productTypeList = [];
         public ObservableCollection<ProductTypeModel> ProductTypeList
         {
             get => _productTypeList;
-
-            EditProductTypeCommand = new Command<ProductTypeModel
             set
             {
                 _productTypeList = value;
@@ -64,4 +48,21 @@ namespace APP.Eds.Services.ProductType
                 OnPropertyChanged(nameof(Description));
             }
         }
-        public ICommand GetByIdProductTypeData
+
+        public ICommand EditProductTypeCommand { get; }
+        public ICommand DeleteProductTypeCommand { get; }
+        public ICommand GetByIdProductTypeDataCommand { get; }
+
+        public ProductTypeService()
+        {
+            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            EditProductTypeCommand = new Command<ProductTypeModel>(async (productType) => await EditProductType(productType));
+            DeleteProductTypeCommand = new Command<ProductTypeModel>(async (productType) => await DeleteProductType(productType));
+            GetByIdProductTypeDataCommand = new Command<int>(async (productTypeId) => await GetByIdProductTypeDataAsync(productTypeId));
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }

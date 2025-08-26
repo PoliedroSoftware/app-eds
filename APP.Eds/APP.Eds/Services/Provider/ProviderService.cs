@@ -13,7 +13,7 @@ namespace APP.Eds.Services.Provider;
 public class ProviderService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
-    private ProviderRequest Request { get; set; }
+    private ProviderRequest Request { get; set; } = new ProviderRequest();
     private ProviderModel _provider;
     public ObservableCollection<ProviderResponse> ProviderList { get; set; } = [];
     private string? _authToken;
@@ -154,10 +154,10 @@ public class ProviderService : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-}
     private async Task EditProviderAsync(ProviderResponse provider)
     {
         Name = provider.Name;
+        OnPropertyChanged(nameof(Name));
     }
 
     private async Task DeleteProviderAsync(ProviderResponse provider)
@@ -171,7 +171,7 @@ public class ProviderService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/provider/{provider.Id}");
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/provider/{provider.IdProvider}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -189,3 +189,4 @@ public class ProviderService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar el proveedor: {ex.Message}", "OK");
         }
     }
+}
