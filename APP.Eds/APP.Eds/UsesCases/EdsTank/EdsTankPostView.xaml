@@ -1,42 +1,372 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.EdsTank.EdsTankPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Del Tanque En La EDS ">
+             xmlns:converters="clr-namespace:APP.Eds.Converters"
+             Title="Gestion de Tanques - EDS"
+             BackgroundColor="#F8F9FA">
 
-    <!-- Borde envolvente -->
-    <Frame BorderColor="Transparent" Padding="10" CornerRadius="12" Margin="10" HasShadow="False">
-        <AbsoluteLayout>
-            <VerticalStackLayout AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                 AbsoluteLayout.LayoutFlags="All">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
+            
+            <!-- Local Icon Styles -->
+            <Style x:Key="IconLabel" TargetType="Label">
+                <Setter Property="FontFamily" Value="{OnPlatform Android='monospace', iOS='Menlo', MacCatalyst='Menlo', WinUI='Segoe UI Symbol', Default='Courier New'}" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-                <Picker Title="Seleccione Una Eds "
-                    ItemsSource="{Binding EdsList}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedItem="{Binding SelectEds, Mode=TwoWay}"
-                    Margin="0,6,0,6"
-                    AutomationId="PickerEds"/>
+    <ScrollView>
+        <Grid Padding="20" RowSpacing="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <Picker Title="Seleccione Un Tanque "
-                    ItemsSource="{Binding TankList}"
-                    ItemDisplayBinding="{Binding Number}"
-                    SelectedItem="{Binding SelectTank, Mode=TwoWay}"
-                    Margin="0,6,0,6"
-                    AutomationId="PickerTank"/>
+            <!-- Header con icono y titulo -->
+            <Border Grid.Row="0"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20,24"
+                    StrokeThickness="0">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
+                </Border.Shadow>
+                
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <Border Grid.Column="0" 
+                            BackgroundColor="#E3F2FD" 
+                            StrokeShape="RoundRectangle 12"
+                            WidthRequest="56" 
+                            HeightRequest="56">
+                        <Label Text="T" 
+                               Style="{StaticResource IconLabel}"
+                               FontSize="36"
+                               FontAttributes="Bold"
+                               TextColor="#1565C0"/>
+                    </Border>
+                    
+                    <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                        <Label Text="Gestion de Tanques" 
+                               FontSize="22" 
+                               FontAttributes="Bold" 
+                               TextColor="#1A1A1A"/>
+                        <Label Text="Asigne tanques a las estaciones de servicio" 
+                               FontSize="14" 
+                               TextColor="#666666"
+                               LineBreakMode="WordWrap"/>
+                    </StackLayout>
+                </Grid>
+            </Border>
 
-            <Button BackgroundColor="Green"
-                    Clicked="Button_Clicked"
-                    CornerRadius="10"
-                    Text="Enviar Datos"
-                    TextColor="White"
-                    Margin="0,11,0,11"
-                    AutomationId="ButtonSendData"/>
-            </VerticalStackLayout>
+            <!-- Seccion EDS -->
+            <Border Grid.Row="1"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20"
+                    StrokeThickness="0">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
+                </Border.Shadow>
+
+                <StackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border Grid.Column="0" 
+                                BackgroundColor="#FFF3E0" 
+                                StrokeShape="RoundRectangle 8"
+                                Padding="8">
+                            <Label Text="E" 
+                                   Style="{StaticResource IconLabel}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#F57C00"/>
+                        </Border>
+                        
+                        <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="Estacion de Servicio" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#1A1A1A"/>
+                            <Label Text="Seleccione la EDS donde asignar el tanque" 
+                                   FontSize="12" 
+                                   TextColor="#666666"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <Border BackgroundColor="#F8F9FA" 
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="1"
+                            Stroke="#E0E0E0">
+                        <Picker x:Name="EdsPicker"
+                                Title="? Seleccionar EDS"
+                                ItemsSource="{Binding EdsList}"
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectEds, Mode=TwoWay}"
+                                FontSize="14"
+                                TextColor="#1A1A1A"
+                                TitleColor="#666666"
+                                BackgroundColor="Transparent"
+                                Margin="16,12"/>
+                    </Border>
+
+                    <!-- Informacion de EDS seleccionada -->
+                    <Border x:Name="EdsInfoCard"
+                            BackgroundColor="#E8F5E8"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1"
+                            Stroke="#C8E6C9"
+                            Padding="12"
+                            IsVisible="{Binding SelectEds, Converter={StaticResource IsNotNullConverter}}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Grid.Column="0" 
+                                   Text="?" 
+                                   Style="{StaticResource IconLabel}"
+                                   FontSize="18" 
+                                   FontAttributes="Bold"
+                                   TextColor="#2E7D32"/>
+                            <StackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}" 
+                                       FontSize="13" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2E7D32"/>
+                                <Label Text="{Binding SelectEds.Address, StringFormat='Direccion: {0}'}" 
+                                       FontSize="12" 
+                                       TextColor="#2E7D32"
+                                       IsVisible="{Binding SelectEds.Address, Converter={StaticResource IsNotNullOrEmptyConverter}}"/>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </StackLayout>
+            </Border>
+
+            <!-- Seccion Tanque -->
+            <Border Grid.Row="2"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20"
+                    StrokeThickness="0">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
+                </Border.Shadow>
+
+                <StackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border Grid.Column="0" 
+                                BackgroundColor="#E1F5FE" 
+                                StrokeShape="RoundRectangle 8"
+                                Padding="8">
+                            <Label Text="T" 
+                                   Style="{StaticResource IconLabel}"
+                                   FontSize="24" 
+                                   FontAttributes="Bold"
+                                   TextColor="#0277BD"/>
+                        </Border>
+                        
+                        <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="Tanque de Combustible" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#1A1A1A"/>
+                            <Label Text="Seleccione el tanque a asignar a la EDS" 
+                                   FontSize="12" 
+                                   TextColor="#666666"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <Border BackgroundColor="#F8F9FA" 
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="1"
+                            Stroke="#E0E0E0">
+                        <Picker x:Name="TankPicker"
+                                Title="? Seleccionar Tanque"
+                                ItemsSource="{Binding TankList}"
+                                ItemDisplayBinding="{Binding Number}"
+                                SelectedItem="{Binding SelectTank, Mode=TwoWay}"
+                                FontSize="14"
+                                TextColor="#1A1A1A"
+                                TitleColor="#666666"
+                                BackgroundColor="Transparent"
+                                Margin="16,12"/>
+                    </Border>
+
+                    <!-- Informacion de Tanque seleccionado -->
+                    <Border x:Name="TankInfoCard"
+                            BackgroundColor="#E3F2FD"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1"
+                            Stroke="#BBDEFB"
+                            Padding="12"
+                            IsVisible="{Binding SelectTank, Converter={StaticResource IsNotNullConverter}}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Grid.Column="0" 
+                                   Text="T" 
+                                   Style="{StaticResource IconLabel}"
+                                   FontSize="18" 
+                                   FontAttributes="Bold"
+                                   TextColor="#1565C0"/>
+                            <StackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}" 
+                                       FontSize="13" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#1565C0"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding SelectTank.Ability, StringFormat='Capacidad: {0:N0} L'}" 
+                                           FontSize="12" 
+                                           TextColor="#1565C0"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding SelectTank.Compartment, StringFormat='Compartimientos: {0}'}" 
+                                           FontSize="12" 
+                                           TextColor="#1565C0"/>
+                                </Grid>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </StackLayout>
+            </Border>
+
+            <!-- Resumen de Asignacion -->
+            <Border Grid.Row="3"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20"
+                    StrokeThickness="0"
+                    IsVisible="{Binding ShowAssignmentSummary}">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
+                </Border.Shadow>
+
+                <StackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Border Grid.Column="0" 
+                                BackgroundColor="#F3E5F5" 
+                                StrokeShape="RoundRectangle 8"
+                                Padding="8">
+                            <Label Text="R" 
+                                   Style="{StaticResource IconLabel}"
+                                   FontSize="20" 
+                                   FontAttributes="Bold"
+                                   TextColor="#7B1FA2"/>
+                        </Border>
+                        
+                        <Label Grid.Column="1"
+                               Text="Resumen de Asignacion" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="#1A1A1A"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <Border BackgroundColor="#FFF9C4" 
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1"
+                            Stroke="#F57F17"
+                            Padding="16">
+                        <StackLayout Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Label Grid.Column="0" 
+                                       Text="E" 
+                                       Style="{StaticResource IconLabel}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#F57C00"/>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#F57C00"/>
+                            </Grid>
+                            
+                            <BoxView Height="1" BackgroundColor="#FFB74D" Opacity="0.3"/>
+                            
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Label Grid.Column="0" 
+                                       Text="T" 
+                                       Style="{StaticResource IconLabel}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#F57C00"/>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#F57C00"/>
+                            </Grid>
+                        </StackLayout>
+                    </Border>
+                </StackLayout>
+            </Border>
+
+            <!-- Botones de Accion -->
+            <StackLayout Grid.Row="4" 
+                         Spacing="12" 
+                         VerticalOptions="End"
+                         Margin="0,20,0,0">
+                
+                <!-- Boton Asignar -->
+                <Border BackgroundColor="#4CAF50"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        HeightRequest="54">
+                    <Border.Shadow>
+                        <Shadow Brush="#4CAF50" Offset="0,4" Radius="8" Opacity="0.25"/>
+                    </Border.Shadow>
+                    
+                    <Button x:Name="AssignButton"
+                            BackgroundColor="Transparent"
+                            Text="Asignar Tanque a EDS"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Clicked="Button_Clicked"
+                            IsEnabled="{Binding CanAssignTank}"/>
+                </Border>
+
+                <!-- Boton Limpiar -->
+                <Border BackgroundColor="#F5F5F5"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="1"
+                        Stroke="#E0E0E0"
+                        HeightRequest="48">
+                    
+                    <Button x:Name="ClearButton"
+                            BackgroundColor="Transparent"
+                            Text="Limpiar Seleccion"
+                            TextColor="#666666"
+                            FontSize="14"
+                            Clicked="OnClearClicked"/>
+                </Border>
+
+                <!-- Boton Ver Asignaciones -->
+                <Border BackgroundColor="#2196F3"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        HeightRequest="48">
+                    
+                    <Button x:Name="ViewAssignmentsButton"
+                            BackgroundColor="Transparent"
+                            Text="Ver Asignaciones Actuales"
+                            TextColor="White"
+                            FontSize="14"
+                            Clicked="OnViewAssignmentsClicked"/>
+                </Border>
+            </StackLayout>
+
+            <!-- Loading Overlay -->
             <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
-    </Frame>
-
+                                  Grid.Row="0"
+                                  Grid.RowSpan="5"
+                                  IsVisible="False"/>
+        </Grid>
+    </ScrollView>
 </ContentPage>
