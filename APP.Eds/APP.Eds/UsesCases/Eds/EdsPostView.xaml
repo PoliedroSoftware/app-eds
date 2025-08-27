@@ -6,359 +6,553 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="{Binding EdsTitle}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{StaticResource Gray50}">
 
-    <AbsoluteLayout>
-        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="20">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+            <GradientStop Color="{StaticResource Secondary}" Offset="0.4" />
+            <GradientStop Color="{StaticResource Gray50}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid>
+        <ScrollView>
+            <StackLayout Padding="25,40,25,25" Spacing="25">
                 
-                <!-- Header Card with Purple Gradient -->
-                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
-                    <StackLayout Spacing="8">
-                        <!-- <Label Text="⛽ Gestión de EDS" 
-                               FontSize="28" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Registre sus Estaciones de Servicio" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"/> -->
-                    </StackLayout>
+                <!-- Header Section Moderno -->
+                <Border BackgroundColor="{StaticResource White}" 
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0" 
+                        Padding="25,20">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Primary}" 
+                                Offset="0,6" 
+                                Radius="20" 
+                                Opacity="0.2"/>
+                    </Border.Shadow>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                        <Border Grid.Column="0"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="0"
+                                WidthRequest="70"
+                                HeightRequest="70">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#4CAF50" Offset="0.0" />
+                                    <GradientStop Color="#2E7D32" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Shadow>
+                                <Shadow Brush="#4CAF50" 
+                                        Offset="0,4" 
+                                        Radius="12" 
+                                        Opacity="0.3"/>
+                            </Border.Shadow>
+                            <Label Text="EDS"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Border>
+                        
+                        <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="6">
+                            <Label Text="Gestión EDS" 
+                                   FontSize="26" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource Primary}"/>
+                            <Label Text="Registre sus Estaciones de Servicio" 
+                                   FontSize="14" 
+                                   TextColor="{StaticResource Gray600}"
+                                   LineBreakMode="WordWrap"/>
+                        </StackLayout>
+                    </Grid>
                 </Border>
 
-                <!-- EDS Registration Form Card -->
-                <Border Style="{StaticResource ModernCardStyle}">
-                    <VerticalStackLayout Spacing="20">
-                        
-                        <!-- Section Header -->
-                        <!-- <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E8F5E8" 
-                                    StrokeShape="RoundRectangle 20"
-                                    WidthRequest="40" HeightRequest="40"
-                                    VerticalOptions="Center">
-                                <Label Text="🏭" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
-                                       VerticalOptions="Center"/>
-                            </Border>
-                            
-                            <StackLayout VerticalOptions="Center">
-                                <Label Text="Nueva Estación de Servicio" 
-                                       FontSize="20" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
-                                <Label Text="Complete la información de la EDS" 
-                                       FontSize="12" 
-                                       TextColor="#636E72"/>
-                            </StackLayout>
-                        </StackLayout> -->
+                <!-- Formulario Principal Card -->
+                <Border BackgroundColor="{StaticResource White}"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Gray300}" 
+                                Offset="0,4" 
+                                Radius="15" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
 
-                        <!-- Form Fields -->
-                        <VerticalStackLayout Spacing="16">
+                    <StackLayout Spacing="24">
+                        
+                        <!-- Section Header con gradiente -->
+                        <Border StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0"
+                                Padding="20,16">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#E3F2FD" Offset="0.0" />
+                                    <GradientStop Color="#BBDEFB" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Border Grid.Column="0" 
+                                        BackgroundColor="White" 
+                                        StrokeShape="RoundRectangle 12"
+                                        WidthRequest="36"
+                                        HeightRequest="36"
+                                        Padding="0">
+                                    <Label Text="+"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                
+                                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="Nueva Estación de Servicio" 
+                                           FontSize="18" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource Primary}"/>
+                                    <Label Text="Complete todos los campos requeridos" 
+                                           FontSize="13" 
+                                           TextColor="{StaticResource Gray700}"/>
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+
+                        <!-- Campos del Formulario con diseño mejorado -->
+                        <StackLayout Spacing="20">
                             
-                            <!-- Name Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- Nombre de la EDS -->
+                            <StackLayout Spacing="8">
                                 <Label Text="Nombre de la EDS" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🏢" 
-                                               FontSize="18" 
-                                               TextColor="#6A1B9A" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#E8F5E8">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E8F5E8"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="N" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2E7D32"
+                                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding NamePlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Name, Mode=TwoWay}"
                                                AutomationId="EntryName"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
-                            <!-- NIT Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- NIT -->
+                            <StackLayout Spacing="8">
                                 <Label Text="NIT" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🆔" 
-                                               FontSize="18" 
-                                               TextColor="#2196F3" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#E3F2FD">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E3F2FD"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="ID" 
+                                                   FontSize="12" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1565C0"
+                                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding NitPlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Nit, Mode=TwoWay}"
                                                AutomationId="EntryNit"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
-                            <!-- Address Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- Dirección -->
+                            <StackLayout Spacing="8">
                                 <Label Text="Dirección" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="📍" 
-                                               FontSize="18" 
-                                               TextColor="#FF9800" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#FFF3E0">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#FFF3E0"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="📍" 
+                                                   FontSize="16"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding AdreessPlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Address, Mode=TwoWay}"
                                                AutomationId="EntryAddress"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
-                            <!-- SICOM Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- SICOM -->
+                            <StackLayout Spacing="8">
                                 <Label Text="SICOM" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🔢" 
-                                               FontSize="18" 
-                                               TextColor="#9C27B0" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#F3E5F5">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#F3E5F5"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="🔢" 
+                                                   FontSize="16"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding SicomPlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Sicom, Mode=TwoWay}"
                                                AutomationId="EntrySicom"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
-                            <!-- Business Selection -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- Selección de Negocio -->
+                            <StackLayout Spacing="8">
                                 <Label Text="{Binding SelectBusiness}" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🏢" 
-                                               FontSize="18" 
-                                               TextColor="#4CAF50" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#E8F5E8">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E8F5E8"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="🏢" 
+                                                   FontSize="16"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Picker Title="{Binding BusinessPicker}"
+                                        <Picker Grid.Column="1"
+                                                Title="{Binding BusinessPicker}"
                                                 ItemsSource="{Binding BusinessList}"
                                                 ItemDisplayBinding="{Binding Name}"
                                                 SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
                                                 AutomationId="PickerBusiness"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                                TextColor="{StaticResource Gray900}"
+                                                TitleColor="{StaticResource Gray400}"
+                                                VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
-                        </VerticalStackLayout>
-
-                        <!-- Action Button Section -->
-                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                            
-                            <!-- Info Card -->
-                            <Border BackgroundColor="#E3F2FD" 
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
-                                    Padding="16"
-                                    Opacity="0.9">
-                                <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="ℹ️" 
-                                           FontSize="16" 
-                                           VerticalOptions="Start"
-                                           Margin="0,2,0,0"/>
-                                    <Label Text="Una EDS (Estación de Servicio) agrupa islas, tanques y operaciones de venta de combustible bajo una ubicación específica."
-                                           FontSize="12"
-                                           TextColor="#1565C0"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="FillAndExpand"/>
-                                </StackLayout>
-                            </Border>
-
-                            <!-- Register Button -->
-                            <Border Style="{StaticResource PrimarySendButtonStyle}">
-                                <button:HoverButton
-                                    Text="{Binding SendData}"
-                                    TextColor="White" 
-                                    BackgroundColor="Transparent"
-                                    Clicked="Button_Clicked_1"
-                                    AutomationId="ButtonSendData"
-                                    FontSize="18"
-                                    FontAttributes="Bold"
-                                    HeightRequest="56"
-                                    WidthRequest="300"
-                                    CornerRadius="16"
-                                    HoverColor="Gray"
-                                    PressedColor="AliceBlue"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </StackLayout>
                 </Border>
 
-                <!-- EDS List Section -->
-                <Border Style="{StaticResource ModernCardStyle}">
-                    <VerticalStackLayout Spacing="16">
-                        <!-- List Header -->
-                        <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#FFF3E0" 
-                                    StrokeShape="RoundRectangle 20"
-                                    WidthRequest="40" HeightRequest="40"
-                                    VerticalOptions="Center">
-                                <Label Text="📋" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                <!-- Info Card y Botón de Acción -->
+                <Border BackgroundColor="{StaticResource White}"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Gray300}" 
+                                Offset="0,4" 
+                                Radius="15" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="20">
+                        
+                        <!-- Info Card Mejorado -->
+                        <Border StrokeShape="RoundRectangle 15"
+                                StrokeThickness="1"
+                                Stroke="#2196F3"
+                                Padding="18">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#E3F2FD" Offset="0.0" />
+                                    <GradientStop Color="#F3E5F5" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="White"
+                                        StrokeShape="RoundRectangle 12"
+                                        WidthRequest="32"
+                                        HeightRequest="32">
+                                    <Label Text="i" 
+                                           FontSize="18" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2196F3"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="Una EDS (Estación de Servicio) agrupa islas, tanques y operaciones de venta de combustible bajo una ubicación específica."
+                                       FontSize="13"
+                                       TextColor="#1565C0"
+                                       VerticalOptions="Center"
+                                       LineBreakMode="WordWrap"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Botón Registrar con gradiente -->
+                        <Border StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0"
+                                HeightRequest="56">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#4CAF50" Offset="0.0" />
+                                    <GradientStop Color="#2E7D32" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Shadow>
+                                <Shadow Brush="#4CAF50" 
+                                        Offset="0,6" 
+                                        Radius="15" 
+                                        Opacity="0.3"/>
+                            </Border.Shadow>
+                            
+                            <button:HoverButton
+                                Text="{Binding SendData}"
+                                TextColor="White" 
+                                BackgroundColor="Transparent"
+                                Clicked="Button_Clicked_1"
+                                AutomationId="ButtonSendData"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                HoverColor="#45A049"
+                                PressedColor="#388E3C"/>
+                        </Border>
+                    </StackLayout>
+                </Border>
+
+                <!-- Lista de EDS Rediseñada -->
+                <Border BackgroundColor="{StaticResource White}"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Gray300}" 
+                                Offset="0,4" 
+                                Radius="15" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="20">
+                        
+                        <!-- Header de Lista Mejorado -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                            <Border Grid.Column="0"
+                                    StrokeShape="RoundRectangle 15"
+                                    StrokeThickness="0"
+                                    WidthRequest="50"
+                                    HeightRequest="50">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FF9800" Offset="0.0" />
+                                        <GradientStop Color="#F57C00" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Label Text="📋"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
                             
-                            <StackLayout VerticalOptions="Center">
+                            <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
                                 <Label Text="{Binding EdsListTranslation}" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{StaticResource Primary}"/>
                                 <Label Text="Estaciones registradas en el sistema" 
-                                       FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       FontSize="13" 
+                                       TextColor="{StaticResource Gray600}"/>
                             </StackLayout>
-                        </StackLayout>
+                        </Grid>
 
-                        <!-- EDS List -->
+                        <!-- Lista de EDS -->
                         <CollectionView ItemsSource="{Binding EdsList}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="#FAFAFA" 
-                                            StrokeShape="RoundRectangle 8"
-                                            Stroke="#E0E0E0"
-                                            Margin="0,4"
-                                            Padding="16">
+                                    <Border BackgroundColor="{StaticResource Gray50}" 
+                                            StrokeShape="RoundRectangle 15"
+                                            StrokeThickness="1"
+                                            Stroke="{StaticResource Gray200}"
+                                            Margin="0,6"
+                                            Padding="18">
                                         <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.05"/>
+                                            <Shadow Brush="{StaticResource Gray400}" 
+                                                    Offset="0,2" 
+                                                    Radius="6" 
+                                                    Opacity="0.08"/>
                                         </Border.Shadow>
                                         
-                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
-                                            <!-- EDS Icon -->
-                                            <Border BackgroundColor="#E8F5E8" 
-                                                    StrokeShape="RoundRectangle 16"
-                                                    WidthRequest="32" HeightRequest="32"
-                                                    Grid.RowSpan="5" Grid.Column="0"
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                              RowSpacing="8" ColumnSpacing="15">
+                                            
+                                            <!-- Icono EDS Mejorado -->
+                                            <Border Grid.RowSpan="5" Grid.Column="0"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    StrokeThickness="0"
+                                                    WidthRequest="40" 
+                                                    HeightRequest="40"
                                                     VerticalOptions="Start">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#4CAF50" Offset="0.0" />
+                                                        <GradientStop Color="#2E7D32" Offset="1.0" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
                                                 <Label Text="⛽" 
-                                                       FontSize="16" 
+                                                       FontSize="20"
                                                        HorizontalOptions="Center" 
                                                        VerticalOptions="Center"/>
                                             </Border>
 
-                                            <!-- EDS Info -->
+                                            <!-- Información de la EDS -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
-                                                <Label Text="ID:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding IdEds}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="ID:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding IdEds}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
-                                                <Label Text="Nombre:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Name}" FontSize="12" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="Nombre:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Name}" FontSize="13" TextColor="{StaticResource Primary}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
-                                                <Label Text="NIT:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Nit}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="NIT:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Nit}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
-                                                <Label Text="Dirección:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Address}" FontSize="11" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
+                                                <Label Text="Dirección:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Address}" FontSize="12" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
-                                                <Label Text="SICOM:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Sicom}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="SICOM:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Sicom}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </VerticalStackLayout>
+                    </StackLayout>
                 </Border>
-
-                <!-- Bottom Spacer -->
-                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
-            </VerticalStackLayout>
+            </StackLayout>
         </ScrollView>
 
-        <!-- Loading Overlay -->
-        <controls:LoadingView x:Name="LoadingOverlay"
-                              AbsoluteLayout.LayoutBounds="0,0,1,1"
-                              AbsoluteLayout.LayoutFlags="All"
-                              AutomationId="LoadingOverlay"/>
-    </AbsoluteLayout>
+        <!-- Loading Overlay Mejorado -->
+        <Grid x:Name="LoadingOverlay"
+              BackgroundColor="#90000000"
+              IsVisible="False"
+              VerticalOptions="Fill"
+              HorizontalOptions="Fill"
+              AutomationId="GridLoadingOverlay">
+            <Border BackgroundColor="{StaticResource White}"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="35,30"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <Border.Shadow>
+                    <Shadow Brush="{StaticResource Primary}" 
+                            Offset="0,8" 
+                            Radius="25" 
+                            Opacity="0.3"/>
+                </Border.Shadow>
+                <StackLayout Spacing="18">
+                    <ActivityIndicator IsRunning="True"
+                                       Color="{StaticResource Primary}"
+                                       WidthRequest="45"
+                                       HeightRequest="45"
+                                       HorizontalOptions="Center"
+                                       AutomationId="ActivityIndicatorLoading"/>
+                    <Label Text="Registrando EDS..."
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Gray700}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>
