@@ -1,100 +1,154 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             x:Class="APP.Eds.UsesCases.Eds.EdsPostView"
-             xmlns:button="clr-namespace:APP.Eds.Controls"
-             Title="{Binding EdsTitle}">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Eds.EdsPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:button="clr-namespace:APP.Eds.Controls"
+    Title="{Binding EdsTitle}"
+    BackgroundColor="#F8F9FA">
 
     <AbsoluteLayout>
-        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
-            <VerticalStackLayout Padding="20" Spacing="15">
-                <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese el nombre"
-                Text="{Binding Name, Mode=TwoWay}" 
-                AutomationId="EntryName"/>
-                <Entry
-	            Keyboard="Text"
-	            Placeholder="Ingrese el NIT"
-	            Text="{Binding Nit, Mode=TwoWay}"
-                AutomationId="EntryNit"/>
-                <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese la dirección"
-                Text="{Binding Address, Mode=TwoWay}"
-                AutomationId="EntryAddress"/>
-                <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese el código SICOM"
-                Text="{Binding Sicom, Mode=TwoWay}"
-                AutomationId="EntrySicom"/>
 
-                <Label FontSize="16" Text="Seleccione Negocio" />
-                <Picker Title="Seleccione un negocio"
-                ItemsSource="{Binding BusinessList}"
-                ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
-                AutomationId="PickerBusiness"/>
 
-                <button:HoverButton
-                BackgroundColor="Green"
-                Clicked="Button_Clicked_1"
-                WidthRequest="200"
-                HeightRequest="60"
-                CornerRadius="10"
-                HoverColor="Gray"
-                PressedColor="AliceBlue"
-                Text="{Binding SendData}"
-                TextColor="White"
-                AutomationId="ButtonSendData"/>
-
-                <Label FontSize="18" Text="{Binding EdsListTranslation}" />
-                <CollectionView ItemsSource="{Binding EdsList}" Margin="0,20">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-
-                            <Frame Padding="10" Margin="0,5">
-                                <Grid ColumnDefinitions="*,Auto,Auto">
-                                    <StackLayout Grid.Column="0">
-                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
-                                        <Label Text="{Binding Nit}" FontSize="14" />
-                                        <Label Text="{Binding Address}" FontSize="14" />
-                                        <Label Text="{Binding Sicom}" FontSize="14" />
-                                        <Label Text="{Binding IdBusiness}" FontSize="12" TextColor="Gray"/>
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Name Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Nombre de la EDS" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏢" 
+                                               FontSize="18" 
+                                               TextColor="#6A1B9A" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Text"
+                                               Placeholder="{Binding NamePlaceHolder}"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Name, Mode=TwoWay}"
+                                               AutomationId="EntryName"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
-                                    <Button Grid.Column="1" 
-                                           Text="✏️"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditEdsCommand}"
-                                           CommandParameter="{Binding .}"
-                                           BackgroundColor="Transparent"
-                                           FontSize="18"
-                                           WidthRequest="40"
-                                           HeightRequest="40"
-                                           Padding="0"
-                                           VerticalOptions="Center"/>
-                                    <Button Grid.Column="2" 
-                                           Text="❌"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteEdsCommand}"
-                                           CommandParameter="{Binding .}"
-                                           BackgroundColor="Transparent"
-                                           FontSize="18"
-                                           WidthRequest="40"
-                                           HeightRequest="40"
-                                           Padding="0"
-                                           VerticalOptions="Center"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- NIT Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="NIT" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🆔" 
+                                               FontSize="18" 
+                                               TextColor="#2196F3" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Text"
+                                               Placeholder="{Binding NitPlaceHolder}"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Nit, Mode=TwoWay}"
+                                               AutomationId="EntryNit"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
+
+                        <!-- EDS List -->
+                        <CollectionView ItemsSource="{Binding EdsList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.05"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- EDS Icon -->
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="32" HeightRequest="32"
+                                                    Grid.RowSpan="5" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="⛽" 
+                                                       FontSize="16" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- EDS Info -->
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
+                                                <Label Text="ID:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding IdEds}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
+                                                <Label Text="Nombre:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Name}" FontSize="12" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
+                                                <Label Text="NIT:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Nit}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
+                                                <Label Text="Dirección:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Address}" FontSize="11" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
+                                                <Label Text="SICOM:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Sicom}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
             </VerticalStackLayout>
-
         </ScrollView>
-        <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-    </AbsoluteLayout>
 
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
 </ContentPage>

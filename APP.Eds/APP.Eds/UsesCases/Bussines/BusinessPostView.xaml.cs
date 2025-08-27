@@ -21,14 +21,27 @@ public partial class BusinessPostView : ContentPage
     {
         try
         {
+            // Disable button to prevent multiple submissions
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+            }
+
             LoadingOverlay.ShowLoading();
             await _businessService.SaveBusinessDataAsync();
         }
         finally
         {
             LoadingOverlay.HideLoading();
-
+            
+            // Reset the form after successful submission
             Name = string.Empty;
+            
+            // Re-enable button
+            if (sender is Button button)
+            {
+                button.IsEnabled = true;
+            }
         }
     }
 

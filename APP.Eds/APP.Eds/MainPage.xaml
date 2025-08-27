@@ -1,42 +1,221 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:APP.Eds.Controls"
+             xmlns:custom="clr-namespace:APP.Eds.Resources.Custom"
              x:Class="APP.Eds.MainPage"
-             Title="Inicio de Sesion">
+             Title="Inicio de Sesión"
+             BackgroundColor="{StaticResource Gray50}">
+    
+    <!-- Modern gradient background -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
+            <GradientStop Color="{StaticResource Secondary}" Offset="0.3" />
+            <GradientStop Color="{StaticResource Gray50}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Label Text="Inicio de Sesion" 
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   AutomationId="LabelLogin"/>
-            <Entry x:Name="UsernameEntry"
-                   Placeholder="Nombre de usuario"
-                   Keyboard="Text"
-                   Completed="UsernameEntry_Completed"
-                   AutomationId="EntryUsername"/>
-            <Entry x:Name="PasswordEntry" 
-                   Placeholder="Contraseña"
-                   IsPassword="True" 
-                   Completed="OnLoginClicked"
-                   AutomationId="EntryPassword"/>
-            <Button Text="Entrar"
-                    Clicked="OnLoginClicked"
-                    BackgroundColor="#512BD4"
-                    TextColor="White"
-                    HeightRequest="50" 
-                    AutomationId="ButtonLogin"/>
-            <ActivityIndicator x:Name="LoadingIndicator"
-                               IsVisible="False"
-                               IsRunning="False"
-                               Color="#512BD4"
-                               HorizontalOptions="Center"
-                               AutomationId="ActivityIndicatorLoading"/>
-            <!-- Error display -->
-            <Label x:Name="ErrorLabel"
-                   TextColor="Red"
-                   IsVisible="False"
-                   AutomationId="LabelError"/>
-        </VerticalStackLayout>
+        <Grid RowDefinitions="Auto,*,Auto" Padding="30,30">
+            
+            <!-- Logo/Branding Section -->
+            <StackLayout Grid.Row="0" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
+                <!-- Poliedro Logo -->
+                <Border BackgroundColor="{StaticResource White}"
+                        StrokeShape="RoundRectangle 25"
+                        StrokeThickness="2"
+                        Stroke="{StaticResource Primary}"
+                        HeightRequest="80"
+                        WidthRequest="160"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Primary}" 
+                                Offset="0,6" 
+                                Radius="20" 
+                                Opacity="0.3"/>
+                    </Border.Shadow>
+                    <Image Source="poliedro.jpeg" 
+                           Aspect="AspectFit"
+                           HeightRequest="60"
+                           WidthRequest="140"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           BackgroundColor="Transparent"/>
+                </Border>
+                
+                <!-- App Title -->
+                <StackLayout Spacing="3" HorizontalOptions="Center">
+                    <Label Text="POLIEDRO EDS"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                           
+                    <Label Text="Sistema de Gestión de Estaciones de Servicio"
+                           FontSize="13"
+                           TextColor="{StaticResource Gray900}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,5"/>
+                </StackLayout>
+            </StackLayout>
+            
+            <!-- Login Card -->
+            <Border Grid.Row="1" 
+                    Style="{StaticResource LoginCardStyle}"
+                    Margin="0,10,0,20"
+                    VerticalOptions="Center">
+                
+                <StackLayout Spacing="25">
+                    <!-- Welcome Text -->
+                    <StackLayout Spacing="8">
+                        <Label Text="¡Bienvenido de vuelta!"
+                               Style="{StaticResource LoginTitleStyle}"/>
+                        <Label Text="Ingresa tus credenciales para continuar"
+                               Style="{StaticResource LoginSubtitleStyle}"/>
+                    </StackLayout>
+                    
+                    <!-- Username Field -->
+                    <StackLayout Spacing="8">
+                        <Label Text="Nombre de Usuario"
+                               Style="{StaticResource InputLabelStyle}"/>
+                        <Border Style="{StaticResource LoginInputStyle}">
+                            <Grid ColumnDefinitions="Auto,*" Padding="15,12">
+                                <Label Grid.Column="0" 
+                                       Text="👤" 
+                                       Style="{StaticResource IconLabelStyle}"/>
+                                <Entry x:Name="UsernameEntry"
+                                       Grid.Column="1"
+                                       Placeholder="Ingresa tu usuario"
+                                       Keyboard="Text"
+                                       Completed="UsernameEntry_Completed"
+                                       BackgroundColor="Transparent"
+                                       FontSize="16"
+                                       TextColor="{StaticResource Gray900}"
+                                       PlaceholderColor="{StaticResource Gray400}"
+                                       AutomationId="EntryUsername"/>
+                            </Grid>
+                        </Border>
+                    </StackLayout>
+                    
+                    <!-- Password Field -->
+                    <StackLayout Spacing="8">
+                        <Label Text="Contraseña"
+                               Style="{StaticResource InputLabelStyle}"/>
+                        <Border Style="{StaticResource LoginInputStyle}">
+                            <Grid ColumnDefinitions="Auto,*" Padding="15,12">
+                                <Label Grid.Column="0" 
+                                       Text="🔒" 
+                                       Style="{StaticResource IconLabelStyle}"/>
+                                <Entry x:Name="PasswordEntry"
+                                       Grid.Column="1"
+                                       Placeholder="Ingresa tu contraseña"
+                                       IsPassword="True" 
+                                       Completed="OnLoginClicked"
+                                       BackgroundColor="Transparent"
+                                       FontSize="16"
+                                       TextColor="{StaticResource Gray900}"
+                                       PlaceholderColor="{StaticResource Gray400}"
+                                       AutomationId="EntryPassword"/>
+                            </Grid>
+                        </Border>
+                    </StackLayout>
+                    
+                    <!-- Remember Me Option -->
+                    <StackLayout Orientation="Horizontal" Spacing="8" Margin="0,5,0,0">
+                        <CheckBox x:Name="RememberMeCheckBox" 
+                                  Color="{StaticResource Primary}"
+                                  VerticalOptions="Center"/>
+                        <Label Text="Recordar mis credenciales"
+                               FontSize="14"
+                               TextColor="{StaticResource Gray600}"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRememberMeTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+                    
+                    <!-- Login Button -->
+                    <controls:HoverButton x:Name="LoginButton"
+                                          Text="Iniciar Sesión"
+                                          Clicked="OnLoginClicked"
+                                          FontSize="16"
+                                          FontAttributes="Bold"
+                                          HeightRequest="50"
+                                          CornerRadius="8"
+                                          NormalColor="{StaticResource Primary}"
+                                          HoverColor="{StaticResource Tertiary}"
+                                          PressedColor="{StaticResource PrimaryDark}"
+                                          TextColor="{StaticResource White}"
+                                          Margin="0,10,0,0"
+                                          AutomationId="ButtonLogin">
+                        <controls:HoverButton.Shadow>
+                            <Shadow Brush="{StaticResource Primary}" 
+                                    Offset="0,4" 
+                                    Radius="12" 
+                                    Opacity="0.3"/>
+                        </controls:HoverButton.Shadow>
+                    </controls:HoverButton>
+                    
+                    <!-- Loading Indicator -->
+                    <StackLayout x:Name="LoadingSection" 
+                                 IsVisible="False"
+                                 Spacing="12"
+                                 Margin="0,10,0,0">
+                        <ActivityIndicator x:Name="LoadingIndicator"
+                                           IsVisible="False"
+                                           IsRunning="False"
+                                           Color="{StaticResource Primary}"
+                                           HorizontalOptions="Center"
+                                           AutomationId="ActivityIndicatorLoading"/>
+                        <Label Text="Validando credenciales..."
+                               FontSize="14"
+                               TextColor="{StaticResource Gray500}"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                    
+                    <!-- Error display -->
+                    <Border x:Name="ErrorSection"
+                            IsVisible="False"
+                            BackgroundColor="#FFEBEE"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1"
+                            Stroke="#FFCDD2"
+                            Padding="15,12">
+                        <StackLayout Orientation="Horizontal" Spacing="8">
+                            <Label Text="⚠️" 
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Label x:Name="ErrorLabel"
+                                   TextColor="#C62828"
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   AutomationId="LabelError"/>
+                        </StackLayout>
+                    </Border>
+                    
+                </StackLayout>
+            </Border>
+            
+            <!-- Footer -->
+            <StackLayout Grid.Row="2" Spacing="12" HorizontalOptions="Center">
+                <Label Text="¿Necesitas ayuda?"
+                       FontSize="14"
+                       TextColor="{StaticResource White}"
+                       Opacity="0.7"
+                       HorizontalOptions="Center"/>
+                <Label Text="Contacta al administrador del sistema"
+                       FontSize="12"
+                       TextColor="{StaticResource White}"
+                       Opacity="0.6"
+                       HorizontalOptions="Center"/>
+            </StackLayout>
+            
+        </Grid>
     </ScrollView>
 </ContentPage>

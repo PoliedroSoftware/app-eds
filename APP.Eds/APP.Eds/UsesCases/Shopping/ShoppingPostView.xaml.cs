@@ -7,6 +7,7 @@ namespace APP.Eds.UsesCases.Shopping;
 public partial class ShoppingPostView : ContentPage
 {
     private ShoppingService _shoppingService;
+    
     public ShoppingPostView()
     {
         InitializeComponent();
@@ -24,35 +25,60 @@ public partial class ShoppingPostView : ContentPage
     {
         if (BindingContext is not ShoppingService vm)
             return; 
+            
         try
         {
-            LoadingOverlay.ShowLoading();
+            // Disable button to prevent multiple submissions
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+            }
+
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(vm.Invoice))
+            {
+                await DisplayAlert("Error", "Por favor ingrese el número de factura", "OK");
+                return;
+            }
+
             if (vm.SelectedProvider is null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione un Proveedor", "OK");
+                await DisplayAlert("Error", "Por favor seleccione un proveedor", "OK");
                 return;
             }
 
             if (vm.SelectedCategory is null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione una Categor�a", "OK");
+                await DisplayAlert("Error", "Por favor seleccione una categoría de combustible", "OK");
                 return;
             }
-                await vm.SaveShoppingDataAsync();
+
+            if (vm.ShoppingProduct?.Count == 0)
+            {
+                await DisplayAlert("Error", "Por favor agregue al menos un producto a la compra", "OK");
+                return;
+            }
+
+            LoadingOverlay.ShowLoading();
+            await vm.SaveShoppingDataAsync();
         }
-            
         finally
         {
             LoadingOverlay.HideLoading();
 
+            // Clear form fields after successful submission
             Invoice = string.Empty;
             Date = DateTime.Now;
             Amount = 0;
             _shoppingService.SelectedProvider = null;
             _shoppingService.SelectedCategory = null;
 
+            // Re-enable button
+            if (sender is Button button)
+            {
+                button.IsEnabled = true;
+            }
         }
-        
     }
 
     private void InvoiceEntryCompleted(object sender, EventArgs e)

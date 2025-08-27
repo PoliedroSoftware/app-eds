@@ -1,4 +1,5 @@
 using APP.Eds.Services.HoseHistory;
+using APP.Eds.Controls;
 
 namespace APP.Eds.UsesCases.HoseHistory;
 
@@ -19,34 +20,42 @@ public partial class HoseHistoryPostView : ContentPage
         {
             try
             {
-                LoadingOverlay.ShowLoading();
-                if (vm.Date.Date <= DateTime.Now.Date)
+                // Disable button to prevent multiple submissions
+                if (sender is HoverButton hoverButton)
                 {
-                    await DisplayAlert("Error", "La fecha seleccionada debe ser mayor a la fecha actual", "OK");
+                    hoverButton.IsEnabled = false;
+                }
+
+                LoadingOverlay.ShowLoading();
+                
+                // Validate required fields
+                if (vm.Date.Date < DateTime.Now.Date)
+                {
+                    await DisplayAlert("Error", "La fecha seleccionada no puede ser anterior a la fecha actual", "OK");
                     return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await DisplayAlert("Error", "Please enter a valid accumulated amount (must be greater than 0)", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese un monto acumulado válido (debe ser mayor que 0)", "OK");
                     return;
                 }
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await DisplayAlert("Error", "Please enter valid accumulated gallons (must be greater than 0)", "OK");
+                    await DisplayAlert("Error", "Por favor ingrese galones acumulados válidos (debe ser mayor que 0)", "OK");
                     return;
                 }
 
                 if (vm.SelectedDispensers is null)
                 {
-                    await DisplayAlert("Error", "Please select a Dispenser", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione un Dispensador", "OK");
                     return;
                 }
 
                 if (vm.SelectHose is null)
                 {
-                    await DisplayAlert("Error", "Please select a Product Type", "OK");
+                    await DisplayAlert("Error", "Por favor seleccione una Manguera", "OK");
                     return;
                 }
 
@@ -56,17 +65,23 @@ public partial class HoseHistoryPostView : ContentPage
             {
                 LoadingOverlay.HideLoading();
 
+                // Clear form fields after successful submission
                 _hosehistoryService.Date = DateTime.Now;
                 AccumulatedAmount = 0;
                 AccumulatedGallons = 0;
                 _hosehistoryService.SelectedDispensers = null;
                 _hosehistoryService.SelectHose = null;
 
+                // Re-enable button
+                if (sender is HoverButton hoverButton)
+                {
+                    hoverButton.IsEnabled = true;
+                }
             }
         }
         else
         {
-            await DisplayAlert("Error", "Context error", "OK");
+            await DisplayAlert("Error", "Error de contexto", "OK");
         }
     }
 
@@ -79,6 +94,7 @@ public partial class HoseHistoryPostView : ContentPage
             OnPropertyChanged();
         }
     }
+    
     public double AccumulatedGallons
     {
         get => _hosehistoryService.AccumulatedGallons;

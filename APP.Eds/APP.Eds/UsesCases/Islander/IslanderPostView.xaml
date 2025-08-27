@@ -1,92 +1,556 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.Islander.IslanderPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion De Islero">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Islander.IslanderPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestion de Isleros"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Nombre"/>
-            <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese EL Nombre"
-            Text="{Binding Name, Mode=TwoWay}"
-            AutomationId="EntryName"/>
-        
-        <Label FontSize="16" Text="Correo"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese Correo Electrónico"
-            Text="{Binding Email, Mode=TwoWay}"
-            AutomationId="EntryEmail"/>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="16">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border BackgroundColor="#6A1B9A" 
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20"
+                        StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow Brush="#6A1B9A" Offset="0,4" Radius="12" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <StackLayout>
+                        <Label Text="👷 Gestion de Isleros" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre operarios y personal de estaciones de servicio" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"
+                               Margin="0,5,0,0"/>
+                    </StackLayout>
+                </Border>
 
-        <Label FontSize="16" Text="Nombre De Pila"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese Nombre De Pila"
-            Text="{Binding FirstName, Mode=TwoWay}"
-            AutomationId="EntryFirstName"/>
+                <!-- Islander Registration Form Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Form Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="📝" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Registro de Nuevo Islero" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
 
-        <Label FontSize="16" Text="Ultimo Apellido"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese Apellido"
-            Text="{Binding LastName, Mode=TwoWay}"
-            AutomationId="EntryLastName"/>
+                        <!-- Personal Information Grid -->
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
+                            
+                            <!-- Name -->
+                            <StackLayout Grid.Row="0" Grid.Column="0">
+                                <Label Text="Nombre Completo" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Nombre completo del islero"
+                                           Text="{Binding Name, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryName"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
 
-            
-            <Picker Title="Seleccione un EDS"
-            ItemsSource="{Binding EdsList}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
-            AutomationId="PickerEds"/>
+                            <!-- First Name -->
+                            <StackLayout Grid.Row="0" Grid.Column="1">
+                                <Label Text="Primer Nombre" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Primer nombre"
+                                           Text="{Binding FirstName, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryFirstName"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
 
-            <Label FontSize="16" Text="Contraseña" />
-            <Entry
-               Placeholder="Ingrese Una Contraseña"
-               Text="{Binding Password, Mode=TwoWay}"
-               IsPassword="True"
-               AutomationId="EntryPassword"/>
+                            <!-- Last Name -->
+                            <StackLayout Grid.Row="1" Grid.Column="0">
+                                <Label Text="Apellidos" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Apellidos del islero"
+                                           Text="{Binding LastName, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryLastName"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
 
-            <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="Enviar Datos"
-            TextColor="White"
-            AutomationId="ButtonSendData"/>
+                            <!-- Email -->
+                            <StackLayout Grid.Row="1" Grid.Column="1">
+                                <Label Text="Correo Electronico" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Email"
+                                           Placeholder="correo@ejemplo.com"
+                                           Text="{Binding Email, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryEmail"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
 
-            <Label FontSize="18" Text="Lista De Isleros" />
-            <CollectionView ItemsSource="{Binding IslanderList}" Margin="0,20"
-                            AutomationId="CollectionViewIslanderList">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Label Text="{Binding Id}" FontSize="14" Grid.Row="0" />
-                            <Label Text="{Binding Name}" FontSize="14" Grid.Row="1" />
-                        <Label Text="{Binding Email}" FontSize="14" Grid.Row="2" />
-                        <Label Text="{Binding Firstname}" FontSize="14" Grid.Row="3" />
-                        <Label Text="{Binding Lastname}" FontSize="14" Grid.Row="4" />
-                        <Label Text="{Binding IdEds}" FontSize="14" Grid.Row="5" />
-                        <Label Text="{Binding Password}" FontSize="14" Grid.Row="6" />
+                            <!-- EDS Selection -->
+                            <StackLayout Grid.Row="2" Grid.Column="0">
+                                <Label Text="Estacion de Servicio (EDS)" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Picker Title="Seleccione EDS asignada"
+                                            ItemsSource="{Binding EdsList}"
+                                            ItemDisplayBinding="{Binding Name}"
+                                            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerEds"/>
+                                </Border>
+                            </StackLayout>
 
+                            <!-- Role/Position -->
+                            <StackLayout Grid.Row="2" Grid.Column="1">
+                                <Label Text="Posicion/Rol" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Picker Title="Seleccione rol"
+                                            ItemsSource="{Binding RoleOptions}"
+                                            SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerRole"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Password -->
+                            <StackLayout Grid.Row="3" Grid.Column="0">
+                                <Label Text="Contraseña" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Placeholder="Contraseña de acceso (min. 6 caracteres)"
+                                           Text="{Binding Password, Mode=TwoWay}"
+                                           IsPassword="True"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryPassword"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Phone -->
+                            <StackLayout Grid.Row="3" Grid.Column="1">
+                                <Label Text="Telefono de Contacto" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#DDD6FE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Telephone"
+                                           Placeholder="Numero de contacto"
+                                           Text="{Binding PhoneNumber, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryPhone"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Additional Options -->
+                            <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
+                                <Label Text="Configuraciones de Acceso" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <StackLayout Orientation="Horizontal" Spacing="20">
+                                    <StackLayout Orientation="Horizontal" Spacing="6">
+                                        <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
+                                                  Color="#6A1B9A"
+                                                  AutomationId="CheckBoxIsActive"/>
+                                        <Label Text="Usuario Activo" 
+                                               FontSize="13" 
+                                               TextColor="#636E72"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                    
+                                    <StackLayout Orientation="Horizontal" Spacing="6">
+                                        <CheckBox IsChecked="{Binding CanManageDispensers, Mode=TwoWay}"
+                                                  Color="#6A1B9A"
+                                                  AutomationId="CheckBoxCanManageDispensers"/>
+                                        <Label Text="Puede Gestionar Dispensadores" 
+                                               FontSize="13" 
+                                               TextColor="#636E72"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
                         </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
+
+                        <!-- Action Button -->
+                        <Border BackgroundColor="#6A1B9A" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Margin="0,10,0,0">
+                            <Border.Shadow>
+                                <Shadow Brush="#6A1B9A" Offset="0,3" Radius="8" Opacity="0.3"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Button_Clicked_1"
+                                    Text="👷 Registrar Islero"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    AutomationId="ButtonSendData"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Islanders Statistics Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        
+                        <!-- Stats Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="📊" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Estadisticas de Personal" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Statistics Grid -->
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                            <!-- Total Islanders -->
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#6A1B9A"
+                                    Padding="12"
+                                    Grid.Column="0">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Total" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#7B1FA2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalIslanders}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#4A148C"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Active Islanders -->
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="12"
+                                    Grid.Column="1">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Activos" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#388E3C"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding ActiveIslanders}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#2E7D32"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Supervisors -->
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#FF9800"
+                                    Padding="12"
+                                    Grid.Column="2">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Superv." 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#F57C00"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding SupervisorIslanders}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#E65100"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- EDS Count -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="12"
+                                    Grid.Column="3">
+                                <StackLayout Spacing="6">
+                                    <Label Text="EDS" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#1976D2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding CoveredEDS}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#0D47A1"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Islanders List Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="👥" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Personal Registrado" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Filter Options -->
+                        <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                            <Button Text="Todos" 
+                                    BackgroundColor="{Binding FilterAllColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterAllCommand}"/>
+                            <Button Text="Activos" 
+                                    BackgroundColor="{Binding FilterActiveColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterActiveCommand}"/>
+                            <Button Text="Supervisores" 
+                                    BackgroundColor="{Binding FilterSupervisorColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterSupervisorCommand}"/>
+                        </StackLayout>
+
+                        <!-- Islanders Collection -->
+                        <CollectionView ItemsSource="{Binding EnhancedIslanderList}" 
+                                        Margin="0,10,0,0"
+                                        AutomationId="CollectionViewIslanderList">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FEFEFE" 
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="#E5E7EB"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
+                                            
+                                            <!-- Avatar Icon -->
+                                            <Border BackgroundColor="#6A1B9A" 
+                                                    StrokeShape="RoundRectangle 25"
+                                                    WidthRequest="50" 
+                                                    HeightRequest="50"
+                                                    Grid.RowSpan="4" 
+                                                    Grid.Column="0"
+                                                    VerticalOptions="Center">
+                                                <Label Text="{Binding RoleIcon, FallbackValue='👷'}" 
+                                                       FontSize="24" 
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Islander Information -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                                                <Border BackgroundColor="#F3E5F5"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="{Binding Id, StringFormat='ID: {0}'}" 
+                                                           FontSize="10" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#6A1B9A"/>
+                                                </Border>
+                                                <Border BackgroundColor="#E8F5E8"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center"
+                                                        IsVisible="{Binding IsActive, FallbackValue=true}">
+                                                    <Label Text="ACTIVO" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#4CAF50"/>
+                                                </Border>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="📧" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Email}" FontSize="13" TextColor="#6B7280"/>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="👤" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Firstname}" FontSize="13" TextColor="#374151"/>
+                                                <Label Text="{Binding Lastname}" FontSize="13" TextColor="#374151"/>
+                                            </StackLayout>
+
+                                            <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                                <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                                                    <Label Text="🏪" FontSize="11" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding EdsName, FallbackValue='Sin asignar'}" FontSize="12" TextColor="#6A1B9A" FontAttributes="Bold"/>
+                                                </StackLayout>
+                                                
+                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
+                                                    <Label Text="📞" FontSize="11" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding PhoneNumber, FallbackValue='N/D'}" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#F3E5F5" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#6A1B9A"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#6A1B9A"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditIslanderCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            
+                                                <!-- Delete Button -->
+                                                <Border BackgroundColor="#FFEBEE" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#F44336"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="🗑️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#F44336"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteIslanderCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+                                    <Label Text="👷" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="No hay isleros registrados" 
+                                           FontSize="16" 
+                                           TextColor="#6B7280" 
+                                           HorizontalOptions="Center"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="Registre el primer islero usando el formulario superior" 
+                                           FontSize="14" 
+                                           TextColor="#9CA3AF" 
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Margin for Better Scrolling -->
+                <BoxView HeightRequest="20" Color="Transparent"/>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-                          AbsoluteLayout.LayoutBounds="0,0,1,1"
-                          AbsoluteLayout.LayoutFlags="All"
-                          AutomationId="LoadingOverlay"/>
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>

@@ -1,32 +1,223 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.Category.CategoryPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="{Binding CategoryManagement}"> 
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Category.CategoryPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="{Binding CategoryManagement}"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <VerticalStackLayout
-        AbsoluteLayout.LayoutBounds="0,0,1,1"
-        AbsoluteLayout.LayoutFlags="All"
-        Padding="20" Spacing="15">
-            <Label FontSize="16" Text="{Binding CategoryTranslation, Mode=TwoWay}"/>
-            <Entry
-            x:Name="CategoryEntry"
-            Keyboard="Text"
-            Placeholder="{Binding EnterCategory, Mode=TwoWay}"
-            Text="{Binding Description, Mode=TwoWay}"
-            TextChanged="CategoryEntry_TextChanged"
-            AutomationId="EntryCategoryDescription"/>
-            <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="{Binding SendData, Mode=TwoWay}"
-            TextColor="White" 
-            AutomationId="ButtonSendCategoryData"/>
-        </VerticalStackLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="📂 Gestión de Categorías" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre las categorías de combustible" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Category Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="🏷️" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nueva Categoría" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Registre una nueva categoría de combustible" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Category Description Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding CategoryTranslation, Mode=TwoWay}" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📋" 
+                                               FontSize="18" 
+                                               TextColor="#2196F3" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry x:Name="CategoryEntry"
+                                               Keyboard="Text"
+                                               Placeholder="{Binding EnterCategory, Mode=TwoWay}"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Description, Mode=TwoWay}"
+                                               TextChanged="CategoryEntry_TextChanged"
+                                               AutomationId="EntryCategoryDescription"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="Las categorías clasifican los tipos de combustible (gasolina, diésel, etc.) para organizar mejor la gestión de inventario y ventas."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+                            <Border Style="{StaticResource PrimarySendButtonStyle}">
+                                <Button Text="{Binding SendData, Mode=TwoWay}"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="Button_Clicked_1"
+                                        AutomationId="ButtonSendCategoryData"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        HeightRequest="56"
+                                        CornerRadius="16"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Additional Features Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- Features Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#F3E5F5" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="✨" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Características de las Categorías" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Funcionalidades disponibles" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Features List -->
+                        <VerticalStackLayout Spacing="12">
+                            
+                            <!-- Feature 1 -->
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="✅" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Solo letras y espacios permitidos"
+                                           FontSize="13"
+                                           TextColor="#2E7D32"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Feature 2 -->
+                            <Border BackgroundColor="#FFF3E0" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#FF9800"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="🔤" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Validación automática de caracteres"
+                                           FontSize="13"
+                                           TextColor="#F57C00"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Feature 3 -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="12"
+                                    Opacity="0.8">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="🌐" FontSize="16" VerticalOptions="Center"/>
+                                    <Label Text="Soporte multiidioma integrado"
+                                           FontSize="13"
+                                           TextColor="#1976D2"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-                          AbsoluteLayout.LayoutBounds="0,0,1,1"
-                          AbsoluteLayout.LayoutFlags="All"/>
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
     </AbsoluteLayout>
-</ContentPage>    
+</ContentPage>
