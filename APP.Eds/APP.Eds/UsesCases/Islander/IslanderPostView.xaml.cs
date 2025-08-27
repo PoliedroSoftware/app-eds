@@ -1,6 +1,8 @@
 using APP.Eds.Services.Islander;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace APP.Eds.UsesCases.Islander;
 
@@ -26,7 +28,7 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicialización");
         }
         finally
         {
@@ -44,92 +46,90 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            // Enhanced validation
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_islanderService.Name))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el nombre completo del islero", "OK");
+                await CustomAlert.ShowErrorAsync("El nombre completo del islero es obligatorio para el registro", "Nombre Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.FirstName))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el primer nombre", "OK");
+                await CustomAlert.ShowErrorAsync("El primer nombre es obligatorio para completar el registro", "Primer Nombre Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.LastName))
             {
-                await DisplayAlert("Error", "Por favor, ingrese los apellidos", "OK");
+                await CustomAlert.ShowErrorAsync("Los apellidos son obligatorios para identificar al islero", "Apellidos Requeridos");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.Email))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el correo electronico", "OK");
+                await CustomAlert.ShowErrorAsync("El correo electrónico es necesario para las comunicaciones del sistema", "Email Requerido");
                 return;
             }
 
             // Enhanced email validation
             if (!IsValidEmail(_islanderService.Email))
             {
-                await DisplayAlert("Error", "Por favor, ingrese un correo electronico valido", "OK");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese un correo electrónico válido (ejemplo: usuario@dominio.com)", "Email Inválido");
                 return;
             }
 
             if (_islanderService.SelectedEds == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione la estacion de servicio (EDS) asignada", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la estación de servicio (EDS) donde trabajará el islero", "EDS Requerida");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.SelectedRole))
             {
-                await DisplayAlert("Error", "Por favor, seleccione el rol o posicion del islero", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el rol o posición que tendrá el islero en la estación", "Rol Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.Password))
             {
-                await DisplayAlert("Error", "Por favor, ingrese una contraseña de acceso", "OK");
+                await CustomAlert.ShowErrorAsync("Debe establecer una contraseña de acceso al sistema", "Contraseña Requerida");
                 return;
             }
 
             if (_islanderService.Password.Length < 6)
             {
-                await DisplayAlert("Error", "La contraseña debe tener al menos 6 caracteres", "OK");
+                await CustomAlert.ShowErrorAsync("La contraseña debe tener al menos 6 caracteres para mayor seguridad", "Contraseña Muy Corta");
                 return;
             }
 
-            // Validate password strength
-            if (!IsStrongPassword(_islanderService.Password))
+            // Validate name length
+            if (_islanderService.Name.Length < 3)
             {
-                var result = await DisplayAlert("Contraseña Debil", 
-                    "La contraseña es débil. Se recomienda usar letras, números y caracteres especiales.\n¿Desea continuar de todas formas?", 
-                    "Continuar", "Cancelar");
-                if (!result) return;
+                await CustomAlert.ShowErrorAsync("El nombre completo debe tener al menos 3 caracteres", "Nombre Muy Corto");
+                return;
             }
 
-            if (!string.IsNullOrWhiteSpace(_islanderService.PhoneNumber))
+            if (_islanderService.FirstName.Length < 2)
             {
-                if (!IsValidPhoneNumber(_islanderService.PhoneNumber))
-                {
-                    await DisplayAlert("Error", "Por favor, ingrese un numero de telefono valido", "OK");
-                    return;
-                }
+                await CustomAlert.ShowErrorAsync("El primer nombre debe tener al menos 2 caracteres", "Primer Nombre Muy Corto");
+                return;
             }
 
-            // Show loading
+            if (_islanderService.LastName.Length < 2)
+            {
+                await CustomAlert.ShowErrorAsync("Los apellidos deben tener al menos 2 caracteres", "Apellidos Muy Cortos");
+                return;
+            }
+
             LoadingOverlay?.ShowLoading();
-            
-            // Save islander
             await _islanderService.SaveIslanderDataAsync();
-            
+
             // Clear form after successful save
             ClearForm();
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al registrar el islero:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -143,37 +143,19 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
 
     private bool IsValidEmail(string email)
     {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
         try
         {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email && email.Contains("@") && email.Contains(".");
-
+            // Basic email validation using regex
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            return emailRegex.IsMatch(email);
         }
         catch
         {
             return false;
         }
-    }
-
-    private bool IsStrongPassword(string password)
-    {
-        if (password.Length < 8) return false;
-        
-        bool hasUpper = password.Any(char.IsUpper);
-        bool hasLower = password.Any(char.IsLower);
-        bool hasDigit = password.Any(char.IsDigit);
-        bool hasSpecial = password.Any(ch => !char.IsLetterOrDigit(ch));
-        
-        return (hasUpper && hasLower && hasDigit) || (hasUpper && hasLower && hasSpecial) || (hasDigit && hasSpecial);
-    }
-
-    private bool IsValidPhoneNumber(string phone)
-    {
-        // Remove common separators
-        string cleanPhone = phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("+", "");
-        
-        // Check if all remaining characters are digits and length is reasonable
-        return cleanPhone.All(char.IsDigit) && cleanPhone.Length >= 7 && cleanPhone.Length <= 15;
     }
 
     private void ClearForm()
@@ -185,11 +167,8 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
             _islanderService.LastName = string.Empty;
             _islanderService.Email = string.Empty;
             _islanderService.Password = string.Empty;
-            _islanderService.PhoneNumber = string.Empty;
             _islanderService.SelectedEds = null;
             _islanderService.SelectedRole = null;
-            _islanderService.IsActive = true; // Default to active
-            _islanderService.CanManageDispensers = false;
         }
     }
 

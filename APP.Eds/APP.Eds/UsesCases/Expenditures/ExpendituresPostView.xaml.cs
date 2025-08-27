@@ -1,4 +1,5 @@
 using APP.Eds.Services.Expenditures;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -25,7 +26,7 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos de gastos:\n\n{ex.Message}", "Error de Inicialización");
         }
         finally
         {
@@ -43,28 +44,51 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            // Enhanced validation
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_expendituresService.SelectedCategory))
             {
-                await DisplayAlert("Error", "Por favor, seleccione una categoría de gasto", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar una categoría para clasificar el gasto", "Categoría Requerida");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_expendituresService.Amount))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el monto del gasto", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar el monto del gasto para continuar", "Monto Requerido");
                 return;
             }
 
             if (!decimal.TryParse(_expendituresService.Amount, out decimal amount) || amount <= 0)
             {
-                await DisplayAlert("Error", "Por favor, ingrese un monto válido mayor a cero", "OK");
+                await CustomAlert.ShowErrorAsync("El monto debe ser un número válido mayor que cero", "Monto Inválido");
                 return;
+            }
+
+            if (amount > 1000000)
+            {
+                bool confirm = await CustomAlert.ShowConfirmAsync(
+                    $"El monto ingresado (${amount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
+                    "Monto Elevado",
+                    "Confirmar",
+                    "Revisar");
+                
+                if (!confirm) return;
             }
 
             if (string.IsNullOrWhiteSpace(_expendituresService.Description))
             {
-                await DisplayAlert("Error", "Por favor, agregue una descripción del gasto", "OK");
+                await CustomAlert.ShowErrorAsync("Debe proporcionar una descripción detallada del gasto", "Descripción Requerida");
+                return;
+            }
+
+            if (_expendituresService.Description.Length < 5)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 5 caracteres para ser informativa", "Descripción Muy Corta");
+                return;
+            }
+
+            if (_expendituresService.Description.Length > 200)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 200 caracteres", "Descripción Muy Larga");
                 return;
             }
 
@@ -72,12 +96,21 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
             
             await _expendituresService.SaveExpendituresDataAsync();
             
+            // Show success message with details
+            await CustomAlert.ShowSuccessAsync(
+                $"Gasto registrado exitosamente:\n\n" +
+                $"• Categoría: {_expendituresService.SelectedCategory}\n" +
+                $"• Monto: ${amount:F2}\n" +
+                $"• Descripción: {_expendituresService.Description}\n" +
+                $"• Fecha: {_expendituresService.ExpenseDate:dd/MM/yyyy}",
+                "Gasto Registrado");
+            
             // Clear form after successful save
             ClearForm();
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el gasto:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Services.Court;
+using APP.Eds.Components.PopUp;
 using CommunityToolkit.Maui.Views;
 using System.Diagnostics;
 
@@ -70,25 +71,25 @@ public partial class AddDispenser : Popup
 
                 if (vm.AccumulatedAmount == 0)
                 {
-                    await DisplayAlertSafely("Error", "Debe ingresar el monto de la venta", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe ingresar el monto total de la venta para continuar", "Monto Requerido");
                     return;
                 }
 
                 if (vm.AccumulatedGallons == 0)
                 {
-                    await DisplayAlertSafely("Error", "Debe ingresar el número de galones vendidos", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe ingresar la cantidad de galones vendidos", "Galones Requeridos");
                     return;
                 }
 
                 if (vm.AccumulatedAmount < vm.LastAccumulatedAmount)
                 {
-                    await DisplayAlertSafely("Error", "El monto acumulado debe ser mayor que el último monto acumulado.", "OK");
+                    await CustomAlert.ShowErrorAsync($"El monto acumulado (${vm.AccumulatedAmount:F2}) debe ser mayor que el último monto registrado (${vm.LastAccumulatedAmount:F2})", "Monto Inválido");
                     return;
                 }
 
                 if (vm.AccumulatedGallons < vm.LastAccumulatedGallons)
                 {
-                    await DisplayAlertSafely("Error", "Los galones acumulados deben ser mayores que los últimos galones acumulados.", "OK");
+                    await CustomAlert.ShowErrorAsync($"Los galones acumulados ({vm.AccumulatedGallons:F2}) deben ser mayores que los últimos galones registrados ({vm.LastAccumulatedGallons:F2})", "Galones Inválidos");
                     return;
                 }
 
@@ -100,7 +101,7 @@ public partial class AddDispenser : Popup
             }
             else
             {
-                await DisplayAlertSafely("Error", "Por favor, seleccione una Manguera", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar una manguera del dispensador para continuar", "Manguera Requerida");
             }
         });
     }
@@ -360,7 +361,8 @@ public partial class AddDispenser : Popup
         {
             if (!_isDisposed && Application.Current?.MainPage != null)
             {
-                await Application.Current.MainPage.DisplayAlert(title, message, cancel);
+                // Use CustomAlert instead of standard DisplayAlert
+                await CustomAlert.ShowErrorAsync(message, title);
             }
         }
         catch (Exception ex)
