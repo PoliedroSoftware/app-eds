@@ -1,4 +1,5 @@
 using APP.Eds.Services.DispenserType;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -27,18 +28,31 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
                 button.Text = "Guardando...";
             }
 
-            // Validate required field
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_dispenserTypeService.Description))
             {
-                await DisplayAlert("Error", "Por favor, ingrese la descripción del tipo de dispensador", "OK");
+                await CustomAlert.ShowErrorAsync("La descripción del tipo de dispensador es obligatoria para el registro", "Descripción Requerida");
                 return;
             }
 
             // Additional validation for minimum length
             if (_dispenserTypeService.Description.Length < 3)
             {
-                await DisplayAlert("Error", "La descripción debe tener al menos 3 caracteres", "OK");
+                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 3 caracteres para ser válida", "Descripción Muy Corta");
                 return;
+            }
+
+            if (_dispenserTypeService.Description.Length > 100)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 100 caracteres", "Descripción Muy Larga");
+                return;
+            }
+
+            // Check for special characters or inappropriate content
+            if (_dispenserTypeService.Description.Trim() != _dispenserTypeService.Description)
+            {
+                await CustomAlert.ShowWarningAsync("La descripción contiene espacios al inicio o final que serán removidos automáticamente", "Espacios Detectados");
+                _dispenserTypeService.Description = _dispenserTypeService.Description.Trim();
             }
 
             LoadingOverlay.ShowLoading();
@@ -46,10 +60,12 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
             
             // Clear form after successful save
             Description = string.Empty;
+            
+            await CustomAlert.ShowSuccessAsync($"El tipo de dispensador '{_dispenserTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el tipo de dispensador:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

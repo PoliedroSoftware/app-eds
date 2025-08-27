@@ -1,4 +1,5 @@
 using APP.Eds.Services.Shopping;
+using APP.Eds.Components.PopUp;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -37,45 +38,52 @@ public partial class AddShopping : Popup
 
             if (BindingContext is not ShoppingService vm)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Error de contexto", "OK");
+                await CustomAlert.ShowErrorAsync("Error interno del sistema. Por favor, intente nuevamente", "Error de Contexto");
                 return;
             }
 
-            // Validate product selection
+            // Enhanced validation with professional alerts
             if (vm.SelectedProductCompartimentPair is null)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor seleccione un producto y compartimento", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un producto y compartimento para continuar", "Producto y Compartimento Requeridos");
                 return;
             }
 
             // Validate quantity
             if (vm.Quantity <= 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor ingrese una cantidad válida (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una cantidad válida de galones (mayor que 0)", "Cantidad Inválida");
+                return;
+            }
+
+            if (vm.Quantity > 50000) // Reasonable limit
+            {
+                await CustomAlert.ShowErrorAsync("La cantidad parece excesiva. Verifique el valor ingresado", "Cantidad Excesiva");
                 return;
             }
 
             // Validate purchase price
             if (vm.Price <= 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor ingrese un precio de compra válido (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un precio de compra válido (mayor que 0)", "Precio de Compra Inválido");
                 return;
             }
 
             // Validate sell price
             if (vm.SellPrice <= 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor ingrese un precio de venta válido (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un precio de venta válido (mayor que 0)", "Precio de Venta Inválido");
                 return;
             }
 
-            // Validate that sell price is greater than purchase price
+            // Validate that sell price is greater than purchase price with professional warning
             if (vm.SellPrice <= vm.Price)
             {
-                bool confirm = await Application.Current.MainPage.DisplayAlert(
-                    "Advertencia", 
-                    "El precio de venta es menor o igual al precio de compra. ¿Desea continuar?", 
-                    "Sí", "No");
+                bool confirm = await CustomAlert.ShowConfirmAsync(
+                    $"El precio de venta (${vm.SellPrice:F2}) es menor o igual al precio de compra (${vm.Price:F2}).\n\nEsto resultará en pérdidas. ¿Desea continuar de todas formas?", 
+                    "Advertencia de Rentabilidad", 
+                    "Continuar", 
+                    "Revisar Precios");
                 if (!confirm) return;
             }
 
@@ -87,8 +95,8 @@ public partial class AddShopping : Popup
             SecondEntry.IsEnabled = false;
             ThirdEntry.IsEnabled = false;
 
-            // Show success feedback
-            await Application.Current.MainPage.DisplayAlert("Éxito", "Producto agregado correctamente", "OK");
+            // Show professional success feedback
+            await CustomAlert.ShowSuccessAsync($"Producto agregado exitosamente a la compra\n\nCantidad: {vm.Quantity:F2} galones\nValor total: ${(vm.Quantity * vm.Price):F2}", "Producto Agregado");
 
             Close();
         }

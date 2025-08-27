@@ -1,5 +1,6 @@
 using APP.Eds.Services.Dispensers;
 using APP.Eds.UsesCases.DispenserType;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -26,7 +27,7 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicialización");
         }
         finally
         {
@@ -44,46 +45,46 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            // Enhanced validation
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_dispensersService.Code))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el codigo del dispensador", "OK");
+                await CustomAlert.ShowErrorAsync("El código del dispensador es obligatorio para el registro", "Código Requerido");
                 return;
             }
 
             if (_dispensersService.Number <= 0)
             {
-                await DisplayAlert("Error", "Por favor, ingrese un numero de dispensador valido mayor a 0", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un número de dispensador válido (mayor que 0)", "Número Inválido");
                 return;
             }
 
             if (_dispensersService.SelectedDispenserType == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione el tipo de dispensador", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el tipo de dispensador correspondiente", "Tipo Requerido");
                 return;
             }
 
             if (_dispensersService.SelectedEds == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione la estacion de servicio (EDS)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la estación de servicio (EDS) donde se ubicará el dispensador", "EDS Requerida");
                 return;
             }
 
             if (_dispensersService.SelectedIsland == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione la isla de combustible", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la isla de combustible correspondiente", "Isla Requerida");
                 return;
             }
 
             if (_dispensersService.HoseNumber <= 0)
             {
-                await DisplayAlert("Error", "Por favor, ingrese un numero de mangueras valido mayor a 0", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un número válido de mangueras (mayor que 0)", "Número de Mangueras Inválido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_dispensersService.SelectedStatus))
             {
-                await DisplayAlert("Error", "Por favor, seleccione el estado operativo del dispensador", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el estado operativo del dispensador", "Estado Requerido");
                 return;
             }
 
@@ -96,7 +97,7 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el dispensador:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

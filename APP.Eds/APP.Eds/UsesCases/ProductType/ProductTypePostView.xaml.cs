@@ -1,4 +1,5 @@
 using APP.Eds.Services.ProductType;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -24,13 +25,35 @@ public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = false;
+                button.Text = "Guardando...";
             }
 
-            // Validate required field
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_productTypeService.Description))
             {
-                await DisplayAlert("Error", "Por favor, ingrese la descripción del tipo de producto", "OK");
+                await CustomAlert.ShowErrorAsync("La descripción del tipo de producto es obligatoria para el registro", "Descripción Requerida");
                 return;
+            }
+
+            if (_productTypeService.Description.Length < 3)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 3 caracteres para ser válida", "Descripción Muy Corta");
+                return;
+            }
+
+            if (_productTypeService.Description.Length > 100)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 100 caracteres", "Descripción Muy Larga");
+                return;
+            }
+
+            // Clean up description
+            string originalDescription = _productTypeService.Description;
+            _productTypeService.Description = _productTypeService.Description.Trim();
+            
+            if (originalDescription != _productTypeService.Description)
+            {
+                await CustomAlert.ShowInfoAsync("Los espacios extra al inicio y final han sido removidos automáticamente", "Descripción Limpiada");
             }
 
             LoadingOverlay.ShowLoading();
@@ -38,10 +61,12 @@ public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
             
             // Clear form after successful save
             Description = string.Empty;
+            
+            await CustomAlert.ShowSuccessAsync($"El tipo de producto '{_productTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el tipo de producto:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -51,6 +76,7 @@ public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = true;
+                button.Text = "?? Crear Tipo de Producto";
             }
         }
     }
