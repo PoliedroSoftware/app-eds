@@ -179,6 +179,9 @@
 	  <MauiXaml Update="Components\PopUp\CourtDetailPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Components\PopUp\CustomAlert.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Components\PopUp\OkBusiness.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

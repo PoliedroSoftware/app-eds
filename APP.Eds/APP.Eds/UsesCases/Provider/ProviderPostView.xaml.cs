@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using APP.Eds.Services.Provider;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Provider;
 
@@ -25,16 +26,22 @@ public partial class ProviderPostView : ContentPage
                 button.Text = "Guardando...";
             }
 
-            // Validate required fields
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_providerService.Name))
             {
-                await DisplayAlert("Error", "Por favor ingrese el nombre del proveedor", "OK");
+                await CustomAlert.ShowErrorAsync("El nombre del proveedor es obligatorio para el registro", "Nombre Requerido");
                 return;
             }
 
             if (_providerService.Name.Length < 3)
             {
-                await DisplayAlert("Error", "El nombre del proveedor debe tener al menos 3 caracteres", "OK");
+                await CustomAlert.ShowErrorAsync("El nombre del proveedor debe tener al menos 3 caracteres para ser válido", "Nombre Muy Corto");
+                return;
+            }
+
+            if (_providerService.Name.Length > 100)
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del proveedor no puede exceder los 100 caracteres", "Nombre Muy Largo");
                 return;
             }
 
@@ -46,7 +53,7 @@ public partial class ProviderPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar el proveedor: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el proveedor:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -74,7 +81,7 @@ public partial class ProviderPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error cargando proveedores: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar la lista de proveedores:\n\n{ex.Message}", "Error de Carga");
         }
         finally
         {

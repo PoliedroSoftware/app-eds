@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Product;
 using APP.Eds.Services.Config;
+using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -236,7 +237,7 @@ public class ProductService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
         try
@@ -253,7 +254,7 @@ public class ProductService : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"No se pudo cargar el producto:\n\n{ex.Message}", "Error de Carga");
         }
     }
 
@@ -261,31 +262,12 @@ public class ProductService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
         
         try
         {
-            // Enhanced validation
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese el nombre del producto", "OK");
-                return;
-            }
-
-            if (SelectProductType is null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de producto", "OK");
-                return;
-            }
-
-            if (Price <= 0)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese un precio válido mayor que 0", "OK");
-                return;
-            }
-
             ProductModel = new ProductModel
             {
                 Name = Name,
@@ -306,20 +288,35 @@ public class ProductService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", 
-                    $"Producto '{Name}' registrado correctamente con precio ${Price:F2}", "OK");
+                await CustomAlert.ShowSuccessAsync(
+                    $"El producto '{Name}' ha sido registrado exitosamente con un precio de ${Price:F2}", 
+                    "Producto Registrado");
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", 
-                    $"No se pudo registrar el producto: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync(
+                    $"No se pudo registrar el producto:\n\nCódigo de error: {response.StatusCode}\nDetalle: {error}", 
+                    "Error del Servidor");
             }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            await CustomAlert.ShowErrorAsync(
+                "Error de conexión. Verifique su conexión a internet e intente nuevamente.", 
+                "Error de Conexión");
+        }
+        catch (JsonException jsonEx)
+        {
+            await CustomAlert.ShowErrorAsync(
+                "Error al procesar la respuesta del servidor.", 
+                "Error de Datos");
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                $"Error al registrar el producto: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync(
+                $"Error inesperado al registrar el producto:\n\n{ex.Message}", 
+                "Error del Sistema");
         }
     }
 
@@ -328,7 +325,7 @@ public class ProductService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return false;
         }
         try
@@ -343,12 +340,14 @@ public class ProductService : INotifyPropertyChanged
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo eliminar: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync(
+                    $"No se pudo eliminar el producto:\n\nCódigo: {response.StatusCode}\nDetalle: {error}", 
+                    "Error de Eliminación");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al eliminar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error del Sistema");
         }
         return false;
     }
@@ -358,7 +357,7 @@ public class ProductService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return false;
         }
         try
@@ -376,12 +375,14 @@ public class ProductService : INotifyPropertyChanged
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo actualizar: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync(
+                    $"No se pudo actualizar el producto:\n\nCódigo: {response.StatusCode}\nDetalle: {error}", 
+                    "Error de Actualización");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al actualizar el producto:\n\n{ex.Message}", "Error del Sistema");
         }
         return false;
     }

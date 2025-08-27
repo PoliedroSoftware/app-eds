@@ -143,7 +143,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar datos:\n\n{ex.Message}", "Error de Carga");
         }
         finally
         {
@@ -338,7 +338,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error executing nav action: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo ejecutar la acción", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo ejecutar la acción solicitada", "Error de Navegación");
         }
     }
 
@@ -425,7 +425,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening document popup: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir el popup de documentos", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de documentos", "Error de Interfaz");
         }
     }
 
@@ -439,7 +439,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening expenditure popup: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir el popup de gastos", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de gastos", "Error de Interfaz");
         }
     }
 
@@ -453,7 +453,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening info popup: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir el popup de información", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de información adicional", "Error de Interfaz");
         }
     }
 
@@ -468,7 +468,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error navigating to court list: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir la lista de cierres", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir la lista de cierres de turno", "Error de Navegación");
         }
     }
 
@@ -483,7 +483,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening dispenser popup: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir el popup del dispensador", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario del dispensador", "Error de Interfaz");
         }
     }
 
@@ -497,7 +497,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening collection popup: {ex.Message}");
-            await DisplayAlert("Error", "No se pudo abrir el popup de tipos de cobro", "OK");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de tipos de cobro", "Error de Interfaz");
         }
     }
 
@@ -521,30 +521,30 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 {
                     if (vm.SelectedBusiness is null)
                     {
-                        await DisplayAlert("Error", "Por favor, seleccione un Negocio", "OK");
+                        await CustomAlert.ShowErrorAsync("Debe seleccionar un negocio para continuar con el cierre", "Negocio Requerido");
                         return;
                     }
                     if (vm.SelectedEds is null)
                     {
-                        await DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
+                        await CustomAlert.ShowErrorAsync("Debe seleccionar una estación de servicio (EDS) para continuar", "EDS Requerida");
                         return;
                     }
                     if (vm.SelectedIslander is null)
                     {
-                        await DisplayAlert("Error", "Por favor, seleccione un Islero", "OK");
+                        await CustomAlert.ShowErrorAsync("Debe seleccionar un islero responsable para continuar", "Islero Requerido");
                         return;
                     }
                 }
 
                 if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
                 {
-                    await DisplayAlert("Error", "Debe agregar al menos un dispensador", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe agregar al menos un dispensador al cierre de turno", "Dispensadores Requeridos");
                     return;
                 }
 
                 if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
                 {
-                    await DisplayAlert("Error", "Debe agregar al menos un tipo recuado", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe agregar al menos un tipo de recaudo al cierre", "Tipos de Recaudo Requeridos");
                     return;
                 }
 
@@ -552,7 +552,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 const double epsilon = 1e-6;
                 if (cash < -epsilon)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", $"El total de efectivo no puede ser negativo", "OK");
+                    await CustomAlert.ShowErrorAsync($"El total de efectivo no puede ser negativo.\n\nTotal recaudo: ${totalTypeOfCollection:F2}\nTotal gastos: ${totalExpenditures:F2}", "Error en Cálculos");
                     return;
                 }
 
@@ -581,7 +581,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             Debug.WriteLine($"Error in Button_Clicked: {ex.Message}");
-            await DisplayAlert("Error", "Ocurrió un error al enviar los datos", "OK");
+            await CustomAlert.ShowErrorAsync($"Ocurrió un error al enviar los datos del cierre:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

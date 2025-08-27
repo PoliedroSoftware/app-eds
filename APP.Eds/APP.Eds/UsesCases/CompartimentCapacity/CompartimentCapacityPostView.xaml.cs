@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using APP.Eds.Services.CompartimentCapacity;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.CompartimentCapacity;
 
@@ -25,39 +26,41 @@ public partial class CompartimentCapacityPostView : ContentPage
                 button.Text = "Enviando...";
             }
 
-            // Validate required fields
+            // Enhanced validation with professional alerts
             if (_compartimentCapacityService.SelectCapacity == null)
             {
-                await DisplayAlert("Error", "Por favor seleccione un tanque", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un tanque para asignar la capacidad", "Tanque Requerido");
                 return;
             }
 
             if (_compartimentCapacityService.SelectCompartiment == null)
             {
-                await DisplayAlert("Error", "Por favor seleccione un compartimento", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un compartimento para configurar", "Compartimento Requerido");
                 return;
             }
 
             if (_compartimentCapacityService.Default <= 0)
             {
-                await DisplayAlert("Error", "Por favor ingrese una capacidad válida (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
                 return;
             }
 
             if (_compartimentCapacityService.Default > 100000)
             {
-                await DisplayAlert("Error", "La capacidad no puede exceder 100,000 litros", "OK");
+                await CustomAlert.ShowErrorAsync("La capacidad no puede exceder 100,000 litros por motivos de seguridad", "Capacidad Excesiva");
                 return;
             }
 
-            // Show confirmation dialog
+            // Show professional confirmation dialog
             string tankCode = _compartimentCapacityService.SelectCapacity.Code ?? "N/A";
             int compartmentNumber = _compartimentCapacityService.SelectCompartiment.Number;
             byte capacity = _compartimentCapacityService.Default;
 
-            bool confirm = await DisplayAlert("Confirmar", 
-                $"¿Desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?", 
-                "Sí", "No");
+            bool confirm = await CustomAlert.ShowConfirmAsync(
+                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
+                "Confirmar Configuración", 
+                "Confirmar", 
+                "Cancelar");
 
             if (!confirm) return;
 
@@ -66,7 +69,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar la configuración: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la configuración de capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -91,45 +94,17 @@ public partial class CompartimentCapacityPostView : ContentPage
         base.OnAppearing();
         try
         {
-            LoadingOverlay.ShowLoading();
-            
-            // Refresh data when page appears
-            await Task.WhenAll(
-                RefreshCapacityDataAsync(),
-                RefreshCompartimentDataAsync()
-            );
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Error", $"Error cargando datos: {ex.Message}", "OK");
-        }
-        finally
-        {
-            LoadingOverlay.HideLoading();
-        }
-    }
-
-    private async Task RefreshCapacityDataAsync()
-    {
-        try
-        {
+            LoadingOverlay?.ShowLoading();
             await _compartimentCapacityService.GetAllCapacityDataAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error refreshing capacity data: {ex.Message}");
-        }
-    }
-
-    private async Task RefreshCompartimentDataAsync()
-    {
-        try
-        {
             await _compartimentCapacityService.GetAllCompartimentDataAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error refreshing compartment data: {ex.Message}");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Carga");
+        }
+        finally
+        {
+            LoadingOverlay?.HideLoading();
         }
     }
 

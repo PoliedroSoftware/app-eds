@@ -1,6 +1,7 @@
 using APP.Eds.Services.Hose;
 using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.Controls;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Hose;
 
@@ -32,40 +33,91 @@ public partial class HosePostView : ContentPage
                     hoverButton.IsEnabled = false;
                 }
 
-                LoadingOverlay.ShowLoading();
-                
-                // Validate required fields
+                // Enhanced validation with professional alerts
                 if (vm.Number <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor ingrese un número válido (debe ser mayor que 0)", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un número de manguera válido (mayor que 0)", "Número Inválido");
+                    return;
+                }
+
+                if (vm.Number > 20)
+                {
+                    await CustomAlert.ShowErrorAsync("El número de manguera no puede exceder 20", "Número Excesivo");
                     return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor ingrese un monto acumulado válido (debe ser mayor que 0)", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado válido (mayor que 0)", "Monto Acumulado Inválido");
                     return;
+                }
+
+                if (vm.AccumulatedAmount > 10000000)
+                {
+                    bool confirm = await CustomAlert.ShowConfirmAsync(
+                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
+                        "Monto Elevado",
+                        "Confirmar",
+                        "Revisar");
+                    
+                    if (!confirm) return;
                 }
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await DisplayAlert("Error", "Por favor ingrese galones acumulados válidos (debe ser mayor que 0)", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados válidos (mayor que 0)", "Galones Inválidos");
                     return;
+                }
+
+                if (vm.AccumulatedGallons > 50000)
+                {
+                    await CustomAlert.ShowWarningAsync("La cantidad de galones acumulados parece muy alta. Por favor verifique.", "Galones Elevados");
                 }
 
                 if (vm.SelectedDispensers is null)
                 {
-                    await DisplayAlert("Error", "Por favor seleccione un Dispensador", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar el dispensador al cual pertenece esta manguera", "Dispensador Requerido");
                     return;
                 }
 
                 if (vm.SelectProductType is null)
                 {
-                    await DisplayAlert("Error", "Por favor seleccione un Tipo de Producto", "OK");
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar el tipo de producto que maneja esta manguera", "Tipo de Producto Requerido");
                     return;
                 }
 
+                // Calculate price per gallon if possible
+                double pricePerGallon = vm.AccumulatedAmount / vm.AccumulatedGallons;
+                if (pricePerGallon < 1000 || pricePerGallon > 20000)
+                {
+                    bool confirmPrice = await CustomAlert.ShowConfirmAsync(
+                        $"El precio por galón calculado (${pricePerGallon:F0}) parece inusual.\n\n" +
+                        $"• Monto: ${vm.AccumulatedAmount:F2}\n" +
+                        $"• Galones: {vm.AccumulatedGallons:F2}\n" +
+                        $"• Precio/Galón: ${pricePerGallon:F0}\n\n" +
+                        $"¿Desea continuar con estos valores?",
+                        "Precio Inusual",
+                        "Continuar",
+                        "Revisar");
+                    
+                    if (!confirmPrice) return;
+                }
+
+                LoadingOverlay.ShowLoading();
                 await vm.SaveHoseDataAsync();
+                
+                await CustomAlert.ShowSuccessAsync(
+                    $"Manguera #{vm.Number} registrada exitosamente:\n\n" +
+                    $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
+                    $"• Tipo de Producto: {vm.SelectProductType.Description}\n" +
+                    $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
+                    $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
+                    $"• Precio por Galón: ${pricePerGallon:F0}",
+                    "Manguera Registrada");
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync($"Error al registrar la manguera:\n\n{ex.Message}", "Error del Sistema");
             }
             finally
             {
@@ -87,7 +139,7 @@ public partial class HosePostView : ContentPage
         }
         else
         {
-            await DisplayAlert("Error", "Error de contexto", "OK");
+            await CustomAlert.ShowErrorAsync("Error interno del sistema. Por favor, intente nuevamente", "Error de Contexto");
         }
     }
 

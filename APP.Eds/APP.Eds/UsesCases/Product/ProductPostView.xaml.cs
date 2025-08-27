@@ -1,6 +1,8 @@
 using APP.Eds.Models.Product;
 using APP.Eds.Services.Product;
 using APP.Eds.UsesCases.ProductType;
+using APP.Eds.Services.Alert;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -37,25 +39,25 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = false;
-                button.Text = "Guardando...";
+                button.Text = "Enviando...";
             }
 
-            // Validate required fields
+            // Validate required fields using custom alerts
             if (string.IsNullOrWhiteSpace(_productService.Name))
             {
-                await DisplayAlert("Error", "Por favor ingrese el nombre del producto", "OK");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese el nombre del producto", "Campo Requerido");
                 return;
             }
 
             if (_productService.SelectProductType == null)
             {
-                await DisplayAlert("Error", "Por favor seleccione un tipo de producto", "OK");
+                await CustomAlert.ShowErrorAsync("Por favor seleccione un tipo de producto", "Campo Requerido");
                 return;
             }
 
             if (_productService.Price <= 0)
             {
-                await DisplayAlert("Error", "Por favor ingrese un precio válido (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese un precio válido (mayor que 0)", "Precio Inválido");
                 return;
             }
 
@@ -67,10 +69,12 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             Name = string.Empty;
             _productService.SelectProductType = null;
             Price = 0;
+            
+            await CustomAlert.ShowSuccessAsync($"El producto '{_productService.Name}' ha sido registrado exitosamente con un precio de ${_productService.Price:F2}", "Producto Registrado");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error inesperado: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Ocurrió un error inesperado al registrar el producto:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -80,10 +84,9 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = true;
-                button.Text = "?? Registrar Producto";
+                button.Text = "Enviar Datos";
             }
         }
-        
     }
 
     private async void OnAddProductTypeClicked(object sender, EventArgs e)
@@ -94,7 +97,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al navegar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"No se pudo abrir la página de tipos de producto:\n\n{ex.Message}", "Error de Navegación");
         }
     }
 
@@ -110,6 +113,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error refreshing product types: {ex.Message}");
+            // Don't show error to user as this is not critical
         }
     }
 
@@ -120,7 +124,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         {
             Name = product.Name;
             // Note: ProductModelResponse doesn't have Price, so this would need to be fetched
-            await DisplayAlert("Editar", $"Función de edición será implementada para: {product.Name}", "OK");
+            await CustomAlert.ShowInfoAsync($"La función de edición será implementada próximamente para el producto: {product.Name}", "Función en Desarrollo");
         }
     }
 
@@ -129,8 +133,12 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         // This method is kept for future use when ProductList with ProductModelResponse is implemented
         if (obj is ProductModelResponse product)
         {
-            bool confirm = await DisplayAlert("Confirmar", 
-                $"¿Desea eliminar el producto '{product.Name}'?", "Sí", "No");
+            bool confirm = await CustomAlert.ShowConfirmAsync(
+                $"¿Está seguro de que desea eliminar el producto '{product.Name}'?\n\nEsta acción no se puede deshacer.", 
+                "Confirmar Eliminación", 
+                "Eliminar", 
+                "Cancelar");
+
             if (confirm)
             {
                 try
@@ -139,8 +147,12 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                     bool deleted = await _productService.DeleteProductAsync(product.IdProduct);
                     if (deleted)
                     {
-                        await DisplayAlert("Éxito", "Producto eliminado correctamente", "OK");
+                        await CustomAlert.ShowSuccessAsync($"El producto '{product.Name}' ha sido eliminado correctamente", "Producto Eliminado");
                     }
+                }
+                catch (Exception ex)
+                {
+                    await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error de Eliminación");
                 }
                 finally
                 {
