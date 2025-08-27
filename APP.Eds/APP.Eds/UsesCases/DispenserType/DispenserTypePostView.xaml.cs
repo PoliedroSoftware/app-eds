@@ -8,16 +8,16 @@ namespace APP.Eds.UsesCases.DispenserType;
 public partial class DispenserTypePostView : ContentPage
 {
     private DispenserTypeService _dispenserTypeService;
-    public ObservableCollection<DispenserTypeModels> DispenserTypeList { get; set; }
+    public ObservableCollection<DispenserTypeModel> DispenserTypeList { get; set; }
     public ICommand EditDispenserTypeCommand { get; private set; }
     public ICommand DeleteDispenserTypeCommand { get; private set; }
     public DispenserTypePostView()
 	{
 		InitializeComponent();
         _dispenserTypeService = new DispenserTypeService();
-        DispenserTypeList = new ObservableCollection<DispenserTypeModels>();
-        EditDispenserTypeCommand = new Command<DispenserTypeModels>(EditDispenserType);
-        DeleteDispenserTypeCommand = new Command<DispenserTypeModels>(DeleteDispenserType);
+        DispenserTypeList = new ObservableCollection<DispenserTypeModel>();
+        EditDispenserTypeCommand = new Command<DispenserTypeModel>(EditDispenserType);
+        DeleteDispenserTypeCommand = new Command<DispenserTypeModel>(DeleteDispenserType);
         BindingContext = this;
     }
 
@@ -57,13 +57,13 @@ public partial class DispenserTypePostView : ContentPage
         
     }
 
-    private void EditDispenserType(DispenserTypeModels dispenserType)
+    private void EditDispenserType(DispenserTypeModel dispenserType)
     {
         Description = dispenserType.Description;
         _dispenserTypeService.Id = dispenserType.Id;
     }
 
-    private async void DeleteDispenserType(DispenserTypeModels dispenserType)
+    private async void DeleteDispenserType(DispenserTypeModel dispenserType)
     {
         bool answer = await DisplayAlert("Eliminar", $"¿Está seguro de que desea eliminar el tipo de dispensador '{dispenserType.Description}'?", "Sí", "No");
         if (answer)

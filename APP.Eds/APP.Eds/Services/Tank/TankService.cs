@@ -253,7 +253,7 @@ public class TankService : INotifyPropertyChanged
         GetTankAsync();
         LoadTranslationsAsync();
 
-        DeleteTankCommand = new Command<TankResponse>(async (tank) => await DeleteTankAsync(tank.Id));
+        DeleteTankCommand = new Command<TankResponse>(async (tank) => await DeleteTankAsync(tank.IdTank));
         EditTankCommand = new Command<TankResponse>(async (tank) => await EditTankAsync(tank));
     }
 
@@ -398,7 +398,7 @@ public class TankService : INotifyPropertyChanged
     private async Task EditTankAsync(TankResponse tank)
     {
         // TODO: Implement edit logic, e.g., show a popup
-        await Application.Current.MainPage.DisplayAlert("Editar", $"Editar tanque: {tank.Nmber}", "OK");
+        await Application.Current.MainPage.DisplayAlert("Editar", $"Editar tanque: {tank.Number}", "OK");
     }
 
     public async Task<bool> DeleteTankAsync(int idTank)

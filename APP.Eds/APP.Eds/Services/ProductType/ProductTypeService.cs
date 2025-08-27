@@ -61,8 +61,33 @@ namespace APP.Eds.Services.ProductType
             GetByIdProductTypeDataCommand = new Command<int>(async (productTypeId) => await GetByIdProductTypeDataAsync(productTypeId));
         }
 
+        public async Task SaveProductTypeDataAsync()
+        {
+            // Implementación de la lógica para guardar datos
+            await Application.Current.MainPage.DisplayAlert("Guardar", "Guardando datos de tipo de producto", "OK");
+        }
+
+        public async Task EditProductType(ProductTypeModel productType)
+        {
+            // Implementación de la lógica de edición
+            await Application.Current.MainPage.DisplayAlert("Editar", $"Editando tipo de producto: {productType.Description}", "OK");
+        }
+
+        public async Task DeleteProductType(ProductTypeModel productType)
+        {
+            // Implementación de la lógica de eliminación
+            await Application.Current.MainPage.DisplayAlert("Eliminar", $"Eliminando tipo de producto: {productType.Description}", "OK");
+        }
+
+        public async Task GetByIdProductTypeDataAsync(int productTypeId)
+        {
+            // Implementación de la lógica para obtener datos por ID
+            await Application.Current.MainPage.DisplayAlert("Obtener por ID", $"Obteniendo tipo de producto con ID: {productTypeId}", "OK");
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+}
