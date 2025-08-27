@@ -84,7 +84,7 @@ public partial class EdsPostView : ContentPage
                     return;
                 }
 
-                LoadingOverlay.ShowLoading();
+                LoadingOverlay.IsVisible = true;
                 var selectedId = vm.SelectedBusiness.IdBusiness;
                 await vm.SaveEdsDataAsync();
                 
@@ -103,7 +103,7 @@ public partial class EdsPostView : ContentPage
             }
             finally
             {
-                LoadingOverlay.HideLoading();
+                LoadingOverlay.IsVisible = false;
 
                 // Clear form fields after successful submission
                 _edsService.Name = string.Empty;
