@@ -47,19 +47,19 @@ namespace APP.Eds.Services.DispenserType
             SaveDispenserTypeDataCommand = new Command(async () => await SaveDispenserTypeDataAsync());
         }
 
-        public async Task<List<DispenserTypeModels>> GetDispenserTypesAsync()
+        public async Task<List<DispenserTypeModel>> GetDispenserTypesAsync()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-                return new List<DispenserTypeModels>();
+                return new List<DispenserTypeModel>();
             }
             try
             {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispenser-type");
-                return JsonSerializer.Deserialize<List<DispenserTypeModels>>(response, new JsonSerializerOptions
+                return JsonSerializer.Deserialize<List<DispenserTypeModel>>(response, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
@@ -67,7 +67,7 @@ namespace APP.Eds.Services.DispenserType
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar la lista: {ex.Message}", "OK");
-                return new List<DispenserTypeModels>();
+                return new List<DispenserTypeModel>();
             }
         }
 

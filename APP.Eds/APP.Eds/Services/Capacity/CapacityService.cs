@@ -426,7 +426,7 @@ public class CapacityService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/capacity/{capacity.Id}");
+            var response = await httpClient.DeleteAsync($"{Configuration.BaseUrl}/api/v1/capacity/{capacity.IdCapacity}");
 
             if (response.IsSuccessStatusCode)
             {
