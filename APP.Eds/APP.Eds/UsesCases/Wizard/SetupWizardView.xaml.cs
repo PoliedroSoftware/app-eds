@@ -1,5 +1,6 @@
 using APP.Eds.Services.Wizard;
 using APP.Eds.Services.Copilot;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -87,7 +88,7 @@ namespace APP.Eds.UsesCases.Wizard
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"No se pudo abrir el formulario: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"No se pudo abrir el formulario:\n\n{ex.Message}", "Error de Navegación");
             }
             finally
             {
@@ -136,7 +137,7 @@ namespace APP.Eds.UsesCases.Wizard
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al validar el paso: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"Error al validar el paso de configuración:\n\n{ex.Message}", "Error de Validación");
             }
             finally
             {
@@ -148,7 +149,7 @@ namespace APP.Eds.UsesCases.Wizard
         {
             if (string.IsNullOrWhiteSpace(question))
             {
-                await DisplayAlert("Ayuda", "Por favor ingrese una pregunta", "OK");
+                await CustomAlert.ShowInfoAsync("Escriba una pregunta específica sobre la configuración actual para obtener ayuda personalizada", "Pregunta Requerida");
                 return;
             }
 
@@ -158,13 +159,18 @@ namespace APP.Eds.UsesCases.Wizard
                 await _copilotService.GetHelpAsync(question, currentStepContext);
                 ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
                 
+                if (ShowHelpResponse)
+                {
+                    await CustomAlert.ShowSuccessAsync("Se ha generado una respuesta de ayuda personalizada para su consulta", "Ayuda Obtenida");
+                }
+                
                 // Clear the entry
                 if (HelpEntry != null)
                     HelpEntry.Text = string.Empty;
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al obtener ayuda: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"No se pudo obtener ayuda del asistente:\n\n{ex.Message}", "Error de Ayuda");
             }
         }
 
@@ -177,10 +183,15 @@ namespace APP.Eds.UsesCases.Wizard
                 
                 await _copilotService.GetHelpAsync(contextualQuestion, _wizardService.CurrentStep?.Title ?? "");
                 ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
+                
+                if (ShowHelpResponse)
+                {
+                    await CustomAlert.ShowInfoAsync($"Se ha generado ayuda contextual para el paso: {currentStep}", "Ayuda Contextual");
+                }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al obtener ayuda contextual: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"Error al obtener ayuda contextual:\n\n{ex.Message}", "Error de Ayuda");
             }
         }
 
@@ -190,17 +201,34 @@ namespace APP.Eds.UsesCases.Wizard
             {
                 IsLoading = true;
                 
+                // Check if all steps are completed
+                if (CompletionPercentage < 100)
+                {
+                    bool confirm = await CustomAlert.ShowConfirmAsync(
+                        $"La configuración está {CompletionPercentage:F0}% completa.\n\n" +
+                        $"Pasos completados: {CompletedSteps}/{TotalSteps}\n\n" +
+                        $"¿Desea finalizar de todas formas? Podrá completar los pasos restantes más tarde.",
+                        "Configuración Incompleta",
+                        "Finalizar",
+                        "Continuar");
+                    
+                    if (!confirm) return;
+                }
+                
                 // Show completion message
-                await DisplayAlert("¡Éxito!", 
-                    "La configuración del sistema se ha completado exitosamente. Ya puede comenzar a usar la aplicación.", 
-                    "OK");
+                await CustomAlert.ShowSuccessAsync(
+                    $"¡Configuración del sistema completada!\n\n" +
+                    $"• Pasos completados: {CompletedSteps}/{TotalSteps}\n" +
+                    $"• Progreso: {CompletionPercentage:F0}%\n\n" +
+                    $"Ya puede comenzar a usar la aplicación.",
+                    "¡Configuración Exitosa!");
                 
                 // Navigate back to main menu
                 await Navigation.PopToRootAsync();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al finalizar: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"Error al finalizar la configuración:\n\n{ex.Message}", "Error del Sistema");
             }
             finally
             {

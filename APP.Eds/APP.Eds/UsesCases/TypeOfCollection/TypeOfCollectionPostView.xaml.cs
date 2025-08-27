@@ -1,4 +1,5 @@
 using APP.Eds.Services.TypeOfCollection;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -8,7 +9,7 @@ namespace APP.Eds.UsesCases.TypeOfCollection;
 public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChanged
 {
     private TypeOfCollectionService _typeOfCollectionService;
-    
+
     public TypeOfCollectionPostView()
     {
         InitializeComponent();
@@ -26,7 +27,7 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicialización");
         }
         finally
         {
@@ -44,35 +45,47 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
 
         try
         {
-            // Enhanced validation
-            if (string.IsNullOrWhiteSpace(_typeOfCollectionService.SelectedPaymentType))
+            // Enhanced validation with professional alerts
+            if (_typeOfCollectionService.SelectedPaymentType == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione un tipo de pago", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el tipo de pago que manejará este método", "Tipo de Pago Requerido");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(_typeOfCollectionService.SelectedPaymentMethod))
+            if (_typeOfCollectionService.SelectedPaymentMethod == null)
             {
-                await DisplayAlert("Error", "Por favor, seleccione un metodo de pago", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el método de pago específico", "Método de Pago Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.PaymentName))
             {
-                await DisplayAlert("Error", "Por favor, ingrese un nombre para la forma de pago", "OK");
+                await CustomAlert.ShowErrorAsync("El nombre del método de pago es obligatorio para identificarlo", "Nombre Requerido");
+                return;
+            }
+
+            if (_typeOfCollectionService.PaymentName.Length < 3)
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del método de pago debe tener al menos 3 caracteres", "Nombre Muy Corto");
+                return;
+            }
+
+            if (_typeOfCollectionService.PaymentName.Length > 50)
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del método de pago no puede exceder 50 caracteres", "Nombre Muy Largo");
                 return;
             }
 
             // Validate payment name characters (allow letters, numbers, spaces, and common symbols)
             if (!Regex.IsMatch(_typeOfCollectionService.PaymentName, @"^[\p{L}\p{N}\s\-_.,()]+$"))
             {
-                await DisplayAlert("Error", "El nombre contiene caracteres no validos", "OK");
+                await CustomAlert.ShowErrorAsync("El nombre contiene caracteres no válidos. Solo se permiten letras, números, espacios y símbolos básicos", "Caracteres Inválidos");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.PaymentProvider))
             {
-                await DisplayAlert("Error", "Por favor, ingrese el proveedor/procesador", "OK");
+                await CustomAlert.ShowErrorAsync("Debe especificar el proveedor o procesador del método de pago", "Proveedor Requerido");
                 return;
             }
 
@@ -80,20 +93,26 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
             {
                 if (!decimal.TryParse(_typeOfCollectionService.ProcessingFee, out decimal fee) || fee < 0 || fee > 100)
                 {
-                    await DisplayAlert("Error", "La comision debe ser un valor numerico entre 0 y 100", "OK");
+                    await CustomAlert.ShowErrorAsync("La comisión debe ser un valor numérico entre 0 y 100", "Comisión Inválida");
                     return;
                 }
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.SelectedStatus))
             {
-                await DisplayAlert("Error", "Por favor, seleccione el estado de la forma de pago", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el estado del método de pago (Activo/Inactivo)", "Estado Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.Description))
             {
-                await DisplayAlert("Error", "Por favor, agregue observaciones o notas", "OK");
+                await CustomAlert.ShowErrorAsync("Debe agregar observaciones o notas descriptivas del método de pago", "Descripción Requerida");
+                return;
+            }
+
+            if (_typeOfCollectionService.Description.Length < 10)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción debe ser más detallada (mínimo 10 caracteres)", "Descripción Muy Corta");
                 return;
             }
 
@@ -106,7 +125,7 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el método de pago:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
