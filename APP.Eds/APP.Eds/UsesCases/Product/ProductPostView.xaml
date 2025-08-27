@@ -1,87 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             x:Class="APP.Eds.UsesCases.Product.ProductPostView"
-             Title="Gestion De Productos">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Product.ProductPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestión de Productos"
+    BackgroundColor="#F8F9FA">
 
-    <Frame BorderColor="Transparent" HasShadow="False" Padding="10" Margin="10">
-        <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All">
-            <Label FontSize="16" Text="Ingrese el Producto" />
 
-            <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese el producto"
-                Text="{Binding Name, Mode=TwoWay}"
-                AutomationId="EntryProductName"/>
+                            <!-- Add Product Type Button -->
+                            <Border BackgroundColor="#6A1B9A" 
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    Padding="4">
+                                <Border.Shadow>
+                                    <Shadow Brush="#6A1B9A" 
+                                            Offset="0,3" 
+                                            Radius="8" 
+                                            Opacity="0.3"/>
+                                </Border.Shadow>
+                                <Button Text="➕ Agregar Tipo de Producto"
+                                        TextColor="White" 
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnAddProductTypeClicked"
+                                        AutomationId="ButtonAddProductType"
+                                        FontSize="14"
+                                        FontAttributes="Bold"
+                                        HeightRequest="44"
+                                        CornerRadius="12"/>
+                            </Border>
 
-            <Picker 
-                Title="Seleccione un tipo de producto"
-                ItemsSource="{Binding ProductTypeList}"
-                ItemDisplayBinding="{Binding Description}"
-                SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
-                AutomationId="PickerProductType"/>
-            <Button Text="Agregar tipo de producto" Clicked="OnAddProductTypeClicked" AutomationId="ButtonAddProductType"/>
 
-                <Label Text="Ingrese el precio del producto" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="Ingrese el precio"
-                Text="{Binding Price, Mode=TwoWay}"
-                AutomationId="EntryPrice"/>
-
-            <Button
-                BackgroundColor="Green"
-                Clicked="Button_Clicked"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White"
-                AutomationId="ButtonSendData"/>
-
-            <!-- Listado de productos -->
-    <Label Text="Lista de Productos" FontSize="18"/>
-    <CollectionView ItemsSource="{Binding ProductList}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Frame Padding="10" Margin="0,5">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                        <VerticalStackLayout Grid.Column="0">
-                            <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center"/>
-                            <Label Text="{Binding Price, StringFormat='{0:C}'}" VerticalOptions="Center"/>
-                        </VerticalStackLayout>
-                        <Button Grid.Column="2" 
-                               Text="✏️"
-                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}"
-                               CommandParameter="{Binding .}"
-                               BackgroundColor="Transparent"
-                               FontSize="18"
-                               WidthRequest="40"
-                               HeightRequest="40"
-                               Padding="0"
-                               VerticalOptions="Center"/>
-                        <Button Grid.Column="3" 
-                               Text="❌"
-                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}"
-                               CommandParameter="{Binding .}"
-                               BackgroundColor="Transparent"
-                               FontSize="18"
-                               WidthRequest="40"
-                               HeightRequest="40"
-                               Padding="0"
-                               VerticalOptions="Center"/>
-                    </Grid>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
-        </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
-    </Frame>
 </ContentPage>

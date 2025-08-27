@@ -1,77 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
-             x:Class="APP.Eds.UsesCases.Capacity.CapacityPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion De Capacidad">
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Capacity.CapacityPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="{Binding GestionCapacityLabel}"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <VerticalStackLayout
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            Padding="20" Spacing="15">
-        <Label FontSize="16" Text="{Binding CodeLabel}"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="{Binding CodePlaceholder}"
-            Text="{Binding Code, Mode=TwoWay}"
-            AutomationId="EntryCode"/>
-        <Label FontSize="16" Text="{Binding HeightLabel}"/>
-        <Entry
-            Keyboard="Numeric"
-            Placeholder="{Binding HeightPlaceholder}"
-            Text="{Binding Height, Mode=TwoWay}" 
-            AutomationId="EntryHeight"/>
-        <Label FontSize="16" Text="{Binding GallonLabel}"/>
-        <Entry
-            Keyboard="Numeric"
-            Placeholder="{Binding GallonPlaceholder}"
-            Text="{Binding Gallon, Mode=TwoWay}" 
-            AutomationId="EntryGallon"/>
-        <Label FontSize="16" Text="{Binding LitersLabel}"/>
-        <Entry
-            Keyboard="Numeric"
-            Placeholder="{Binding LitersPlaceholder}"
-            Text="{Binding Liters, Mode=TwoWay}" 
-            AutomationId="EntryLiters"/>
 
-        <Button
-            BackgroundColor="Green"
-            Clicked="SendCapacityButton"
-            CornerRadius="10"
-            Text="{Binding SendData}"
-            TextColor="White" 
-            AutomationId="ButtonSendCapacityData"/>
-    </VerticalStackLayout>
-        <CollectionView ItemsSource="{Binding CapacityList}" Margin="0,20,0,0">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <VerticalStackLayout>
-                        <Label Text="{Binding Code,StringFormat='Capacidad {0:N0}'}" FontSize="16" Grid.Row="1" Grid.Column="3" HorizontalOptions="Center" Margin="0,20,0,5"/>
-                        <Frame Padding="0">
-                            <Grid ColumnDefinitions="20,*,20,*,10" RowDefinitions="10,*,*,*,*,*,*,*,*,10">
-
-                                <Label Text="Altura"  Grid.Row="3" Grid.Column="1"/>
-                                <Label Text="{Binding Height}"  Grid.Row="3" Grid.Column="3"/>
-
-                                <Label Text="Galones"  Grid.Row="4" Grid.Column="1"/>
-                                <Label Text="{Binding Gallon}"  Grid.Row="4" Grid.Column="3"/>
-                                <BoxView Grid.Row="4" Grid.ColumnSpan="5" ZIndex="-1"/>
-
-                                <Label Text="Litros"  Grid.Row="5" Grid.Column="1"/>
-                                <Label Text="{Binding Liters, StringFormat='{0:N2}'}"  Grid.Row="5" Grid.Column="3"/>
-
-                                <StackLayout Orientation="Horizontal" Grid.Row="8" Grid.Column="3" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand">
-                                    <ImageButton Source="edit.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCapacityCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
-                                    <ImageButton Source="delete.png" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCapacityCommand}" CommandParameter="{Binding .}" HeightRequest="20" WidthRequest="20"/>
-                                </StackLayout>
-                            </Grid>
-                        </Frame>
-                    </VerticalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
         <controls:LoadingView x:Name="LoadingOverlay"
-              AbsoluteLayout.LayoutBounds="0,0,1,1"
-              AbsoluteLayout.LayoutFlags="All"/>
-  </AbsoluteLayout>
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
 </ContentPage>

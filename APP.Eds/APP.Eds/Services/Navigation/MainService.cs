@@ -68,44 +68,44 @@ namespace APP.Eds.Services.Navigation
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
-                    new("🧙‍♂️ Configuración Inicial", NavigateToWizardCommand, isDirectNavigation: true),
-                    new("Administración", new List<MenuItemModel>
+                    new("🧙‍♂️ Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
+                    new("Administración", "⚙️", new List<MenuItemModel>
                     {
-                        new("Corte", typeof(CourtPostView)),
-                        new("Negocio", typeof(BusinessPostView)),
-                        new("Registre una EDS", typeof(EdsPostView))
+                        new("Corte", typeof(CourtPostView), "💰"),
+                        new("Negocio", typeof(BusinessPostView), "🏢"),
+                        new("Registre una EDS", typeof(EdsPostView), "🏪")
                     }),
-                    new("Dispensadores y mangueras", new List<MenuItemModel>
+                    new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
-                        new("Dispensadores", typeof(DispensersPostView)),
-                        new("Manguera", typeof(HosePostView)),
-                        new("Historial de la manguera", typeof(HoseHistoryPostView))
+                        new("Dispensadores", typeof(DispensersPostView), "⛽"),
+                        new("Manguera", typeof(HosePostView), "🔧"),
+                        new("Historial de la manguera", typeof(HoseHistoryPostView), "📋")
                     }),
-                    new("Compras y productos", new List<MenuItemModel>
+                    new("Compras y productos", "🛒", new List<MenuItemModel>
                     {
-                        new("Agregar productos", typeof(ProductPostView)),
-                        new("Compras", typeof(ShoppingPostView)),
-                        new("Proveedor", typeof(ProviderPostView)),
-                        new("Categoría", typeof(CategoryPostView))
+                        new("Agregar productos", typeof(ProductPostView), "➕"),
+                        new("Compras", typeof(ShoppingPostView), "🛒"),
+                        new("Proveedor", typeof(ProviderPostView), "🏭"),
+                        new("Categoría", typeof(CategoryPostView), "📂")
                     }),
-                    new("Tanques y compartimentos", new List<MenuItemModel>
+                    new("Tanques y compartimentos", "🛢️", new List<MenuItemModel>
                     {
-                        new("Capacidad", typeof(CapacityPostView)),
-                        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView)),
-                        new("Tanque EDS", typeof(EdsTankPostView)),
-                        new("Tanque", typeof(TankPostView)),
-                        new("Compartimento", typeof(CompartimentPostView)),
-                        new("Compartimento del producto", typeof(ProductCompartimentPostView))
+                        new("Capacidad", typeof(CapacityPostView), "📏"),
+                        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView), "📐"),
+                        new("Tanque EDS", typeof(EdsTankPostView), "🛢️"),
+                        new("Tanque", typeof(TankPostView), "🗂️"),
+                        new("Compartimento", typeof(CompartimentPostView), "📦"),
+                        new("Compartimento del producto", typeof(ProductCompartimentPostView), "🔗")
                     }),
-                    new("EDS y otros", new List<MenuItemModel>
+                    new("EDS y otros", "🏪", new List<MenuItemModel>
                     {
-                        new("Tipos de G", typeof(ExpendituresPostView)),
-                        new("Registre un Islero", typeof(IslanderPostView)),
-                        new("Isla", typeof(IslandPostView)),
-                        new("Tipo de colección", typeof(TypeOfCollectionPostView))
+                        new("Tipos de G", typeof(ExpendituresPostView), "💳"),
+                        new("Registre un Islero", typeof(IslanderPostView), "👤"),
+                        new("Isla", typeof(IslandPostView), "🏝️"),
+                        new("Tipo de colección", typeof(TypeOfCollectionPostView), "📝")
                     }),
                     // Cambio de modal a navegación directa
-                    new("Inventario", NavigateToInventoryCommand, isDirectNavigation: true)
+                    new("Inventario", "📦", NavigateToInventoryCommand, isDirectNavigation: true)
                 };
             }
             else
@@ -117,13 +117,15 @@ namespace APP.Eds.Services.Navigation
         public class CategoryModel
         {
             public string Title { get; set; }
+            public string Icon { get; set; }
             public ICommand ShowPopupCommand { get; }
             public List<MenuItemModel> Items { get; set; }
             public bool IsDirectNavigation { get; set; }
 
-            public CategoryModel(string title, List<MenuItemModel> items)
+            public CategoryModel(string title, string icon, List<MenuItemModel> items)
             {
                 Title = title;
+                Icon = icon;
                 Items = items;
                 IsDirectNavigation = false;
                 ShowPopupCommand = new Command(() =>
@@ -133,9 +135,10 @@ namespace APP.Eds.Services.Navigation
                 });
             }
 
-            public CategoryModel(string title, ICommand directCommand, bool isDirectNavigation = false)
+            public CategoryModel(string title, string icon, ICommand directCommand, bool isDirectNavigation = false)
             {
                 Title = title;
+                Icon = icon;
                 Items = new List<MenuItemModel>();
                 IsDirectNavigation = isDirectNavigation;
                 ShowPopupCommand = directCommand;
@@ -144,29 +147,37 @@ namespace APP.Eds.Services.Navigation
 
         public class MenuItemModel
         {
-            public string Name { get; set; }
-            public Type Page { get; set; }
-            public Page PageInstance { get; set; }
+            public string Title { get; set; }
+            public string Name => Title; // Propiedad para compatibilidad con el popup
+            public string Icon { get; set; }
+            public Type PageType { get; set; }
             public ICommand NavigateCommand { get; }
 
-            public MenuItemModel(string name, Type page)
+            public MenuItemModel(string title, Type pageType, string icon = "📄")
             {
-                Name = name;
-                Page = page;
+                Title = title;
+                PageType = pageType;
+                Icon = icon;
                 NavigateCommand = new Command(async () =>
                 {
-                    if (Application.Current?.MainPage is NavigationPage navPage)
+                    try
                     {
-
-                        if (PageInstance == null)
+                        if (Application.Current?.MainPage is NavigationPage navPage)
                         {
-                            PageInstance = (Page)Activator.CreateInstance(Page);
+                            // Crear instancia de la página
+                            var pageInstance = Activator.CreateInstance(pageType) as Page;
+                            if (pageInstance != null)
+                            {
+                                await navPage.PushAsync(pageInstance);
+                            }
                         }
-
-                        await navPage.PushAsync(PageInstance);
+                    }
+                    catch (Exception ex)
+                    {
+                        await Application.Current?.MainPage?.DisplayAlert("Error", 
+                            $"No se pudo navegar a {title}: {ex.Message}", "OK");
                     }
                 });
-
             }
         }
     }

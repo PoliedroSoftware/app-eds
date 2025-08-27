@@ -2,64 +2,225 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Island.IslandPostView"
-             Title="Gestión De Isla">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label FontSize="16" Text="Descripción" />
-            <Entry
-                Keyboard="Text"
-                Placeholder="Ingrese la descripción"
-                Text="{Binding Description, Mode=TwoWay}"
-                AutomationId="EntryDescription"/>
+                        <CollectionView ItemsSource="{Binding PendingIslands}" AutomationId="CollectionViewPendingIslands">
+                            <CollectionView.EmptyView>
+                                <Label Text="💡 Ingrese un número mayor a 0 para ver las islas a crear o presione + para agregar una isla individual" 
+                                       FontSize="14" 
+                                       TextColor="#999" 
+                                       HorizontalOptions="Center"
+                                       Margin="20" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid BackgroundColor="#E3F2FD" Padding="15,10" Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Label Grid.Column="0" 
+                                               Text="🏝️" 
+                                               FontSize="16" 
+                                               VerticalOptions="Center"
+                                               Margin="0,0,10,0" />
+                                        
+                                        <Frame Grid.Column="1" 
+                                               BackgroundColor="White" 
+                                               CornerRadius="5"
+                                               Padding="5"
+                                               HasShadow="False">
+                                            <Entry Text="{Binding Number, Mode=TwoWay}"
+                                                   Keyboard="Numeric"
+                                                   FontSize="14"
+                                                   HorizontalOptions="Fill"
+                                                   VerticalOptions="Center"
+                                                   BackgroundColor="Transparent"
+                                                   Placeholder="Núm"
+                                                   AutomationId="EntryIslandNumber" />
+                                        </Frame>
+                                        
+                                        <Label Grid.Column="2" 
+                                               Text="{Binding Name}" 
+                                               FontSize="16" 
+                                               TextColor="#1976D2"
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"
+                                               Margin="10,0,0,0" />
+                                        
+                                        <Button Grid.Column="3"
+                                                Text="✕"
+                                                BackgroundColor="#FF5722"
+                                                TextColor="White"
+                                                FontSize="12"
+                                                CornerRadius="15"
+                                                HeightRequest="37"
+                                                WidthRequest="40"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslandCommand}"
+                                                CommandParameter="{Binding .}"
+                                                AutomationId="ButtonRemoveIsland" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
 
-            <Button
-                BackgroundColor="Green"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                TextColor="White"
-                Command="{Binding SaveIslandDataCommand}"
-                AutomationId="ButtonSaveData"/>
+                <!-- Created Islands -->
+                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                    <StackLayout Spacing="10">
+                        <Label Text="✅ Islas Creadas" 
+                               FontSize="16" 
+                               TextColor="#4CAF50"
+                               FontAttributes="Bold" />
 
-            <Label FontSize="18" Text="Lista de Islas" />
+                        <CollectionView ItemsSource="{Binding IslandList}" AutomationId="CollectionViewIslandList">
+                            <CollectionView.EmptyView>
+                                <Label Text="📝 No hay islas creadas aún" 
+                                       FontSize="14" 
+                                       TextColor="#999" 
+                                       HorizontalOptions="Center"
+                                       Margin="20" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid BackgroundColor="#E8F5E8" Padding="15,10" Margin="0,3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        
+                                        <!-- Description Row -->
+                                        <Label Text="Descripción:" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="#2E7D32"
+                                               Grid.Row="1" 
+                                               Grid.Column="0" />
+                                        
+                                        <!-- Content for description - either label or entry -->
+                                        <StackLayout Grid.Row="1" 
+                                                   Grid.Column="1" 
+                                                   Margin="10,0,0,0">
+                                            
+                                            <!-- Show Label when not editing -->
+                                            <Label Text="{Binding Description}" 
+                                                   FontSize="14" 
+                                                   TextColor="#333"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="StartAndExpand">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            
+                                            <!-- Show Entry when editing -->
+                                            <Entry Text="{Binding Description, Mode=TwoWay}" 
+                                                   FontSize="14" 
+                                                   BackgroundColor="White"
+                                                   IsVisible="False"
+                                                   AutomationId="EntryEditDescription">
+                                                <Entry.Triggers>
+                                                    <DataTrigger TargetType="Entry" Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="IsVisible" Value="True" />
+                                                    </DataTrigger>
+                                                </Entry.Triggers>
+                                            </Entry>
+                                        </StackLayout>
+                                        
+                                        <!-- Action Buttons Row -->
+                                        <StackLayout Grid.Row="2" 
+                                                   Grid.Column="0" 
+                                                   Grid.ColumnSpan="2" 
+                                                   Orientation="Horizontal" 
+                                                   HorizontalOptions="End"
+                                                   Margin="0,10,0,0">
+                                            
+                                            <!-- Edit Mode Buttons -->
+                                            <StackLayout Orientation="Horizontal" IsVisible="False">
+                                                <StackLayout.Triggers>
+                                                    <DataTrigger TargetType="StackLayout" Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="IsVisible" Value="True" />
+                                                    </DataTrigger>
+                                                </StackLayout.Triggers>
+                                                
+                                                <Button Text="💾"
+                                                        BackgroundColor="#4CAF50"
+                                                        TextColor="White"
+                                                        FontSize="14"
+                                                        CornerRadius="15"
+                                                        HeightRequest="40"
+                                                        WidthRequest="45"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SaveEditIslandCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="ButtonSaveEdit"
+                                                        Margin="5,0" />
+                                                
+                                                <Button Text="❌"
+                                                        BackgroundColor="#757575"
+                                                        TextColor="White"
+                                                        FontSize="14"
+                                                        CornerRadius="15"
+                                                        HeightRequest="40"
+                                                        WidthRequest="45"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelEditIslandCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="ButtonCancelEdit"
+                                                        Margin="5,0" />
+                                            </StackLayout>
+                                            
+                                            <!-- Normal Mode Buttons -->
+                                            <StackLayout Orientation="Horizontal">
+                                                <StackLayout.Triggers>
+                                                    <DataTrigger TargetType="StackLayout" Binding="{Binding IsEditing}" Value="True">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                </StackLayout.Triggers>
+                                                
+                                                <Button Text="✏️"
+                                                        BackgroundColor="#2196F3"
+                                                        TextColor="White"
+                                                        FontSize="14"
+                                                        CornerRadius="15"
+                                                        HeightRequest="40"
+                                                        WidthRequest="45"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditIslandCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="ButtonEditIsland"
+                                                        Margin="5,0" />
+                                                
+                                                <Button Text="🗑️"
+                                                        BackgroundColor="#FF5722"
+                                                        TextColor="White"
+                                                        FontSize="14"
+                                                        CornerRadius="15"
+                                                        HeightRequest="40"
+                                                        WidthRequest="45"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteIslandCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="ButtonDeleteIsland"
+                                                        Margin="5,0" />
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
 
-            <CollectionView ItemsSource="{Binding IslandList}" Margin="0,20"
-                            AutomationId="CollectionViewIslandList">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="10" Margin="0,5">
-                            <Grid ColumnDefinitions="*,Auto,Auto">
-                                <StackLayout Grid.Column="0">
-                                    <Label Text="{Binding Description}" FontSize="16" VerticalOptions="Center"/>
-                                    <Label Text="{Binding Id, StringFormat='ID: {0}'}" FontSize="14" TextColor="Gray"/>
-                                </StackLayout>
-                                <Button Grid.Column="1" 
-                                       Text="✏️"
-                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditIslandCommand}"
-                                       CommandParameter="{Binding .}"
-                                       BackgroundColor="Transparent"
-                                       FontSize="18"
-                                       WidthRequest="40"
-                                       HeightRequest="40"
-                                       Padding="0"
-                                       VerticalOptions="Center"/>
-                                <Button Grid.Column="2" 
-                                       Text="❌"
-                                       Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteIslandCommand}"
-                                       CommandParameter="{Binding .}"
-                                       BackgroundColor="Transparent"
-                                       FontSize="18"
-                                       WidthRequest="40"
-                                       HeightRequest="40"
-                                       Padding="0"
-                                       VerticalOptions="Center"/>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

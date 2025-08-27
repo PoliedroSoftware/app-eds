@@ -8,86 +8,332 @@
     Color="Transparent"
     AutomationId="PopupAddShopping">
 
-    <Frame Padding="20"
-           BorderColor="#6200E8"
-           CornerRadius="15"
-           HasShadow="True"
-           HeightRequest="600" WidthRequest="380"
-           AutomationId="FrameAddShopping">
+    <!-- Main Container with Modern Design -->
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 24"
+            StrokeThickness="0"
+            WidthRequest="380"
+            HeightRequest="650"
+            AutomationId="FrameAddShopping">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,8" Radius="24" Opacity="0.15"/>
+        </Border.Shadow>
 
-        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
+        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+            
+            <!-- Modern Header -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#6A1B9A"
+                    StrokeShape="RoundRectangle 24,24,0,0"
+                    Padding="24,20,24,20">
+                <Border.Shadow>
+                    <Shadow Brush="#6A1B9A" Offset="0,2" Radius="8" Opacity="0.3"/>
+                </Border.Shadow>
+                
+                <Grid ColumnDefinitions="*,Auto,*">
+                    <!-- Header Content -->
+                    <StackLayout Grid.Column="1" 
+                                 HorizontalOptions="Center" 
+                                 VerticalOptions="Center"
+                                 Spacing="4">
+                        <Label Text="🛒 Nuevo Producto" 
+                               FontSize="22" 
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               AutomationId="LabelAddShopping"/>
+                        <Label Text="Agregue un producto a la compra" 
+                               FontSize="13" 
+                               TextColor="#E1BEE7"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                    
+                    <!-- Close Button -->
+                    <Border Grid.Column="2"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            WidthRequest="32" HeightRequest="32"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            Opacity="0.9">
+                        <Button BackgroundColor="Transparent"
+                                Clicked="OnCloseTapped"
+                                FontSize="16" 
+                                Text="✖" 
+                                TextColor="#6A1B9A"
+                                FontAttributes="Bold"
+                                WidthRequest="32" HeightRequest="32"
+                                CornerRadius="16"
+                                Padding="0"
+                                AutomationId="ButtonClosePopup"/>
+                    </Border>
+                </Grid>
+            </Border>
 
-            <!--  Encabezado  -->
-            <Grid Grid.Row="0" ColumnDefinitions="*,Auto,*" Padding="0,0,0,10">
-                <Label Text="Nuevo Producto" FontAttributes="Bold" FontSize="22" Grid.Row="0" Grid.Column="1"
-                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"
-                       AutomationId="LabelAddShopping"/>
-                <Button Grid.Column="2"
-                        BackgroundColor="Transparent"
-                        Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖" TextColor="#6200E8"
-                        WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"
-                        AutomationId="ButtonClosePopup"/>
-            </Grid>
+            <!-- Content Area -->
+            <ScrollView Grid.Row="1" 
+                        Padding="20" 
+                        VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Spacing="20">
+                    
+                    <!-- Product Selection Card -->
+                    <Border BackgroundColor="#F8F9FA"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="#E3F2FD"
+                            StrokeThickness="2"
+                            Padding="20"
+                            AutomationId="FrameProductCompartimentPicker">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
+                        </Border.Shadow>
+                        
+                        <VerticalStackLayout Spacing="12">
+                            <!-- Section Header -->
+                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                <Border BackgroundColor="#E3F2FD" 
+                                        StrokeShape="RoundRectangle 16"
+                                        WidthRequest="32" HeightRequest="32"
+                                        VerticalOptions="Center">
+                                    <Label Text="📦" 
+                                           FontSize="16" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                
+                                <Label Text="Producto y Compartimento" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="#2D3436"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <!-- Picker Container -->
+                            <Border BackgroundColor="White" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#DDD6FE"
+                                    StrokeThickness="2"
+                                    Padding="0">
+                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                    <Label Text="🔗" 
+                                           FontSize="16" 
+                                           TextColor="#2196F3" 
+                                           VerticalOptions="Center"/>
+                                    
+                                    <Picker x:Name="ProductCompartimentPicker" 
+                                            Title="Seleccione producto y compartimento"
+                                            ItemsSource="{Binding ProductCompartimentPairs}" 
+                                            ItemDisplayBinding="{Binding Display}" 
+                                            SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}" 
+                                            SelectedIndexChanged="ProductCompartimentPickerSelected"
+                                            BackgroundColor="Transparent"
+                                            FontSize="14"
+                                            TextColor="#374151"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="FillAndExpand"
+                                            AutomationId="PickerProductCompartimentPair"/>
+                                </StackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
 
-            <ScrollView Grid.Row="1" MaximumHeightRequest="500">
-                <VerticalStackLayout>
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10" AutomationId="FrameProductCompartimentPicker">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Producto y Compartimento" HorizontalOptions="Center" Grid.Row="0"/>
-                            <Picker x:Name="ProductCompartimentPicker" Title="Seleccione producto y compartimento" Grid.Row="1"
-                                    ItemsSource="{Binding ProductCompartimentPairs}" ItemDisplayBinding="{Binding Display}" SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}" SelectedIndexChanged="ProductCompartimentPickerSelected"
-                                    HorizontalTextAlignment="Center"
-                                    AutomationId="PickerProductCompartimentPair"/>
-                        </Grid>
-                    </Frame>
+                    <!-- Price Fields Grid -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="16">
+                        
+                        <!-- Purchase Price -->
+                        <Border Grid.Column="0" Grid.Row="0"
+                                BackgroundColor="#F8F9FA"
+                                StrokeShape="RoundRectangle 16"
+                                Stroke="#E8F5E8"
+                                StrokeThickness="2"
+                                Padding="16"
+                                AutomationId="FramePriceEntry">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
+                            </Border.Shadow>
+                            
+                            <VerticalStackLayout Spacing="12">
+                                <!-- Field Header -->
+                                <StackLayout Orientation="Horizontal" Spacing="8">
+                                    <Label Text="💰" 
+                                           FontSize="16" 
+                                           TextColor="#4CAF50" 
+                                           VerticalOptions="Center"/>
+                                    <Label Text="Precio Compra" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2D3436"
+                                           VerticalOptions="Center"
+                                           AutomationId="LabelPrice"/>
+                                </StackLayout>
+                                
+                                <!-- Entry Container -->
+                                <Border BackgroundColor="White" 
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="1"
+                                        Padding="12,10">
+                                    <Entry x:Name="FirstEntry" 
+                                           Keyboard="Numeric"
+                                           Placeholder="0.00" 
+                                           PlaceholderColor="#9CA3AF"
+                                           Text="{Binding Price, Mode=TwoWay}"
+                                           Completed="EntryPriceCompleted"
+                                           IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
+                                           BackgroundColor="Transparent"
+                                           FontSize="14"
+                                           TextColor="#374151"
+                                           HorizontalTextAlignment="Center"
+                                           AutomationId="EntryPrice"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Border>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10" AutomationId="FramePriceEntry">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio De Compra Por Galon" HorizontalOptions="Center" Grid.Row="0" AutomationId="LabelPrice"/>
-                            <Entry x:Name="FirstEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de compra por galon" HorizontalTextAlignment="Center"
-                                   Text="{Binding Price, Mode=TwoWay}"
-                                   Completed="EntryPriceCompleted"
-                                   IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
-                                   AutomationId="EntryPrice"/>
-                        </Grid>
-                    </Frame>
+                        <!-- Sell Price -->
+                        <Border Grid.Column="1" Grid.Row="0"
+                                BackgroundColor="#F8F9FA"
+                                StrokeShape="RoundRectangle 16"
+                                Stroke="#FFF3E0"
+                                StrokeThickness="2"
+                                Padding="16"
+                                AutomationId="FrameSellPriceEntry">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
+                            </Border.Shadow>
+                            
+                            <VerticalStackLayout Spacing="12">
+                                <!-- Field Header -->
+                                <StackLayout Orientation="Horizontal" Spacing="8">
+                                    <Label Text="🏷️" 
+                                           FontSize="16" 
+                                           TextColor="#FF9800" 
+                                           VerticalOptions="Center"/>
+                                    <Label Text="Precio Venta" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2D3436"
+                                           VerticalOptions="Center"
+                                           AutomationId="LabelSellPrice"/>
+                                </StackLayout>
+                                
+                                <!-- Entry Container -->
+                                <Border BackgroundColor="White" 
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="1"
+                                        Padding="12,10">
+                                    <Entry x:Name="ThirdEntry" 
+                                           Keyboard="Numeric"
+                                           Placeholder="0.00" 
+                                           PlaceholderColor="#9CA3AF"
+                                           Text="{Binding SellPrice, Mode=TwoWay}"
+                                           IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
+                                           Completed="Add_Product"
+                                           BackgroundColor="Transparent"
+                                           FontSize="14"
+                                           TextColor="#374151"
+                                           HorizontalTextAlignment="Center"
+                                           AutomationId="EntrySellPrice"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Border>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10" AutomationId="FrameQuantityEntry">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Cantidad De Galones" HorizontalOptions="Center" Grid.Row="0" AutomationId="LabelQuantity"/>
-                            <Entry x:Name="SecondEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese la cantidad de galones" HorizontalTextAlignment="Center"
-                                   Text="{Binding Quantity, Mode=TwoWay}"
-                                   IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
-                                   Completed="EntryQuantityCompleted"
-                                   AutomationId="EntryQuantity"/>
-                        </Grid>
-                    </Frame>
+                        <!-- Quantity Field (Full Width) -->
+                        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                                BackgroundColor="#F8F9FA"
+                                StrokeShape="RoundRectangle 16"
+                                Stroke="#E3F2FD"
+                                StrokeThickness="2"
+                                Padding="20"
+                                AutomationId="FrameQuantityEntry">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
+                            </Border.Shadow>
+                            
+                            <VerticalStackLayout Spacing="12">
+                                <!-- Field Header -->
+                                <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
+                                    <Label Text="⛽" 
+                                           FontSize="18" 
+                                           TextColor="#2196F3" 
+                                           VerticalOptions="Center"/>
+                                    <Label Text="Cantidad de Galones" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2D3436"
+                                           VerticalOptions="Center"
+                                           AutomationId="LabelQuantity"/>
+                                </StackLayout>
+                                
+                                <!-- Entry Container -->
+                                <Border BackgroundColor="White" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="16,12">
+                                    <Entry x:Name="SecondEntry" 
+                                           Keyboard="Numeric"
+                                           Placeholder="0.000" 
+                                           PlaceholderColor="#9CA3AF"
+                                           Text="{Binding Quantity, Mode=TwoWay}"
+                                           IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
+                                           Completed="EntryQuantityCompleted"
+                                           BackgroundColor="Transparent"
+                                           FontSize="16"
+                                           TextColor="#374151"
+                                           HorizontalTextAlignment="Center"
+                                           AutomationId="EntryQuantity"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
 
-                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10" AutomationId="FrameSellPriceEntry">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
-                            <Label Text="Precio De Venta Por Galon" HorizontalOptions="Center" Grid.Row="0" AutomationId="LabelSellPrice"/>
-                            <Entry x:Name="ThirdEntry" Keyboard="Numeric" Grid.Row="1"
-                                   Placeholder="Ingrese el precio de venta por galon" HorizontalTextAlignment="Center"
-                                   Text="{Binding SellPrice, Mode=TwoWay}"
-                                   IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource NullToBoolConverter}}"
-                                   Completed="Add_Product"
-                                   AutomationId="EntrySellPrice"/>
-                        </Grid>
-                    </Frame>
+                    <!-- Info Card -->
+                    <Border BackgroundColor="#E3F2FD" 
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#2196F3"
+                            Padding="16"
+                            Opacity="0.9">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Label Text="ℹ️" 
+                                   FontSize="16" 
+                                   VerticalOptions="Start"
+                                   Margin="0,2,0,0"/>
+                            <Label Text="Complete todos los campos para agregar el producto a la compra. El sistema calculará automáticamente el total."
+                                   FontSize="12"
+                                   TextColor="#1565C0"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="FillAndExpand"/>
+                        </StackLayout>
+                    </Border>
                 </VerticalStackLayout>
             </ScrollView>
 
-            <!-- Botón de agregar -->
-            <Button Grid.Row="2" x:Name="AddButton" 
-                    BackgroundColor="#6200E8"
-                    Clicked="Add_Product"
-                    CornerRadius="10"
-                    FontSize="18" Text="Agregar Compra De Producto" TextColor="White"
-                    AutomationId="ButtonAddProduct"/>
+            <!-- Action Button -->
+            <Border Grid.Row="2" 
+                    Margin="20,0,20,20">
+                <Border BackgroundColor="#6A1B9A"
+                        StrokeShape="RoundRectangle 16"
+                        StrokeThickness="0"
+                        Padding="4">
+                    <Border.Shadow>
+                        <Shadow Brush="#6A1B9A" 
+                                Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.3"/>
+                    </Border.Shadow>
+                    
+                    <Button x:Name="AddButton" 
+                            BackgroundColor="Transparent"
+                            Clicked="Add_Product"
+                            FontSize="18" 
+                            FontAttributes="Bold"
+                            Text="🚀 Agregar a la Compra" 
+                            TextColor="White"
+                            HeightRequest="56"
+                            CornerRadius="16"
+                            AutomationId="ButtonAddProduct"/>
+                </Border>
+            </Border>
         </Grid>
-    </Frame>
+    </Border>
 </mct:Popup>

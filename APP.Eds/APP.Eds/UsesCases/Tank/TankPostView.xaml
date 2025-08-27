@@ -1,89 +1,138 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Eds.UsesCases.Tank.TankPostView"
-             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="{Binding GestionTankTitle}">
-    <ScrollView>
-        <AbsoluteLayout>
-            <VerticalStackLayout
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
-                AbsoluteLayout.LayoutFlags="All"
-                Padding="20" Spacing="15">
-                <Label FontSize="16" Text="{Binding TankNumberLabel}"/>
-                <Entry
-                Keyboard="Text"
-                Placeholder="{Binding TankNumberPlaceholder}"
-                Text="{Binding Number, Mode=TwoWay}"
-                AutomationId="EntryTankNumber"/>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Tank.TankPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="{Binding GestionTankTitle}"
+    BackgroundColor="#F8F9FA">
 
-                <Label FontSize="16" Text="{Binding TankCompartmentLabel}"/>
-                <Entry
-	            Keyboard="Text"
-	            Placeholder="{Binding CompartmentPlacheholder}"
-	            Text="{Binding Compartment, Mode=TwoWay}"
-                AutomationId="EntryCompartment"/>
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
+            <VerticalStackLayout Padding="16" Spacing="20">
+                
+                <!-- Header Card with Purple Gradient -->
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="🛢️ Gestión de Tanques" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Administre los tanques de almacenamiento" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-                <Label FontSize="16" Text="{Binding Capacity}"/>
-                <Entry
-                Keyboard="Text"
-                Placeholder="Ingresa La Capacidad"
-                Text="{Binding Ability, Mode=TwoWay}"
-                AutomationId="EntryCapacity"/>
+                <!-- Tank Registration Form Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="20">
+                        
+                        <!-- Section Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="⚙️" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Nuevo Tanque" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                <Label Text="Registre un nuevo tanque de almacenamiento" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
 
-
-                <Button
-                BackgroundColor="Green"
-                Clicked="SendData"
-                CornerRadius="10"
-                Text="{Binding SendData}"
-                TextColor="White"
-                AutomationId="ButtonSendData"/>
-
-                <Label FontSize="18" Text="Lista De Tanques" />
-                <CollectionView ItemsSource="{Binding TankList}" Margin="0,20"
-                                AutomationId="CollectionViewTankList">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-
-                            <Frame Padding="10" Margin="0,5">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackLayout>
-                                        <Label Text="{Binding Nmber, StringFormat='Número: {0}'}" FontSize="14" />
-                                        <Label Text="{Binding Compartment, StringFormat='Compartimiento: {0}'}" FontSize="14" />
-                                        <Label Text="{Binding Ability, StringFormat='Capacidad: {0}'}" FontSize="14" />
-                                        <Label Text="{Binding Stock, StringFormat='Inventario: {0}'}" FontSize="14" />
-                                    </StackLayout>
-                                    <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalOptions="Center">
-                                        <Button Text="✏️" 
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTankCommand}"
-                                               CommandParameter="{Binding .}"
-                                               BackgroundColor="Transparent"
-                                               FontSize="18"
-                                               WidthRequest="40"
-                                               HeightRequest="40"
-                                               Padding="0"
+                        <!-- Form Fields -->
+                        <VerticalStackLayout Spacing="16">
+                            
+                            <!-- Tank Number Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding TankNumberLabel}" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🔢" 
+                                               FontSize="18" 
+                                               TextColor="#6A1B9A" 
                                                VerticalOptions="Center"/>
-                                        <Button Text="❌" 
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteTankCommand}"
-                                               CommandParameter="{Binding .}"
+                                        
+                                        <Entry Keyboard="Text"
+                                               Placeholder="{Binding TankNumberPlaceholder}"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Number, Mode=TwoWay}"
+                                               AutomationId="EntryTankNumber"
                                                BackgroundColor="Transparent"
-                                               FontSize="18"
-                                               WidthRequest="40"
-                                               HeightRequest="40"
-                                               Padding="0"
-                                               VerticalOptions="Center"/>
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Grid for Compartment and Capacity -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                
+                                <!-- Compartment Field -->
+                                <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                    <Label Text="{Binding TankCompartmentLabel}" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                           
+                                    <Border BackgroundColor="#F8F9FA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#DDD6FE"
+                                            StrokeThickness="2"
+                                            Padding="0">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                            <Label Text="📦" 
+                                                   FontSize="16" 
+                                                   TextColor="#2196F3" 
+                                                   VerticalOptions="Center"/>
+                                            
+                                            <Entry Keyboard="Numeric"
+                                                   Placeholder="{Binding CompartmentPlacheholder}"
+                                                   PlaceholderColor="#9CA3AF"
+                                                   Text="{Binding Compartment, Mode=TwoWay}"
+                                                   AutomationId="EntryCompartment"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="14"
+                                                   TextColor="#374151"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="FillAndExpand"/>
+                                        </StackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+
+
             </VerticalStackLayout>
-            <controls:LoadingView x:Name="LoadingOverlay"
-                                  AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                  AbsoluteLayout.LayoutFlags="All"
-                                  AutomationId="LoadingOverlay"/>
-        </AbsoluteLayout>
-    </ScrollView>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
 </ContentPage>
