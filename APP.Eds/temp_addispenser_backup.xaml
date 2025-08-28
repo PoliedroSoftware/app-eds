@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+	x:Class="APP.Eds.Components.PopUp.AddDispenser"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	CanBeDismissedByTappingOutsideOfPopup="False"
+    Color="Transparent">
+
+    <Frame x:Name="Frame"
+           Padding="20"
+           BorderColor="#FF9800"
+           CornerRadius="15"
+           HasShadow="True"
+           WidthRequest="400" MaximumHeightRequest="600"
+           VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
+
+            <!--  Encabezado  -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
+                <Label Grid.Column="1"
+                       FontAttributes="Bold" FontSize="22" Text="Agregar Dispensador"
+                       HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        Clicked="OnCloseTapped"
+                        AutomationId="CloseButton"
+                        FontSize="18" Text="?" TextColor="#FF9800"
+                        WidthRequest="30" HeightRequest="30" Padding="0"
+                        HorizontalOptions="End" VerticalOptions="Center"/>
+            </Grid>
+
+            <!--  Campos de Entrada  -->
+            <ScrollView Grid.Row="1" MaximumHeightRequest="500" Margin="0,0,0,10">
+                <VerticalStackLayout>
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+                            <Label Text="{Binding HoseTranslation}" HorizontalOptions="Center" Grid.Row="0" />
+                            <Picker x:Name="HosePicker" AutomationId="HosePicker" Title="{Binding SelectAHose}" Grid.Row="1"
+                                    ItemDisplayBinding="{Binding DisplayText}" ItemsSource="{Binding HoseList}"
+                                    SelectedItem="{Binding SelectedHose, Mode=TwoWay}" SelectedIndexChanged="HoseSelected"
+                                    HorizontalTextAlignment="Center"/>
+                        </Grid>
+                    </Frame>
+                    
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True" Margin="0,0,0,10">
+                        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
+                            <Label Text="Precio por gal�n" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            
+                            <!-- Read-only price label (visible for non-admin users) -->
+                            <Label x:Name="PricePerGallonLabel" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2"/>
+                            
+                            <!-- Editable price entry (visible only for admin users) -->
+                            <Entry x:Name="PriceEditEntry" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Editar precio"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center" 
+                                   HorizontalOptions="FillAndExpand"
+                                   Grid.Row="0" Grid.Column="2"
+                                   IsVisible="False"
+                                   Completed="PriceEditEntry_Completed"
+                                   TextChanged="PriceEditEntry_TextChanged"/>
+                            
+                            <!-- Edit price button (visible only for admin users) -->
+                            <Button x:Name="PriceEditButton" Text="?"
+                                    Clicked="PriceEditButton_Clicked"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center" HorizontalOptions="End"
+                                    Grid.Row="0" Grid.Column="2"
+                                    IsVisible="False"/>
+                                    
+                            <Label Text="{Binding LastAccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
+                            <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N3}'}" VerticalOptions="Center" Grid.Row="1" Grid.Column="2"/>
+                            <Label Text="{Binding AccumulatedAmountTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+
+                            <BoxView x:Name="AmountBoxView" BackgroundColor="Transparent" Color="Transparent" CornerRadius="5" Grid.Row="2" Grid.Column="2"/>
+                            <Entry x:Name="FirstEntry" AutomationId="AccumulatedAmountEntry"
+                                   Keyboard="Numeric" Placeholder="Ingrese el monto"
+                                   Text="{Binding AccumulatedAmount, Mode=TwoWay}"
+                                   Margin="2" Grid.Row="2" Grid.Column="2"
+                                   Unfocused="OnEntryUnfocused" Completed="EntryAccumulatedCompleted"
+                                   IsEnabled="False"/>
+
+                            <Label Text="Venta en dinero" HorizontalOptions="End" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding AmountDifferenceResult, StringFormat=' $ {0:N3}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="3" Grid.Column="2"/>
+                        </Grid>
+                        
+                    </Frame>
+                    <Frame Padding="10" CornerRadius="10" HasShadow="True">
+                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="5">
+                            <Label Text="{Binding LastAccumulatedGallonsTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="0" Grid.Column="0"/>
+                            <Label Text="{Binding LastAccumulatedGallons, StringFormat='  {0:N3}'}" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                            <Label Text="{Binding GallonsAccumulatedTranslation}" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="1" Grid.Column="0"/>
+
+                            <BoxView x:Name="GallonBoxView" BackgroundColor="Transparent" CornerRadius="5" Grid.Row="1" Grid.Column="2"/>
+                            <Entry x:Name="SecondEntry" AutomationId="AccumulatedGallonsEntry" 
+                                   Keyboard="Numeric" Placeholder="Ingrese los galones"
+                                   Text="{Binding AccumulatedGallons, Mode=TwoWay}"
+                                   Margin="2" Grid.Row="1" Grid.Column="2"
+                                   Completed="EntryGallonsCompleted"
+                                   IsEnabled="False"/>
+
+                            <Label Text="Venta en galones" VerticalOptions="Center" HorizontalOptions="End" Grid.Row="2" Grid.Column="0"/>
+                            <Label Text="{Binding GallonsDifferenceResult, StringFormat='  {0:N3}'}" VerticalOptions="Center" HorizontalOptions="Start" Grid.Row="2" Grid.Column="2"/>
+
+                            <Button Text="?"
+                                    Clicked="EditGallonsButton_Clicked"
+                                    AutomationId="EditGallonsButton"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center" HorizontalOptions="End"
+                                    Grid.Row="1" Grid.Column="2"/>
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!--  Bot�n Agregar  -->
+            <Button Grid.Row="2"
+                    x:Name="AddButton"
+                    AutomationId="AddButton" 
+                    BackgroundColor="#FF9800"
+                    Clicked="Add_Dispenser"
+                    CornerRadius="10"
+                    FontSize="18" Text="Agregar" TextColor="White"
+                    VerticalOptions="Center"
+                    HeightRequest="40"/>
+        </Grid>
+    </Frame>
+</mct:Popup>
