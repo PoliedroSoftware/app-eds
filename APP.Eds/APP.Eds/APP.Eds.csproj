@@ -170,6 +170,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Components\PopUp\AddDispenser.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Components\PopUp\Category.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
