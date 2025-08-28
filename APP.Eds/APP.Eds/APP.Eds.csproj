@@ -218,6 +218,9 @@
 	  <MauiXaml Update="UsesCases\Inventory\InventoryPostView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="UsesCases\LoadingView\LoadingView_Clean.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UsesCases\ProductCompartiment\ProductCompartimentPostView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

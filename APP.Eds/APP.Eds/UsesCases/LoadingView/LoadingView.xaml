@@ -5,87 +5,163 @@
 
     <Grid
         x:Name="LoadingOverlay"
-        BackgroundColor="#80000000"
         IsVisible="False"
         HorizontalOptions="FillAndExpand"
         VerticalOptions="FillAndExpand"
         AutomationId="GridLoadingOverlay">
 
-        <!-- Background blur effect -->
-        <BoxView 
-            BackgroundColor="#F0FFFFFF"
-            Opacity="0.95"
+        <!-- Elegant backdrop with subtle gradient -->
+        <Rectangle
             HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand"/>
+            VerticalOptions="FillAndExpand"
+            Opacity="0.88">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F8FAFC" Offset="0.0" />
+                    <GradientStop Color="#E2E8F0" Offset="0.5" />
+                    <GradientStop Color="#CBD5E1" Offset="1.0" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
 
-        <!-- Main loading container -->
-        <Border
+        <!-- Floating particles -->
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Ellipse x:Name="Particle1" Fill="#20064FF4" WidthRequest="4" HeightRequest="4" 
+                     HorizontalOptions="Start" VerticalOptions="Start" Margin="80,120" Opacity="0.4"/>
+            <Ellipse x:Name="Particle2" Fill="#206366F1" WidthRequest="3" HeightRequest="3" 
+                     HorizontalOptions="End" VerticalOptions="Start" Margin="0,200,100,0" Opacity="0.3"/>
+            <Ellipse x:Name="Particle3" Fill="#20F59E0B" WidthRequest="5" HeightRequest="5" 
+                     HorizontalOptions="Start" VerticalOptions="End" Margin="150,0,0,180" Opacity="0.5"/>
+            <Ellipse x:Name="Particle4" Fill="#20EF4444" WidthRequest="4" HeightRequest="4" 
+                     HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,60,30" Opacity="0.35"/>
+        </Grid>
+
+        <!-- Main loading content - Perfectly centered -->
+        <StackLayout
             x:Name="LoadingContainer"
-            BackgroundColor="White"
-            StrokeShape="RoundRectangle 16"
-            StrokeThickness="0"
-            WidthRequest="280"
-            HeightRequest="160"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            Padding="32,24">
-            <Border.Shadow>
-                <Shadow Brush="#000000" 
-                        Offset="0,8" 
-                        Radius="24" 
-                        Opacity="0.15"/>
-            </Border.Shadow>
+            Spacing="24">
 
-            <VerticalStackLayout Spacing="24" HorizontalOptions="Center" VerticalOptions="Center">
+            <!-- Enhanced loading spinner -->
+            <Grid WidthRequest="84" HeightRequest="84" HorizontalOptions="Center">
                 
-                <!-- Modern loading spinner -->
-                <Grid WidthRequest="56" HeightRequest="56" HorizontalOptions="Center">
-                    
-                    <!-- Background circle -->
-                    <Ellipse 
-                        Fill="Transparent"
-                        Stroke="#E5E7EB"
-                        StrokeThickness="4"
-                        WidthRequest="56"
-                        HeightRequest="56"/>
-                    
-                    <!-- Animated spinner -->
-                    <ActivityIndicator 
-                        x:Name="LoadingIndicator"
-                        IsRunning="False"
-                        Color="#6366F1"
-                        WidthRequest="48"
-                        HeightRequest="48"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        AutomationId="ActivityIndicatorLoading"/>
-                </Grid>
+                <!-- Outer progress ring -->
+                <Ellipse 
+                    Fill="Transparent"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="4"
+                    WidthRequest="84"
+                    HeightRequest="84"/>
+                
+                <!-- Gradient progress indicator -->
+                <Ellipse 
+                    x:Name="ProgressRing"
+                    Fill="Transparent"
+                    StrokeThickness="4"
+                    WidthRequest="84"
+                    HeightRequest="84"
+                    StrokeDashArray="18,90"
+                    StrokeDashOffset="0"
+                    Rotation="0">
+                    <Ellipse.Stroke>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#6366F1" Offset="0.0" />
+                            <GradientStop Color="#8B5CF6" Offset="0.5" />
+                            <GradientStop Color="#EC4899" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Ellipse.Stroke>
+                </Ellipse>
+                
+                <!-- Middle glow ring -->
+                <Ellipse 
+                    Fill="Transparent"
+                    Stroke="#6366F1"
+                    StrokeThickness="2"
+                    WidthRequest="68"
+                    HeightRequest="68"
+                    Opacity="0.4"/>
+                
+                <!-- Inner subtle ring -->
+                <Ellipse 
+                    Fill="Transparent"
+                    Stroke="#8B5CF6"
+                    StrokeThickness="1"
+                    WidthRequest="52"
+                    HeightRequest="52"
+                    Opacity="0.6"/>
+                
+                <!-- Core activity indicator -->
+                <ActivityIndicator 
+                    x:Name="LoadingIndicator"
+                    IsRunning="False"
+                    Color="#6366F1"
+                    WidthRequest="24"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    AutomationId="ActivityIndicatorLoading"/>
+                       
+            </Grid>
 
-                <!-- Loading content -->
-                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+            <!-- Professional loading content -->
+            <StackLayout Spacing="14" HorizontalOptions="Center">
+                
+                <!-- Primary loading text -->
+                <Label 
+                    x:Name="LoadingLabel"
+                    Text="Cargando..."
+                    FontSize="26"
+                    FontAttributes="Bold"
+                    TextColor="#1E293B"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="True"
+                    AutomationId="LabelLoadingText"/>
+                
+                <!-- Elegant progress dots -->
+                <Grid x:Name="ProgressDots" HorizontalOptions="Center" ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     
-                    <!-- Primary loading text -->
-                    <Label 
-                        x:Name="LoadingLabel"
-                        Text="Cargando..."
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#1F2937"
-                        HorizontalOptions="Center"
-                        IsVisible="True"
-                        AutomationId="LabelLoadingText"/>
+                    <Ellipse x:Name="Dot1" Grid.Column="0" Fill="#CBD5E1" 
+                           WidthRequest="10" HeightRequest="10"/>
+                    <Ellipse x:Name="Dot2" Grid.Column="1" Fill="#CBD5E1" 
+                           WidthRequest="10" HeightRequest="10"/>
+                    <Ellipse x:Name="Dot3" Grid.Column="2" Fill="#CBD5E1" 
+                           WidthRequest="10" HeightRequest="10"/>
+                </Grid>
+                
+                <!-- Secondary descriptive text -->
+                <Label 
+                    x:Name="LoadingDescription"
+                    Text="Procesando informacion"
+                    FontSize="18"
+                    TextColor="#64748B"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Opacity="0.9"
+                    Margin="0,6,0,0"/>
                     
-                    <!-- Secondary descriptive text -->
-                    <Label 
-                        x:Name="LoadingDescription"
-                        Text="Procesando informacion"
-                        FontSize="14"
-                        TextColor="#6B7280"
-                        HorizontalOptions="Center"
-                        Opacity="0.8"/>
-                </VerticalStackLayout>
-            </VerticalStackLayout>
-        </Border>
-            
+                <!-- Subtle progress indicator -->
+                <Rectangle x:Name="ProgressBar"
+                         WidthRequest="180"
+                         HeightRequest="3"
+                         HorizontalOptions="Center"
+                         Margin="0,12,0,0">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="Transparent" Offset="0.0" />
+                            <GradientStop Color="#6366F1" Offset="0.3" />
+                            <GradientStop Color="#8B5CF6" Offset="0.7" />
+                            <GradientStop Color="Transparent" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackLayout>
+        </StackLayout>
     </Grid>
 </ContentView>
