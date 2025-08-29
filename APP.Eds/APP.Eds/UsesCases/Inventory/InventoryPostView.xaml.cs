@@ -1,5 +1,6 @@
 using APP.Eds.Models.Inventory;
 using APP.Eds.UsesCases.Inventory;
+using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -27,7 +28,7 @@ namespace APP.Eds.UsesCases.Inventory
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Error al cargar inventario: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"Error al cargar los datos del inventario:\n\n{ex.Message}", "Error de Carga");
             }
             finally
             {

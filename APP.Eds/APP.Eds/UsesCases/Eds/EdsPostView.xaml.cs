@@ -1,6 +1,7 @@
 using System.Net;
 using APP.Eds.Services.Eds;
 using APP.Eds.Controls;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Eds;
 
@@ -27,24 +28,82 @@ public partial class EdsPostView : ContentPage
                     hoverButton.IsEnabled = false;
                 }
 
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(_edsService.Name) ||
-                    string.IsNullOrWhiteSpace(_edsService.Nit) || 
-                    string.IsNullOrWhiteSpace(_edsService.Sicom) ||
-                    string.IsNullOrWhiteSpace(_edsService.Address) ||
-                    _edsService.SelectedBusiness is null)
+                // Enhanced validation with professional alerts
+                if (string.IsNullOrWhiteSpace(_edsService.Name))
                 {
-                   await DisplayAlert("Error", $"{_edsService.ErrorEmpty}", "OK");
-                   return;
+                    await CustomAlert.ShowErrorAsync("El nombre de la estación de servicio es obligatorio", "Nombre Requerido");
+                    return;
                 }
 
-                LoadingOverlay.ShowLoading();
+                if (string.IsNullOrWhiteSpace(_edsService.Nit))
+                {
+                    await CustomAlert.ShowErrorAsync("El NIT de la estación es obligatorio para identificación fiscal", "NIT Requerido");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(_edsService.Sicom))
+                {
+                    await CustomAlert.ShowErrorAsync("El código SICOM es obligatorio para el registro ante autoridades", "SICOM Requerido");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(_edsService.Address))
+                {
+                    await CustomAlert.ShowErrorAsync("La dirección física de la estación es obligatoria", "Dirección Requerida");
+                    return;
+                }
+
+                if (_edsService.SelectedBusiness is null)
+                {
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar el negocio al cual pertenece esta estación", "Negocio Requerido");
+                    return;
+                }
+
+                // Additional validation
+                if (_edsService.Name.Length < 3)
+                {
+                    await CustomAlert.ShowErrorAsync("El nombre debe tener al menos 3 caracteres", "Nombre Muy Corto");
+                    return;
+                }
+
+                if (_edsService.Nit.Length < 8)
+                {
+                    await CustomAlert.ShowErrorAsync("El NIT debe tener al menos 8 caracteres", "NIT Inválido");
+                    return;
+                }
+
+                if (_edsService.Sicom.Length < 4)
+                {
+                    await CustomAlert.ShowErrorAsync("El código SICOM debe tener al menos 4 caracteres", "SICOM Inválido");
+                    return;
+                }
+
+                if (_edsService.Address.Length < 10)
+                {
+                    await CustomAlert.ShowErrorAsync("La dirección debe ser más específica (mínimo 10 caracteres)", "Dirección Muy Corta");
+                    return;
+                }
+
+                LoadingOverlay.IsVisible = true;
                 var selectedId = vm.SelectedBusiness.IdBusiness;
                 await vm.SaveEdsDataAsync();
+                
+                await CustomAlert.ShowSuccessAsync(
+                    $"Estación de servicio registrada exitosamente:\n\n" +
+                    $"• Nombre: {_edsService.Name}\n" +
+                    $"• NIT: {_edsService.Nit}\n" +
+                    $"• SICOM: {_edsService.Sicom}\n" +
+                    $"• Dirección: {_edsService.Address}\n" +
+                    $"• Negocio: {_edsService.SelectedBusiness.Name}",
+                    "EDS Registrada");
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync($"Error al registrar la estación de servicio:\n\n{ex.Message}", "Error del Sistema");
             }
             finally
             {
-                LoadingOverlay.HideLoading();
+                LoadingOverlay.IsVisible = false;
 
                 // Clear form fields after successful submission
                 _edsService.Name = string.Empty;

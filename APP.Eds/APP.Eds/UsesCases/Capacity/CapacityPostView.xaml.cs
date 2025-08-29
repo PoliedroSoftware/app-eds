@@ -1,4 +1,5 @@
 using APP.Eds.Services.Capacity;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Capacity;
 
@@ -24,40 +25,46 @@ public partial class CapacityPostView : ContentPage
                 button.Text = "Enviando...";
             }
 
-            // Validate required fields
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_capacityService.Code))
             {
-                await DisplayAlert("Error", "Por favor ingrese el código de la capacidad", "OK");
+                await CustomAlert.ShowErrorAsync("El código de la capacidad es obligatorio para identificar la configuración", "Código Requerido");
                 return;
             }
 
             if (_capacityService.Code.Length < 2)
             {
-                await DisplayAlert("Error", "El código debe tener al menos 2 caracteres", "OK");
+                await CustomAlert.ShowErrorAsync("El código debe tener al menos 2 caracteres", "Código Muy Corto");
+                return;
+            }
+
+            if (_capacityService.Code.Length > 20)
+            {
+                await CustomAlert.ShowErrorAsync("El código no puede exceder 20 caracteres", "Código Muy Largo");
                 return;
             }
 
             if (_capacityService.Height == null || _capacityService.Height <= 0)
             {
-                await DisplayAlert("Error", "Por favor ingrese una altura válida (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe especificar una altura válida (mayor que 0 metros)", "Altura Inválida");
                 return;
             }
 
             if (_capacityService.Height > 50)
             {
-                await DisplayAlert("Error", "La altura no puede ser mayor a 50 metros", "OK");
+                await CustomAlert.ShowErrorAsync("La altura no puede ser mayor a 50 metros por razones de seguridad", "Altura Excesiva");
                 return;
             }
 
             if (_capacityService.Gallon == null || _capacityService.Gallon <= 0)
             {
-                await DisplayAlert("Error", "Por favor ingrese una capacidad en galones válida (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe especificar una capacidad en galones válida (mayor que 0)", "Capacidad en Galones Inválida");
                 return;
             }
 
             if (_capacityService.Liters == null || _capacityService.Liters <= 0)
             {
-                await DisplayAlert("Error", "Por favor ingrese una capacidad en litros válida (mayor que 0)", "OK");
+                await CustomAlert.ShowErrorAsync("Debe especificar una capacidad en litros válida (mayor que 0)", "Capacidad en Litros Inválida");
                 return;
             }
 
@@ -68,22 +75,33 @@ public partial class CapacityPostView : ContentPage
 
             if (Math.Abs(expectedLiters - actualLiters) > tolerance)
             {
-                bool confirm = await DisplayAlert("Advertencia", 
-                    $"Los valores de galones y litros no coinciden con la conversión estándar.\n" +
-                    $"Galones: {_capacityService.Gallon:F2}\n" +
-                    $"Litros ingresados: {actualLiters:F0}\n" +
-                    $"Litros calculados: {expectedLiters:F0}\n" +
-                    $"¿Desea continuar?", 
-                    "Sí", "No");
+                bool confirm = await CustomAlert.ShowConfirmAsync(
+                    $"Los valores de galones y litros no coinciden con la conversión estándar:\n\n" +
+                    $"• Galones ingresados: {_capacityService.Gallon:F2}\n" +
+                    $"• Litros ingresados: {actualLiters:F0} L\n" +
+                    $"• Litros calculados: {expectedLiters:F0} L\n" +
+                    $"• Diferencia: {Math.Abs(expectedLiters - actualLiters):F0} L\n\n" +
+                    $"¿Desea continuar con estos valores?", 
+                    "Conversión Inconsistente", 
+                    "Continuar", 
+                    "Revisar");
+                
                 if (!confirm) return;
             }
 
             LoadingOverlay.ShowLoading();
             await _capacityService.SaveCapacityDataAsync();
+            
+            await CustomAlert.ShowSuccessAsync(
+                $"Capacidad registrada exitosamente:\n\n" +
+                $"• Código: {_capacityService.Code}\n" +
+                $"• Altura: {_capacityService.Height:F2} m\n" +
+                $"• Capacidad: {_capacityService.Gallon:F2} gal / {_capacityService.Liters:F0} L",
+                "Capacidad Registrada");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al guardar la capacidad: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

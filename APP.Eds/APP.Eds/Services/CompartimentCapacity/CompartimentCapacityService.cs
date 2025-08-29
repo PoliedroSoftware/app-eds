@@ -7,6 +7,7 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.ProductCompartiment;
 using APP.Eds.Services.Config;
+using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -124,7 +125,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
 
@@ -138,10 +139,20 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
             UpdateCapacityList(capacityResponse?.Data ?? new List<CapacityModelResponse>());
         }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"HTTP error loading capacities: {httpEx.Message}");
+            await CustomAlert.ShowErrorAsync("Error de conexión. Verifique su conexión a internet e intente nuevamente.", "Error de Conexión");
+        }
+        catch (JsonException jsonEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"JSON error loading capacities: {jsonEx.Message}");
+            await CustomAlert.ShowErrorAsync("Error al procesar los datos del servidor.", "Error de Datos");
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos de capacidad: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando tanques: {ex.Message}", "OK");
+            System.Diagnostics.Debug.WriteLine($"General error loading capacities: {ex.Message}");
+            await CustomAlert.ShowErrorAsync($"Error cargando los tanques:\n\n{ex.Message}", "Error del Sistema");
         }
     }
 
@@ -164,7 +175,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
         try
@@ -177,10 +188,20 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
             UpdateCompartimentList(compartimentResponse?.Data ?? new List<CompartimentModelResponse>());
         }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"HTTP error loading compartments: {httpEx.Message}");
+            await CustomAlert.ShowErrorAsync("Error de conexión. Verifique su conexión a internet e intente nuevamente.", "Error de Conexión");
+        }
+        catch (JsonException jsonEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"JSON error loading compartments: {jsonEx.Message}");
+            await CustomAlert.ShowErrorAsync("Error al procesar los datos del servidor.", "Error de Datos");
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos de compartimentos: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando compartimentos: {ex.Message}", "OK");
+            System.Diagnostics.Debug.WriteLine($"General error loading compartments: {ex.Message}");
+            await CustomAlert.ShowErrorAsync($"Error cargando los compartimentos:\n\n{ex.Message}", "Error del Sistema");
         }
     }
 
@@ -201,7 +222,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
         try
@@ -218,7 +239,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"No se pudo cargar la configuración de capacidad:\n\n{ex.Message}", "Error de Carga");
         }
     }
 
@@ -226,26 +247,32 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
         try
         {
             if (SelectCapacity is null)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione la Capacity del Tank", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un tanque para asignar la capacidad", "Tanque Requerido");
                 return;
             }
 
             if (SelectCompartiment is null)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un Compartiment", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un compartimento para configurar", "Compartimento Requerido");
                 return;
             }
 
             if (Default <= 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese un valor en Default", "OK");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un valor de capacidad válido (mayor que 0)", "Capacidad Inválida");
+                return;
+            }
+
+            if (Default > 100000)
+            {
+                await CustomAlert.ShowErrorAsync("La capacidad no puede exceder 100,000 litros", "Capacidad Excesiva");
                 return;
             }
 
@@ -269,18 +296,38 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                string tankCode = SelectCapacity.Code ?? "N/A";
+                int compartmentNumber = SelectCompartiment.Number;
+                
+                await CustomAlert.ShowSuccessAsync(
+                    $"Se ha configurado exitosamente la capacidad de {Default} L para el compartimento #{compartmentNumber} del tanque {tankCode}", 
+                    "Capacidad Configurada");
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync(
+                    $"No se pudo guardar la configuración:\n\nCódigo: {response.StatusCode}\nDetalle: {error}", 
+                    "Error del Servidor");
             }
         }
-
+        catch (HttpRequestException httpEx)
+        {
+            await CustomAlert.ShowErrorAsync(
+                "Error de conexión. Verifique su conexión a internet e intente nuevamente.", 
+                "Error de Conexión");
+        }
+        catch (JsonException jsonEx)
+        {
+            await CustomAlert.ShowErrorAsync(
+                "Error al procesar la respuesta del servidor.", 
+                "Error de Datos");
+        }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync(
+                $"Error inesperado al enviar la configuración:\n\n{ex.Message}", 
+                "Error del Sistema");
         }
     }
 

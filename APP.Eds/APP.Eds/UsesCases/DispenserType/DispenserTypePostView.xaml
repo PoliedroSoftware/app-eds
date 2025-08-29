@@ -4,65 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-    xmlns:button="clr-namespace:APP.Eds.Controls"
-    Title="Gestión Tipo de Dispensadores">
+    Title="Gestión de Tipos de Dispensador"
+    BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-        <VerticalStackLayout
-        AbsoluteLayout.LayoutBounds="0,0,1,1"
-        AbsoluteLayout.LayoutFlags="All"
-        Padding="20" Spacing="15">
-            <Label FontSize="16" Text="Tipo de Dispensador"/>
-            <Entry
-            Keyboard="Text"
-            Placeholder="Ingrese el tipo de dispensador"
-            Text="{Binding Description, Mode=TwoWay}" 
-            AutomationId="EntryDispenserType"/>
-            <button:HoverButton
-                BackgroundColor="Green"
-                Clicked="Button_Clicked_1"
-                WidthRequest="200"
-                HeightRequest="60"
-                CornerRadius="10"
-                Text="Enviar Datos"
-                HoverColor="Gray"
-                PressedColor="AliceBlue"
-                TextColor="White"
-                AutomationId="ButtonSendDispenserType"/>
-           <CollectionView ItemsSource="{Binding DispenserTypeList}" Margin="0,20,0,0">
-               <CollectionView.ItemTemplate>
-                   <DataTemplate>
-                       <Frame Padding="10" Margin="0,5">
-                           <Grid ColumnDefinitions="*,Auto,Auto">
-                               <Label Text="{Binding Description}" VerticalOptions="Center"/>
-                               <Button Grid.Column="1" 
-                                      Text="✏️"
-                                      Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserTypeCommand}"
-                                      CommandParameter="{Binding .}"
-                                      BackgroundColor="Transparent"
-                                      FontSize="18"
-                                      WidthRequest="40"
-                                      HeightRequest="40"
-                                      Padding="0"
-                                      VerticalOptions="Center"/>
-                               <Button Grid.Column="2" 
-                                      Text="❌"
-                                      Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserTypeCommand}"
-                                      CommandParameter="{Binding .}"
-                                      BackgroundColor="Transparent"
-                                      FontSize="18"
-                                      WidthRequest="40"
-                                      HeightRequest="40"
-                                      Padding="0"
-                                      VerticalOptions="Center"/>
-                           </Grid>
-                       </Frame>
-                   </DataTemplate>
-               </CollectionView.ItemTemplate>
-           </CollectionView>
-       </VerticalStackLayout>
-       <controls:LoadingView x:Name="LoadingOverlay"
-                           AbsoluteLayout.LayoutBounds="0,0,1,1"
-                           AbsoluteLayout.LayoutFlags="All"
-                           AutomationId="LoadingOverlay"/>
-   </AbsoluteLayout>
-</ContentPage>

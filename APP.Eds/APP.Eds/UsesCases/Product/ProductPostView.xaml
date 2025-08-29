@@ -8,27 +8,4 @@
     BackgroundColor="#F8F9FA">
 
 
-                            <!-- Add Product Type Button -->
-                            <Border BackgroundColor="#6A1B9A" 
-                                    StrokeShape="RoundRectangle 12"
-                                    StrokeThickness="0"
-                                    Padding="4">
-                                <Border.Shadow>
-                                    <Shadow Brush="#6A1B9A" 
-                                            Offset="0,3" 
-                                            Radius="8" 
-                                            Opacity="0.3"/>
-                                </Border.Shadow>
-                                <Button Text="➕ Agregar Tipo de Producto"
-                                        TextColor="White" 
-                                        BackgroundColor="Transparent"
-                                        Clicked="OnAddProductTypeClicked"
-                                        AutomationId="ButtonAddProductType"
-                                        FontSize="14"
-                                        FontAttributes="Bold"
-                                        HeightRequest="44"
-                                        CornerRadius="12"/>
-                            </Border>
-
-
 </ContentPage>

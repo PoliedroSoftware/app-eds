@@ -34,33 +34,51 @@ public partial class ShoppingPostView : ContentPage
                 button.IsEnabled = false;
             }
 
-            // Validate required fields
+            // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(vm.Invoice))
             {
-                await DisplayAlert("Error", "Por favor ingrese el número de factura", "OK");
+                await CustomAlert.ShowErrorAsync("El número de factura es obligatorio para registrar la compra", "Factura Requerida");
+                return;
+            }
+
+            if (vm.Invoice.Length < 3)
+            {
+                await CustomAlert.ShowErrorAsync("El número de factura debe tener al menos 3 caracteres", "Factura Inválida");
                 return;
             }
 
             if (vm.SelectedProvider is null)
             {
-                await DisplayAlert("Error", "Por favor seleccione un proveedor", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el proveedor que realiza la venta", "Proveedor Requerido");
                 return;
             }
 
             if (vm.SelectedCategory is null)
             {
-                await DisplayAlert("Error", "Por favor seleccione una categoría de combustible", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la categoría de combustible correspondiente", "Categoría Requerida");
                 return;
             }
 
             if (vm.ShoppingProduct?.Count == 0)
             {
-                await DisplayAlert("Error", "Por favor agregue al menos un producto a la compra", "OK");
+                await CustomAlert.ShowErrorAsync("Debe agregar al menos un producto a la compra antes de guardar", "Productos Requeridos");
+                return;
+            }
+
+            // Validate total amount
+            double totalAmount = vm.ShoppingProduct?.Sum(p => p.Quantity * p.Price) ?? 0;
+            if (totalAmount <= 0)
+            {
+                await CustomAlert.ShowErrorAsync("El monto total de la compra debe ser mayor que cero", "Monto Inválido");
                 return;
             }
 
             LoadingOverlay.ShowLoading();
             await vm.SaveShoppingDataAsync();
+        }
+        catch (Exception ex)
+        {
+            await CustomAlert.ShowErrorAsync($"Error al guardar la compra:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

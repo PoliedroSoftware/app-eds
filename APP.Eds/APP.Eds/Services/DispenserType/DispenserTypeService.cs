@@ -98,13 +98,27 @@ namespace APP.Eds.Services.DispenserType
 
         public async Task SaveDispenserTypeDataAsync()
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-                return;
-            }
             try
             {
+                if (string.IsNullOrEmpty(_authToken))
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                    return;
+                }
+
+                // Enhanced validation
+                if (string.IsNullOrWhiteSpace(Description))
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese la descripción del tipo de dispensador", "OK");
+                    return;
+                }
+
+                if (Description.Length < 3)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "La descripción debe tener al menos 3 caracteres", "OK");
+                    return;
+                }
+
                 DispenserType = new DispenserTypeModel
                 {
                     Description = Description
@@ -134,17 +148,33 @@ namespace APP.Eds.Services.DispenserType
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Éxito", 
+                        $"Tipo de dispensador '{Description}' registrado correctamente", "OK");
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", 
+                        $"No se pudo registrar el tipo de dispensador: {response.StatusCode}\n{error}", "OK");
                 }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"HTTP error saving dispenser type: {httpEx.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    "Error de conexión. Verifique su conexión a internet e intente nuevamente.", "OK");
+            }
+            catch (JsonException jsonEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"JSON error saving dispenser type: {jsonEx.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    "Error procesando la respuesta del servidor.", "OK");
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+                System.Diagnostics.Debug.WriteLine($"General error saving dispenser type: {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    $"Error inesperado al registrar el tipo de dispensador: {ex.Message}", "OK");
             }
         }
 

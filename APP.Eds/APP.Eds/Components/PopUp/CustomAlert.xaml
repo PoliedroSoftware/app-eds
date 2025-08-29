@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup
+    x:Class="APP.Eds.Components.PopUp.CustomAlert"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    Color="Transparent">
+
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 20"
+            WidthRequest="340"
+            HeightRequest="300">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,8" Radius="16" Opacity="0.1"/>
+        </Border.Shadow>
+
+        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+            
+            <!-- Header -->
+            <Border Grid.Row="0"
+                    x:Name="HeaderBorder"
+                    BackgroundColor="#E8A5A5"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    Padding="20,24,20,20">
+                
+                <StackLayout HorizontalOptions="Center" Spacing="12">
+                    <!-- Icon with better styling -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 25"
+                            WidthRequest="50" 
+                            HeightRequest="50"
+                            HorizontalOptions="Center"
+                            Opacity="0.9">
+                        <Label x:Name="IconLabel"
+                               Text="!" 
+                               FontSize="32"
+                               FontAttributes="Bold"
+                               TextColor="#8B0000"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"/>
+                    </Border>
+                    
+                    <Label x:Name="TitleLabel"
+                           Text="Error" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </StackLayout>
+            </Border>
+
+            <!-- Message -->
+            <ScrollView Grid.Row="1" Padding="24,20">
+                <StackLayout Spacing="12">
+                    <Label x:Name="MessageLabel"
+                           Text="Mensaje de alerta" 
+                           FontSize="16"
+                           LineBreakMode="WordWrap"
+                           TextColor="#2D3436"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                    
+                    <Label x:Name="DetailLabel"
+                           Text="" 
+                           FontSize="14"
+                           LineBreakMode="WordWrap"
+                           TextColor="#636E72"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="False"/>
+                </StackLayout>
+            </ScrollView>
+
+            <!-- Buttons -->
+            <StackLayout Grid.Row="2" 
+                         Orientation="Horizontal"
+                         Spacing="12"
+                         Padding="24,16,24,24"
+                         HorizontalOptions="Center">
+                
+                <Border x:Name="CancelButtonBorder"
+                        BackgroundColor="#F8F9FA"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="#E0E0E0"
+                        StrokeThickness="1"
+                        IsVisible="False"
+                        Padding="2">
+                    <Button x:Name="CancelButton"
+                            BackgroundColor="Transparent"
+                            Text="Cancelar" 
+                            TextColor="#6C757D"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            WidthRequest="110"
+                            HeightRequest="44"
+                            Clicked="OnCancelClicked"/>
+                </Border>
+                
+                <Border x:Name="ConfirmButtonBorder"
+                        BackgroundColor="#D78787"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="2">
+                    <Border.Shadow>
+                        <Shadow Brush="#D78787" Offset="0,2" Radius="4" Opacity="0.2"/>
+                    </Border.Shadow>
+                    <Button x:Name="ConfirmButton"
+                            BackgroundColor="Transparent"
+                            Text="OK" 
+                            TextColor="White"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            WidthRequest="110"
+                            HeightRequest="44"
+                            Clicked="OnConfirmClicked"/>
+                </Border>
+            </StackLayout>
+        </Grid>
+    </Border>
+</mct:Popup>
