@@ -1,4 +1,5 @@
 using APP.Eds.Services.Business;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Business;
 
@@ -25,10 +26,45 @@ public partial class BusinessPostView : ContentPage
             if (sender is Button button)
             {
                 button.IsEnabled = false;
+                button.Text = "Guardando...";
+            }
+
+            // Enhanced validation with professional alerts
+            if (string.IsNullOrWhiteSpace(_businessService.Name))
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del negocio es obligatorio para el registro", "Nombre Requerido");
+                return;
+            }
+
+            if (_businessService.Name.Length < 3)
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del negocio debe tener al menos 3 caracteres", "Nombre Muy Corto");
+                return;
+            }
+
+            if (_businessService.Name.Length > 100)
+            {
+                await CustomAlert.ShowErrorAsync("El nombre del negocio no puede exceder 100 caracteres", "Nombre Muy Largo");
+                return;
+            }
+
+            // Clean up name
+            string originalName = _businessService.Name;
+            _businessService.Name = _businessService.Name.Trim();
+            
+            if (originalName != _businessService.Name)
+            {
+                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente del nombre", "Nombre Limpiado");
             }
 
             LoadingOverlay.ShowLoading();
             await _businessService.SaveBusinessDataAsync();
+            
+            await CustomAlert.ShowSuccessAsync($"El negocio '{_businessService.Name}' ha sido registrado exitosamente en el sistema", "Negocio Registrado");
+        }
+        catch (Exception ex)
+        {
+            await CustomAlert.ShowErrorAsync($"Error al guardar el negocio:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -41,6 +77,7 @@ public partial class BusinessPostView : ContentPage
             if (sender is Button button)
             {
                 button.IsEnabled = true;
+                button.Text = "?? Registrar Negocio";
             }
         }
     }

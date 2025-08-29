@@ -6,149 +6,202 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="{Binding EdsTitle}"
-    BackgroundColor="#F8F9FA">
-
-    <AbsoluteLayout>
+    BackgroundColor="{StaticResource Gray50}">
 
 
-                        <!-- Form Fields -->
-                        <VerticalStackLayout Spacing="16">
+                        <!-- Campos del Formulario con diseño mejorado -->
+                        <StackLayout Spacing="20">
                             
-                            <!-- Name Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- Nombre de la EDS -->
+                            <StackLayout Spacing="8">
                                 <Label Text="Nombre de la EDS" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🏢" 
-                                               FontSize="18" 
-                                               TextColor="#6A1B9A" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#E8F5E8">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E8F5E8"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="N" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2E7D32"
+                                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding NamePlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Name, Mode=TwoWay}"
                                                AutomationId="EntryName"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
-                            <!-- NIT Field -->
-                            <VerticalStackLayout Spacing="8">
+                            <!-- NIT -->
+                            <StackLayout Spacing="8">
                                 <Label Text="NIT" 
-                                       FontSize="14" 
+                                       FontSize="15" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{StaticResource Gray900}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                <Border BackgroundColor="{StaticResource Gray50}" 
+                                        StrokeShape="RoundRectangle 15"
                                         StrokeThickness="2"
-                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🆔" 
-                                               FontSize="18" 
-                                               TextColor="#2196F3" 
-                                               VerticalOptions="Center"/>
+                                        Stroke="#E3F2FD">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="18,14" ColumnSpacing="12">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#E3F2FD"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="32"
+                                                HeightRequest="32">
+                                            <Label Text="ID" 
+                                                   FontSize="12" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1565C0"
+                                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
                                         
-                                        <Entry Keyboard="Text"
+                                        <Entry Grid.Column="1"
+                                               Keyboard="Text"
                                                Placeholder="{Binding NitPlaceHolder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{StaticResource Gray400}"
                                                Text="{Binding Nit, Mode=TwoWay}"
                                                AutomationId="EntryNit"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
-                                    </StackLayout>
+                                               TextColor="{StaticResource Gray900}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
                                 </Border>
-                            </VerticalStackLayout>
+                            </StackLayout>
 
 
-                        <!-- EDS List -->
+
+                        <!-- Lista de EDS -->
                         <CollectionView ItemsSource="{Binding EdsList}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="#FAFAFA" 
-                                            StrokeShape="RoundRectangle 8"
-                                            Stroke="#E0E0E0"
-                                            Margin="0,4"
-                                            Padding="16">
+                                    <Border BackgroundColor="{StaticResource Gray50}" 
+                                            StrokeShape="RoundRectangle 15"
+                                            StrokeThickness="1"
+                                            Stroke="{StaticResource Gray200}"
+                                            Margin="0,6"
+                                            Padding="18">
                                         <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.05"/>
+                                            <Shadow Brush="{StaticResource Gray400}" 
+                                                    Offset="0,2" 
+                                                    Radius="6" 
+                                                    Opacity="0.08"/>
                                         </Border.Shadow>
                                         
-                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
-                                            <!-- EDS Icon -->
-                                            <Border BackgroundColor="#E8F5E8" 
-                                                    StrokeShape="RoundRectangle 16"
-                                                    WidthRequest="32" HeightRequest="32"
-                                                    Grid.RowSpan="5" Grid.Column="0"
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                              RowSpacing="8" ColumnSpacing="15">
+                                            
+                                            <!-- Icono EDS Mejorado -->
+                                            <Border Grid.RowSpan="5" Grid.Column="0"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    StrokeThickness="0"
+                                                    WidthRequest="40" 
+                                                    HeightRequest="40"
                                                     VerticalOptions="Start">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#4CAF50" Offset="0.0" />
+                                                        <GradientStop Color="#2E7D32" Offset="1.0" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
                                                 <Label Text="⛽" 
-                                                       FontSize="16" 
+                                                       FontSize="20"
                                                        HorizontalOptions="Center" 
                                                        VerticalOptions="Center"/>
                                             </Border>
 
-                                            <!-- EDS Info -->
+                                            <!-- Información de la EDS -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
-                                                <Label Text="ID:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding IdEds}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="ID:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding IdEds}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
-                                                <Label Text="Nombre:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Name}" FontSize="12" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="Nombre:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Name}" FontSize="13" TextColor="{StaticResource Primary}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
-                                                <Label Text="NIT:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Nit}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="NIT:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Nit}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
-                                                <Label Text="Dirección:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Address}" FontSize="11" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
+                                                <Label Text="Dirección:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Address}" FontSize="12" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
-                                                <Label Text="SICOM:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Sicom}" FontSize="12" TextColor="#2D3436" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="SICOM:" FontSize="13" TextColor="{StaticResource Gray600}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Sicom}" FontSize="13" TextColor="{StaticResource Gray900}" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </VerticalStackLayout>
+                    </StackLayout>
                 </Border>
-
-                <!-- Bottom Spacer -->
-                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
-            </VerticalStackLayout>
+            </StackLayout>
         </ScrollView>
 
-        <!-- Loading Overlay -->
-        <controls:LoadingView x:Name="LoadingOverlay"
-                              AbsoluteLayout.LayoutBounds="0,0,1,1"
-                              AbsoluteLayout.LayoutFlags="All"
-                              AutomationId="LoadingOverlay"/>
-    </AbsoluteLayout>
+        <!-- Loading Overlay Mejorado -->
+        <Grid x:Name="LoadingOverlay"
+              BackgroundColor="#90000000"
+              IsVisible="False"
+              VerticalOptions="Fill"
+              HorizontalOptions="Fill"
+              AutomationId="GridLoadingOverlay">
+            <Border BackgroundColor="{StaticResource White}"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="35,30"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <Border.Shadow>
+                    <Shadow Brush="{StaticResource Primary}" 
+                            Offset="0,8" 
+                            Radius="25" 
+                            Opacity="0.3"/>
+                </Border.Shadow>
+                <StackLayout Spacing="18">
+                    <ActivityIndicator IsRunning="True"
+                                       Color="{StaticResource Primary}"
+                                       WidthRequest="45"
+                                       HeightRequest="45"
+                                       HorizontalOptions="Center"
+                                       AutomationId="ActivityIndicatorLoading"/>
+                    <Label Text="Registrando EDS..."
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Gray700}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>

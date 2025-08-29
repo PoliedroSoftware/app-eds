@@ -3,59 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.ProductType.ProductTypePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-             Title="Gestion Tipo De Producto">
+             Title="Gestión de Tipos de Producto"
+             BackgroundColor="#F8F9FA">
+
     <AbsoluteLayout>
-    <VerticalStackLayout 
-        AbsoluteLayout.LayoutBounds="0,0,1,1"
-        AbsoluteLayout.LayoutFlags="All"
-        Padding="20" Spacing="15">
-        <Label FontSize="16" Text="Tipo De Producto"/>
-        <Entry
-            Keyboard="Text"
-            Placeholder="Ingreser El Tipo De Producto"
-            Text="{Binding Description, Mode=TwoWay}"
-            AutomationId="EntryProductType"/>
-        <Button
-            BackgroundColor="Green"
-            Clicked="Button_Clicked_1"
-            CornerRadius="10"
-            Text="Enviar Datos"
-            TextColor="White"
-            AutomationId="ButtonSendData"/>
 
-        <CollectionView ItemsSource="{Binding ProductTypeList}" Margin="0,20,0,0">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Padding="10" Margin="0,5">
-                        <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="Center">
-                            <Label Text="{Binding Description}" FontSize="16" VerticalOptions="Center"/>
-                            <Button Grid.Column="1" 
-                                   Text="✏️"
-                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductTypeCommand}"
-                                   CommandParameter="{Binding .}"
-                                   BackgroundColor="Transparent"
-                                   FontSize="18"
-                                   WidthRequest="40"
-                                   HeightRequest="40"
-                                   Padding="0"
-                                   VerticalOptions="Center"/>
-                            <Button Grid.Column="2" 
-                                   Text="❌"
-                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductTypeCommand}"
-                                   CommandParameter="{Binding .}"
-                                   BackgroundColor="Transparent"
-                                   FontSize="18"
-                                   WidthRequest="40"
-                                   HeightRequest="40"
-                                   Padding="0"
-                                   VerticalOptions="Center"/>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-    </VerticalStackLayout>
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
                               AbsoluteLayout.LayoutFlags="All"

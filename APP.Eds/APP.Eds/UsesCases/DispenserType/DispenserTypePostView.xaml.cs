@@ -1,19 +1,16 @@
 using APP.Eds.Models.DispenserType;
 using APP.Eds.Services.DispenserType;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+
 
 namespace APP.Eds.UsesCases.DispenserType;
 
-public partial class DispenserTypePostView : ContentPage
+public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
 {
     private DispenserTypeService _dispenserTypeService;
-    public ObservableCollection<DispenserTypeModel> DispenserTypeList { get; set; }
-    public ICommand EditDispenserTypeCommand { get; private set; }
-    public ICommand DeleteDispenserTypeCommand { get; private set; }
+
     public DispenserTypePostView()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         _dispenserTypeService = new DispenserTypeService();
         DispenserTypeList = new ObservableCollection<DispenserTypeModel>();
         EditDispenserTypeCommand = new Command<DispenserTypeModel>(EditDispenserType);
@@ -42,19 +39,53 @@ public partial class DispenserTypePostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        var button = sender as Button;
         try
         {
+            // Disable button to prevent multiple submissions
+            if (button != null)
+            {
+                button.IsEnabled = false;
+                button.Text = "Guardando...";
+            }
+
+            // Enhanced validation with professional alerts
+            if (string.IsNullOrWhiteSpace(_dispenserTypeService.Description))
+            {
+                await CustomAlert.ShowErrorAsync("La descripción del tipo de dispensador es obligatoria para el registro", "Descripción Requerida");
+                return;
+            }
+
+            // Additional validation for minimum length
+            if (_dispenserTypeService.Description.Length < 3)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 3 caracteres para ser válida", "Descripción Muy Corta");
+                return;
+            }
+
+            if (_dispenserTypeService.Description.Length > 100)
+            {
+                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 100 caracteres", "Descripción Muy Larga");
+                return;
+            }
+
+            // Check for special characters or inappropriate content
+            if (_dispenserTypeService.Description.Trim() != _dispenserTypeService.Description)
+            {
+                await CustomAlert.ShowWarningAsync("La descripción contiene espacios al inicio o final que serán removidos automáticamente", "Espacios Detectados");
+                _dispenserTypeService.Description = _dispenserTypeService.Description.Trim();
+            }
+
             LoadingOverlay.ShowLoading();
             _dispenserTypeService.Description = this.Description;
             await _dispenserTypeService.SaveDispenserTypeDataAsync();
-            Description = string.Empty;
-            await LoadDispenserTypes();
+
         }
         finally
         {
             LoadingOverlay.HideLoading();
+
         }
-        
     }
 
     private void EditDispenserType(DispenserTypeModel dispenserType)
@@ -65,7 +96,7 @@ public partial class DispenserTypePostView : ContentPage
 
     private async void DeleteDispenserType(DispenserTypeModel dispenserType)
     {
-        bool answer = await DisplayAlert("Eliminar", $"¿Está seguro de que desea eliminar el tipo de dispensador '{dispenserType.Description}'?", "Sí", "No");
+        bool answer = await DisplayAlert("Eliminar", $"Â¿EstÃ¡ seguro de que desea eliminar el tipo de dispensador '{dispenserType.Description}'?", "SÃ­", "No");
         if (answer)
         {
             LoadingOverlay.ShowLoading();
@@ -82,8 +113,15 @@ public partial class DispenserTypePostView : ContentPage
         get => _description;
         set
         {
-            _description = value;
+
             OnPropertyChanged();
         }
+    }
+
+    public new event PropertyChangedEventHandler? PropertyChanged;
+
+    protected new virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
