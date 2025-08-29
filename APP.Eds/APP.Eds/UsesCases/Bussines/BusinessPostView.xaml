@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Business.BusinessPostView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:behaviors="clr-namespace:APP.Eds.UsesCases.Behaviors"
+    Title="Gestión de Negocios"
+    BackgroundColor="#F8F9FA">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
