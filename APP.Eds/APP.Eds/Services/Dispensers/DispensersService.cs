@@ -230,6 +230,93 @@ namespace APP.Eds.Services.Dispensers
             }
         }
 
+        // Statistics Properties
+        private int _totalDispensers;
+        public int TotalDispensers
+        {
+            get => _totalDispensers;
+            set
+            {
+                _totalDispensers = value;
+                OnPropertyChanged(nameof(TotalDispensers));
+            }
+        }
+
+        private int _activeDispensers;
+        public int ActiveDispensers
+        {
+            get => _activeDispensers;
+            set
+            {
+                _activeDispensers = value;
+                OnPropertyChanged(nameof(ActiveDispensers));
+            }
+        }
+
+        private int _maintenanceDispensers;
+        public int MaintenanceDispensers
+        {
+            get => _maintenanceDispensers;
+            set
+            {
+                _maintenanceDispensers = value;
+                OnPropertyChanged(nameof(MaintenanceDispensers));
+            }
+        }
+
+        private int _totalHoses;
+        public int TotalHoses
+        {
+            get => _totalHoses;
+            set
+            {
+                _totalHoses = value;
+                OnPropertyChanged(nameof(TotalHoses));
+            }
+        }
+
+        // Filter Properties
+        private Color _filterAllColor = Color.FromArgb("#FF9800");
+        public Color FilterAllColor
+        {
+            get => _filterAllColor;
+            set
+            {
+                _filterAllColor = value;
+                OnPropertyChanged(nameof(FilterAllColor));
+            }
+        }
+
+        private Color _filterActiveColor = Color.FromArgb("#9E9E9E");
+        public Color FilterActiveColor
+        {
+            get => _filterActiveColor;
+            set
+            {
+                _filterActiveColor = value;
+                OnPropertyChanged(nameof(FilterActiveColor));
+            }
+        }
+
+        private Color _filterMaintenanceColor = Color.FromArgb("#9E9E9E");
+        public Color FilterMaintenanceColor
+        {
+            get => _filterMaintenanceColor;
+            set
+            {
+                _filterMaintenanceColor = value;
+                OnPropertyChanged(nameof(FilterMaintenanceColor));
+            }
+        }
+
+        // Commands
+        public ICommand GetByIdDispensersDataCommand { get; private set; }
+        public ICommand SaveDispensersDataCommand { get; private set; }
+        public ICommand FilterAllCommand { get; private set; }
+        public ICommand FilterActiveCommand { get; private set; }
+        public ICommand FilterMaintenanceCommand { get; private set; }
+        public ICommand EditDispenserCommand { get; private set; }
+        public ICommand DeleteDispenserCommand { get; private set; }
 
         public DispensersService()
         {
@@ -245,7 +332,11 @@ namespace APP.Eds.Services.Dispensers
         {
             GetByIdDispensersDataCommand = new Command<int>(async (DispensersId) => await GetByIdDispensersDataAsync(DispensersId));
             SaveDispensersDataCommand = new Command(async () => await SaveDispensersDataAsync());
-
+            FilterAllCommand = new Command(() => FilterDispensers("all"));
+            FilterActiveCommand = new Command(() => FilterDispensers("active"));
+            FilterMaintenanceCommand = new Command(() => FilterDispensers("maintenance"));
+            EditDispenserCommand = new Command<EnhancedDispenserItem>(async (dispenser) => await EditDispenserAsync(dispenser));
+            DeleteDispenserCommand = new Command<EnhancedDispenserItem>(async (dispenser) => await DeleteDispenserAsync(dispenser));
         }
 
         private void InitializeStatusOptions()
