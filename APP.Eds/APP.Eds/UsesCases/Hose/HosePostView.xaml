@@ -249,48 +249,6 @@
                                 </StackLayout>
                             </Border>
 
-                            <!-- Action Buttons Grid -->
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                <!-- Register Button -->
-                                <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="0">
-                                    <button:HoverButton
-                                        Text="🚀 Enviar Datos"
-                                        TextColor="White" 
-                                        BackgroundColor="Transparent"
-                                        Clicked="Button_Clicked_1"
-                                        AutomationId="ButtonSendData"
-                                        FontSize="16"
-                                        FontAttributes="Bold"
-                                        HeightRequest="50"
-                                        CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
-                                </Border>
-
-                                <!-- Compartment Button -->
-                                <Border BackgroundColor="#FF9800" 
-                                        StrokeShape="RoundRectangle 16"
-                                        StrokeThickness="0"
-                                        Grid.Column="1">
-                                    <Border.Shadow>
-                                        <Shadow Brush="#FF9800" 
-                                                Offset="0,3" 
-                                                Radius="6" 
-                                                Opacity="0.3"/>
-                                    </Border.Shadow>
-                                    <button:HoverButton
-                                        Text="📦 Compartimento"
-                                        TextColor="White" 
-                                        BackgroundColor="Transparent"
-                                        Clicked="OnCompartimentButtonClicked"
-                                        AutomationId="ButtonCompartiment"
-                                        FontSize="16"
-                                        FontAttributes="Bold"
-                                        HeightRequest="50"
-                                        CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
-                                </Border>
                             </Grid>
                         </VerticalStackLayout>
                     </VerticalStackLayout>

@@ -1,20 +1,41 @@
+using APP.Eds.Models.DispenserType;
 using APP.Eds.Services.DispenserType;
-using APP.Eds.Components.PopUp;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+
 
 namespace APP.Eds.UsesCases.DispenserType;
 
 public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
 {
     private DispenserTypeService _dispenserTypeService;
-    
+
     public DispenserTypePostView()
     {
         InitializeComponent();
         _dispenserTypeService = new DispenserTypeService();
-        BindingContext = _dispenserTypeService;
+        DispenserTypeList = new ObservableCollection<DispenserTypeModel>();
+        EditDispenserTypeCommand = new Command<DispenserTypeModel>(EditDispenserType);
+        DeleteDispenserTypeCommand = new Command<DispenserTypeModel>(DeleteDispenserType);
+        BindingContext = this;
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadDispenserTypes();
+    }
+
+    private async Task LoadDispenserTypes()
+    {
+        LoadingOverlay.ShowLoading();
+        var dispenserTypes = await _dispenserTypeService.GetDispenserTypesAsync();
+        DispenserTypeList.Clear();
+        foreach (var item in dispenserTypes)
+        {
+            DispenserTypeList.Add(item);
+        }
+        LoadingOverlay.HideLoading();
+    }
+
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
@@ -31,61 +52,68 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_dispenserTypeService.Description))
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 del tipo de dispensador es obligatoria para el registro", "Descripci髇 Requerida");
+                await CustomAlert.ShowErrorAsync("La descripci贸n del tipo de dispensador es obligatoria para el registro", "Descripci贸n Requerida");
                 return;
             }
 
             // Additional validation for minimum length
             if (_dispenserTypeService.Description.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 debe tener al menos 3 caracteres para ser v醠ida", "Descripci髇 Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripci贸n debe tener al menos 3 caracteres para ser v谩lida", "Descripci贸n Muy Corta");
                 return;
             }
 
             if (_dispenserTypeService.Description.Length > 100)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 no puede exceder 100 caracteres", "Descripci髇 Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripci贸n no puede exceder 100 caracteres", "Descripci贸n Muy Larga");
                 return;
             }
 
             // Check for special characters or inappropriate content
             if (_dispenserTypeService.Description.Trim() != _dispenserTypeService.Description)
             {
-                await CustomAlert.ShowWarningAsync("La descripci髇 contiene espacios al inicio o final que ser醤 removidos autom醫icamente", "Espacios Detectados");
+                await CustomAlert.ShowWarningAsync("La descripci贸n contiene espacios al inicio o final que ser谩n removidos autom谩ticamente", "Espacios Detectados");
                 _dispenserTypeService.Description = _dispenserTypeService.Description.Trim();
             }
 
             LoadingOverlay.ShowLoading();
+            _dispenserTypeService.Description = this.Description;
             await _dispenserTypeService.SaveDispenserTypeDataAsync();
-            
-            // Clear form after successful save
-            Description = string.Empty;
-            
-            await CustomAlert.ShowSuccessAsync($"El tipo de dispensador '{_dispenserTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
-        }
-        catch (Exception ex)
-        {
-            await CustomAlert.ShowErrorAsync($"Error al guardar el tipo de dispensador:\n\n{ex.Message}", "Error del Sistema");
+
         }
         finally
         {
             LoadingOverlay.HideLoading();
-            
-            // Re-enable and restore button
-            if (button != null)
-            {
-                button.IsEnabled = true;
-                button.Text = "?? Crear Tipo de Dispensador";
-            }
+
         }
     }
 
+    private void EditDispenserType(DispenserTypeModel dispenserType)
+    {
+        Description = dispenserType.Description;
+        _dispenserTypeService.Id = dispenserType.Id;
+    }
+
+    private async void DeleteDispenserType(DispenserTypeModel dispenserType)
+    {
+        bool answer = await DisplayAlert("Eliminar", $"脗驴Est脙隆 seguro de que desea eliminar el tipo de dispensador '{dispenserType.Description}'?", "S脙颅", "No");
+        if (answer)
+        {
+            LoadingOverlay.ShowLoading();
+            await _dispenserTypeService.DeleteDispenserTypeAsync(dispenserType.Id);
+            await LoadDispenserTypes();
+            LoadingOverlay.HideLoading();
+        }
+    }
+
+
+    private string _description;
     public string Description
     {
-        get => _dispenserTypeService.Description;
+        get => _description;
         set
         {
-            _dispenserTypeService.Description = value;
+
             OnPropertyChanged();
         }
     }
