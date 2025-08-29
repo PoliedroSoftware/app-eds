@@ -724,7 +724,59 @@
             </VerticalStackLayout>
         </ScrollView>
 
-
+        <!-- Enhanced Bottom Navigation Menu -->
+        <Border Style="{StaticResource EnhancedBottomNavContainerStyle}"
+                AbsoluteLayout.LayoutBounds="0,1,1,95"
+                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
+            
+            <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24" RowDefinitions="Auto,Auto">
+                
+                <!-- Upload Document Button -->
+                <Grid Grid.Column="0" x:Name="DocumentButton">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBottomNavTapped" CommandParameter="Document"/>
+                    </Grid.GestureRecognizers>
+                    
+                    <!-- Background Circle -->
+                    <Ellipse Fill="#FFF3E0" 
+                             Style="{StaticResource NavCircleIndicatorStyle}"
+                             x:Name="DocumentCircle">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
+                                <Setter Property="Fill" Value="#FF9800"/>
+                                <Setter Property="Scale" Value="1.15"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    
+                    <!-- Content -->
+                    <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📄" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Docs" 
+                               FontSize="10" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#F57C00"
+                               x:Name="DocumentLabel">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Document">
+                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </StackLayout>
+                    
+                    <!-- Active Dot Indicator -->
+                    <Ellipse Fill="#FF9800"
+                             Style="{StaticResource NavDotIndicatorStyle}"
+                             x:Name="DocumentDot">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
                 </Grid>
 
                 <!-- Add Expense Button -->
