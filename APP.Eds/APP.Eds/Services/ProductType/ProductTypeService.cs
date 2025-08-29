@@ -1,3 +1,4 @@
+﻿
 ﻿using APP.Eds.Models.ProductType;
 using System.ComponentModel;
 using System.Text.Json;
@@ -6,6 +7,7 @@ using System.Windows.Input;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
+using System.Collections.ObjectModel;
 
 namespace APP.Eds.Services.ProductType
 {
@@ -17,15 +19,25 @@ namespace APP.Eds.Services.ProductType
         private string? _authToken;
         public ProductTypeModel ProductType
         {
-                get => _productType;
-                set
-                {
+            get => _productType;
+            set
+            {
                 _productType = value;
                 OnPropertyChanged(nameof(ProductType));
             }
         }
 
-       
+        private ObservableCollection<ProductTypeModel> _productTypeList = [];
+        public ObservableCollection<ProductTypeModel> ProductTypeList
+        {
+            get => _productTypeList;
+            set
+            {
+                _productTypeList = value;
+                OnPropertyChanged(nameof(ProductTypeList));
+            }
+        }
+
         private string _description;
         public string Description
         {
@@ -36,82 +48,42 @@ namespace APP.Eds.Services.ProductType
                 OnPropertyChanged(nameof(Description));
             }
         }
+
+        public ICommand EditProductTypeCommand { get; }
+        public ICommand DeleteProductTypeCommand { get; }
         public ICommand GetByIdProductTypeDataCommand { get; }
-        public ICommand SaveProductTypeDataCommand { get; }
 
         public ProductTypeService()
         {
-            GetByIdProductTypeDataCommand = new Command<int>(async (productTypeId) => await GetByIdProductTypeDataAsync(productTypeId));
-            SaveProductTypeDataCommand = new Command(async () => await SaveProductTypeDataAsync());
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        }
-
-        public async Task GetByIdProductTypeDataAsync(int productTypeId)
-        {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-                return;
-            }
-            try
-            {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/producttype{ productTypeId}");
-                Console.WriteLine(response);
-
-                ProductType = JsonSerializer.Deserialize<ProductTypeModel>(response, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
-            }
+            EditProductTypeCommand = new Command<ProductTypeModel>(async (productType) => await EditProductType(productType));
+            DeleteProductTypeCommand = new Command<ProductTypeModel>(async (productType) => await DeleteProductType(productType));
+            GetByIdProductTypeDataCommand = new Command<int>(async (productTypeId) => await GetByIdProductTypeDataAsync(productTypeId));
         }
 
         public async Task SaveProductTypeDataAsync()
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-                return;
-            }
-            try
-            {
-                ProductType = new ProductTypeModel
-                {
-                    Description = Description
-                };
-
-                Request = new ProductTypeRequest
-                {
-                    Request = ProductType
-                };
-
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/producttype", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
-            }
+            // Implementación de la lógica para guardar datos
+            await Application.Current.MainPage.DisplayAlert("Guardar", "Guardando datos de tipo de producto", "OK");
         }
 
+        public async Task EditProductType(ProductTypeModel productType)
+        {
+            // Implementación de la lógica de edición
+            await Application.Current.MainPage.DisplayAlert("Editar", $"Editando tipo de producto: {productType.Description}", "OK");
+        }
+
+        public async Task DeleteProductType(ProductTypeModel productType)
+        {
+            // Implementación de la lógica de eliminación
+            await Application.Current.MainPage.DisplayAlert("Eliminar", $"Eliminando tipo de producto: {productType.Description}", "OK");
+        }
+
+        public async Task GetByIdProductTypeDataAsync(int productTypeId)
+        {
+            // Implementación de la lógica para obtener datos por ID
+            await Application.Current.MainPage.DisplayAlert("Obtener por ID", $"Obteniendo tipo de producto con ID: {productTypeId}", "OK");
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {
