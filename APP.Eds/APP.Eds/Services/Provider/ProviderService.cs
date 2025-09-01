@@ -7,14 +7,14 @@ using System.Windows.Input;
 using APP.Eds.Helpers;
 using APP.Eds.Models.Provider;
 using APP.Eds.Services.Config;
-
+ 
 namespace APP.Eds.Services.Provider;
-
+ 
 public class ProviderService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     private ProviderRequest Request { get; set; } = new ProviderRequest();
-    private ProviderModel _provider;
+    private ProviderModel _provider = new ProviderModel(); // Inicializar _provider
     public ObservableCollection<ProviderResponse> ProviderList { get; set; } = [];
     private string? _authToken;
     public ProviderModel Provider

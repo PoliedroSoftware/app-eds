@@ -8,3 +8,69 @@
     BackgroundColor="#F8F9FA">
 
     <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <VerticalStackLayout Padding="20" Spacing="20">
+                <!-- Formulario de Registro -->
+                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                    <VerticalStackLayout Spacing="15">
+                        <Label FontSize="16" Text="Proveedor"/>
+                        <Entry Keyboard="Text" 
+                               Placeholder="Ingrese el nombre del proveedor" 
+                               Text="{Binding Name, Mode=TwoWay}" 
+                               AutomationId="EntryProvider"/>
+                        <Button BackgroundColor="Green"
+                                Clicked="Button_Clicked_1"
+                                CornerRadius="10"
+                                Text="Guardar Proveedor"
+                                TextColor="White"
+                                AutomationId="ButtonSendData"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Lista de Proveedores -->
+                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                    <VerticalStackLayout Spacing="15">
+                        <Label FontSize="16" Text="Lista de Proveedores"/>
+                        <CollectionView ItemsSource="{Binding ProviderList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Padding="10" Margin="0,5">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <Label Text="{Binding Name}" 
+                                                   VerticalOptions="Center"/>
+                                            <Button Grid.Column="1" 
+                                                   Text="✏️"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProviderCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
+                                            <Button Grid.Column="2" 
+                                                   Text="❌"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProviderCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
+    </AbsoluteLayout>
+</ContentPage>

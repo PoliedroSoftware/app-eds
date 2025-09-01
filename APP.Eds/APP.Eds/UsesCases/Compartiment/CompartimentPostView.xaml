@@ -317,8 +317,51 @@
                                         <Border.Shadow>
                                             <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
                                         </Border.Shadow>
-                                        
-
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <StackLayout Grid.Column="0" Spacing="4">
+                                                <Label Text="{Binding Number, StringFormat='Compartimento {0}'}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2D3436"/>
+                                                <Label Text="{Binding Height, StringFormat='Altura: {0}m'}"
+                                                       FontSize="14"
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Nominal, StringFormat='Capacidad Nominal: {0}'}"
+                                                       FontSize="14"
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Operative, StringFormat='Capacidad Operativa: {0}'}"
+                                                       FontSize="14"
+                                                       TextColor="#636E72"/>
+                                            </StackLayout>
+                                            <Button Grid.Column="1"
+                                                   Text="✏️"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCompartimentCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
+                                            <Button Grid.Column="2"
+                                                   Text="❌"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCompartimentCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   BackgroundColor="Transparent"
+                                                   FontSize="18"
+                                                   WidthRequest="40"
+                                                   HeightRequest="40"
+                                                   Padding="0"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
 
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"

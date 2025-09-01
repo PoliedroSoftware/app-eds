@@ -725,7 +725,6 @@
         </ScrollView>
 
 
-                </Grid>
 
                 <!-- Add Expense Button -->
                 <Grid Grid.Column="1" x:Name="ExpenseButton">
@@ -876,9 +875,6 @@
                         VerticalOptions="Center"
                         Opacity="0.15"
                         Grid.RowSpan="2"/>
-            </Grid>
-        </Border>
-
         <!-- Additional Info Display -->
         <Border x:Name="AdditionalInfo"
                 BackgroundColor="#F0F8FF"
@@ -892,7 +888,7 @@
             <Border.Shadow>
                 <Shadow Brush="#87CEEB" Offset="0,2" Radius="8" Opacity="0.2"/>
             </Border.Shadow>
-            <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" 
+            <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}"
                    TextColor="#2F4F4F"
                    FontSize="14"/>
         </Border>

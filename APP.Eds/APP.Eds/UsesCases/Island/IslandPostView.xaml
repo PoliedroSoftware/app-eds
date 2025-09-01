@@ -2,6 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Island.IslandPostView"
+             Title="Gestión de Islas">
+    <Grid BackgroundColor="#F5F5F5">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
+                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                    <StackLayout Spacing="10">
+                        <Label Text="➕ Agregar Islas" 
+                               FontSize="16" 
+                               TextColor="#1976D2"
+                               FontAttributes="Bold" />
 
 
                         <CollectionView ItemsSource="{Binding PendingIslands}" AutomationId="CollectionViewPendingIslands">

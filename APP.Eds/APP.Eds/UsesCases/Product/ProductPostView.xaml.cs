@@ -6,9 +6,9 @@ using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-
-
-namespace APP.Eds.UsesCases.Product;
+ 
+ 
+ namespace APP.Eds.UsesCases.Product;
 
 public partial class ProductPostView : ContentPage, INotifyPropertyChanged
 {
@@ -57,11 +57,11 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
 
             if (_productService.Price <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Por favor ingrese un precio válido (mayor que 0)", "Precio Inválido");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese un precio vï¿½lido (mayor que 0)", "Precio Invï¿½lido");
                 return;
             }
 
-            LoadingOverlay.ShowLoading();
+            this.LoadingOverlay.ShowLoading();
             await _productService.SaveProductDataAsync();
             wasSuccessful = true;
 
@@ -74,11 +74,11 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Ocurrió un error inesperado al registrar el producto:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Ocurriï¿½ un error inesperado al registrar el producto:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
-            LoadingOverlay.HideLoading();
+            this.LoadingOverlay.HideLoading();
 
             // Re-enable and restore button
             if (button != null)
@@ -97,7 +97,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"No se pudo abrir la página de tipos de producto:\n\n{ex.Message}", "Error de Navegación");
+            await CustomAlert.ShowErrorAsync($"No se pudo abrir la pï¿½gina de tipos de producto:\n\n{ex.Message}", "Error de Navegaciï¿½n");
         }
     }
 
@@ -124,7 +124,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         {
             Name = product.Name;
             // Note: ProductModelResponse doesn't have Price, so this would need to be fetched
-            await CustomAlert.ShowInfoAsync($"La función de edición será implementada próximamente para el producto: {product.Name}", "Función en Desarrollo");
+            await CustomAlert.ShowInfoAsync($"La funciï¿½n de ediciï¿½n serï¿½ implementada prï¿½ximamente para el producto: {product.Name}", "Funciï¿½n en Desarrollo");
         }
     }
 
@@ -134,8 +134,8 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         if (obj is ProductModelResponse product)
         {
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Está seguro de que desea eliminar el producto '{product.Name}'?\n\nEsta acción no se puede deshacer.", 
-                "Confirmar Eliminación", 
+                $"ï¿½Estï¿½ seguro de que desea eliminar el producto '{product.Name}'?\n\nEsta acciï¿½n no se puede deshacer.", 
+                "Confirmar Eliminaciï¿½n", 
                 "Eliminar", 
                 "Cancelar");
 
@@ -143,7 +143,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             {
                 try
                 {
-                    LoadingOverlay.ShowLoading();
+                    this.LoadingOverlay.ShowLoading();
                     bool deleted = await _productService.DeleteProductAsync(product.IdProduct);
                     if (deleted)
                     {
@@ -152,11 +152,11 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 }
                 catch (Exception ex)
                 {
-                    await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error de Eliminación");
+                    await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error de Eliminaciï¿½n");
                 }
                 finally
                 {
-                    LoadingOverlay.HideLoading();
+                    this.LoadingOverlay.HideLoading();
                 }
             }
         }

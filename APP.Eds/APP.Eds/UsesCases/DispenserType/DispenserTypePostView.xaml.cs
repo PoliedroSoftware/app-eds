@@ -1,8 +1,13 @@
 using APP.Eds.Models.DispenserType;
 using APP.Eds.Services.DispenserType;
-
-
-namespace APP.Eds.UsesCases.DispenserType;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using APP.Eds.Components.PopUp; // Agregado para CustomAlert
+using APP.Eds.UsesCases.LoadingView; // Agregado para LoadingOverlay
+ 
+ namespace APP.Eds.UsesCases.DispenserType;
 
 public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
 {
@@ -113,14 +118,21 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
         get => _description;
         set
         {
-
-            OnPropertyChanged();
+            if (_description != value)
+            {
+                _description = value;
+                OnPropertyChanged(nameof(Description));
+            }
         }
     }
 
-    public new event PropertyChangedEventHandler? PropertyChanged;
+    public ObservableCollection<DispenserTypeModel> DispenserTypeList { get; set; }
+    public ICommand EditDispenserTypeCommand { get; set; }
+    public ICommand DeleteDispenserTypeCommand { get; set; }
 
-    protected new virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
