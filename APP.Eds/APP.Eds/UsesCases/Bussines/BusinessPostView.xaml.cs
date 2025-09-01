@@ -1,7 +1,7 @@
 using APP.Eds.Services.Business;
 using APP.Eds.Components.PopUp;
-
-namespace APP.Eds.UsesCases.Business;
+ 
+ namespace APP.Eds.UsesCases.Bussines;
 
 public partial class BusinessPostView : ContentPage
 {
@@ -54,10 +54,10 @@ public partial class BusinessPostView : ContentPage
             
             if (originalName != _businessService.Name)
             {
-                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente del nombre", "Nombre Limpiado");
+                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automï¿½ticamente del nombre", "Nombre Limpiado");
             }
 
-            LoadingOverlay.ShowLoading();
+            this.LoadingOverlay.ShowLoading();
             await _businessService.SaveBusinessDataAsync();
             
             await CustomAlert.ShowSuccessAsync($"El negocio '{_businessService.Name}' ha sido registrado exitosamente en el sistema", "Negocio Registrado");
@@ -68,7 +68,7 @@ public partial class BusinessPostView : ContentPage
         }
         finally
         {
-            LoadingOverlay.HideLoading();
+            this.LoadingOverlay.HideLoading();
             
             // Reset the form after successful submission
             Name = string.Empty;

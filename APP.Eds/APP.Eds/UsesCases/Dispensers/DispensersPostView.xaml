@@ -435,16 +435,17 @@
                                         
 
                                             
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
                                             <!-- Dispenser Icon -->
-                                            <Border BackgroundColor="#FF9800" 
+                                            <Border BackgroundColor="#FF9800"
                                                     StrokeShape="RoundRectangle 25"
-                                                    WidthRequest="50" 
+                                                    WidthRequest="50"
                                                     HeightRequest="50"
-                                                    Grid.RowSpan="4" 
+                                                    Grid.RowSpan="4"
                                                     Grid.Column="0"
                                                     VerticalOptions="Center">
-                                                <Label Text="⛽" 
-                                                       FontSize="24" 
+                                                <Label Text="⛽"
+                                                       FontSize="24"
                                                        TextColor="White"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"/>
@@ -457,8 +458,8 @@
                                                         StrokeShape="RoundRectangle 10"
                                                         Padding="6,2"
                                                         VerticalOptions="Center">
-                                                    <Label Text="{Binding Number, StringFormat='#{0}'}" 
-                                                           FontSize="10" 
+                                                    <Label Text="{Binding Number, StringFormat='#{0}'}"
+                                                           FontSize="10"
                                                            FontAttributes="Bold"
                                                            TextColor="#FF9800"/>
                                                 </Border>
@@ -467,8 +468,8 @@
                                                         Padding="6,2"
                                                         VerticalOptions="Center"
                                                         IsVisible="{Binding IsActive, FallbackValue=true}">
-                                                    <Label Text="ACTIVO" 
-                                                           FontSize="9" 
+                                                    <Label Text="ACTIVO"
+                                                           FontSize="9"
                                                            FontAttributes="Bold"
                                                            TextColor="#4CAF50"/>
                                                 </Border>
@@ -500,7 +501,19 @@
                                             </Grid>
 
                                             <!-- Action Buttons -->
-
+                                            <StackLayout Grid.RowSpan="4" Grid.Column="2" Spacing="8" VerticalOptions="Center">
+                                                <Button Text="✏️"
+                                                        Style="{StaticResource IconActionButtonStyle}"
+                                                        BackgroundColor="#2196F3"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.EditDispenserCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="EditDispenserButton"/>
+                                                <Button Text="🗑️"
+                                                        Style="{StaticResource IconActionButtonStyle}"
+                                                        BackgroundColor="#F44336"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DeleteDispenserCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        AutomationId="DeleteDispenserButton"/>
                                             </StackLayout>
                                         </Grid>
                                     </Border>

@@ -6,6 +6,8 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Productos"
     BackgroundColor="#F8F9FA">
-
-
+    <VerticalStackLayout>
+        <!-- Aquí irá el contenido principal de la página -->
+    </VerticalStackLayout>
+    <controls:LoadingView x:Name="LoadingOverlay" />
 </ContentPage>
