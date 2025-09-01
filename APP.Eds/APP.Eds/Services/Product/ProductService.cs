@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using System.Linq;
 
 namespace APP.Eds.Services.Product;
 
@@ -123,14 +124,39 @@ public class ProductService : INotifyPropertyChanged
         }
     }
 
-    private double _price;
-    public double Price
+    private double _sellPrice;
+    public double SellPrice
     {
-        get => _price;
+        get => _sellPrice;
         set
         {
-            _price = value;
-            OnPropertyChanged(nameof(Price));
+            // Si el valor es menor que 0, establecer como 0
+            _sellPrice = value < 0 ? 0 : value;
+            OnPropertyChanged(nameof(SellPrice));
+        }
+    }
+
+    private double _purchasePrice;
+    public double PurchasePrice
+    {
+        get => _purchasePrice;
+        set
+        {
+            // Si el valor es menor que 0, establecer como 0
+            _purchasePrice = value < 0 ? 0 : value;
+            OnPropertyChanged(nameof(PurchasePrice));
+        }
+    }
+
+    private int _stock;
+    public int Stock
+    {
+        get => _stock;
+        set
+        {
+            // Si el valor es menor que 0, establecer como 0
+            _stock = value < 0 ? 0 : value;
+            OnPropertyChanged(nameof(Stock));
         }
     }
 
@@ -272,7 +298,9 @@ public class ProductService : INotifyPropertyChanged
             {
                 Name = Name,
                 IdProductType = SelectProductType.IdProductType,
-                Price = Price
+                SellPrice = SellPrice,
+                PurchasePrice = PurchasePrice,
+                Stock = Stock
             };
 
             Request = new ProductRequest
@@ -288,9 +316,29 @@ public class ProductService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await CustomAlert.ShowSuccessAsync(
-                    $"El producto '{Name}' ha sido registrado exitosamente con un precio de ${Price:F2}", 
-                    "Producto Registrado");
+                // Construir mensaje dinámico basado en los valores ingresados
+                var successMessage = $"El producto '{Name}' ha sido registrado exitosamente";
+                var details = new List<string>();
+
+                if (PurchasePrice > 0)
+                    details.Add($"• Precio de compra: ${PurchasePrice:F2}");
+                
+                if (SellPrice > 0)
+                    details.Add($"• Precio de venta: ${SellPrice:F2}");
+                
+                if (Stock > 0)
+                    details.Add($"• Stock inicial: {Stock} unidades");
+
+                if (details.Any())
+                {
+                    successMessage += ":\n\n" + string.Join("\n", details);
+                }
+                else
+                {
+                    successMessage += " sin precios ni stock definidos (se puede actualizar posteriormente)";
+                }
+
+                await CustomAlert.ShowSuccessAsync(successMessage, "Producto Registrado");
             }
             else
             {
