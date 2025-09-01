@@ -13,11 +13,7 @@ public partial class BusinessPostView : ContentPage
         _businessService = new BusinessService();
         BindingContext = _businessService;
     }
-   protected override async void OnAppearing()
-   {
-       base.OnAppearing();
-       await _businessService.GetBusinessList();
-   }
+
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try

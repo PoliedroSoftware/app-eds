@@ -2,17 +2,122 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Island.IslandPostView"
-             Title="Gestión de Islas">
-    <Grid BackgroundColor="#F5F5F5">
-        <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="20">
+
+             Title="Gestión De Isla"
+             BackgroundColor="#F8F9FA">
+
+
+    <Grid>
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1" BackgroundColor="White">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <!-- Counter Section -->
+                <Frame BackgroundColor="#E8F5E8" 
+                       BorderColor="#4CAF50" 
+                       CornerRadius="15" 
+                       Padding="20"
+                       Margin="0,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Grid.Column="0"
+                               Text="{Binding IslandCounterText}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#2E7D32"
+                               VerticalOptions="Center" />
+                        
+                        <Frame Grid.Column="1"
+                               BackgroundColor="#4CAF50"
+                               CornerRadius="20"
+                               Padding="10,5"
+                               HasShadow="True">
+                            <Label Text="{Binding TotalIslandsCreated}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   />
+                        </Frame>
+                    </Grid>
+                </Frame>
+
+                <!-- Create Islands Section -->
                 <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
                     <StackLayout Spacing="10">
-                        <Label Text="➕ Agregar Islas" 
+                        <Label Text="📊 Crear Islas en Lote" 
                                FontSize="16" 
-                               TextColor="#1976D2"
+                               TextColor="#673AB7" 
                                FontAttributes="Bold" />
+                        
+                        <Label Text="Número de Islas" FontSize="14" TextColor="#333" />
+                        
+                        <Entry x:Name="NumberEntry"
+                               Keyboard="Numeric"
+                               Placeholder="Ingrese el número de islas (0 para ninguna)"
+                               Text="{Binding NumberOfIslands, Mode=TwoWay}"
+                               BackgroundColor="White"
+                               HeightRequest="50"
+                               AutomationId="EntryNumberOfIslands"/>
 
+                        <Button Text="🚀 Crear Todas las Islas"
+                                BackgroundColor="#4CAF50"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                CornerRadius="25"
+                                HeightRequest="50"
+                                Command="{Binding SaveAllIslandsCommand}"
+                                AutomationId="ButtonSaveAllIslands"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Pending Islands -->
+                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                    <StackLayout Spacing="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" 
+                                   Text="📝 Lista de Islas a Crear" 
+                                   FontSize="16" 
+                                   TextColor="#FF9800"
+                                   FontAttributes="Bold" />
+                            
+                            <Button Grid.Column="1"
+                                    Text="+"
+                                    BackgroundColor="#2196F3"
+                                    TextColor="White"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    CornerRadius="15"
+                                    HeightRequest="36"
+                                    Padding="16,8"
+                                    Command="{Binding AddSingleIslandCommand}"
+                                    AutomationId="ButtonAddIsland"
+                                    Margin="5,0" />
+                            
+                            <Button Grid.Column="2"
+                                    Text="Limpiar"
+                                    BackgroundColor="#FF5722"
+                                    TextColor="White"
+                                    FontSize="15"
+                                    CornerRadius="15"
+                                    HeightRequest="36"
+                                    Padding="16,8"
+                                    Command="{Binding ClearAllIslandsCommand}"
+                                    AutomationId="ButtonClearAll"
+                                    Margin="5,0" />
+                        </Grid>
 
                         <CollectionView ItemsSource="{Binding PendingIslands}" AutomationId="CollectionViewPendingIslands">
                             <CollectionView.EmptyView>

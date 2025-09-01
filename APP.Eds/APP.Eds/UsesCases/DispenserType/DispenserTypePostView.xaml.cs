@@ -1,46 +1,22 @@
-using APP.Eds.Models.DispenserType;
 using APP.Eds.Services.DispenserType;
-using System.Collections.ObjectModel;
+
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using APP.Eds.Components.PopUp; // Agregado para CustomAlert
-using APP.Eds.UsesCases.LoadingView; // Agregado para LoadingOverlay
- 
- namespace APP.Eds.UsesCases.DispenserType;
+
+namespace APP.Eds.UsesCases.DispenserType;
+
 
 public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
 {
     private DispenserTypeService _dispenserTypeService;
-
+    
     public DispenserTypePostView()
     {
         InitializeComponent();
         _dispenserTypeService = new DispenserTypeService();
-        DispenserTypeList = new ObservableCollection<DispenserTypeModel>();
-        EditDispenserTypeCommand = new Command<DispenserTypeModel>(EditDispenserType);
-        DeleteDispenserTypeCommand = new Command<DispenserTypeModel>(DeleteDispenserType);
-        BindingContext = this;
+        BindingContext = _dispenserTypeService;
     }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await LoadDispenserTypes();
-    }
-
-    private async Task LoadDispenserTypes()
-    {
-        LoadingOverlay.ShowLoading();
-        var dispenserTypes = await _dispenserTypeService.GetDispenserTypesAsync();
-        DispenserTypeList.Clear();
-        foreach (var item in dispenserTypes)
-        {
-            DispenserTypeList.Add(item);
-        }
-        LoadingOverlay.HideLoading();
-    }
-
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
@@ -82,47 +58,39 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
             }
 
             LoadingOverlay.ShowLoading();
-            _dispenserTypeService.Description = this.Description;
             await _dispenserTypeService.SaveDispenserTypeDataAsync();
-
+            
+            // Clear form after successful save
+            Description = string.Empty;
+            
+            await CustomAlert.ShowSuccessAsync($"El tipo de dispensador '{_dispenserTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
+        }
+        catch (Exception ex)
+        {
+            await CustomAlert.ShowErrorAsync($"Error al guardar el tipo de dispensador:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
             LoadingOverlay.HideLoading();
-
+            
+            // Re-enable and restore button
+            if (button != null)
+            {
+                button.IsEnabled = true;
+                button.Text = "?? Crear Tipo de Dispensador";
+            }
         }
     }
 
-    private void EditDispenserType(DispenserTypeModel dispenserType)
-    {
-        Description = dispenserType.Description;
-        _dispenserTypeService.Id = dispenserType.Id;
-    }
-
-    private async void DeleteDispenserType(DispenserTypeModel dispenserType)
-    {
-        bool answer = await DisplayAlert("Eliminar", $"Â¿EstÃ¡ seguro de que desea eliminar el tipo de dispensador '{dispenserType.Description}'?", "SÃ­", "No");
-        if (answer)
-        {
-            LoadingOverlay.ShowLoading();
-            await _dispenserTypeService.DeleteDispenserTypeAsync(dispenserType.Id);
-            await LoadDispenserTypes();
-            LoadingOverlay.HideLoading();
-        }
-    }
-
-
-    private string _description;
     public string Description
     {
-        get => _description;
+        get => _dispenserTypeService.Description;
         set
         {
-            if (_description != value)
-            {
-                _description = value;
-                OnPropertyChanged(nameof(Description));
-            }
+
+            _dispenserTypeService.Description = value;
+            OnPropertyChanged();
+
         }
     }
 

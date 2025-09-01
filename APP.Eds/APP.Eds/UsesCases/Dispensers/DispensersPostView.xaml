@@ -433,7 +433,7 @@
                                             <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
                                         </Border.Shadow>
                                         
-
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
                                             
                                         <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
                                             <!-- Dispenser Icon -->
@@ -501,19 +501,38 @@
                                             </Grid>
 
                                             <!-- Action Buttons -->
-                                            <StackLayout Grid.RowSpan="4" Grid.Column="2" Spacing="8" VerticalOptions="Center">
-                                                <Button Text="✏️"
-                                                        Style="{StaticResource IconActionButtonStyle}"
-                                                        BackgroundColor="#2196F3"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.EditDispenserCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        AutomationId="EditDispenserButton"/>
-                                                <Button Text="🗑️"
-                                                        Style="{StaticResource IconActionButtonStyle}"
-                                                        BackgroundColor="#F44336"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DeleteDispenserCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        AutomationId="DeleteDispenserButton"/>
+
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#FFF3E0" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#FF9800"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#FF9800"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                                
+                                                <!-- Delete Button -->
+                                                <Border BackgroundColor="#FFEBEE" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#F44336"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="🗑️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#F44336"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+
                                             </StackLayout>
                                         </Grid>
                                     </Border>
