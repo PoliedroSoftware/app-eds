@@ -145,7 +145,9 @@
                                                    VerticalOptions="Center"/>
                                             
                                             <Entry Keyboard="Numeric"
-                                                   Placeholder="Ingrese la capacidad"
+
+                                                   Placeholder="Ingresa La Capacidad"
+
                                                    PlaceholderColor="#9CA3AF"
                                                    Text="{Binding Ability, Mode=TwoWay}"
                                                    AutomationId="EntryCapacity"
@@ -159,7 +161,32 @@
                                 </VerticalStackLayout>
                             </Grid>
 
-                            <!-- Action Button -->
+                        </VerticalStackLayout>
+
+                        <!-- Action Button Section -->
+                        <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
+                            
+                            <!-- Info Card -->
+                            <Border BackgroundColor="#E3F2FD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#2196F3"
+                                    Padding="16"
+                                    Opacity="0.9">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="ℹ️" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="Los tanques almacenan el combustible antes de ser dispensado. Cada tanque tiene compartimientos que pueden contener diferentes tipos de combustible."
+                                           FontSize="12"
+                                           TextColor="#1565C0"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Register Button -->
+
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
                                 <Button Text="{Binding SendData}"
                                         TextColor="White" 
@@ -175,7 +202,9 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Tank List Section -->
+
+                <!-- Tanks List Section -->
+
                 <Border Style="{StaticResource ModernCardStyle}">
                     <VerticalStackLayout Spacing="16">
                         <!-- List Header -->
@@ -201,10 +230,9 @@
                             </StackLayout>
                         </StackLayout>
 
-                        <!-- Tank List -->
+                        <!-- Tanks List -->
                         <CollectionView ItemsSource="{Binding TankList}" 
-                                      Margin="0,20"
-                                      AutomationId="CollectionViewTankList">
+                                        AutomationId="CollectionViewTankList">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
@@ -212,42 +240,48 @@
                                             Stroke="#E0E0E0"
                                             Margin="0,4"
                                             Padding="16">
-                                        <Grid ColumnDefinitions="*,Auto,Auto">
-                                            <StackLayout Grid.Column="0" Spacing="4">
-                                                <Label Text="{Binding Number, StringFormat='Tanque {0}'}"
-                                                       FontSize="16"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#2D3436"/>
-                                                <Label Text="{Binding Compartment, StringFormat='Compartimientos: {0}'}"
-                                                       FontSize="14"
-                                                       TextColor="#636E72"/>
-                                                <Label Text="{Binding Ability, StringFormat='Capacidad: {0}'}"
-                                                       FontSize="14"
-                                                       TextColor="#636E72"/>
-                                                <Label Text="{Binding Stock, StringFormat='Stock: {0}'}"
-                                                       FontSize="14"
-                                                       TextColor="#636E72"/>
-                                            </StackLayout>
-                                            <Button Grid.Column="1"
-                                                   Text="✏️"
-                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTankCommand}"
-                                                   CommandParameter="{Binding .}"
-                                                   BackgroundColor="Transparent"
-                                                   FontSize="18"
-                                                   WidthRequest="40"
-                                                   HeightRequest="40"
-                                                   Padding="0"
-                                                   VerticalOptions="Center"/>
-                                            <Button Grid.Column="2"
-                                                   Text="❌"
-                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteTankCommand}"
-                                                   CommandParameter="{Binding .}"
-                                                   BackgroundColor="Transparent"
-                                                   FontSize="18"
-                                                   WidthRequest="40"
-                                                   HeightRequest="40"
-                                                   Padding="0"
-                                                   VerticalOptions="Center"/>
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- Tank Icon -->
+                                            <Border BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    Grid.RowSpan="5" Grid.Column="0"
+                                                    VerticalOptions="Start">
+                                                <Label Text="🛢️" 
+                                                       FontSize="18" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Tank Info -->
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
+                                                <Label Text="ID:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Id}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
+                                                <Label Text="Número:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Nmber}" FontSize="12" TextColor="#6A1B9A" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
+                                                <Label Text="Compartimientos:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Compartment}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
+                                                <Label Text="Capacidad:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Ability, StringFormat='{0:N2} L'}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
+                                                <Label Text="Stock:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Stock, StringFormat='{0:N2} L'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -255,6 +289,10 @@
                         </CollectionView>
                     </VerticalStackLayout>
                 </Border>
+
+                <!-- Bottom Spacer -->
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+
             </VerticalStackLayout>
         </ScrollView>
 

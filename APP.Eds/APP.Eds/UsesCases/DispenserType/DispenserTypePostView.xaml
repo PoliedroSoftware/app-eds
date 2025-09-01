@@ -11,7 +11,9 @@
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
             <VerticalStackLayout Padding="16" Spacing="16">
                 
-                <!-- Header Card with Blue Gradient -->
+
+                <!-- Header Card -->
+
                 <Border BackgroundColor="#2196F3" 
                         StrokeShape="RoundRectangle 16"
                         Padding="20"
@@ -20,12 +22,16 @@
                         <Shadow Brush="#2196F3" Offset="0,4" Radius="12" Opacity="0.3"/>
                     </Border.Shadow>
                     <StackLayout>
-                        <Label Text="🔧 Gestión de Tipos de Dispensador" 
+
+                        <Label Text="⛽ Gestión de Tipos de Dispensador" 
+
                                FontSize="24" 
                                FontAttributes="Bold" 
                                TextColor="White" 
                                HorizontalOptions="Center"/>
-                        <Label Text="Administre los diferentes tipos de dispensadores de combustible" 
+
+                        <Label Text="Configure categorías y especificaciones de dispensadores" 
+
                                FontSize="14" 
                                TextColor="#BBDEFB" 
                                HorizontalOptions="Center"
@@ -45,7 +51,9 @@
                         
                         <!-- Form Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⚙️" FontSize="20" VerticalOptions="Center"/>
+
+                            <Label Text="⛽" FontSize="20" VerticalOptions="Center"/>
+
                             <Label Text="Nuevo Tipo de Dispensador" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
@@ -53,8 +61,10 @@
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <!-- Description Input -->
-                        <VerticalStackLayout Spacing="8">
+
+                        <!-- Description Field -->
+                        <StackLayout Spacing="8">
+
                             <Label Text="Descripción del Tipo de Dispensador" 
                                    FontAttributes="Bold" 
                                    TextColor="#636E72" 
@@ -63,14 +73,46 @@
                                     StrokeShape="RoundRectangle 8"
                                     Stroke="#BBDEFB" 
                                     Padding="4">
-                                <Entry Keyboard="Text"
-                                       Placeholder="Ej: Dispensador de 2 mangueras, Dispensador de alto flujo"
-                                       Text="{Binding Description, Mode=TwoWay}"
-                                       BackgroundColor="Transparent"
-                                       AutomationId="EntryDispenserTypeDescription"
-                                       PlaceholderColor="#9CA3AF"/>
+
+                                <Grid ColumnDefinitions="Auto,*" Padding="12">
+                                    <Label Grid.Column="0" 
+                                           Text="⛽" 
+                                           FontSize="18" 
+                                           TextColor="#2196F3" 
+                                           VerticalOptions="Center"
+                                           Margin="0,0,12,0"/>
+                                    <Entry Grid.Column="1"
+                                           Keyboard="Text"
+                                           Placeholder="Ej: Multisurtidor, Surtidor Simple, Auto-Servicio"
+                                           Text="{Binding Description, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryDispenserType"
+                                           PlaceholderColor="#9CA3AF"
+                                           FontSize="16"
+                                           TextColor="#374151"/>
+                                </Grid>
                             </Border>
-                        </VerticalStackLayout>
+                        </StackLayout>
+
+                        <!-- Info Card -->
+                        <Border BackgroundColor="#E3F2FD" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3"
+                                Padding="16"
+                                Opacity="0.9">
+                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                <Label Text="💡" 
+                                       FontSize="16" 
+                                       VerticalOptions="Start"
+                                       Margin="0,2,0,0"/>
+                                <Label Text="Los tipos de dispensador ayudan a categorizar y organizar los equipos de dispensado en su sistema. Ejemplos: Multisurtidor, Surtidor Simple, Auto-Servicio, Premium."
+                                       FontSize="12"
+                                       TextColor="#1565C0"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                        </Border>
+
 
                         <!-- Action Button -->
                         <Border BackgroundColor="#2196F3" 
@@ -82,17 +124,23 @@
                             </Border.Shadow>
                             <Button BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
-                                    Text="➕ Registrar Tipo de Dispensador"
+
+                                    Text="🚀 Crear Tipo de Dispensador"
+
                                     TextColor="White"
                                     FontSize="18"
                                     FontAttributes="Bold"
                                     HeightRequest="50"
-                                    AutomationId="ButtonSendData"/>
+
+                                    AutomationId="ButtonSendDispenserType"/>
+
                         </Border>
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Dispenser Types List Card -->
+
+                <!-- Example Types Card -->
+
                 <Border BackgroundColor="White"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
@@ -102,72 +150,106 @@
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="16">
                         
-                        <!-- List Header -->
+
+                        <!-- Examples Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="📋" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Tipos de Dispensador Registrados" 
+                            <Label Text="💡" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Ejemplos de Tipos de Dispensador" 
+
                                    FontAttributes="Bold" 
                                    FontSize="18" 
                                    TextColor="#2D3436"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <!-- Dispenser Types Collection -->
-                        <CollectionView ItemsSource="{Binding DispenserTypeList}" 
-                                        Margin="0,10,0,0"
-                                        AutomationId="CollectionViewDispenserTypes">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BackgroundColor="#FEFEFE" 
-                                            StrokeShape="RoundRectangle 8"
-                                            Stroke="#E5E7EB"
-                                            Margin="0,4"
-                                            Padding="16">
-                                        <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
-                                        </Border.Shadow>
-                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="8">
-                                            <!-- Dispenser Type Info -->
-                                            <StackLayout Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                                                <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Description}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
-                                            </StackLayout>
-
-                                            <!-- Action Buttons -->
-                                            <StackLayout Grid.RowSpan="2" Grid.Column="1" Spacing="8" VerticalOptions="Center">
-                                                <Button Text="✏️" 
-                                                        Style="{StaticResource IconActionButtonStyle}"
-                                                        BackgroundColor="#2196F3"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.EditDispenserTypeCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        AutomationId="EditDispenserTypeButton"/>
-                                                <Button Text="🗑️" 
-                                                        Style="{StaticResource IconActionButtonStyle}"
-                                                        BackgroundColor="#F44336"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DeleteDispenserTypeCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        AutomationId="DeleteDispenserTypeButton"/>
-                                            </StackLayout>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                            <CollectionView.EmptyView>
-                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="🔧" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
-                                    <Label Text="No hay tipos de dispensador configurados" 
-                                           FontSize="16" 
-                                           TextColor="#6B7280" 
-                                           HorizontalOptions="Center"
-                                           FontAttributes="Bold"/>
-                                    <Label Text="Configure el primer tipo de dispensador usando el formulario superior" 
+                        <!-- Examples Grid -->
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="12" ColumnSpacing="12">
+                            
+                            <!-- Multisurtidor -->
+                            <Border Grid.Row="0" Grid.Column="0"
+                                    BackgroundColor="#E3F2FD"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="12">
+                                <StackLayout Spacing="4">
+                                    <Label Text="⛽" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Multisurtidor" 
                                            FontSize="14" 
-                                           TextColor="#9CA3AF" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#1976D2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Múltiples productos, 4-8 mangueras" 
+                                           FontSize="11" 
+                                           TextColor="#2196F3"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
-                            </CollectionView.EmptyView>
-                        </CollectionView>
+                            </Border>
+
+                            <!-- Surtidor Simple -->
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    BackgroundColor="#E8F5E8"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="12">
+                                <StackLayout Spacing="4">
+                                    <Label Text="⛽" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Surtidor Simple" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2E7D32"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Un producto, 1-2 mangueras" 
+                                           FontSize="11" 
+                                           TextColor="#4CAF50"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Auto-Servicio -->
+                            <Border Grid.Row="1" Grid.Column="0"
+                                    BackgroundColor="#F3E5F5"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#9C27B0"
+                                    Padding="12">
+                                <StackLayout Spacing="4">
+                                    <Label Text="🤖" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Auto-Servicio" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#7B1FA2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Dispensado automático" 
+                                           FontSize="11" 
+                                           TextColor="#9C27B0"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Premium -->
+                            <Border Grid.Row="1" Grid.Column="1"
+                                    BackgroundColor="#FFF3E0"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#FF9800"
+                                    Padding="12">
+                                <StackLayout Spacing="4">
+                                    <Label Text="⭐" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Premium" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#F57C00"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Características avanzadas" 
+                                           FontSize="11" 
+                                           TextColor="#FF9800"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Border>
+                        </Grid>
+
                     </VerticalStackLayout>
                 </Border>
 
@@ -183,4 +265,6 @@
                               AbsoluteLayout.LayoutFlags="All"
                               AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
+
 </ContentPage>
+
