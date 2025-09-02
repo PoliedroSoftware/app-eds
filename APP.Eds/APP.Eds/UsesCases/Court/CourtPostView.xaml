@@ -734,7 +734,7 @@
                 <!-- Upload Document Button -->
                 <Grid Grid.Column="0" x:Name="DocumentButton">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBottomNavTapped" CommandParameter="Document"/>
+                        <TapGestureRecognizer Tapped="OnDocumentTapped"/>
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
@@ -782,7 +782,7 @@
                 <!-- Add Expense Button -->
                 <Grid Grid.Column="1" x:Name="ExpenseButton">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBottomNavTapped" CommandParameter="Expense"/>
+                        <TapGestureRecognizer Tapped="OnExpenseTapped"/>
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
@@ -829,7 +829,7 @@
                 <!-- Additional Info Button -->
                 <Grid Grid.Column="2" x:Name="InfoButton">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBottomNavTapped" CommandParameter="Info"/>
+                        <TapGestureRecognizer Tapped="OnInfoTapped"/>
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
@@ -875,7 +875,7 @@
                 <!-- History/List Button -->
                 <Grid Grid.Column="3" x:Name="HistoryButton">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnBottomNavTapped" CommandParameter="History"/>
+                        <TapGestureRecognizer Tapped="OnHistoryTapped"/>
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->

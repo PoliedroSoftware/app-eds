@@ -17,7 +17,18 @@ public partial class AddShopping : Popup
 
     private void OnCloseTapped(object sender, EventArgs e)
     {
-        Close();
+        try
+        {
+            Close();
+        }
+        catch (ObjectDisposedException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"AddShopping popup was already disposed during close: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error closing AddShopping popup: {ex.Message}");
+        }
     }
 
     private ShoppingService GetShoppingService()
@@ -98,7 +109,14 @@ public partial class AddShopping : Popup
             // Show professional success feedback
             await CustomAlert.ShowSuccessAsync($"Producto agregado exitosamente a la compra\n\nCantidad: {vm.Quantity:F2} galones\nValor total: ${(vm.Quantity * vm.Price):F2}", "Producto Agregado");
 
-            Close();
+            try
+            {
+                Close();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddShopping popup was disposed after operation: {ex.Message}");
+            }
         }
         finally
         {
