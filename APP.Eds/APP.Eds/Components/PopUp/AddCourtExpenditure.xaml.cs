@@ -18,8 +18,18 @@ public partial class AddCourtExpenditure : Popup
 
     private void OnCloseTapped(object sender, EventArgs e)
     {
-        Close();
-
+        try
+        {
+            Close();
+        }
+        catch (ObjectDisposedException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"AddCourtExpenditure popup was already disposed during close: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error closing AddCourtExpenditure popup: {ex.Message}");
+        }
     }
 
     private async void Add_Expenditure(object sender, EventArgs e)
@@ -43,6 +53,26 @@ public partial class AddCourtExpenditure : Popup
         FirstEntry.IsEnabled = false;
         SecondEntry.IsEnabled = false;
         await CloseAsync();
+    }
+
+    private async Task CloseAsync()
+    {
+        try
+        {
+            await Task.Delay(100);
+            try
+            {
+                Close();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddCourtExpenditure popup was already disposed during async close: {ex.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in AddCourtExpenditure CloseAsync: {ex.Message}");
+        }
     }
 
     private void ExpenditureSelected(object sender, EventArgs e)

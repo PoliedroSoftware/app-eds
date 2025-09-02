@@ -18,10 +18,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private CourtService _service;
     public string UserRole { get; set; } = string.Empty;
     
-    // Variables para rastrear popups activos
-    private Popup _activePopup;
-    private readonly SemaphoreSlim _popupSemaphore = new(1, 1);
-    
     // Propiedad para el elemento activo del menú
     private string _activeNavItem = "Document";
     public string ActiveNavItem 
@@ -158,8 +154,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // Cerrar cualquier popup activo cuando la página desaparezca
-        CloseActivePopupSafely();
     }
 
     private void ApplyConfig(Dictionary<string, bool> config)
@@ -175,27 +169,92 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Maneja los taps en el menú de navegación inferior
+    /// Métodos específicos para cada botón del menú inferior
+    /// </summary>
+    private async void OnDocumentTapped(object sender, EventArgs e)
+    {
+        await HandleNavTap("Document");
+    }
+
+    private async void OnExpenseTapped(object sender, EventArgs e)
+    {
+        await HandleNavTap("Expense");
+    }
+
+    private async void OnInfoTapped(object sender, EventArgs e)
+    {
+        await HandleNavTap("Info");
+    }
+
+    private async void OnHistoryTapped(object sender, EventArgs e)
+    {
+        await HandleNavTap("History");
+    }
+
+    /// <summary>
+    /// Maneja los taps en el menú de navegación inferior (método centralizado)
+    /// </summary>
+    private async Task HandleNavTap(string navItem)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(navItem))
+            {
+                Debug.WriteLine("NavItem is null or empty");
+                return;
+            }
+
+            Debug.WriteLine($"Navigation tap: {navItem}");
+
+            ActiveNavItem = navItem;
+            
+            // Animar el tap
+            await AnimateNavItemTap(navItem);
+            
+            // Ejecutar la acción correspondiente
+            await ExecuteNavAction(navItem);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in navigation tap for {navItem}: {ex.Message}");
+            await CustomAlert.ShowErrorAsync("No se pudo procesar la acción del menú", "Error de Navegación");
+        }
+    }
+
+    /// <summary>
+    /// Maneja los taps en el menú de navegación inferior (método original mantenido por compatibilidad)
     /// </summary>
     private async void OnBottomNavTapped(object sender, EventArgs e)
     {
-        if (sender is TapGestureRecognizer tapGesture && tapGesture.CommandParameter is string navItem)
+        try
         {
-            try
+            string navItem = null;
+            
+            if (sender is TapGestureRecognizer tapGesture && tapGesture.CommandParameter is string commandParam)
             {
-                // Actualizar elemento activo (esto desencadena las animaciones)
-                ActiveNavItem = navItem;
-                
-                // Animar el tap
-                await AnimateNavItemTap(navItem);
-                
-                // Ejecutar la acción correspondiente
-                await ExecuteNavAction(navItem);
+                navItem = commandParam;
             }
-            catch (Exception ex)
+            else if (sender is View viewElement && viewElement.GestureRecognizers.FirstOrDefault() is TapGestureRecognizer gesture && gesture.CommandParameter is string param)
             {
-                Debug.WriteLine($"Error in bottom nav tap: {ex.Message}");
+                navItem = param;
             }
+            else if (e is TappedEventArgs tappedArgs && tappedArgs.Parameter is string tappedParam)
+            {
+                navItem = tappedParam;
+            }
+
+            if (string.IsNullOrEmpty(navItem))
+            {
+                Debug.WriteLine("No se pudo determinar el elemento de navegación");
+                return;
+            }
+
+            await HandleNavTap(navItem);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in bottom nav tap: {ex.Message}");
+            await CustomAlert.ShowErrorAsync("No se pudo procesar la acción del menú", "Error de Navegación");
         }
     }
 
@@ -342,85 +401,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Método seguro para mostrar popups que evita múltiples instancias simultáneas
-    /// </summary>
-    private async Task<bool> ShowPopupSafelyAsync(Popup popup)
-    {
-        if (!await _popupSemaphore.WaitAsync(100)) // Timeout de 100ms
-        {
-            popup?.Close(); // Cerrar el popup si no se puede mostrar
-            return false;
-        }
-
-        try
-        {
-            // Cerrar popup activo si existe
-            CloseActivePopupSafely();
-
-            // Configurar el nuevo popup
-            _activePopup = popup;
-
-            // Mostrar el popup de forma segura
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                try
-                {
-                    await this.ShowPopupAsync(popup);
-                }
-                catch (ObjectDisposedException)
-                {
-                    Debug.WriteLine("Popup was already disposed");
-                    _activePopup = null;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error showing popup: {ex.Message}");
-                    _activePopup = null;
-                }
-            });
-
-            return true;
-        }
-        finally
-        {
-            _popupSemaphore.Release();
-        }
-    }
-
-    /// <summary>
-    /// Cierra el popup activo de forma segura
-    /// </summary>
-    private void CloseActivePopupSafely()
-    {
-        if (_activePopup != null)
-        {
-            try
-            {
-                _activePopup.Close();
-            }
-            catch (ObjectDisposedException)
-            {
-                // El popup ya fue dispuesto, esto es normal
-                Debug.WriteLine("Popup was already disposed when trying to close");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error closing popup: {ex.Message}");
-            }
-            finally
-            {
-                _activePopup = null;
-            }
-        }
-    }
-
     private async Task OpenDocumentPopUp()
     {
         try
         {
             var popup = new AddDocuemt(_service);
-            await ShowPopupSafelyAsync(popup);
+            await ShowPopupSafelyAsync<object>(popup);
         }
         catch (Exception ex)
         {
@@ -434,7 +420,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             var popup = new AddCourtExpenditure(_service);
-            await ShowPopupSafelyAsync(popup);
+            await ShowPopupSafelyAsync<object>(popup);
         }
         catch (Exception ex)
         {
@@ -448,7 +434,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             var popup = new AddInfo(_service);
-            await ShowPopupSafelyAsync(popup);
+            await ShowPopupSafelyAsync<object>(popup);
         }
         catch (Exception ex)
         {
@@ -461,8 +447,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            // Cerrar cualquier popup antes de navegar
-            CloseActivePopupSafely();
             await Navigation.PushAsync(new CourtListView());
         }
         catch (Exception ex)
@@ -478,7 +462,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             var popup = new AddDispenser(_service);
-            await ShowPopupSafelyAsync(popup);
+            await ShowPopupSafelyAsync<object>(popup);
         }
         catch (Exception ex)
         {
@@ -492,7 +476,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             var popup = new AddCourtTypeOfCollection(_service);
-            await ShowPopupSafelyAsync(popup);
+            await ShowPopupSafelyAsync<object>(popup);
         }
         catch (Exception ex)
         {
@@ -688,5 +672,36 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     protected new virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static async Task<T> ShowPopupSafelyAsync<T>(Popup popup) where T : class
+    {
+        try
+        {
+            var result = await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    return await Application.Current.MainPage.ShowPopupAsync(popup) as T;
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Debug.WriteLine($"Popup was disposed during show: {ex.Message}");
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error showing popup: {ex.Message}");
+                    return null;
+                }
+            });
+            
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in ShowPopupSafelyAsync: {ex.Message}");
+            return null;
+        }
     }
 }
