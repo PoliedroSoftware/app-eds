@@ -24,6 +24,7 @@ using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Diagnostics; 
 
 namespace APP.Eds.Services.Navigation
 {
@@ -128,10 +129,25 @@ namespace APP.Eds.Services.Navigation
                 Icon = icon;
                 Items = items;
                 IsDirectNavigation = false;
-                ShowPopupCommand = new Command(() =>
+                ShowPopupCommand = new Command(async () =>
                 {
+                    // ✅ CORREGIDO: Crear nueva instancia local en cada ejecución
                     var popup = new CategoryPopup(items, title);
-                    Application.Current?.MainPage?.ShowPopup(popup);
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        try
+                        {
+                            await Application.Current.MainPage.ShowPopupAsync(popup);
+                        }
+                        catch (ObjectDisposedException ex)
+                        {
+                            Debug.WriteLine($"CategoryPopup was disposed: {ex.Message}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error showing CategoryPopup: {ex.Message}");
+                        }
+                    });
                 });
             }
 
@@ -148,7 +164,7 @@ namespace APP.Eds.Services.Navigation
         public class MenuItemModel
         {
             public string Title { get; set; }
-            public string Name => Title; // Propiedad para compatibilidad con el popup
+            public string Name => Title; 
             public string Icon { get; set; }
             public Type PageType { get; set; }
             public ICommand NavigateCommand { get; }

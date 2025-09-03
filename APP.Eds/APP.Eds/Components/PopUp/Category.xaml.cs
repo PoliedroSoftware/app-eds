@@ -60,40 +60,65 @@ namespace APP.Eds.Views.Popups
 
         private async void OnCloseTapped(object sender, EventArgs e)
         {
-            await AnimateExit();
-            Close();
+            try
+            {
+                await AnimateExit();                
+                try
+                {
+                    Close();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CategoryPopup was already disposed during close: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in CategoryPopup OnCloseTapped: {ex.Message}");
+            }
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)
         {
-            // Feedback táctil en dispositivos móviles
             try
             {
-#if ANDROID || IOS
-                HapticFeedback.Perform(HapticFeedbackType.Click);
-#endif
-            }
-            catch { } // Ignorar errores de feedback táctil
-            
-            // Animar el elemento clickeado con efecto más pronunciado
-            if (sender is Border border)
-            {
-                _ = Task.Run(async () =>
+                try
                 {
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
+#if ANDROID || IOS
+                    HapticFeedback.Perform(HapticFeedbackType.Click);
+#endif
+                }
+                catch { }
+                
+                if (sender is Border border)
+                {
+                    _ = Task.Run(async () =>
                     {
-                        // Crear un efecto de "pulso"
-                        await border.ScaleTo(0.92, 80, Easing.CubicOut);
-                        await border.ScaleTo(1.02, 80, Easing.CubicOut);
-                        await border.ScaleTo(1, 80, Easing.CubicOut);
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            // Crear un efecto de "pulso"
+                            await border.ScaleTo(0.92, 80, Easing.CubicOut);
+                            await border.ScaleTo(1.02, 80, Easing.CubicOut);
+                            await border.ScaleTo(1, 80, Easing.CubicOut);
+                        });
                     });
-                });
+                }
+
+                await Task.Delay(180);
+                await AnimateExit();
+                try
+                {
+                    Close();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CategoryPopup was already disposed during menu item close: {ex.Message}");
+                }
             }
-            
-            // Pequeña pausa para mostrar la animación
-            await Task.Delay(180);
-            await AnimateExit();
-            Close();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in CategoryPopup OnMenuItemClicked: {ex.Message}");
+            }
         }
 
         private async Task AnimateExit()
