@@ -15,7 +15,18 @@ public partial class AddInfo : Popup
 
     private void OnCloseTapped(object sender, EventArgs e)
     {
-        Close();
+        try
+        {
+            Close();
+        }
+        catch (ObjectDisposedException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"AddInfo popup was already disposed during close: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error closing AddInfo popup: {ex.Message}");
+        }
     }
 
     private async void OnSaveTapped(object sender, EventArgs e)
@@ -25,11 +36,26 @@ public partial class AddInfo : Popup
         if (editor != null && !string.IsNullOrWhiteSpace(editor.Text))
         {
             await courtService.SaveAdditionalInfoAsync(editor.Text);
-            Close();
+            
+            try
+            {
+                Close();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddInfo popup was disposed after saving: {ex.Message}");
+            }
         }
         else
         {
-            Close();
+            try
+            {
+                Close();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddInfo popup was disposed without saving: {ex.Message}");
+            }
         }
     }
 }
