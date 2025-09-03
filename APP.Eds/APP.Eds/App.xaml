@@ -13,6 +13,7 @@
             
             <!-- Converters -->
             <converters:MenuIconConverter x:Key="MenuIconConverter" />
+            <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
