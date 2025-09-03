@@ -17,11 +17,11 @@
                             <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
 
                             <Label Text="Inicio" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
-                            <Label Text="{Binding Starttime}"  Grid.Row="3" Grid.Column="3"/>
+                            <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="3" Grid.Column="3"/>
                             <BoxView Grid.Row="3" Grid.ColumnSpan="6" ZIndex="-1"/>
 
                             <Label Text="Fin"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
-                            <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="3"/>
+                            <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="3"/>
 
                             <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
                             <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="5" Grid.Column="3"/>

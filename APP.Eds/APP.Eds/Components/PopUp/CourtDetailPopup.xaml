@@ -62,11 +62,11 @@
 
                         <Label Text="{Binding ShiftTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="0" Margin="0,10,0,0"
                                AutomationId="LabelShift"/>
-                        <Label Text="{Binding Starttime}"  Grid.Row="4" Grid.Column="0"
+                        <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="0"
                                AutomationId="LabelStarttime"/>
-                        <Label Text="{Binding Endtime}"  Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"
+                        <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"
                                AutomationId="LabelEndtime"/>
-                        
+
 
                         <!-- Totals -->
                         <Label Text="{Binding TotalsTranslation}" FontAttributes="Bold" FontSize="18"  Grid.Row="6" Grid.Column="0"
