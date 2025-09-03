@@ -99,11 +99,6 @@
                                            TextColor="#2D3436"
                                            VerticalOptions="Center"
                                            Margin="4,0,0,0"/>
-                                    <Label Text="*" 
-                                           FontSize="16" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#F44336"
-                                           VerticalOptions="Center"/>
                                 </StackLayout>
 
                                 <!-- Simplified Product Type Selection -->
@@ -166,9 +161,46 @@
                                 </Border>
                             </VerticalStackLayout>
 
-                            <!-- Price Field -->
+                            <!-- Purchase Price Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Precio del Producto" 
+                                <Label Text="Precio de Compra" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🛒" 
+                                               FontSize="18" 
+                                               TextColor="#FF6B35" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Numeric"
+                                               Placeholder="0.00 (opcional)"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding PurchasePrice, Mode=TwoWay}"
+                                               AutomationId="EntryPurchasePrice"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                                <Label Text="Precio al cual compra el producto a su proveedor (opcional, se guardará como 0 si está vacío)" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
+                            </VerticalStackLayout>
+
+                            <!-- Sell Price Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Precio de Venta" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
                                        TextColor="#2D3436"
@@ -186,10 +218,10 @@
                                                VerticalOptions="Center"/>
                                         
                                         <Entry Keyboard="Numeric"
-                                               Placeholder="0.00"
+                                               Placeholder="0.00 (opcional)"
                                                PlaceholderColor="#9CA3AF"
-                                               Text="{Binding Price, Mode=TwoWay}"
-                                               AutomationId="EntryPrice"
+                                               Text="{Binding SellPrice, Mode=TwoWay}"
+                                               AutomationId="EntrySellPrice"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
                                                TextColor="#374151"
@@ -197,6 +229,47 @@
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
+                                <Label Text="Precio al cual venderá el producto a sus clientes (opcional, se guardará como 0 si está vacío)" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
+                            </VerticalStackLayout>
+
+                            <!-- Stock Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Stock Inicial" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📦" 
+                                               FontSize="18" 
+                                               TextColor="#9C27B0" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Entry Keyboard="Numeric"
+                                               Placeholder="0 (opcional)"
+                                               PlaceholderColor="#9CA3AF"
+                                               Text="{Binding Stock, Mode=TwoWay}"
+                                               AutomationId="EntryStock"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#374151"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                                <Label Text="Cantidad inicial disponible en inventario (opcional, se guardará como 0 si está vacío)" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
                             </VerticalStackLayout>
                         </VerticalStackLayout>
 
@@ -214,7 +287,7 @@
                                            FontSize="16" 
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
-                                    <Label Text="Los productos son los combustibles y lubricantes que se venden en las estaciones de servicio. Cada producto debe tener un tipo y precio definido."
+                                    <Label Text="Solo el nombre y tipo de producto son obligatorios. Los precios y stock son opcionales y pueden configurarse posteriormente si es necesario. Si no se ingresan valores, se guardarán como 0."
                                            FontSize="12"
                                            TextColor="#1565C0"
                                            VerticalOptions="Center"

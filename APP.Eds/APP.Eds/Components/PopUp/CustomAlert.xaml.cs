@@ -134,12 +134,29 @@ public partial class CustomAlert : Popup
     {
         try
         {
-            Application.Current?.MainPage?.ShowPopup(this);
+            _ = MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    Application.Current?.MainPage?.ShowPopup(this);
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Debug.WriteLine($"CustomAlert was disposed during show: {ex.Message}");
+                    _taskCompletionSource?.TrySetResult(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error showing CustomAlert: {ex.Message}");
+                    _taskCompletionSource?.TrySetResult(false);
+                }
+            });
+            
             return _taskCompletionSource.Task;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error showing custom alert: {ex.Message}");
+            Debug.WriteLine($"Error in CustomAlert.ShowAsync: {ex.Message}");
             _taskCompletionSource?.TrySetResult(false);
             return _taskCompletionSource.Task;
         }
@@ -149,8 +166,18 @@ public partial class CustomAlert : Popup
     {
         try
         {
-            await Task.Delay(100); // Small delay for smooth animation
-            Close();
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Task.Delay(100); 
+                try
+                {
+                    Close();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Debug.WriteLine($"CustomAlert was already disposed during close: {ex.Message}");
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -158,7 +185,6 @@ public partial class CustomAlert : Popup
         }
     }
 
-    // Static helper methods for easy usage
     public static async Task ShowErrorAsync(string message, string title = "Error")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Error);

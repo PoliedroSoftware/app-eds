@@ -4,5 +4,7 @@ public class ProductModel
 {
     public string Name { get; set; }
     public int IdProductType { get; set; }
-    public double Price { get; set; }
+    public double SellPrice { get; set; }
+    public double PurchasePrice { get; set; }
+    public int Stock { get; set; }
 }
