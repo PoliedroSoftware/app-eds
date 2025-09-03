@@ -1,4 +1,4 @@
-﻿using APP.Eds.UsesCases.Bussines;
+﻿using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Capacity;
 using APP.Eds.UsesCases.Category;
 using APP.Eds.UsesCases.CompartimentCapacity;
@@ -72,7 +72,7 @@ namespace APP.Eds.Services.Navigation
                     new("Administración", "⚙️", new List<MenuItemModel>
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
-                        new("Negocio", typeof(APP.Eds.UsesCases.Bussines.BusinessPostView), "🏢"),
+                        new("Negocio", typeof(APP.Eds.UsesCases.Business.BusinessPostView), "🏢"),
                         new("Registre una EDS", typeof(EdsPostView), "🏪")
                     }),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>

@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using APP.Eds.Models.Wizard;
-using APP.Eds.UsesCases.Bussines;
+using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Product;
 using APP.Eds.UsesCases.Eds;

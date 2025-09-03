@@ -435,7 +435,6 @@
                                         
                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
                                             
-                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
                                             <!-- Dispenser Icon -->
                                             <Border BackgroundColor="#FF9800"
                                                     StrokeShape="RoundRectangle 25"

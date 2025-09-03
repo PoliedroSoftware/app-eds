@@ -2,6 +2,7 @@ using System.Net;
 using APP.Eds.Services.Eds;
 using APP.Eds.Controls;
 using APP.Eds.Components.PopUp;
+using APP.Eds.UsesCases.LoadingView; // Added for LoadingOverlay
 
 namespace APP.Eds.UsesCases.Eds;
 
@@ -31,31 +32,31 @@ public partial class EdsPostView : ContentPage
                 // Enhanced validation with professional alerts
                 if (string.IsNullOrWhiteSpace(_edsService.Name))
                 {
-                    await CustomAlert.ShowErrorAsync("El nombre de la estación de servicio es obligatorio", "Nombre Requerido");
+                    await CustomAlert.ShowErrorAsync("El nombre de la estaciï¿½n de servicio es obligatorio", "Nombre Requerido");
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(_edsService.Nit))
                 {
-                    await CustomAlert.ShowErrorAsync("El NIT de la estación es obligatorio para identificación fiscal", "NIT Requerido");
+                    await CustomAlert.ShowErrorAsync("El NIT de la estaciï¿½n es obligatorio para identificaciï¿½n fiscal", "NIT Requerido");
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(_edsService.Sicom))
                 {
-                    await CustomAlert.ShowErrorAsync("El código SICOM es obligatorio para el registro ante autoridades", "SICOM Requerido");
+                    await CustomAlert.ShowErrorAsync("El cï¿½digo SICOM es obligatorio para el registro ante autoridades", "SICOM Requerido");
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(_edsService.Address))
                 {
-                    await CustomAlert.ShowErrorAsync("La dirección física de la estación es obligatoria", "Dirección Requerida");
+                    await CustomAlert.ShowErrorAsync("La direcciï¿½n fï¿½sica de la estaciï¿½n es obligatoria", "Direcciï¿½n Requerida");
                     return;
                 }
 
                 if (_edsService.SelectedBusiness is null)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe seleccionar el negocio al cual pertenece esta estación", "Negocio Requerido");
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar el negocio al cual pertenece esta estaciï¿½n", "Negocio Requerido");
                     return;
                 }
 
@@ -68,19 +69,19 @@ public partial class EdsPostView : ContentPage
 
                 if (_edsService.Nit.Length < 8)
                 {
-                    await CustomAlert.ShowErrorAsync("El NIT debe tener al menos 8 caracteres", "NIT Inválido");
+                    await CustomAlert.ShowErrorAsync("El NIT debe tener al menos 8 caracteres", "NIT Invï¿½lido");
                     return;
                 }
 
                 if (_edsService.Sicom.Length < 4)
                 {
-                    await CustomAlert.ShowErrorAsync("El código SICOM debe tener al menos 4 caracteres", "SICOM Inválido");
+                    await CustomAlert.ShowErrorAsync("El cï¿½digo SICOM debe tener al menos 4 caracteres", "SICOM Invï¿½lido");
                     return;
                 }
 
                 if (_edsService.Address.Length < 10)
                 {
-                    await CustomAlert.ShowErrorAsync("La dirección debe ser más específica (mínimo 10 caracteres)", "Dirección Muy Corta");
+                    await CustomAlert.ShowErrorAsync("La direcciï¿½n debe ser mï¿½s especï¿½fica (mï¿½nimo 10 caracteres)", "Direcciï¿½n Muy Corta");
                     return;
                 }
 
@@ -89,17 +90,17 @@ public partial class EdsPostView : ContentPage
                 await vm.SaveEdsDataAsync();
                 
                 await CustomAlert.ShowSuccessAsync(
-                    $"Estación de servicio registrada exitosamente:\n\n" +
-                    $"• Nombre: {_edsService.Name}\n" +
-                    $"• NIT: {_edsService.Nit}\n" +
-                    $"• SICOM: {_edsService.Sicom}\n" +
-                    $"• Dirección: {_edsService.Address}\n" +
-                    $"• Negocio: {_edsService.SelectedBusiness.Name}",
+                    $"Estaciï¿½n de servicio registrada exitosamente:\n\n" +
+                    $"ï¿½ Nombre: {_edsService.Name}\n" +
+                    $"ï¿½ NIT: {_edsService.Nit}\n" +
+                    $"ï¿½ SICOM: {_edsService.Sicom}\n" +
+                    $"ï¿½ Direcciï¿½n: {_edsService.Address}\n" +
+                    $"ï¿½ Negocio: {_edsService.SelectedBusiness.Name}",
                     "EDS Registrada");
             }
             catch (Exception ex)
             {
-                await CustomAlert.ShowErrorAsync($"Error al registrar la estación de servicio:\n\n{ex.Message}", "Error del Sistema");
+                await CustomAlert.ShowErrorAsync($"Error al registrar la estaciï¿½n de servicio:\n\n{ex.Message}", "Error del Sistema");
             }
             finally
             {
