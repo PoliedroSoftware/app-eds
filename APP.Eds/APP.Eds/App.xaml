@@ -14,6 +14,8 @@
             <!-- Converters -->
             <converters:MenuIconConverter x:Key="MenuIconConverter" />
             <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
