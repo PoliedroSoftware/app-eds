@@ -4,50 +4,290 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-    Title="Cortes">
-    <AbsoluteLayout>
-        <CollectionView ItemsSource="{Binding CourtList}" SelectionChanged="OnCourtSelected" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+    Title="Cortes"
+    BackgroundColor="#F8F9FA">
+    
+    <Grid RowDefinitions="120,*">
+        
+        <!-- Header Section with Purple Gradient -->
+        <Border Grid.Row="0"
+                BackgroundColor="#6A1B9A" 
+                StrokeShape="RoundRectangle 0,0,20,20"
+                Padding="20,40,20,20"
+                StrokeThickness="0">
+            <Border.Shadow>
+                <Shadow Brush="#6A1B9A" Offset="0,4" Radius="12" Opacity="0.3"/>
+            </Border.Shadow>
+            
+            <StackLayout>
+                <Label Text="📋 Historial de Cortes" 
+                       FontSize="26" 
+                       FontAttributes="Bold" 
+                       TextColor="White" 
+                       HorizontalOptions="Center"/>
+                <Label Text="Consulte el historial de cierres de turno registrados" 
+                       FontSize="14" 
+                       TextColor="#E1BEE7" 
+                       HorizontalOptions="Center"
+                       Margin="0,5,0,0"/>
+            </StackLayout>
+        </Border>
+
+        <!-- Main Content Area -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding CourtList}" 
+                        SelectionChanged="OnCourtSelected"
+                        BackgroundColor="Transparent">
+            
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="0" CornerRadius="10" HasShadow="False" Margin="20,20,20,20">
-                        <Grid RowDefinitions="10,*,*,*,*,*,*,10" ColumnDefinitions="10,Auto,20,*,Auto,10">
-                            <Label Text="{Binding Islander}" FontAttributes="Bold"  Grid.Row="1" Grid.ColumnSpan="6" Margin="10,0,0,10"/>
+                    <!-- Modern Court Card Design -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0"
+                            Padding="0"
+                            Margin="16,8,16,8">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.1"/>
+                        </Border.Shadow>
+                        
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            
+                            <!-- Header Section with Islander Name -->
+                            <Border Grid.Row="0"
+                                    BackgroundColor="#F8F5FF"
+                                    StrokeShape="RoundRectangle 16,16,0,0"
+                                    Padding="20,16">
+                                
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="#E8F5E8"
+                                            StrokeShape="RoundRectangle 20"
+                                            WidthRequest="40" HeightRequest="40"
+                                            VerticalOptions="Center">
+                                        <Label Text="👤" 
+                                               FontSize="20" 
+                                               HorizontalOptions="Center" 
+                                               VerticalOptions="Center"/>
+                                    </Border>
+                                    
+                                    <StackLayout Grid.Column="1" 
+                                                 VerticalOptions="Center" 
+                                                 Margin="12,0,0,0">
+                                        <Label Text="{Binding Islander}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#2D3436"/>
+                                        <Label Text="Islero Responsable" 
+                                               FontSize="12" 
+                                               TextColor="#636E72"/>
+                                    </StackLayout>
+                                    
+                                    <!-- Status Indicator -->
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="#E8F5E8"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#4CAF50"
+                                            Padding="8,4"
+                                            VerticalOptions="Center">
+                                        <Label Text="✓ Completado" 
+                                               FontSize="10" 
+                                               TextColor="#2E7D32"
+                                               FontAttributes="Bold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
 
-                            <Label Text="Fecha"  FontAttributes="Bold" Grid.Row="2" Grid.Column="1"/>
-                            <Label Text="{Binding DateStarttime}"  Grid.Row="2" Grid.Column="3"/>
+                            <!-- Content Section with Details -->
+                            <StackLayout Grid.Row="1" Padding="20,16" Spacing="12">
+                                
+                                <!-- Date and Time Row -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                                    
+                                    <!-- Date Section -->
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="#FFF3CD"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#F39C12"
+                                            Padding="12,8">
+                                        <StackLayout Spacing="4">
+                                            <Label Text="📅 Fecha" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#E67E22"
+                                                   HorizontalOptions="Center"/>
+                                            <Label Text="{Binding DateStarttime, StringFormat='{0:dd/MM/yyyy}'}" 
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#D68910"
+                                                   HorizontalOptions="Center"/>
+                                        </StackLayout>
+                                    </Border>
 
-                            <Label Text="Inicio" FontAttributes="Bold" Grid.Row="3" Grid.Column="1"/>
-                            <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="3" Grid.Column="3"/>
-                            <BoxView Grid.Row="3" Grid.ColumnSpan="6" ZIndex="-1"/>
+                                    <!-- Time Section -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="#D4EDDA"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#27AE60"
+                                            Padding="12,8">
+                                        <StackLayout Spacing="4">
+                                            <Label Text="⏰ Horario" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#27AE60"
+                                                   HorizontalOptions="Center"/>
+                                            <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="4">
+                                                <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#1E8449"
+                                                       HorizontalOptions="Center"
+                                                       Grid.Column="0"/>
+                                                <Label Text="-" 
+                                                       FontSize="12"
+                                                       TextColor="#27AE60"
+                                                       HorizontalOptions="Center"
+                                                       Grid.Column="1"/>
+                                                <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#1E8449"
+                                                       HorizontalOptions="Center"
+                                                       Grid.Column="2"/>
+                                            </Grid>
+                                        </StackLayout>
+                                    </Border>
+                                </Grid>
 
-                            <Label Text="Fin"  FontAttributes="Bold" Grid.Row="4" Grid.Column="1"/>
-                            <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="3"/>
+                                <!-- Financial Summary Row -->
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                                    
+                                    <!-- Total Money -->
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="#E8F5E8"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#4CAF50"
+                                            Padding="12,8">
+                                        <StackLayout Spacing="4">
+                                            <Label Text="💰 Total Dinero" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2E7D32"
+                                                   HorizontalOptions="Center"/>
+                                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1B5E20"
+                                                   HorizontalOptions="Center"/>
+                                        </StackLayout>
+                                    </Border>
 
-                            <Label Text="Total"  FontAttributes="Bold" Grid.Row="5" Grid.Column="1"/>
-                            <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="5" Grid.Column="3"/>
-                            <BoxView Grid.Row="5" Grid.ColumnSpan="6" ZIndex="-1"/>
+                                    <!-- Total Gallons -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="#E3F2FD"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#2196F3"
+                                            Padding="12,8">
+                                        <StackLayout Spacing="4">
+                                            <Label Text="⛽ Galones" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1976D2"
+                                                   HorizontalOptions="Center"/>
+                                            <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#0D47A1"
+                                                   HorizontalOptions="Center"/>
+                                        </StackLayout>
+                                    </Border>
+                                </Grid>
+                            </StackLayout>
 
-                            <Label Text="Galones"  FontAttributes="Bold" Grid.Row="6" Grid.Column="1"/>
-                            <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N3}'}"  Grid.Row="6" Grid.Column="3"/>
-
-                            <Button Text="ℹ️"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
-                                    CommandParameter="{Binding}"
-                                    BackgroundColor="Transparent"
-                                    FontSize="30"
-                                    WidthRequest="40" HeightRequest="40" Padding="0"
-                                    HorizontalOptions="End" VerticalOptions="Center"
-                                    Grid.RowSpan="8" Grid.Column="3"
-                                    AutomationId="ButtonCourtInfo"/>
+                            <!-- Action Section -->
+                            <Border Grid.Row="2"
+                                    BackgroundColor="#F8F9FA"
+                                    StrokeShape="RoundRectangle 0,0,16,16"
+                                    Padding="20,12">
+                                
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <!-- Performance Indicator -->
+                                    <StackLayout Grid.Column="0" 
+                                                 Orientation="Horizontal" 
+                                                 Spacing="8"
+                                                 VerticalOptions="Center">
+                                        <Border BackgroundColor="#F3E5F5"
+                                                StrokeShape="RoundRectangle 6"
+                                                Padding="6,3">
+                                            <Label Text="📊 Rendimiento: Excelente" 
+                                                   FontSize="10"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#7B1FA2"/>
+                                        </Border>
+                                    </StackLayout>
+                                    
+                                    <!-- Detail Button -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="#6A1B9A"
+                                            StrokeShape="RoundRectangle 20"
+                                            WidthRequest="50" HeightRequest="40"
+                                            VerticalOptions="Center">
+                                        <Border.Shadow>
+                                            <Shadow Brush="#6A1B9A" Offset="0,2" Radius="8" Opacity="0.2"/>
+                                        </Border.Shadow>
+                                        
+                                        <Button Text="📋"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
+                                                CommandParameter="{Binding}"
+                                                BackgroundColor="Transparent"
+                                                TextColor="White"
+                                                FontSize="18"
+                                                FontAttributes="Bold"
+                                                WidthRequest="50" HeightRequest="40"
+                                                CornerRadius="20"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center"
+                                                AutomationId="ButtonCourtInfo"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+            
+            <!-- Empty State -->
+            <CollectionView.EmptyView>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16" Padding="20">
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="40,30">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.1"/>
+                        </Border.Shadow>
+                        
+                        <StackLayout Spacing="16" HorizontalOptions="Center">
+                            <Label Text="📋" FontSize="60" HorizontalOptions="Center" TextColor="#E0E0E0"/>
+                            <Label Text="No hay cortes registrados" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#757575" 
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Los cierres de turno aparecerán aquí una vez que sean registrados en el sistema" 
+                                   FontSize="14" 
+                                   TextColor="#9E9E9E" 
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   MaximumWidthRequest="300"/>
+                        </StackLayout>
+                    </Border>
+                </StackLayout>
+            </CollectionView.EmptyView>
         </CollectionView>
-        <!-- Loading after of sendButton-->
+
+        <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-                      AbsoluteLayout.LayoutBounds="0,0,1,1"
-                      AbsoluteLayout.LayoutFlags="All"
-                      AutomationId="LoadingOverlay"/>
-    </AbsoluteLayout>
+                              Grid.RowSpan="2"
+                              AutomationId="LoadingOverlay"/>
+    </Grid>
 </ContentPage>
