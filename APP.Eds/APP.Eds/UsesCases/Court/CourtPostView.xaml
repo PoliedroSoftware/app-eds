@@ -930,6 +930,8 @@
                         VerticalOptions="Center"
                         Opacity="0.15"
                         Grid.RowSpan="2"/>
+            </Grid>
+        </Border>
         <!-- Additional Info Display -->
         <Border x:Name="AdditionalInfo"
                 BackgroundColor="#F0F8FF"
