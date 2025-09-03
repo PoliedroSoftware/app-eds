@@ -8,234 +8,461 @@
     Color="Transparent"
     AutomationId="PopupCourtDetail">
 
-    <Frame BorderColor="#6200E8"
-           CornerRadius="15"
-           HasShadow="True"
-           x:Name="Frame"
-           AutomationId="FrameCourtDetail">
+    <Border x:Name="Frame"
+            BackgroundColor="White"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="0"
+            Padding="0"
+            Margin="8"
+            AutomationId="FrameCourtDetail">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,4" Radius="16" Opacity="0.2"/>
+        </Border.Shadow>
 
-        <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
+        <Grid RowDefinitions="Auto,*">
 
-            <!-- Encabezado fijo -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1"
-                       Text="{Binding CourtDetailTranslation}" FontAttributes="Bold" FontSize="22"
-                       
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       AutomationId="LabelCourtDetailTitle"/>
+            <!-- Header Section with Modern Design -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#6A1B9A"
+                    StrokeShape="RoundRectangle 16,16,0,0"
+                    Padding="18,14">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackLayout Grid.Column="0" VerticalOptions="Center">
+                        <Label Text="Detalle Del Corte" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="White"/>
+                        <Label Text="Información detallada del cierre de turno" 
+                               FontSize="12" 
+                               TextColor="#E1BEE7"/>
+                    </StackLayout>
+                    
+                    <Border Grid.Column="1"
+                            BackgroundColor="#FFFFFF20"
+                            StrokeShape="RoundRectangle 20"
+                            WidthRequest="38" HeightRequest="38"
+                            VerticalOptions="Center">
+                        <Button BackgroundColor="Transparent"
+                                Clicked="OnCloseTapped"
+                                FontSize="16"
+                                Text="×"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                WidthRequest="38" HeightRequest="38"
+                                AutomationId="ButtonClosePopup"/>
+                    </Border>
+                </Grid>
+            </Border>
 
-                <Button Grid.Column="2"
-                            BackgroundColor="Transparent"
-                            Clicked="OnCloseTapped"
-                            FontSize="18"
-                            Text="✖"
-                            TextColor="#6200E8"
-                            WidthRequest="30"
-                            HeightRequest="30"
-                            Padding="0"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center"
-                            AutomationId="ButtonClosePopup"/>
-            </Grid>
+            <!-- Main Content with ScrollView -->
+            <ScrollView Grid.Row="1" x:Name="PopupScroll" Padding="16,12" AutomationId="ScrollViewCourtDetails">
+                <VerticalStackLayout Spacing="16">
 
-            <ScrollView Grid.Row="1" x:Name="PopupScroll"
-                        AutomationId="ScrollViewCourtDetails">
-                <VerticalStackLayout>
+                    <!-- Court Information Card -->
+                    <Border BackgroundColor="#F8F5FF"
+                            StrokeShape="RoundRectangle 10"
+                            Stroke="#E8D6FF"
+                            Padding="16,12">
+                        <StackLayout Spacing="14">
+                            <Label Text="📋 Información del Cierre" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#6A1B9A"/>
+                            
+                            <!-- Simplified layout without consecutive -->
+                            <StackLayout Spacing="12">
+                                <!-- Date Section -->
+                                <StackLayout Spacing="6">
+                                    <Label Text="📅 Fecha del Cierre" 
+                                           FontSize="11" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#636E72"/>
+                                    <Border BackgroundColor="#FFF3CD"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#F39C12"
+                                            Padding="12,8">
+                                        <Label Text="{Binding DateStarttime, StringFormat='{0:dddd, dd/MM/yyyy}'}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="#D68910" 
+                                               HorizontalOptions="Center"
+                                               AutomationId="LabelDateValue"/>
+                                    </Border>
+                                </StackLayout>
 
-                    <Grid RowDefinitions="*,*,*,*,*,*,*,*,*,*" ColumnDefinitions="*,*">
-                        <!-- Identidication -->
-                        <Label Text="{Binding ConsecutiveTranslation}" FontAttributes="Bold"  Grid.Row="0" Grid.Column="0"
-                               AutomationId="LabelConsecutive"/>
-                        <Label Text="{Binding Consecutive}"  Grid.Row="0" Grid.Column="1"
-                               AutomationId="LabelConsecutiveValue"/>
+                                <!-- Islander Section -->
+                                <StackLayout Spacing="6">
+                                    <Label Text="👤 Islero Responsable" 
+                                           FontSize="11" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#636E72"/>
+                                    <Border BackgroundColor="#E8F5E8"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#4CAF50"
+                                            Padding="12,8">
+                                        <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                                            <Label Text="👤" FontSize="16" VerticalOptions="Center"/>
+                                            <Label Text="{Binding Islander}" 
+                                                   FontSize="14" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2E7D32" 
+                                                   VerticalOptions="Center"
+                                                   AutomationId="LabelIslanderValue"/>
+                                        </StackLayout>
+                                    </Border>
+                                </StackLayout>
 
-                        <Label Text="{Binding DateTranslation}" FontAttributes="Bold"  Grid.Row="1" Grid.Column="0"
-                               AutomationId="LabelDate"/>
-                        <Label Text="{Binding DateStarttime}"  Grid.Row="1" Grid.Column="1"
-                               AutomationId="LabelDateValue"/>
+                                <!-- Schedule Section -->
+                                <StackLayout Spacing="6">
+                                    <Label Text="⏰ Horario de Trabajo" 
+                                           FontSize="11" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#636E72"/>
+                                    <Border BackgroundColor="#D4EDDA"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#27AE60"
+                                            Padding="12,8">
+                                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                                            <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1E8449"
+                                                   AutomationId="LabelStarttime"/>
+                                            <Label Text="→" 
+                                                   FontSize="16"
+                                                   TextColor="#27AE60"
+                                                   VerticalOptions="Center"/>
+                                            <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#1E8449"
+                                                   AutomationId="LabelEndtime"/>
+                                        </StackLayout>
+                                    </Border>
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </Border>
 
-                        <Label Text="{Binding IslanderTranslation}" FontAttributes="Bold"  Grid.Row="2" Grid.Column="0"
-                               AutomationId="LabelIslander"/>
-                        <Label Text="{Binding Islander}"  Grid.Row="2" Grid.Column="1"
-                               AutomationId="LabelIslanderValue"/>
+                    <!-- Financial Summary Cards -->
+                    <StackLayout Spacing="12">
+                        <Label Text="💰 Totales Financieros" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#2D3436"/>
+                        
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                            <!-- Total Amount -->
+                            <Border Grid.Column="0"
+                                    BackgroundColor="#E8F5E8"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    Padding="10,8">
+                                <StackLayout Spacing="3">
+                                    <Label Text="💵 Total Dinero" 
+                                           FontSize="9" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2E7D32"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#1B5E20"
+                                           HorizontalOptions="Center"
+                                           AutomationId="LabelTotalAccumulatedAmount"/>
+                                </StackLayout>
+                            </Border>
 
-                        <Label Text="{Binding ShiftTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="0" Margin="0,10,0,0"
-                               AutomationId="LabelShift"/>
-                        <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="0"
-                               AutomationId="LabelStarttime"/>
-                        <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}"  Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"
-                               AutomationId="LabelEndtime"/>
+                            <!-- Total Gallons -->
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#E3F2FD"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#2196F3"
+                                    Padding="10,8">
+                                <StackLayout Spacing="3">
+                                    <Label Text="⛽ Total Galones" 
+                                           FontSize="9" 
+                                           FontAttributes="Bold"
+                                           TextColor="#1976D2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#0D47A1"
+                                           HorizontalOptions="Center"
+                                           AutomationId="LabelTotalAccumulatedGallons"/>
+                                </StackLayout>
+                            </Border>
 
+                            <!-- Distintivo -->
+                            <Border Grid.Column="2"
+                                    BackgroundColor="#F3E5F5"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#9C27B0"
+                                    Padding="10,8">
+                                <StackLayout Spacing="3">
+                                    <Label Text="Distinta" 
+                                           FontSize="9" 
+                                           FontAttributes="Bold"
+                                           TextColor="#7B1FA2"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding Distinc, StringFormat='$ {0:N0}'}" 
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#4A148C"
+                                           HorizontalOptions="Center"
+                                           AutomationId="LabelDistincValue"/>
+                                </StackLayout>
+                            </Border>
+                        </Grid>
+                    </StackLayout>
 
-                        <!-- Totals -->
-                        <Label Text="{Binding TotalsTranslation}" FontAttributes="Bold" FontSize="18"  Grid.Row="6" Grid.Column="0"
-                               AutomationId="LabelTotals"/>
+                    <!-- Collections Section -->
+                    <StackLayout Spacing="10" IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}}">
+                        <Border BackgroundColor="#FFF3E0"
+                                StrokeShape="RoundRectangle 6"
+                                Stroke="#FF9800"
+                                Padding="10,6">
+                            <Label Text="💳 Formas de Pago" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#F57C00"
+                                   HorizontalOptions="Center"/>
+                        </Border>
 
-                        <Label Text="{Binding AccumulatedAmountTranslation}" FontAttributes="Bold"  Grid.Row="7" Grid.Column="0"
-                               AutomationId="LabelAccumulatedAmount"/>
-                        <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N3}'}"  Grid.Row="7" Grid.Column="1" Margin="8,0,0,0"
-                               AutomationId="LabelTotalAccumulatedGallons"/>
-
-                        <Label Text="{Binding AccumulatedGallonsTranslations}" FontAttributes="Bold"  Grid.Row="8" Grid.Column="0"
-                               AutomationId="LabelAccumulatedGallons"/>
-                        <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="8" Grid.Column="1"
-                               AutomationId="LabelTotalAccumulatedAmount"/>
-
-                        <Label Text="{Binding DistincTranslation}" FontAttributes="Bold"  Grid.Row="9" Grid.Column="0"
-                               AutomationId="LabelDistinc"/>
-                        <Label Text="{Binding Distinc, StringFormat='$ {0:N3}'}"  Grid.Row="9" Grid.Column="1"
-                               AutomationId="LabelDistincValue"/>
-                    </Grid>
-
-                    <!-- Collections -->
-                    <Label Text="{Binding CollectionsTranslation}" FontAttributes="Bold" FontSize="18" Margin="0,10,0,5"
-                           AutomationId="LabelCollections"/>
-                    <CollectionView ItemsSource="{Binding Collections}" Margin="0,0,0,10"
-                                    AutomationId="CollectionViewCollections">
+                        <CollectionView ItemsSource="{Binding Collections}" AutomationId="CollectionViewCollections">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                <Frame Padding="0" Margin="0,10"   CornerRadius="9"
-                                       AutomationId="FrameCollectionItem">
-                                    <Grid RowDefinitions="10,*,*,*,*,10" ColumnDefinitions="10,*,*,10">
-                                        <Label Text="{Binding DateTranslation}" FontAttributes="Bold"  Grid.Row="1" Grid.Column="1"
-                                               AutomationId="LabelCollectionDate"/>
-                                        <Label Text="{Binding Date}"  Grid.Row="1" Grid.Column="2"
-                                               AutomationId="LabelCollectionDateValue"/>
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,2"
+                                            Padding="10,6">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="*,*" RowSpacing="4" ColumnSpacing="12">
+                                            <!-- Collection Type -->
+                                            <StackLayout Grid.Row="0" Grid.Column="0" Spacing="1">
+                                                <Label Text="Cobro" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Collection}" 
+                                                       FontSize="11" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2D3436" 
+                                                       AutomationId="LabelCollectionValue"/>
+                                            </StackLayout>
 
-                                        <Label Text="{Binding CollectionTranslation}" FontAttributes="Bold"  Grid.Row="2" Grid.Column="1"
-                                               AutomationId="LabelCollection"/>
-                                        <Label Text="{Binding Collection}"  Grid.Row="2" Grid.Column="2"
-                                               AutomationId="LabelCollectionValue"/>
-                                        <BoxView Grid.Row="2" Grid.ColumnSpan="4" ZIndex="-1"/>
+                                            <!-- Amount -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="1">
+                                                <Label Text="Monto" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#4CAF50" 
+                                                       AutomationId="LabelAmountValue"/>
+                                            </StackLayout>
 
-                                        <Label Text="{Binding AmountTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="1"
-                                               AutomationId="LabelAmount"/>
-                                        <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}"  Grid.Row="3" Grid.Column="2"
-                                               AutomationId="LabelAmountValue"/>
-
-                                        <Label Text="{Binding DescriptionTranslation}" FontAttributes="Bold"  Grid.Row="4" Grid.Column="1"
-                                               AutomationId="LabelDescription"/>
-                                        <Label Text="{Binding Description}"  Grid.Row="4" Grid.Column="2"
-                                               AutomationId="LabelDescriptionValue"/>
-                                        <BoxView Grid.Row="4" Grid.ColumnSpan="4" ZIndex="-1"/>
-                                    </Grid>
-                                </Frame>
-                            </DataTemplate>
+                                            <!-- Description -->
+                                            <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" Spacing="1">
+                                                <Label Text="Descripción" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Description}" 
+                                                       FontSize="10" 
+                                                       TextColor="#757575" 
+                                                       AutomationId="LabelDescriptionValue"/>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+                    </StackLayout>
 
-                        <!--Dispensers-->
-                    <Label Text="{Binding DispensersTranslation}" FontAttributes="Bold" FontSize="18"  Margin="0,10,0,5"
-                           AutomationId="LabelDispensers"/>
-                    <CollectionView ItemsSource="{Binding Dispensers}" Margin="0,0,0,10"
-                                    AutomationId="CollectionViewDispensers">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame Padding="0" Margin="0,10"   CornerRadius="9"
-                                       AutomationId="FrameDispenserItem">
-                                    <Grid RowDefinitions="10,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,10" ColumnDefinitions="10,*,*,10">
-                                        <Label Text="{Binding DispenserTranslation}" FontAttributes="Bold"  Grid.Row="1" Grid.Column="1" AutomationId="LabelDispenser"/>
-                                        <Label Text="{Binding Dispenser}"  Grid.Row="1" Grid.Column="2" AutomationId="LabelDispenserValue"/>
+                    <!-- Dispensers Section -->
+                    <StackLayout Spacing="10" IsVisible="{Binding Dispensers.Count, Converter={StaticResource CountToBoolConverter}}">
+                        <Border BackgroundColor="#E8F5E8"
+                                StrokeShape="RoundRectangle 6"
+                                Stroke="#4CAF50"
+                                Padding="10,6">
+                            <Label Text="⛽ Dispensadores" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E7D32"
+                                   HorizontalOptions="Center"/>
+                        </Border>
 
-                                        <Label Text="{Binding NumberHoseTranslation}" FontAttributes="Bold"  Grid.Row="2" Grid.Column="1" AutomationId="LabelHoseNumber"/>
-                                        <Label Text="{Binding NumberHose}"  Grid.Row="2" Grid.Column="2" AutomationId="LabelHoseNumberValue"/>
-                                        <BoxView Grid.Row="2" Grid.ColumnSpan="4" ZIndex="-1"/>
+                        <CollectionView ItemsSource="{Binding Dispensers}" AutomationId="CollectionViewDispensers">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,2"
+                                            Padding="12,8">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <StackLayout Spacing="8">
+                                            <!-- Header with Dispenser Info -->
+                                            <Grid ColumnDefinitions="Auto,*,*" ColumnSpacing="12">
+                                                <Border Grid.Column="0"
+                                                        BackgroundColor="#E3F2FD"
+                                                        StrokeShape="RoundRectangle 4"
+                                                        Padding="4">
+                                                    <Label Text="⛽" FontSize="14" HorizontalOptions="Center"/>
+                                                </Border>
+                                                
+                                                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                                    <Label Text="Dispensador" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding Dispenser}" 
+                                                           FontSize="12" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#2196F3"/>
+                                                </StackLayout>
 
-                                        <Label Text="{Binding ProductTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="1" AutomationId="LabelProduct"/>
-                                        <Label Text="{Binding Product}"  Grid.Row="3" Grid.Column="2" AutomationId="LabelProductValue"/>
+                                                <StackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
+                                                    <Label Text="Núm. Manguera" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding NumberHose}" 
+                                                           FontSize="11" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#2D3436"/>
+                                                </StackLayout>
+                                            </Grid>
 
-                                        <Label Text="{Binding PriceTranslation}" FontAttributes="Bold"  Grid.Row="4" Grid.Column="1" AutomationId="LabelPrice"/>
-                                        <Label Text="{Binding Price, StringFormat='$ {0:N3}'}"  Grid.Row="4" Grid.Column="2" AutomationId="LabelPriceValue"/>
-                                        <BoxView Grid.Row="4" Grid.ColumnSpan="4" ZIndex="-1"/>
+                                            <!-- Dispenser Details in Vertical Layout -->
+                                            <StackLayout Spacing="6">
+                                                <!-- Current Values Row -->
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                    <StackLayout Grid.Column="0" Spacing="1">
+                                                        <Label Text="💰 Monto Actual" 
+                                                               FontSize="9" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#636E72"/>
+                                                        <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                               FontSize="11" 
+                                                               FontAttributes="Bold"
+                                                               TextColor="#4CAF50"/>
+                                                    </StackLayout>
 
-                                        <Label Text="{Binding AccumulatedAmountTranslation}" FontAttributes="Bold"  Grid.Row="7" Grid.Column="1" AutomationId="LabelAccumulatedAmount"/>
-                                        <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="7" Grid.Column="2" AutomationId="LabelAccumulatedAmountValue"/>
+                                                    <StackLayout Grid.Column="1" Spacing="1">
+                                                        <Label Text="⛽ Galones Actuales" 
+                                                               FontSize="9" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#636E72"/>
+                                                        <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                               FontSize="11" 
+                                                               FontAttributes="Bold"
+                                                               TextColor="#2196F3"/>
+                                                    </StackLayout>
+                                                </Grid>
 
-                                        <Label Text="{Binding AccumulatedGallonsTranslations}" FontAttributes="Bold"  Grid.Row="8" Grid.Column="1" AutomationId="LabelAccumulatedGallons"/>
-                                        <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}"  Margin="8,0,0,0" Grid.Row="8" Grid.Column="2" AutomationId="LabelAccumulatedGallonsValue"/>
-                                        <BoxView Grid.Row="8" Grid.ColumnSpan="4" ZIndex="-1"/>
+                                                <!-- Previous Values Row -->
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                    <StackLayout Grid.Column="0" Spacing="1">
+                                                        <Label Text="💰 Monto Anterior" 
+                                                               FontSize="9" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#636E72"/>
+                                                        <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                               FontSize="11" 
+                                                               TextColor="#757575"/>
+                                                    </StackLayout>
 
-                                        <Label Text="{Binding LastAccumulatedAmountTranslation}" FontAttributes="Bold"  Grid.Row="9" Grid.Column="1" AutomationId="LabelLastAccumulatedAmount"/>
-                                        <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N3}'}"  Grid.Row="9" Grid.Column="2" AutomationId="LabelLastAccumulatedAmountValue"/>
+                                                    <StackLayout Grid.Column="1" Spacing="1">
+                                                        <Label Text="⛽ Galones Anteriores" 
+                                                               FontSize="9" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#636E72"/>
+                                                        <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                               FontSize="11" 
+                                                               TextColor="#757575"/>
+                                                    </StackLayout>
+                                                </Grid>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
 
-                                        <Label Text="{Binding LastAccumulatedGallonsTranslation}" FontAttributes="Bold"  Grid.Row="10" Grid.Column="1" AutomationId="LabelLastAccumulatedGallons"/>
-                                        <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N3}'}"  Margin="8,0,0,0" Grid.Row="10" Grid.Column="2" AutomationId="LabelLastAccumulatedGallonsValue"/>
-                                        <BoxView Grid.Row="10" Grid.ColumnSpan="4" ZIndex="-1"/>
+                    <!-- Expenditures Section -->
+                    <StackLayout Spacing="10" IsVisible="{Binding Expenditures.Count, Converter={StaticResource CountToBoolConverter}}">
+                        <Border BackgroundColor="#FFEBEE"
+                                StrokeShape="RoundRectangle 6"
+                                Stroke="#F44336"
+                                Padding="10,6">
+                            <Label Text="💸 Gastos" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#D32F2F"
+                                   HorizontalOptions="Center"/>
+                        </Border>
 
-                                        <Label Text="{Binding DistincTranslation}" FontAttributes="Bold"  Grid.Row="11" Grid.Column="1" AutomationId="LabelDistinc"/>
-                                        <Label Text="{Binding Distinc, StringFormat='$ {0:N3}'}"  Grid.Row="11" Grid.Column="2" AutomationId="LabelDistincValue"/>
-                                    </Grid>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        <CollectionView ItemsSource="{Binding Expenditures}" AutomationId="CollectionViewExpenditures">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 6"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,2"
+                                            Padding="10,6">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid ColumnDefinitions="*,*" RowSpacing="4" ColumnSpacing="12">
+                                            <!-- Expenditure Type -->
+                                            <StackLayout Grid.Row="0" Grid.Column="0" Spacing="1">
+                                                <Label Text="Descripción" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Expenditure}" 
+                                                       FontSize="11" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2D3436" 
+                                                       AutomationId="LabelExpenditureValue"/>
+                                            </StackLayout>
 
-                    <!--Documents-->
-                    <Label Text="{Binding DocumentsTranslation}" FontAttributes="Bold" FontSize="18"  Margin="0,10,0,5"
-                           AutomationId="LabelDocuments"/>
-                    <CollectionView ItemsSource="{Binding Documents}" Margin="0,0,0,10"
-                                    AutomationId="CollectionViewDocuments">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame Padding="10" Margin="0,5"   CornerRadius="9"
-                                       AutomationId="FrameDocumentItem">
-                                    <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*">
-                                        <Label Text="{Binding CourtTranslation}" FontAttributes="Bold"  Grid.Row="0" Grid.Column="0"
-                                               AutomationId="LabelDocumentCourt"/>
-                                        <Label Text="{Binding Court}"  Grid.Row="0" Grid.Column="1"
-                                               AutomationId="LabelDocumentCourtValue"/>
-                                        <Grid HeightRequest="120" Margin="0,10,0,0" Grid.Row="1" Grid.Column="0">
-                                            <Image HorizontalOptions="Start" Aspect="AspectFit" Source="{Binding ImageSource}" IsVisible="{Binding HasImage}"
-                                                   AutomationId="ImageDocument"/>
-                                            <Label Text="{Binding ThereIsNoImageTranslation}" HorizontalOptions="Start" VerticalOptions="Center" TextColor="Gray" FontAttributes="Italic" IsVisible="{Binding NoImage}"
-                                                   AutomationId="LabelNoImage"/>
+                                            <!-- Amount -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="1">
+                                                <Label Text="Monto" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#F44336" 
+                                                       AutomationId="LabelExpenditureAmountValue"/>
+                                            </StackLayout>
                                         </Grid>
-                                    </Grid>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
 
-                    <!--Expenditures-->
-                    <Label Text="{Binding ExpendituresTranslation}" FontAttributes="Bold" FontSize="18"  Margin="0,10,0,5"
-                           AutomationId="LabelExpenditures"/>
-                    <CollectionView ItemsSource="{Binding Expenditures}" Margin="0,0,0,10" 
-                                    AutomationId="CollectionViewExpenditures">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame Padding="0" Margin="0,5" CornerRadius="9"
-                                       AutomationId="FrameExpenditureItem">
-                                    <Grid RowDefinitions="10,*,*,*,*,10" ColumnDefinitions="10,*,*,10">
-                                        <Label Text="{Binding DateTranslation}" FontAttributes="Bold"  Grid.Row="1" Grid.Column="1"
-                                               AutomationId="LabelExpenditureDate"/>
-                                        <Label Text="{Binding Date}"  Grid.Row="1" Grid.Column="2"
-                                               AutomationId="LabelExpenditureDateValue"/>
-                                        <BoxView Grid.Row="2" Grid.ColumnSpan="4" ZIndex="-1"/>
-
-                                        <Label Text="{Binding ExpenditureTranslation}" FontAttributes="Bold"  Grid.Row="2" Grid.Column="1"
-                                               AutomationId="LabelExpenditure"/>
-                                        <Label Text="{Binding Expenditure}"  Grid.Row="2" Grid.Column="2"
-                                               AutomationId="LabelExpenditureValue"/>
-
-                                        <Label Text="{Binding AmountTranslation}" FontAttributes="Bold"  Grid.Row="3" Grid.Column="1"
-                                               AutomationId="LabelExpenditureAmount"/>
-                                        <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}"  Grid.Row="3" Grid.Column="2"
-                                               AutomationId="LabelExpenditureAmountValue"/>
-                                        <BoxView Grid.Row="4" Grid.ColumnSpan="4" ZIndex="-1"/>
-
-                                        <Label Text="{Binding DescriptionTranslation}" FontAttributes="Bold"  Grid.Row="4" Grid.Column="1"
-                                               AutomationId="LabelExpenditureDescription"/>
-                                        <Label Text="{Binding Description}"  Grid.Row="4" Grid.Column="2"
-                                               AutomationId="LabelExpenditureDescriptionValue"/>
-                                    </Grid>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>
-    </Frame>
+    </Border>
 
 </mct:Popup>
