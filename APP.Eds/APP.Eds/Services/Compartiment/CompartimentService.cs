@@ -404,7 +404,7 @@ namespace APP.Eds.Services.Compartiment
             }
             try
             {
-                // Asegurar que la lista de compartimentos esté actualizada antes de la validación
+                
                 await GetCompartimentAsync();
 
                 if (Number <= 0)
