@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Court.CourtDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Detalle Del Corte"
+    BackgroundColor="#F8F9FA">
+
+    <Grid RowDefinitions="120,*">
+
+        <!-- Header Section with Modern Design -->
+        <Border Grid.Row="0"
+                BackgroundColor="#6A1B9A" 
+                StrokeShape="RoundRectangle 0,0,20,20"
+                Padding="20,40,20,20"
+                StrokeThickness="0">
+            <Border.Shadow>
+                <Shadow Brush="#6A1B9A" Offset="0,4" Radius="12" Opacity="0.3"/>
+            </Border.Shadow>
+            
+            <StackLayout>
+                <Label Text="Detalle Del Corte" 
+                       FontSize="26" 
+                       FontAttributes="Bold" 
+                       TextColor="White" 
+                       HorizontalOptions="Center"/>
+                <Label Text="Informacion detallada del cierre de turno" 
+                       FontSize="14" 
+                       TextColor="#E1BEE7" 
+                       HorizontalOptions="Center"
+                       Margin="0,5,0,0"/>
+            </StackLayout>
+        </Border>
+
+        <!-- Main Content with ScrollView -->
+        <ScrollView Grid.Row="1" x:Name="MainScroll" Padding="16,12" AutomationId="ScrollViewCourtDetails">
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Court Information Card -->
+                <Border BackgroundColor="#F8F5FF"
+                        StrokeShape="RoundRectangle 10"
+                        Stroke="#E8D6FF"
+                        Padding="16,12">
+                    <StackLayout Spacing="14">
+                        <Label Text="Informacion del Cierre" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#6A1B9A"/>
+                        
+                        <!-- Simplified layout without consecutive -->
+                        <StackLayout Spacing="12">
+                            <!-- Date Section -->
+                            <StackLayout Spacing="6">
+                                <Label Text="Fecha del Cierre" 
+                                       FontSize="11" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72"/>
+                                <Border BackgroundColor="#FFF3CD"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#F39C12"
+                                        Padding="12,8">
+                                    <Label Text="{Binding DateStarttime, StringFormat='{0:dddd, dd/MM/yyyy}'}" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold"
+                                           TextColor="#D68910" 
+                                           HorizontalOptions="Center"
+                                           AutomationId="LabelDateValue"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Islander Section -->
+                            <StackLayout Spacing="6">
+                                <Label Text="Islero Responsable" 
+                                       FontSize="11" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72"/>
+                                <Border BackgroundColor="#E8F5E8"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#4CAF50"
+                                        Padding="12,8">
+                                    <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="??" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Islander}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="#2E7D32" 
+                                               VerticalOptions="Center"
+                                               AutomationId="LabelIslanderValue"/>
+                                    </StackLayout>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Schedule Section -->
+                            <StackLayout Spacing="6">
+                                <Label Text="Horario de Trabajo" 
+                                       FontSize="11" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72"/>
+                                <Border BackgroundColor="#D4EDDA"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#27AE60"
+                                        Padding="12,8">
+                                    <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                                        <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="#1E8449"
+                                               AutomationId="LabelStarttime"/>
+                                        <Label Text="?" 
+                                               FontSize="16"
+                                               TextColor="#27AE60"
+                                               VerticalOptions="Center"/>
+                                        <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="#1E8449"
+                                               AutomationId="LabelEndtime"/>
+                                    </StackLayout>
+                                </Border>
+                            </StackLayout>
+                        </StackLayout>
+                    </StackLayout>
+                </Border>
+
+                <!-- Financial Summary Cards -->
+                <StackLayout Spacing="12">
+                    <Label Text="Totales Financieros" 
+                           FontSize="13" 
+                           FontAttributes="Bold" 
+                           TextColor="#2D3436"/>
+                    
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                        <!-- Total Amount -->
+                        <Border Grid.Column="0"
+                                BackgroundColor="#E8F5E8"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#4CAF50"
+                                Padding="10,8">
+                            <StackLayout Spacing="3">
+                                <Label Text="Total Dinero" 
+                                       FontSize="9" 
+                                       FontAttributes="Bold"
+                                       TextColor="#2E7D32"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       TextColor="#1B5E20"
+                                       HorizontalOptions="Center"
+                                       AutomationId="LabelTotalAccumulatedAmount"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Total Gallons -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="#E3F2FD"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3"
+                                Padding="10,8">
+                            <StackLayout Spacing="3">
+                                <Label Text="Total Galones" 
+                                       FontSize="9" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       TextColor="#0D47A1"
+                                       HorizontalOptions="Center"
+                                       AutomationId="LabelTotalAccumulatedGallons"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Distintivo -->
+                        <Border Grid.Column="2"
+                                BackgroundColor="#F3E5F5"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#9C27B0"
+                                Padding="10,8">
+                            <StackLayout Spacing="3">
+                                <Label Text="Distinta" 
+                                       FontSize="9" 
+                                       FontAttributes="Bold"
+                                       TextColor="#7B1FA2"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding Distinc, StringFormat='$ {0:N0}'}" 
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       TextColor="#4A148C"
+                                       HorizontalOptions="Center"
+                                       AutomationId="LabelDistincValue"/>
+                            </StackLayout>
+                        </Border>
+                    </Grid>
+                </StackLayout>
+
+                <!-- Collections Section -->
+                <StackLayout Spacing="10" IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}}">
+                    <Border BackgroundColor="#FFF3E0"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#FF9800"
+                            Padding="10,6">
+                        <Label Text="Formas de Pago" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#F57C00"
+                               HorizontalOptions="Center"/>
+                    </Border>
+
+                    <CollectionView ItemsSource="{Binding Collections}" AutomationId="CollectionViewCollections">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="White"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#E0E0E0"
+                                        Margin="0,2"
+                                        Padding="10,6">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                    </Border.Shadow>
+                                    
+                                    <Grid ColumnDefinitions="*,*" RowSpacing="4" ColumnSpacing="12">
+                                        <!-- Collection Type -->
+                                        <StackLayout Grid.Row="0" Grid.Column="0" Spacing="1">
+                                            <Label Text="Cobro" 
+                                                   FontSize="9" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#636E72"/>
+                                            <Label Text="{Binding Collection}" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2D3436" 
+                                                   AutomationId="LabelCollectionValue"/>
+                                        </StackLayout>
+
+                                        <!-- Amount -->
+                                        <StackLayout Grid.Row="0" Grid.Column="1" Spacing="1">
+                                            <Label Text="Monto" 
+                                                   FontSize="9" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#636E72"/>
+                                            <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
+                                                   FontSize="11"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#4CAF50" 
+                                                   AutomationId="LabelAmountValue"/>
+                                        </StackLayout>
+
+                                        <!-- Description -->
+                                        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" Spacing="1">
+                                            <Label Text="Descripcion" 
+                                                   FontSize="9" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#636E72"/>
+                                            <Label Text="{Binding Description}" 
+                                                   FontSize="10" 
+                                                   TextColor="#757575" 
+                                                   AutomationId="LabelDescriptionValue"/>
+                                        </StackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+                <!-- Dispensers Section -->
+                <StackLayout Spacing="10" IsVisible="{Binding Dispensers.Count, Converter={StaticResource CountToBoolConverter}}">
+                    <Border BackgroundColor="#E8F5E8"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#4CAF50"
+                            Padding="10,6">
+                        <Label Text="Dispensadores" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#2E7D32"
+                               HorizontalOptions="Center"/>
+                    </Border>
+
+                    <CollectionView ItemsSource="{Binding Dispensers}" AutomationId="CollectionViewDispensers">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="White"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#E0E0E0"
+                                        Margin="0,2"
+                                        Padding="12,8">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                    </Border.Shadow>
+                                    
+                                    <StackLayout Spacing="8">
+                                        <!-- Header with Dispenser Info -->
+                                        <Grid ColumnDefinitions="Auto,*,*" ColumnSpacing="12">
+                                            <Border Grid.Column="0"
+                                                    BackgroundColor="#E3F2FD"
+                                                    StrokeShape="RoundRectangle 4"
+                                                    Padding="4">
+                                                <Label Text="?" FontSize="14" HorizontalOptions="Center"/>
+                                            </Border>
+                                            
+                                            <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                                <Label Text="Dispensador" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding Dispenser}" 
+                                                       FontSize="12" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2196F3"/>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
+                                                <Label Text="Num. Manguera" 
+                                                       FontSize="9" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#636E72"/>
+                                                <Label Text="{Binding NumberHose}" 
+                                                       FontSize="11" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2D3436"/>
+                                            </StackLayout>
+                                        </Grid>
+
+                                        <!-- Dispenser Details in Vertical Layout -->
+                                        <StackLayout Spacing="6">
+                                            <!-- Current Values Row -->
+                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                <StackLayout Grid.Column="0" Spacing="1">
+                                                    <Label Text="Monto Actual" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                           FontSize="11" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#4CAF50"/>
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" Spacing="1">
+                                                    <Label Text="Galones Actuales" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                           FontSize="11" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#2196F3"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Previous Values Row -->
+                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                <StackLayout Grid.Column="0" Spacing="1">
+                                                    <Label Text="Monto Anterior" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                           FontSize="11" 
+                                                           TextColor="#757575"/>
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" Spacing="1">
+                                                    <Label Text="Galones Anteriores" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#636E72"/>
+                                                    <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                           FontSize="11" 
+                                                           TextColor="#757575"/>
+                                                </StackLayout>
+                                            </Grid>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+                <!-- Expenditures Section -->
+                <StackLayout Spacing="10" IsVisible="{Binding Expenditures.Count, Converter={StaticResource CountToBoolConverter}}">
+                    <Border BackgroundColor="#FFEBEE"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#F44336"
+                            Padding="10,6">
+                        <Label Text="Gastos" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#D32F2F"
+                               HorizontalOptions="Center"/>
+                    </Border>
+
+                    <CollectionView ItemsSource="{Binding Expenditures}" AutomationId="CollectionViewExpenditures">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="White"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#E0E0E0"
+                                        Margin="0,2"
+                                        Padding="10,6">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                                    </Border.Shadow>
+                                    
+                                    <Grid ColumnDefinitions="*,*" RowSpacing="4" ColumnSpacing="12">
+                                        <!-- Expenditure Type -->
+                                        <StackLayout Grid.Row="0" Grid.Column="0" Spacing="1">
+                                            <Label Text="Descripcion" 
+                                                   FontSize="9" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#636E72"/>
+                                            <Label Text="{Binding Expenditure}" 
+                                                   FontSize="11" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2D3436" 
+                                                   AutomationId="LabelExpenditureValue"/>
+                                        </StackLayout>
+
+                                        <!-- Amount -->
+                                        <StackLayout Grid.Row="0" Grid.Column="1" Spacing="1">
+                                            <Label Text="Monto" 
+                                                   FontSize="9" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#636E72"/>
+                                            <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
+                                                   FontSize="11"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#F44336" 
+                                                   AutomationId="LabelExpenditureAmountValue"/>
+                                        </StackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
