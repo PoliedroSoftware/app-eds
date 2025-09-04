@@ -9,6 +9,7 @@ using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
 using System.Linq;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -398,53 +399,56 @@ namespace APP.Eds.Services.Compartiment
         {
             if (string.IsNullOrEmpty(_authToken))
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
             try
             {
+                // Asegurar que la lista de compartimentos esté actualizada antes de la validación
+                await GetCompartimentAsync();
+
                 if (Number <= 0)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El número debe ser mayor o igual a 1", "OK");
+                    await CustomAlert.ShowErrorAsync("El número debe ser mayor o igual a 1", "Número Inválido");
                     return;
                 }
 
                 if (Nominal < 0)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El valor nominal no puede ser negativo", "OK");
+                    await CustomAlert.ShowErrorAsync("El valor nominal no puede ser negativo", "Capacidad Nominal Inválida");
                     return;
                 }
 
                 if (Operative < 0)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El valor operativo no puede ser negativo", "OK");
+                    await CustomAlert.ShowErrorAsync("El valor operativo no puede ser negativo", "Capacidad Operativa Inválida");
                     return;
                 }
 
                 if (Stock < 0)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "El stock no puede ser negativo", "OK");
+                    await CustomAlert.ShowErrorAsync("El stock no puede ser negativo", "Stock Inválido");
                     return;
                 }
 
                 if (Height < 0)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "La altura no puede ser negativa", "OK");
+                    await CustomAlert.ShowErrorAsync("La altura no puede ser negativa", "Altura Inválida");
                     return;
                 }
 
                 if (SelectedTank is null)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tanque", "OK");
+                    await CustomAlert.ShowErrorAsync("Por favor, seleccione un tanque", "Tanque Requerido");
                     return;
                 }
 
                 // Validar si el compartimiento ya existe para el tanque seleccionado
-                var existingCompartment = CompartimentList.FirstOrDefault(c => 
+                var existingCompartment = CompartimentList.FirstOrDefault(c =>
                     c.Number == Number && c.IdTank == SelectedTank.IdTank);
                 if (existingCompartment != null)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Información", "Este compartimiento ya fue registrado para el tanque.", "OK");
+                    await CustomAlert.ShowErrorAsync("Este compartimiento ya fue registrado para el tanque.", "Compartimento Existente");
                     return;
                 }
 
@@ -452,7 +456,7 @@ namespace APP.Eds.Services.Compartiment
                 var existingCompartmentsCount = CompartimentList.Count(c => c.IdTank == SelectedTank.IdTank);
                 if (existingCompartmentsCount >= SelectedTank.Compartment)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Información", "El tanque ya tiene todos sus compartimientos registrados. No es posible agregar más.", "OK");
+                    await CustomAlert.ShowErrorAsync($"El tanque ya tiene {SelectedTank.Compartment} compartimientos registrados, que es su capacidad máxima. No es posible agregar más.", "Capacidad Máxima Alcanzada");
                     return;
                 }
 
@@ -480,17 +484,17 @@ namespace APP.Eds.Services.Compartiment
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+                    await CustomAlert.ShowSuccessAsync("Datos enviados correctamente", "Éxito");
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                    await CustomAlert.ShowErrorAsync($"No se pudo enviar el dato: {response.StatusCode}\n{error}", "Error de Envío");
                 }
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync($"Error al enviar los datos: {ex.Message}", "Error del Sistema");
             }
         }
 
