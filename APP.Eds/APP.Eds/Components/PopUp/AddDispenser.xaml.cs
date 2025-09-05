@@ -18,55 +18,55 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
     public CourtService CourtService => courtService;
 
     // Propiedades que se sincronizan con CourtService
-    public double AccumulatedAmount 
-    { 
-        get => courtService.AccumulatedAmount; 
-        set 
-        { 
+    public double AccumulatedAmount
+    {
+        get => courtService.AccumulatedAmount;
+        set
+        {
             courtService.AccumulatedAmount = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(AmountDifferenceResult));
-        } 
+        }
     }
-    
-    public double AccumulatedGallons 
-    { 
-        get => courtService.AccumulatedGallons; 
-        set 
-        { 
+
+    public double AccumulatedGallons
+    {
+        get => courtService.AccumulatedGallons;
+        set
+        {
             courtService.AccumulatedGallons = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(GallonsDifferenceResult));
-        } 
+        }
     }
-    
-    public double LastAccumulatedAmount 
-    { 
-        get => courtService.LastAccumulatedAmount; 
-        set 
-        { 
+
+    public double LastAccumulatedAmount
+    {
+        get => courtService.LastAccumulatedAmount;
+        set
+        {
             courtService.LastAccumulatedAmount = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(AmountDifferenceResult));
-        } 
+        }
     }
-    
-    public double LastAccumulatedGallons 
-    { 
-        get => courtService.LastAccumulatedGallons; 
-        set 
-        { 
+
+    public double LastAccumulatedGallons
+    {
+        get => courtService.LastAccumulatedGallons;
+        set
+        {
             courtService.LastAccumulatedGallons = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(GallonsDifferenceResult));
-        } 
+        }
     }
 
     public Models.Court.HoseCourtModel SelectedHose
     {
         get => courtService.SelectedHose;
-        set 
-        { 
+        set
+        {
             courtService.SelectedHose = value;
             OnPropertyChanged();
         }
@@ -81,14 +81,14 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
     {
         InitializeComponent();
         this.courtService = courtService;
-        
+
         if (SecondEntry != null)
         {
             SecondEntry.IsEnabled = isGallonsEditable;
         }
-        
+
         CheckUserRole();
-        
+
         // Configure local binding context
         BindingContext = this;
     }
@@ -99,7 +99,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             var userRole = Preferences.Get("userRole", "User");
             canEditPrice = userRole == "Admin" || userRole == "User";
-            
+
             Dispatcher.Dispatch(() => UpdatePriceEditVisibility());
         });
     }
@@ -109,7 +109,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         ExecuteSafely(() =>
         {
             if (SecondEntry == null) return;
-            
+
             isGallonsEditable = !isGallonsEditable;
             SecondEntry.IsEnabled = isGallonsEditable;
             if (isGallonsEditable)
@@ -165,10 +165,10 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
                 // Synchronize data with CourtService before calling the method
                 courtService.IdHose = SelectedHose.IdHose;
-                
+
                 // Call the service method to add the dispenser
                 await courtService.AddDispenserFromPopup();
-                
+
                 // Add the selected hose to the selected hoses list in the service
                 courtService.AddSelectedHose(SelectedHose);
 
@@ -186,7 +186,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
     {
         ExecuteSafely(() => UpdateAccumulatedValues());
     }
-   
+
     private void OnEntryUnfocused(object sender, FocusEventArgs e)
     {
         ExecuteSafely(() => UpdateAccumulatedValues());
@@ -201,16 +201,16 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                 if (AccumulatedAmount > LastAccumulatedAmount)
                 {
                     double amountDifference = AccumulatedAmount - LastAccumulatedAmount;
-                    double currentPrice = SelectedHose.Price;
-                    
-                    // Fixed: Add division by zero check
-                    if (currentPrice > 0)
+                    double currentSellPrice = SelectedHose.EffectiveSellPrice;
+
+                    // Fixed: Add division to zero check
+                    if (currentSellPrice > 0)
                     {
-                        AccumulatedGallons = LastAccumulatedGallons + (amountDifference / currentPrice);
+                        AccumulatedGallons = LastAccumulatedGallons + (amountDifference / currentSellPrice);
                     }
                     else
                     {
-                        Debug.WriteLine("Warning: Price is zero or negative, cannot calculate gallons");
+                        Debug.WriteLine("Warning: EffectiveSellPrice is zero or negative, cannot calculate gallons");
                     }
                 }
                 UpdateAccumulatedColors();
@@ -228,7 +228,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             {
                 amountFrame.BorderColor = AccumulatedAmount >= LastAccumulatedAmount ? Colors.Green : Colors.Red;
             }
-            
+
             if (SecondEntry?.Parent is Frame gallonFrame)
             {
                 gallonFrame.BorderColor = AccumulatedGallons >= LastAccumulatedGallons ? Colors.Green : Colors.Red;
@@ -257,19 +257,27 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
                 if (SelectedHose is not null)
                 {
-                    double price = SelectedHose.Price;
+                    // Cargar los valores acumulados históricos de la manguera seleccionada
+                    LastAccumulatedAmount = SelectedHose.AccumulatedAmount;
+                    LastAccumulatedGallons = SelectedHose.AccumulatedGallons;
+
+                    double effectiveSellPrice = SelectedHose.EffectiveSellPrice;
                     if (PricePerGallonLabel != null)
                     {
-                        PricePerGallonLabel.Text = $"{price:C3}";
+                        PricePerGallonLabel.Text = $"{effectiveSellPrice:C3}";
                     }
-                    
+
                     if (canEditPrice && PriceEditEntry != null)
                     {
-                        PriceEditEntry.Text = price.ToString("F2");
+                        PriceEditEntry.Text = effectiveSellPrice.ToString("F2");
                     }
                 }
                 else
                 {
+                    // Si no hay manguera seleccionada, resetear valores
+                    LastAccumulatedAmount = 0;
+                    LastAccumulatedGallons = 0;
+
                     if (PricePerGallonLabel != null)
                     {
                         PricePerGallonLabel.Text = "##.###";
@@ -279,11 +287,17 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                         PriceEditEntry.Text = "";
                     }
                 }
-                
+
                 UpdatePriceEditVisibility();
+                // Actualizar colores después de cargar los valores históricos
+                UpdateAccumulatedColors();
             }
             else
             {
+                // Reset valores si no hay manguera seleccionada
+                LastAccumulatedAmount = 0;
+                LastAccumulatedGallons = 0;
+
                 if (PricePerGallonLabel != null)
                 {
                     PricePerGallonLabel.Text = "##.###";
@@ -304,7 +318,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             {
                 PriceEditEntry.IsVisible = canEditPrice;
                 PriceEditButton.IsVisible = canEditPrice;
-                
+
                 if (PricePerGallonLabel != null)
                 {
                     PricePerGallonLabel.IsVisible = !canEditPrice;
@@ -315,7 +329,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
     private void PriceEditEntry_Completed(object sender, EventArgs e)
     {
-        ExecuteSafely(() => UpdateSelectedHosePrice());
+        ExecuteSafely(() => UpdateSelectedHoseSellPrice());
     }
 
     private void PriceEditEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -324,21 +338,27 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             if (SelectedHose is not null && PriceEditEntry != null)
             {
-                if (double.TryParse(e.NewTextValue, out double newPrice) && newPrice > 0)
+                if (double.TryParse(e.NewTextValue, out double newSellPrice) && newSellPrice > 0)
                 {
-                    SelectedHose.Price = newPrice;
+                    
+                    SelectedHose.SellPrice = newSellPrice;
+                    if (SelectedHose.ProductCourtModel != null)
+                    {
+                        SelectedHose.ProductCourtModel.SellPrice = newSellPrice;
+                    }
+
                     if (PricePerGallonLabel != null)
                     {
-                        PricePerGallonLabel.Text = $"{newPrice:C2}";
+                        PricePerGallonLabel.Text = $"{newSellPrice:C2}";
                     }
-                    
+
                     if (AccumulatedAmount > LastAccumulatedAmount)
                     {
                         double amountDifference = AccumulatedAmount - LastAccumulatedAmount;
-                        // Fixed: Add division by zero check
-                        if (newPrice > 0)
+                        
+                        if (newSellPrice > 0)
                         {
-                            AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newPrice);
+                            AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                             UpdateAccumulatedColors();
                         }
                     }
@@ -352,35 +372,42 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         ExecuteSafely(() => PriceEditEntry?.Focus());
     }
 
-    private void UpdateSelectedHosePrice()
+    private void UpdateSelectedHoseSellPrice()
     {
         ExecuteSafely(() =>
         {
             if (SelectedHose is not null && PriceEditEntry != null)
             {
-                if (double.TryParse(PriceEditEntry.Text, out double newPrice) && newPrice > 0)
+                if (double.TryParse(PriceEditEntry.Text, out double newSellPrice) && newSellPrice > 0)
                 {
-                    SelectedHose.Price = newPrice;
+                    // Actualizar tanto el SellPrice directo como el del ProductEntity si existe
+                    SelectedHose.SellPrice = newSellPrice;
+                    if (SelectedHose.ProductCourtModel != null)
+                    {
+                        SelectedHose.ProductCourtModel.SellPrice = newSellPrice;
+                    }
+
                     if (PricePerGallonLabel != null)
                     {
-                        PricePerGallonLabel.Text = $"{newPrice:C2}";
+                        PricePerGallonLabel.Text = $"{newSellPrice:C2}";
                     }
-                    
+
                     if (AccumulatedAmount > LastAccumulatedAmount)
                     {
                         double amountDifference = AccumulatedAmount - LastAccumulatedAmount;
-                        
+
                         // Fixed: Add division by zero check
-                        if (newPrice > 0)
+                        if (newSellPrice > 0)
                         {
-                            AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newPrice);
+                            AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                             UpdateAccumulatedColors();
                         }
                     }
                 }
                 else
                 {
-                    PriceEditEntry.Text = SelectedHose.Price.ToString("F2");
+                    // Si el valor ingresado es inválido, revertir al EffectiveSellPrice actual
+                    PriceEditEntry.Text = SelectedHose.EffectiveSellPrice.ToString("F2");
                 }
             }
         });
@@ -392,7 +419,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         lock (_disposeLock)
         {
             if (_isDisposed) return;
-            
+
             try
             {
                 action?.Invoke();
@@ -415,7 +442,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             if (_isDisposed) return;
         }
-        
+
         try
         {
             await (asyncAction?.Invoke() ?? Task.CompletedTask);
@@ -447,7 +474,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         lock (_disposeLock)
         {
             if (_isDisposed) return;
-            
+
             try
             {
                 _isDisposed = true;
@@ -455,7 +482,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             }
             catch (ObjectDisposedException)
             {
-                // El popup ya fue dispuesto, esto es normal
+                // El popup ya fue disposto, esto es normal
                 Debug.WriteLine($"{GetType().Name}: Popup was already disposed");
             }
             catch (Exception ex)

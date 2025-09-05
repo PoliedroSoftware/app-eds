@@ -39,23 +39,31 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = false;
-                button.Text = "Enviando...";
+                button.Text = "Registrando...";
             }
 
-            // Validate required fields using custom alerts
+            // Validar campos requeridos específicos del nuevo sistema
+            if (_productService.SelectedProductOption == null)
+            {
+                await CustomAlert.ShowErrorAsync("Por favor seleccione el tipo de combustible (Gasolina o ACPM)", "Tipo de Combustible Requerido");
+                return;
+            }
+
+            // Si es Gasolina, debe seleccionar el tipo específico
+            if (_productService.SelectedProductOption.Id == 1 && _productService.SelectedSpecificProductType == null)
+            {
+                await CustomAlert.ShowErrorAsync("Por favor seleccione el tipo de gasolina (Corriente o Extra)", "Tipo de Gasolina Requerido");
+                return;
+            }
+
+            // Validar que el nombre se haya generado correctamente
             if (string.IsNullOrWhiteSpace(_productService.Name))
             {
-                await CustomAlert.ShowErrorAsync("Por favor ingrese el nombre del producto", "Campo Requerido");
+                await CustomAlert.ShowErrorAsync("El nombre del producto no se generó correctamente. Por favor revise su selección.", "Error en Nombre del Producto");
                 return;
             }
 
-            if (_productService.SelectProductType == null)
-            {
-                await CustomAlert.ShowErrorAsync("Por favor seleccione un tipo de producto", "Campo Requerido");
-                return;
-            }
-
-            // Validate that negative values are not allowed (but 0 is acceptable)
+            // Validar que los valores numéricos no sean negativos
             if (_productService.PurchasePrice < 0)
             {
                 await CustomAlert.ShowErrorAsync("El precio de compra no puede ser negativo", "Precio de Compra Inválido");
@@ -74,7 +82,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
-            // Optional validation for business logic (only if both prices are greater than 0)
+            // Validación de lógica de negocio para precios
             if (_productService.SellPrice > 0 && _productService.PurchasePrice > 0 && 
                 _productService.SellPrice <= _productService.PurchasePrice)
             {
@@ -88,16 +96,70 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 if (!confirm) return;
             }
 
+            // Validación específica de rangos de precios para combustibles
+            if (_productService.SellPrice > 0)
+            {
+                // Rangos aproximados para Colombia (pueden ajustarse según el mercado)
+                bool isGasoline = _productService.SelectedProductOption.Id == 1;
+                bool isAcpm = _productService.SelectedProductOption.Id == 2;
+
+                if (isGasoline && (_productService.SellPrice < 8000 || _productService.SellPrice > 20000))
+                {
+                    bool confirm = await CustomAlert.ShowConfirmAsync(
+                        $"El precio de venta para gasolina (${_productService.SellPrice:F2}) está fuera del rango típico (8.000 - 20.000 COP).\n\n" +
+                        $"¿Confirma que este precio es correcto?",
+                        "Precio Atípico para Gasolina",
+                        "Confirmar",
+                        "Revisar");
+                    
+                    if (!confirm) return;
+                }
+
+                if (isAcpm && (_productService.SellPrice < 7000 || _productService.SellPrice > 18000))
+                {
+                    bool confirm = await CustomAlert.ShowConfirmAsync(
+                        $"El precio de venta para ACPM (${_productService.SellPrice:F2}) está fuera del rango típico (7.000 - 18.000 COP).\n\n" +
+                        $"¿Confirma que este precio es correcto?",
+                        "Precio Atípico para ACPM",
+                        "Confirmar",
+                        "Revisar");
+                    
+                    if (!confirm) return;
+                }
+            }
+
+            // Mostrar confirmación antes de guardar
+            var productType = _productService.SelectedProductOption.Name;
+            var productSubtype = _productService.SelectedSpecificProductType?.Description ?? "";
+            var fullProductName = _productService.Name;
+
+            var confirmationMessage = $"¿Confirma el registro del siguiente producto?\n\n" +
+                                    $"• Tipo: {productType}\n" +
+                                    $"• Subtipo: {productSubtype}\n" +
+                                    $"• Nombre completo: {fullProductName}\n";
+
+            if (_productService.PurchasePrice > 0)
+                confirmationMessage += $"• Precio de compra: ${_productService.PurchasePrice:F2}\n";
+
+            if (_productService.SellPrice > 0)
+                confirmationMessage += $"• Precio de venta: ${_productService.SellPrice:F2}\n";
+
+            if (_productService.Stock > 0)
+                confirmationMessage += $"• Stock inicial: {_productService.Stock} unidades\n";
+
+            bool finalConfirm = await CustomAlert.ShowConfirmAsync(
+                confirmationMessage,
+                "Confirmar Registro",
+                "Registrar",
+                "Cancelar");
+
+            if (!finalConfirm) return;
+
             LoadingOverlay.ShowLoading();
             await _productService.SaveProductDataAsync();
             wasSuccessful = true;
 
-            // Clear form fields only if successful
-            _productService.Name = string.Empty;
-            _productService.SelectProductType = null;
-            _productService.PurchasePrice = 0;
-            _productService.SellPrice = 0;
-            _productService.Stock = 0;
+            // El formulario se limpia automáticamente en el servicio después de un guardado exitoso
         }
         catch (Exception ex)
         {
@@ -111,7 +173,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             if (button != null)
             {
                 button.IsEnabled = true;
-                button.Text = "Enviar Datos";
+                button.Text = "?? Registrar Producto";
             }
         }
     }
@@ -189,6 +251,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Propiedades para binding (mantenidas para compatibilidad)
     public string Name
     {
         get => _productService.Name;
