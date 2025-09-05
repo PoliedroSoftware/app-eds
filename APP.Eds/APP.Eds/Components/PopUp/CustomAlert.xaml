@@ -10,7 +10,9 @@
     <Border BackgroundColor="White"
             StrokeShape="RoundRectangle 20"
             WidthRequest="340"
-            HeightRequest="300">
+            HeightRequest="450"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,8" Radius="16" Opacity="0.1"/>
         </Border.Shadow>
@@ -53,25 +55,31 @@
                 </StackLayout>
             </Border>
 
-            <!-- Message -->
-            <ScrollView Grid.Row="1" Padding="24,20">
-                <StackLayout Spacing="12">
+            <!-- Message Content with ScrollView -->
+            <ScrollView Grid.Row="1" 
+                        Padding="24,20" 
+                        Orientation="Vertical"
+                        VerticalScrollBarVisibility="Default">
+                <StackLayout Spacing="16">
                     <Label x:Name="MessageLabel"
                            Text="Mensaje de alerta" 
                            FontSize="16"
                            LineBreakMode="WordWrap"
                            TextColor="#2D3436"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
+                           HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Start"
+                           VerticalTextAlignment="Start"/>
                     
                     <Label x:Name="DetailLabel"
                            Text="" 
                            FontSize="14"
                            LineBreakMode="WordWrap"
                            TextColor="#636E72"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           IsVisible="False"/>
+                           HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Start"
+                           VerticalTextAlignment="Start"
+                           IsVisible="False"
+                           Margin="0,8,0,0"/>
                 </StackLayout>
             </ScrollView>
 

@@ -4,8 +4,16 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+	xmlns:converters="clr-namespace:APP.Eds.Converters"
 	CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
+
+    <mct:Popup.Resources>
+        <ResourceDictionary>
+            <converters:DecimalFormatConverter x:Key="DecimalFormat" />
+            <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
+        </ResourceDictionary>
+    </mct:Popup.Resources>
 
     <Frame x:Name="Frame"
            Padding="20"
@@ -43,7 +51,7 @@
                                HorizontalTextAlignment="Center" 
                                HorizontalOptions="Center"/>
                     </StackLayout>
-                    
+
                     <Frame Grid.Column="2"
                            BackgroundColor="White"
                            CornerRadius="15"
@@ -71,7 +79,7 @@
             <!--  Content Area with Modern Cards  -->
             <ScrollView Grid.Row="1" MaximumHeightRequest="480" Margin="0,0,0,10">
                 <VerticalStackLayout Spacing="15">
-                    
+
                     <!-- Manguera Selection Card -->
                     <Frame BackgroundColor="#F8F9FA" 
                            CornerRadius="12"
@@ -99,7 +107,7 @@
                                        TextColor="#2D3436"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Picker -->
                             <Frame BackgroundColor="White" 
                                    CornerRadius="8"
@@ -119,7 +127,7 @@
                             </Frame>
                         </StackLayout>
                     </Frame>
-                    
+
                     <!-- Money Information Card -->
                     <Frame BackgroundColor="#F8F9FA" 
                            CornerRadius="12"
@@ -147,7 +155,7 @@
                                        TextColor="#2D3436"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Price per gallon row -->
                             <Grid RowDefinitions="*" ColumnDefinitions="*,*" ColumnSpacing="8">
                                 <Label Grid.Column="0" 
@@ -156,7 +164,7 @@
                                        FontSize="13"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="End"/>
-                                
+
                                 <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="Start" Spacing="4">
                                     <!-- Read-only price label -->
                                     <Label x:Name="PricePerGallonLabel" 
@@ -164,7 +172,7 @@
                                            FontSize="13"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start"/>
-                                    
+
                                     <!-- Editable price entry -->
                                     <Entry x:Name="PriceEditEntry" 
                                            Keyboard="Numeric" 
@@ -177,7 +185,7 @@
                                            IsVisible="False"
                                            Completed="PriceEditEntry_Completed"
                                            TextChanged="PriceEditEntry_TextChanged"/>
-                                    
+
                                     <!-- Edit price button -->
                                     <Button x:Name="PriceEditButton" 
                                             Text="E"
@@ -192,19 +200,19 @@
                                             IsVisible="False"/>
                                 </StackLayout>
                             </Grid>
-                            
+
                             <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="8">
                                 <Label Text="Ultimo monto acumulado" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="End" 
                                        FontSize="13"
                                        Grid.Row="0" Grid.Column="0"/>
-                                <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N3}'}" 
+                                <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                        VerticalOptions="Center" 
                                        FontSize="13"
                                        FontAttributes="Bold"
                                        Grid.Row="0" Grid.Column="2"/>
-                                       
+
                                 <Label Text="Monto acumulado" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="End" 
@@ -236,7 +244,7 @@
                                        VerticalOptions="Center"
                                        FontSize="13"
                                        Grid.Row="2" Grid.Column="0"/>
-                                <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N3}'}" 
+                                <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" 
                                        FontAttributes="Bold"
@@ -246,7 +254,7 @@
                             </Grid>
                         </StackLayout>
                     </Frame>
-                    
+
                     <!-- Gallons Information Card -->
                     <Frame BackgroundColor="#F8F9FA" 
                            CornerRadius="12"
@@ -274,19 +282,19 @@
                                        TextColor="#2D3436"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,20,*" RowSpacing="8">
                                 <Label Text="Ultimos galones acumulados" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="End" 
                                        FontSize="13"
                                        Grid.Row="0" Grid.Column="0"/>
-                                <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N3}'}" 
+                                <Label Text="{Binding LastAccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
                                        VerticalOptions="Center" 
                                        FontSize="13"
                                        FontAttributes="Bold"
                                        Grid.Row="0" Grid.Column="2"/>
-                                       
+
                                 <Label Text="Galones acumulados" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="End" 
@@ -312,7 +320,7 @@
                                                IsEnabled="False"
                                                HorizontalTextAlignment="Center"/>
                                     </Frame>
-                                    
+
                                     <Frame BackgroundColor="#E3F2FD" 
                                            CornerRadius="12"
                                            HasShadow="False"
@@ -337,7 +345,7 @@
                                        HorizontalOptions="End" 
                                        FontSize="13"
                                        Grid.Row="2" Grid.Column="0"/>
-                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N3}'}" 
+                                <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" 
                                        FontAttributes="Bold"
