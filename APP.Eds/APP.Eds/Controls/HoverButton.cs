@@ -5,9 +5,9 @@ namespace APP.Eds.Controls
     public class HoverButton : MauiButton
     {
         // Propiedades para los colores personalizables
-        public Color NormalColor { get; set; } = Colors.Purple;
-        public Color HoverColor { get; set; } = Colors.DarkMagenta;
-        public Color PressedColor { get; set; } = Colors.Plum;
+        public Color NormalColor { get; set; } = Colors.White;
+        public Color HoverColor { get; set; } = Colors.LightGray;
+        public Color PressedColor { get; set; } = Colors.Gray;
 
         public HoverButton()
         {

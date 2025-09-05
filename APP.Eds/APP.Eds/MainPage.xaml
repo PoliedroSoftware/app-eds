@@ -5,72 +5,64 @@
              xmlns:custom="clr-namespace:APP.Eds.Resources.Custom"
              x:Class="APP.Eds.MainPage"
              Title="Inicio de Sesión"
-             BackgroundColor="{StaticResource Gray50}">
-    
-    <!-- Modern gradient background -->
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
-            <GradientStop Color="{StaticResource Secondary}" Offset="0.3" />
-            <GradientStop Color="{StaticResource Gray50}" Offset="1.0" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
+             BackgroundColor="{StaticResource White}">
     
     <ScrollView>
         <Grid RowDefinitions="Auto,*,Auto" Padding="30,30">
             
-            <!-- Logo/Branding Section -->
-            <StackLayout Grid.Row="0" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
-                <!-- Poliedro Logo -->
-                <Border BackgroundColor="{StaticResource White}"
-                        StrokeShape="RoundRectangle 25"
-                        StrokeThickness="2"
-                        Stroke="{StaticResource Primary}"
-                        HeightRequest="80"
-                        WidthRequest="160"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" 
-                                Offset="0,6" 
-                                Radius="20" 
-                                Opacity="0.3"/>
-                    </Border.Shadow>
-                    <Image Source="poliedro.jpeg" 
-                           Aspect="AspectFit"
-                           HeightRequest="60"
-                           WidthRequest="140"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           BackgroundColor="Transparent"/>
-                </Border>
-                
+            <!-- Header Section - Only title with dark text for white background -->
+            <StackLayout Grid.Row="0" Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
                 <!-- App Title -->
-                <StackLayout Spacing="3" HorizontalOptions="Center">
-                    <Label Text="POLIEDRO EDS"
-                           FontSize="28"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource Primary}"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
-                           
-                    <Label Text="Sistema de Gestión de Estaciones de Servicio"
-                           FontSize="13"
-                           TextColor="{StaticResource Gray900}"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,0,0,5"/>
-                </StackLayout>
+                <Label Text="POLIEDRO EDS"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="#2196F3"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+                       
+                <Label Text="Sistema de Gestión de Estaciones de Servicio"
+                       FontSize="13"
+                       TextColor="{StaticResource Gray600}"
+                       FontAttributes="None"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,0,0,10"/>
             </StackLayout>
             
-            <!-- Login Card -->
+            <!-- Login Card with Logo -->
             <Border Grid.Row="1" 
                     Style="{StaticResource LoginCardStyle}"
                     Margin="0,10,0,20"
                     VerticalOptions="Center">
                 
                 <StackLayout Spacing="25">
+                    
+                    <!-- Logo Section - Moved to white area -->
+                    <StackLayout Spacing="15" HorizontalOptions="Center" Margin="0,5,0,0">
+                        <!-- Poliedro Logo -->
+                        <Border BackgroundColor="{StaticResource White}"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="0"
+                                HeightRequest="70"
+                                WidthRequest="140"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            <Border.Shadow>
+                                <Shadow Brush="#2196F3" 
+                                        Offset="0,4" 
+                                        Radius="15" 
+                                        Opacity="0.2"/>
+                            </Border.Shadow>
+                            <Image Source="poliedro.jpeg" 
+                                   Aspect="AspectFit"
+                                   HeightRequest="50"
+                                   WidthRequest="200"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                    </StackLayout>
+                    
                     <!-- Welcome Text -->
                     <StackLayout Spacing="8">
                         <Label Text="¡Bienvenido de vuelta!"
@@ -128,7 +120,7 @@
                     <!-- Remember Me Option -->
                     <StackLayout Orientation="Horizontal" Spacing="8" Margin="0,5,0,0">
                         <CheckBox x:Name="RememberMeCheckBox" 
-                                  Color="{StaticResource Primary}"
+                                  Color="#2196F3"
                                   VerticalOptions="Center"/>
                         <Label Text="Recordar mis credenciales"
                                FontSize="14"
@@ -148,14 +140,16 @@
                                           FontAttributes="Bold"
                                           HeightRequest="50"
                                           CornerRadius="8"
-                                          NormalColor="{StaticResource Primary}"
-                                          HoverColor="{StaticResource Tertiary}"
-                                          PressedColor="{StaticResource PrimaryDark}"
-                                          TextColor="{StaticResource White}"
+                                          NormalColor="{StaticResource White}"
+                                          HoverColor="#F5F5F5"
+                                          PressedColor="#E0E0E0"
+                                          TextColor="#2196F3"
+                                          BorderColor="#2196F3"
+                                          BorderWidth="2"
                                           Margin="0,10,0,0"
                                           AutomationId="ButtonLogin">
                         <controls:HoverButton.Shadow>
-                            <Shadow Brush="{StaticResource Primary}" 
+                            <Shadow Brush="#E0E0E0" 
                                     Offset="0,4" 
                                     Radius="12" 
                                     Opacity="0.3"/>
@@ -170,7 +164,7 @@
                         <ActivityIndicator x:Name="LoadingIndicator"
                                            IsVisible="False"
                                            IsRunning="False"
-                                           Color="{StaticResource Primary}"
+                                           Color="#2196F3"
                                            HorizontalOptions="Center"
                                            AutomationId="ActivityIndicatorLoading"/>
                         <Label Text="Validando credenciales..."
@@ -202,17 +196,15 @@
                 </StackLayout>
             </Border>
             
-            <!-- Footer -->
+            <!-- Footer with dark text for white background -->
             <StackLayout Grid.Row="2" Spacing="12" HorizontalOptions="Center">
                 <Label Text="¿Necesitas ayuda?"
                        FontSize="14"
-                       TextColor="{StaticResource White}"
-                       Opacity="0.7"
+                       TextColor="{StaticResource Gray600}"
                        HorizontalOptions="Center"/>
                 <Label Text="Contacta al administrador del sistema"
                        FontSize="12"
-                       TextColor="{StaticResource White}"
-                       Opacity="0.6"
+                       TextColor="{StaticResource Gray500}"
                        HorizontalOptions="Center"/>
             </StackLayout>
             
