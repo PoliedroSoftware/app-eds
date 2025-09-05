@@ -5,31 +5,31 @@
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding ShiftClosing}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="#F8FAFC">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
             <VerticalStackLayout Padding="16" Spacing="16">
                 
-                <!-- Header Card with Purple Gradient -->
-                <Border BackgroundColor="#6A1B9A" 
+                <!-- Header Card with Professional Blue Gradient -->
+                <Border BackgroundColor="#3B82F6" 
                         StrokeShape="RoundRectangle 16"
-                        Padding="20"
+                        Padding="24"
                         StrokeThickness="0">
                     <Border.Shadow>
-                        <Shadow Brush="#6A1B9A" Offset="0,4" Radius="12" Opacity="0.3"/>
+                        <Shadow Brush="#3B82F6" Offset="0,8" Radius="20" Opacity="0.15"/>
                     </Border.Shadow>
                     <StackLayout>
                         <Label Text="🏪 Cierre De Turno" 
-                               FontSize="24" 
+                               FontSize="26" 
                                FontAttributes="Bold" 
                                TextColor="White" 
                                HorizontalOptions="Center"/>
                         <Label Text="Complete la información del turno" 
                                FontSize="14" 
-                               TextColor="#E1BEE7" 
+                               TextColor="#DBEAFE" 
                                HorizontalOptions="Center"
-                               Margin="0,5,0,0"/>
+                               Margin="0,6,0,0"/>
                     </StackLayout>
                 </Border>
 
@@ -37,19 +37,26 @@
                 <Border x:Name="Business"
                         BackgroundColor="White"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="#1E293B" Offset="0,2" Radius="12" Opacity="0.08"/>
                     </Border.Shadow>
-                    <VerticalStackLayout Spacing="16">
-                        <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="🏢" FontSize="20" VerticalOptions="Center"/>
+                    <VerticalStackLayout Spacing="18">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#3B82F6" 
+                                    StrokeShape="RoundRectangle 20" 
+                                    WidthRequest="40" HeightRequest="40">
+                                <Label Text="🏢" FontSize="18" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding Business}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="#1E293B"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                         
@@ -57,12 +64,13 @@
                             <!-- Business -->
                             <Label Text="Negocio" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="#64748B" 
                                    VerticalOptions="Center" 
                                    Grid.Row="0" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="#F8FAFC" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="#CBD5E1" 
+                                    StrokeThickness="1"
                                     Grid.Row="0" Grid.Column="1">
                                 <Picker Title="{Binding SelectaBusiness}"
                                         AutomationId="BusinessPicker"
@@ -71,18 +79,20 @@
                                         SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" 
                                         SelectedIndexChanged="OnBusinessSelected"
                                         BackgroundColor="Transparent"
+                                        TextColor="#374151"
                                         Margin="12,8"/>
                             </Border>
                             
                             <!-- EDS -->
                             <Label Text="EDS" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="#64748B" 
                                    VerticalOptions="Center" 
                                    Grid.Row="1" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="#F8FAFC" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="#CBD5E1" 
+                                    StrokeThickness="1"
                                     Grid.Row="1" Grid.Column="1">
                                 <Picker Title="{Binding SelectaEds}"
                                         AutomationId="EdsPicker"
@@ -92,18 +102,20 @@
                                         SelectedIndexChanged="OnEdsSelected" 
                                         IsEnabled="{Binding IsBusinessSelected}"
                                         BackgroundColor="Transparent"
+                                        TextColor="#374151"
                                         Margin="12,8"/>
                             </Border>
                             
                             <!-- Islander -->
                             <Label Text="Islero" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="#64748B" 
                                    VerticalOptions="Center" 
                                    Grid.Row="2" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="#F8FAFC" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="#CBD5E1" 
+                                    StrokeThickness="1"
                                     Grid.Row="2" Grid.Column="1">
                                 <Picker Title="{Binding SelectAnIslander}"
                                         AutomationId="IslanderPicker"
@@ -113,6 +125,7 @@
                                         SelectedIndexChanged="OnIslanderSelected"
                                         IsEnabled="{Binding IsEdsSelected}"
                                         BackgroundColor="Transparent"
+                                        TextColor="#374151"
                                         Margin="12,8"/>
                             </Border>
                         </Grid>
@@ -123,18 +136,25 @@
                 <Border x:Name="Time" 
                         BackgroundColor="White"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
                         Padding="20">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="#1E293B" Offset="0,2" Radius="12" Opacity="0.08"/>
                     </Border.Shadow>
-                    <VerticalStackLayout Spacing="16">
-                        <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⏰" FontSize="20" VerticalOptions="Center"/>
+                    <VerticalStackLayout Spacing="18">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#06B6D4" 
+                                    StrokeShape="RoundRectangle 20" 
+                                    WidthRequest="40" HeightRequest="40">
+                                <Label Text="⏰" FontSize="18" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding Time}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="#1E293B"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                         
@@ -143,11 +163,12 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Fecha" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="#64748B" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#FFF3CD" 
+                                <Border BackgroundColor="#F8FAFC" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#F39C12" 
+                                        Stroke="#A78BFA" 
+                                        StrokeThickness="1"
                                         Padding="8">
                                     <DatePicker x:Name="datePicker" 
                                                 AutomationId="DatePicker" 
@@ -155,7 +176,7 @@
                                                 MinimumDate="1900-01-01"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E67E22"/>
+                                                TextColor="#7C3AED"/>
                                 </Border>
                             </StackLayout>
 
@@ -163,17 +184,18 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Hora Inicio" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="#64748B" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#D4EDDA" 
+                                <Border BackgroundColor="#F0FDF4" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#27AE60" 
+                                        Stroke="#10B981" 
+                                        StrokeThickness="1"
                                         Padding="8">
                                     <TimePicker AutomationId="StartTimePicker" 
                                                 Time="{Binding Starttime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#27AE60"/>
+                                                TextColor="#059669"/>
                                 </Border>
                             </StackLayout>
 
@@ -181,17 +203,18 @@
                             <StackLayout Grid.Row="0" Grid.Column="2">
                                 <Label Text="Hora Fin" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="#64748B" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#F8D7DA" 
+                                <Border BackgroundColor="#FEF2F2" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E74C3C" 
+                                        Stroke="#EF4444" 
+                                        StrokeThickness="1"
                                         Padding="8">
                                     <TimePicker AutomationId="EndTimePicker" 
                                                 Time="{Binding Endtime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E74C3C"/>
+                                                TextColor="#DC2626"/>
                                 </Border>
                             </StackLayout>
                         </Grid>
@@ -202,141 +225,156 @@
                 <Border x:Name="CashCount"
                         BackgroundColor="White"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
                         Padding="20">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="#1E293B" Offset="0,2" Radius="12" Opacity="0.08"/>
                     </Border.Shadow>
-                    <VerticalStackLayout Spacing="16">
-                        <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="💰" FontSize="20" VerticalOptions="Center"/>
+                    <VerticalStackLayout Spacing="18">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#10B981" 
+                                    StrokeShape="RoundRectangle 20" 
+                                    WidthRequest="40" HeightRequest="40">
+                                <Label Text="💰" FontSize="18" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
                             <Label Text="{Binding CashCount}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="#1E293B"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                         
                         <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="16">
                             <!-- Sales in Money -->
-                            <Border BackgroundColor="#E8F5E8" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                            <Border BackgroundColor="#F0FDF4" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#10B981"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding SalesInMoney}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#2E7D32"
+                                           TextColor="#064E3B"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalAmount, StringFormat='$ {0:N3}'}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#1B5E20"
+                                           TextColor="#10B981"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Sales in Gallons -->
-                            <Border BackgroundColor="#E3F2FD" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                            <Border BackgroundColor="#EFF6FF" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#3B82F6"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding SalesInGallons}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#1976D2"
+                                           TextColor="#1E3A8A"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalGallons, StringFormat='{0:N3}'}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#0D47A1"
+                                           TextColor="#3B82F6"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Expenses -->
-                            <Border BackgroundColor="#FFEBEE" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#F44336"
+                            <Border BackgroundColor="#FEF2F2" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#EF4444"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding Expenses}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#D32F2F"
+                                           TextColor="#7F1D1D"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N3}'}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#B71C1C"
+                                           TextColor="#EF4444"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Collections -->
-                            <Border BackgroundColor="#FFF3E0" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                            <Border BackgroundColor="#FEF3C7" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#F59E0B"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding Collections}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#F57C00"
+                                           TextColor="#92400E"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N3}'}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#E65100"
+                                           TextColor="#F59E0B"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Total and Distintic -->
-                            <Border BackgroundColor="#F3E5F5" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#9C27B0"
+                            <Border BackgroundColor="#F5F3FF" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#8B5CF6"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding TotalForTheDay}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#7B1FA2"
+                                           TextColor="#581C87"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalSales, StringFormat='$ {0:N3}'}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#4A148C"
+                                           TextColor="#8B5CF6"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
-                            <Border BackgroundColor="#F5F5F5" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#9E9E9E"
+                            <Border BackgroundColor="#F8FAFC" 
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#94A3B8"
+                                    StrokeThickness="1"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding DistinticDescription}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#616161"
+                                           TextColor="#475569"
                                            HorizontalOptions="Center"/>
                                     <Border BackgroundColor="White"
                                             StrokeShape="RoundRectangle 6"
-                                            Stroke="#BDBDBD"
+                                            Stroke="#CBD5E1"
+                                            StrokeThickness="1"
                                             Padding="8">
                                         <Entry Keyboard="Numeric" 
                                                Placeholder="Ingrese distintivo" 
                                                Text="{Binding Distintic, Mode=TwoWay}"
                                                BackgroundColor="Transparent"
+                                               TextColor="#374151"
                                                HorizontalTextAlignment="Center"/>
                                     </Border>
                                 </StackLayout>
@@ -347,17 +385,18 @@
 
                 <!-- Sales by Hoses Section -->
                 <StackLayout x:Name="AddedDispensers" IsVisible="{Binding VisibleDispenser}">
-                    <Border BackgroundColor="#E8F5E8" 
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="#4CAF50"
+                    <Border BackgroundColor="#F0FDF4" 
+                            StrokeShape="RoundRectangle 10"
+                            Stroke="#10B981"
+                            StrokeThickness="1"
                             Padding="16"
                             Margin="0,0,0,8">
-                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                        <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
                             <Label Text="⛽" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Ventas por mangueras" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#2E7D32"
+                                   TextColor="#059669"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -366,60 +405,62 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border BackgroundColor="White" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#E2E8F0"
+                                        StrokeThickness="1"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="#1E293B" Offset="0,2" Radius="8" Opacity="0.06"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
-                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
+                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center"/>
+                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#3B82F6" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Money Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Monto acumulado" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto acumulado" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N3}'}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#10B981" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en dinero" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en dinero" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N3}'}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#3B82F6" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Gallons Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Galones acumulados" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Galones acumulados" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" 
-                                                       FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#F59E0B" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en galones" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en galones" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N3}'}" 
-                                                       FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#8B5CF6" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="#FEF2F2" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="#EF4444"
+                                                StrokeThickness="1"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="5"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteDispenserButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="#EF4444"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -436,17 +477,18 @@
 
                 <!-- Collections Section -->
                 <StackLayout x:Name="TypesofAggregateCollections" IsVisible="{Binding VisibleReceipts}">
-                    <Border BackgroundColor="#E3F2FD" 
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="#2196F3"
+                    <Border BackgroundColor="#EFF6FF" 
+                            StrokeShape="RoundRectangle 10"
+                            Stroke="#3B82F6"
+                            StrokeThickness="1"
                             Padding="16"
                             Margin="0,0,0,8">
-                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                        <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
                             <Label Text="💳" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Formas de pago" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#1976D2"
+                                   TextColor="#1D4ED8"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -455,52 +497,54 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border BackgroundColor="White" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#E2E8F0"
+                                        StrokeThickness="1"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="#1E293B" Offset="0,2" Radius="8" Opacity="0.06"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Método" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Método" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding TypeOfCollectionName}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#3B82F6" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#10B981" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="#94A3B8"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="#FEF2F2" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="#EF4444"
+                                                StrokeThickness="1"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteCollectionButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="#EF4444"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -517,17 +561,18 @@
 
                 <!-- Documents Section -->
                 <StackLayout x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
-                    <Border BackgroundColor="#FFF3E0" 
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="#FF9800"
+                    <Border BackgroundColor="#FEF3C7" 
+                            StrokeShape="RoundRectangle 10"
+                            Stroke="#F59E0B"
+                            StrokeThickness="1"
                             Padding="16"
                             Margin="0,0,0,8">
-                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                        <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
                             <Label Text="📄" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Comprobantes" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#F57C00"
+                                   TextColor="#D97706"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -536,33 +581,35 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border BackgroundColor="White" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#E2E8F0"
+                                        StrokeThickness="1"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="#1E293B" Offset="0,2" Radius="8" Opacity="0.06"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" RowSpacing="8">
                                         <!-- Document Info -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="📎" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center"/>
                                             <Label Text="{Binding DocumentName}" 
-                                                   FontSize="14" TextColor="#FF9800" FontAttributes="Bold" VerticalOptions="Center"/>
+                                                   FontSize="14" TextColor="#F59E0B" FontAttributes="Bold" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="#FEF2F2" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="#EF4444"
+                                                StrokeThickness="1"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.Row="0"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteDocumentButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="#EF4444"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -579,17 +626,18 @@
 
                 <!-- Expenses Section -->
                 <StackLayout x:Name="AddedExpenses" IsVisible="{Binding VisibleExpenses}">
-                    <Border BackgroundColor="#FFEBEE" 
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="#F44336"
+                    <Border BackgroundColor="#FEF2F2" 
+                            StrokeShape="RoundRectangle 10"
+                            Stroke="#EF4444"
+                            StrokeThickness="1"
                             Padding="16"
                             Margin="0,0,0,8">
-                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                        <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
                             <Label Text="💸" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Gastos" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#D32F2F"
+                                   TextColor="#DC2626"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -598,52 +646,54 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border BackgroundColor="White" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="#E2E8F0"
+                                        StrokeThickness="1"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="#1E293B" Offset="0,2" Radius="8" Opacity="0.06"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Tipo" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Tipo" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding ExpenditureName}" 
-                                                       FontSize="14" TextColor="#F44336" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#EF4444" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" 
-                                                       FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="#DC2626" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="#64748B" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="#94A3B8"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="#FEF2F2" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="#EF4444"
+                                                StrokeThickness="1"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteExpenseButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="#EF4444"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -662,45 +712,84 @@
                 <VerticalStackLayout Spacing="16" x:Name="Button" Margin="0,0,0,110">
                     
                     <!-- Required Actions Card -->
-                    <Border Style="{StaticResource RequiredActionsCardStyle}"
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#FEE2E2"
+                            StrokeThickness="1"
+                            Padding="20"
                             Margin="0,8">
+                        <Border.Shadow>
+                            <Shadow Brush="#EF4444" Offset="0,4" Radius="12" Opacity="0.08"/>
+                        </Border.Shadow>
                         
                         <VerticalStackLayout Spacing="16">
                             <!-- Header -->
-                            <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                                <Label Text="⚠️" FontSize="20" VerticalOptions="Center"/>
+                            <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
+                                <Border BackgroundColor="#EF4444" 
+                                        StrokeShape="RoundRectangle 20" 
+                                        WidthRequest="40" HeightRequest="40">
+                                    <Label Text="⚠️" FontSize="18" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                           TextColor="White"/>
+                                </Border>
                                 <Label Text="Acciones Obligatorias"
                                        FontAttributes="Bold"
                                        FontSize="16"
-                                       TextColor="#D32F2F"
+                                       TextColor="#DC2626"
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
                             <!-- Required Buttons Grid -->
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                <Button Text="{Binding NewSale}"
-                                        Style="{StaticResource CompactActionButtonStyle}"
-                                        BackgroundColor="#4CAF50"
-                                        Clicked="OpenDispenserPopUp"
-                                        Command="{Binding OpenDispenserCommand}"
-                                        AutomationId="AddSaleButton"
-                                        IsEnabled="{Binding NewSaleEnabled}"
-                                        Grid.Column="0"/>
+                                <Border Grid.Column="0"
+                                        BackgroundColor="#10B981"
+                                        StrokeShape="RoundRectangle 12"
+                                        HeightRequest="48">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#10B981" Offset="0,2" Radius="8" Opacity="0.2"/>
+                                    </Border.Shadow>
+                                    <Button Text="{Binding NewSale}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            Clicked="OpenDispenserPopUp"
+                                            Command="{Binding OpenDispenserCommand}"
+                                            AutomationId="AddSaleButton"
+                                            IsEnabled="{Binding NewSaleEnabled}"
+                                            HeightRequest="48"/>
+                                </Border>
                                 
-                                <Button Text="{Binding AddCollectionType}"
-                                        Style="{StaticResource CompactActionButtonStyle}"
-                                        BackgroundColor="#2196F3"
-                                        Clicked="OpenTypeOfCollectionPopUp"
-                                        AutomationId="AddCollectionTypeButton"
-                                        IsEnabled="{Binding IsEdsSelected}"
-                                        Grid.Column="1"/>
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#3B82F6"
+                                        StrokeShape="RoundRectangle 12"
+                                        HeightRequest="48">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.2"/>
+                                    </Border.Shadow>
+                                    <Button Text="{Binding AddCollectionType}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            Clicked="OpenTypeOfCollectionPopUp"
+                                            AutomationId="AddCollectionTypeButton"
+                                            IsEnabled="{Binding IsEdsSelected}"
+                                            HeightRequest="48"/>
+                                </Border>
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Primary Send Button - Destacado -->
-                    <Border Style="{StaticResource PrimarySendButtonStyle}"
+                    <!-- Primary Send Button -->
+                    <Border BackgroundColor="#10B981"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="4"
                             Margin="0,8">
+                        <Border.Shadow>
+                            <Shadow Brush="#10B981" Offset="0,6" Radius="16" Opacity="0.25"/>
+                        </Border.Shadow>
                         
                         <Button x:Name="SendData" 
                                 AutomationId="SendDataButton"
@@ -708,14 +797,14 @@
                                 TextColor="White" 
                                 BackgroundColor="Transparent"
                                 Clicked="Button_Clicked"
-                                FontSize="22"
+                                FontSize="20"
                                 FontAttributes="Bold"
-                                HeightRequest="64"
-                                CornerRadius="16">
+                                HeightRequest="60"
+                                CornerRadius="12">
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
-                                    <Setter Property="TextColor" Value="#BDBDBD" />
+                                    <Setter Property="TextColor" Value="#9CA3AF" />
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
@@ -724,10 +813,16 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Enhanced Bottom Navigation Menu -->
-        <Border Style="{StaticResource EnhancedBottomNavContainerStyle}"
+        <!-- Professional Bottom Navigation Menu -->
+        <Border BackgroundColor="White"
+                StrokeShape="RoundRectangle 20,20,0,0"
+                Stroke="#F1F5F9"
+                StrokeThickness="1"
                 AbsoluteLayout.LayoutBounds="0,1,1,95"
                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
+            <Border.Shadow>
+                <Shadow Brush="#1E293B" Offset="0,-4" Radius="20" Opacity="0.08"/>
+            </Border.Shadow>
             
             <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24" RowDefinitions="Auto,Auto">
                 
@@ -738,16 +833,18 @@
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
-                    <Ellipse Fill="#FFF3E0" 
-                             Style="{StaticResource NavCircleIndicatorStyle}"
-                             x:Name="DocumentCircle">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
-                                <Setter Property="Fill" Value="#FF9800"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                    <Border BackgroundColor="#FEF3C7" 
+                            StrokeShape="RoundRectangle 26"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center" VerticalOptions="Center"
+                            x:Name="DocumentCircle">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding ActiveNavItem}" Value="Document">
+                                <Setter Property="BackgroundColor" Value="#F59E0B"/>
+                                <Setter Property="Scale" Value="1.1"/>
                             </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
+                        </Border.Triggers>
+                    </Border>
                     
                     <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
@@ -756,7 +853,7 @@
                                FontSize="10" 
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#F57C00"
+                               TextColor="#D97706"
                                x:Name="DocumentLabel">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Document">
@@ -766,17 +863,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
-                    <Ellipse Fill="#FF9800"
-                             Style="{StaticResource NavDotIndicatorStyle}"
-                             x:Name="DocumentDot">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
-                                <Setter Property="IsVisible" Value="True"/>
-                            </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
                 </Grid>
 
                 <!-- Add Expense Button -->
@@ -786,16 +872,18 @@
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
-                    <Ellipse Fill="#F3E5F5" 
-                             Style="{StaticResource NavCircleIndicatorStyle}"
-                             x:Name="ExpenseCircle">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                <Setter Property="Fill" Value="#9C27B0"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                    <Border BackgroundColor="#FEF2F2" 
+                            StrokeShape="RoundRectangle 26"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center" VerticalOptions="Center"
+                            x:Name="ExpenseCircle">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding ActiveNavItem}" Value="Expense">
+                                <Setter Property="BackgroundColor" Value="#EF4444"/>
+                                <Setter Property="Scale" Value="1.1"/>
                             </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
+                        </Border.Triggers>
+                    </Border>
                     
                     <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
@@ -804,7 +892,7 @@
                                FontSize="10" 
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#9C27B0"
+                               TextColor="#DC2626"
                                x:Name="ExpenseLabel">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Expense">
@@ -814,16 +902,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
-                    <Ellipse Fill="#9C27B0"
-                             Style="{StaticResource NavDotIndicatorStyle}">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                <Setter Property="IsVisible" Value="True"/>
-                            </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
                 </Grid>
 
                 <!-- Additional Info Button -->
@@ -833,15 +911,17 @@
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
-                    <Ellipse Fill="#E8EAF6" 
-                             Style="{StaticResource NavCircleIndicatorStyle}">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
-                                <Setter Property="Fill" Value="#3F51B5"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                    <Border BackgroundColor="#F5F3FF" 
+                            StrokeShape="RoundRectangle 26"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center" VerticalOptions="Center">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding ActiveNavItem}" Value="Info">
+                                <Setter Property="BackgroundColor" Value="#8B5CF6"/>
+                                <Setter Property="Scale" Value="1.1"/>
                             </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
+                        </Border.Triggers>
+                    </Border>
                     
                     <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
@@ -850,7 +930,7 @@
                                FontSize="10" 
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#3F51B5"
+                               TextColor="#7C3AED"
                                x:Name="InfoLabel">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Info">
@@ -860,16 +940,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
-                    <Ellipse Fill="#3F51B5"
-                             Style="{StaticResource NavDotIndicatorStyle}">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
-                                <Setter Property="IsVisible" Value="True"/>
-                            </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
                 </Grid>
 
                 <!-- History/List Button -->
@@ -879,15 +949,17 @@
                     </Grid.GestureRecognizers>
                     
                     <!-- Background Circle -->
-                    <Ellipse Fill="#E8F5E8" 
-                             Style="{StaticResource NavCircleIndicatorStyle}">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
-                                <Setter Property="Fill" Value="#4CAF50"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                    <Border BackgroundColor="#F0FDF4" 
+                            StrokeShape="RoundRectangle 26"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center" VerticalOptions="Center">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding ActiveNavItem}" Value="History">
+                                <Setter Property="BackgroundColor" Value="#10B981"/>
+                                <Setter Property="Scale" Value="1.1"/>
                             </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
+                        </Border.Triggers>
+                    </Border>
                     
                     <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
@@ -896,7 +968,7 @@
                                FontSize="10" 
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#4CAF50"
+                               TextColor="#059669"
                                x:Name="HistoryLabel">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="History">
@@ -906,46 +978,37 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
-                    <Ellipse Fill="#4CAF50"
-                             Style="{StaticResource NavDotIndicatorStyle}">
-                        <Ellipse.Triggers>
-                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
-                                <Setter Property="IsVisible" Value="True"/>
-                            </DataTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
                 </Grid>
                 
-                <!-- Dynamic Sliding Indicator Background -->
+                <!-- Clean Sliding Indicator -->
                 <Border x:Name="SlidingBackground"
-                        BackgroundColor="#6A1B9A"
+                        BackgroundColor="#64748B"
                         StrokeShape="RoundRectangle 26"
                         WidthRequest="56"
                         HeightRequest="56"
                         HorizontalOptions="Start"
                         VerticalOptions="Center"
-                        Opacity="0.15"
+                        Opacity="0.12"
                         Grid.RowSpan="2"/>
             </Grid>
         </Border>
 
         <!-- Additional Info Display -->
         <Border x:Name="AdditionalInfo"
-                BackgroundColor="#F0F8FF"
+                BackgroundColor="White"
                 StrokeShape="RoundRectangle 12"
-                Stroke="#87CEEB"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
                 Padding="16"
                 Margin="16"
                 IsVisible="{Binding AdditionalInfoEnabled}"
                 AbsoluteLayout.LayoutBounds="0,1,1,100"
                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
             <Border.Shadow>
-                <Shadow Brush="#87CEEB" Offset="0,2" Radius="8" Opacity="0.2"/>
+                <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.1"/>
             </Border.Shadow>
             <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" 
-                   TextColor="#2F4F4F"
+                   TextColor="#374151"
                    FontSize="14"/>
         </Border>
 
