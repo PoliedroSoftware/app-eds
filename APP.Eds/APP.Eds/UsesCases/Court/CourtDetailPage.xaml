@@ -387,14 +387,14 @@
 
                 <!-- Expenditures Section -->
                 <StackLayout Spacing="10" IsVisible="{Binding Expenditures.Count, Converter={StaticResource CountToBoolConverter}}">
-                    <Border BackgroundColor="#FFEBEE"
+                    <Border BackgroundColor="#FFF8F8"
                             StrokeShape="RoundRectangle 6"
-                            Stroke="#F44336"
+                            Stroke="#E8B4B4"
                             Padding="10,6">
                         <Label Text="Gastos" 
                                FontSize="13" 
                                FontAttributes="Bold" 
-                               TextColor="#D32F2F"
+                               TextColor="#B85450"
                                HorizontalOptions="Center"/>
                     </Border>
 
@@ -433,7 +433,7 @@
                                             <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
                                                    FontSize="11"
                                                    FontAttributes="Bold"
-                                                   TextColor="#F44336" 
+                                                   TextColor="#D4716B" 
                                                    AutomationId="LabelExpenditureAmountValue"/>
                                         </StackLayout>
                                     </Grid>

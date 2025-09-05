@@ -1,83 +1,231 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mct:Popup
-	x:Class="APP.Eds.Components.PopUp.AddCourtExpenditure"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
-	CanBeDismissedByTappingOutsideOfPopup="False"
+    x:Class="APP.Eds.Components.PopUp.AddCourtExpenditure"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
-	<Frame
-		Padding="20"
-		BorderColor="#6200E8"
-		CornerRadius="15"
-		HasShadow="True"
-		HeightRequest="450"
-		WidthRequest="380">
+    
+    <!-- Minimalist Container with Clean Shadow -->
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0"
+            WidthRequest="380" 
+            HeightRequest="480">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
+        </Border.Shadow>
+        
+        <Grid RowDefinitions="75,*,65" Padding="0">
+            
+            <!-- Clean Minimalist Header -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#2196F3"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0"
+                    Padding="20,20">
+                
+                <Grid ColumnDefinitions="*,40">
+                    <!-- Title Section - Centered -->
+                    <StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center" 
+                                 HorizontalOptions="Center"
+                                 Spacing="4">
+                        <Label Text="{Binding AddExpense}" 
+                               FontAttributes="Bold" 
+                               FontSize="22" 
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Complete la información del turno" 
+                               FontSize="13" 
+                               TextColor="#F5F5F5"
+                               FontAttributes="None"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                    
+                    <!-- Clean Close Button -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="#FFFFFF20"
+                            StrokeShape="RoundRectangle 20"
+                            WidthRequest="40" HeightRequest="40">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="✕" 
+                               FontSize="16" 
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"/>
+                    </Border>
+                </Grid>
+            </Border>
 
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+            <!-- Clean Form Content Area -->
+            <ScrollView Grid.Row="1" Padding="20,16">
+                <VerticalStackLayout Spacing="20">
+                    
+                    <!-- Expense Category Card - Minimalist -->
+                    <Border BackgroundColor="#FAFCFF"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#E8F2FF"
+                            StrokeThickness="1"
+                            Padding="16,14">
+                        
+                        <VerticalStackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="🏷️" FontSize="16" VerticalOptions="Center"/>
+                                <Label Text="{Binding Expenditures}" 
+                                       FontSize="15" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <Border BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#E0E9F7"
+                                    StrokeThickness="1"
+                                    Padding="12,10">
+                                <Picker x:Name="ExpenditurePicker" 
+                                        Title="{Binding Select}"
+                                        ItemDisplayBinding="{Binding Description}" 
+                                        ItemsSource="{Binding ExpenditureList}"
+                                        SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"  
+                                        SelectedIndexChanged="ExpenditureSelected"
+                                        TextColor="#1976D2"
+                                        TitleColor="#9E9E9E"
+                                        BackgroundColor="Transparent"
+                                        FontSize="14"
+                                        AutomationId="ExpenditurePicker"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    
+                    <!-- Amount Card - Clean Design -->
+                    <Border BackgroundColor="#FAFCFF"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#E8F2FF"
+                            StrokeThickness="1"
+                            Padding="16,14">
+                        
+                        <VerticalStackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
+                                <Label Text="{Binding AmountTranslation}" 
+                                       FontSize="15" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <Border BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#E0E9F7"
+                                    StrokeThickness="1"
+                                    Padding="12,10">
+                                <Entry x:Name="FirstEntry" 
+                                       Placeholder="0"
+                                       Text="{Binding CourtExpenditureAmount, Mode=TwoWay}"
+                                       Completed="EntryAmountCompleted" 
+                                       TextChanged="FirstEntry_TextChanged"
+                                       IsEnabled="False" 
+                                       Keyboard="Numeric" 
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="#1976D2"
+                                       PlaceholderColor="#9E9E9E"
+                                       BackgroundColor="Transparent"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       AutomationId="AmountEntry"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    
+                    <!-- Description Card - Minimalist -->
+                    <Border BackgroundColor="#FAFCFF"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#E8F2FF"
+                            StrokeThickness="1"
+                            Padding="16,14">
+                        
+                        <VerticalStackLayout Spacing="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8">
+                                <Label Text="📝" FontSize="16" VerticalOptions="Center"/>
+                                <Label Text="Descripción:" 
+                                       FontSize="15" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <Border BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#E0E9F7"
+                                    StrokeThickness="1"
+                                    Padding="12,10"
+                                    MinimumHeightRequest="70">
+                                <Entry x:Name="SecondEntry" 
+                                       Placeholder="{Binding Description}"
+                                       Text="{Binding ExpenditureDescription, Mode=TwoWay}"
+                                       Completed="Add_Expenditure" 
+                                       IsEnabled="False" 
+                                       HorizontalTextAlignment="Start"
+                                       VerticalTextAlignment="Start"
+                                       TextColor="#1976D2"
+                                       PlaceholderColor="#9E9E9E"
+                                       BackgroundColor="Transparent"
+                                       FontSize="14"
+                                       MaxLength="200"
+                                       AutomationId="DescriptionEntry"/>
+                            </Border>
+                            
+                            <!-- Clean Character Counter -->
+                            <Label Text="{Binding Source={x:Reference SecondEntry}, Path=Text.Length, StringFormat='{0}/200 caracteres'}"
+                                   FontSize="10"
+                                   TextColor="#9E9E9E"
+                                   HorizontalOptions="End"
+                                   Margin="0,-6,4,0"/>
+                        </VerticalStackLayout>
+                    </Border>
 
-            <!--  Encabezado  -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="{Binding AddExpense}" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Button Grid.Column="2"
-                        BackgroundColor="Transparent"
-                        Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖" TextColor="#6200E8"
-                        WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"
-                        AutomationId="CloseButton"/>
-            </Grid>
-
-            <!--  Campos de Entrada  -->
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout>
-                    <Frame Padding="10"
-                           CornerRadius="10"
-                           Margin="0,0,0,10">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding Expenditures}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <Picker x:Name="ExpenditurePicker" Title="{Binding Select}" Grid.Row="2" Grid.Column="1"
-                                    ItemDisplayBinding="{Binding Description}" ItemsSource="{Binding ExpenditureList}"
-                                    SelectedItem="{Binding SelectedExpenditure, Mode=TwoWay}"  SelectedIndexChanged="ExpenditureSelected"
-                                    HorizontalTextAlignment="Center"
-                                    AutomationId="ExpenditurePicker"/>
-                        </Grid>
-                    </Frame>
-                    <Frame Padding="10"
-                           CornerRadius="10"
-                           Margin="0,0,0,10">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="{Binding  AmountTranslation}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <Entry x:Name="FirstEntry" Placeholder="Ingrese monto" Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding CourtExpenditureAmount, Mode=TwoWay}"
-                                   Completed="EntryAmountCompleted" TextChanged="FirstEntry_TextChanged"
-                                   IsEnabled="False" Keyboard="Numeric" HorizontalTextAlignment="Center"
-                                   AutomationId="AmountEntry"/>
-                        </Grid>
-                    </Frame>
-                    <Frame Padding="10"
-                           CornerRadius="10">
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
-                            <Label Text="Descripción:" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1"/>
-                            <Entry x:Name="SecondEntry" Placeholder="{Binding Description}" Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding ExpenditureDescription, Mode=TwoWay}"
-                                   Completed="Add_Expenditure" IsEnabled="False" HorizontalTextAlignment="Center"
-                                   AutomationId="DescriptionEntry"/>
-                        </Grid>
-                    </Frame>
                 </VerticalStackLayout>
             </ScrollView>
 
-            <!--  Botón Agregar  -->
-            <Button Grid.Row="2"
-                    x:Name="AddButton"
-                    BackgroundColor="#6200E8"
-                    Clicked="Add_Expenditure"
-                    CornerRadius="10"
-                    FontSize="18" Text="{Binding Add}" TextColor="White"
-                    VerticalOptions="Center"
-                    HeightRequest="50"
-                    AutomationId="AddButton"/>
-		</Grid>
-	</Frame>
+            <!-- Clean Action Button Area -->
+            <Border Grid.Row="2"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 0,0,20,20"
+                    Padding="20,10">
+                
+                <Border BackgroundColor="#2196F3"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        HeightRequest="45">
+                    <Border.Shadow>
+                        <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
+                    </Border.Shadow>
+                    
+                    <Button x:Name="AddButton"
+                            BackgroundColor="Transparent"
+                            Clicked="Add_Expenditure"
+                            FontSize="16" 
+                            FontAttributes="Bold"
+                            Text="{Binding Add}" 
+                            TextColor="White"
+                            HeightRequest="45"
+                            AutomationId="AddButton">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference ExpenditurePicker}, Path=SelectedIndex}" Value="-1">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="TextColor" Value="#B3E5FC"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Border>
+            </Border>
+            
+        </Grid>
+    </Border>
 </mct:Popup>

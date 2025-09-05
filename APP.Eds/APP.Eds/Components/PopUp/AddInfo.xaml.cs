@@ -11,6 +11,9 @@ public partial class AddInfo : Popup
     {
         InitializeComponent();
         this.courtService = courtService;
+        
+        // Set BindingContext for proper data binding
+        BindingContext = courtService;
     }
 
     private void OnCloseTapped(object sender, EventArgs e)
@@ -31,30 +34,69 @@ public partial class AddInfo : Popup
 
     private async void OnSaveTapped(object sender, EventArgs e)
     {
-        var editor = this.FindByName<Editor>("EditorDescription");
-
-        if (editor != null && !string.IsNullOrWhiteSpace(editor.Text))
+        try
         {
-            await courtService.SaveAdditionalInfoAsync(editor.Text);
-            
-            try
+            // Disable button to prevent multiple submissions
+            if (sender is Button button)
             {
-                Close();
+                button.IsEnabled = false;
+                button.Text = "Guardando...";
             }
-            catch (ObjectDisposedException ex)
+
+            var editor = this.FindByName<Editor>("EditorDescription");
+
+            if (editor != null && !string.IsNullOrWhiteSpace(editor.Text))
             {
-                System.Diagnostics.Debug.WriteLine($"AddInfo popup was disposed after saving: {ex.Message}");
+                // Validate description length
+                if (editor.Text.Length < 10)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Validación", 
+                        "La descripción debe tener al menos 10 caracteres para ser informativa.", "OK");
+                    return;
+                }
+
+                if (editor.Text.Length > 500)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Validación", 
+                        "La descripción no puede exceder 500 caracteres.", "OK");
+                    return;
+                }
+
+                // Save the additional information
+                await courtService.SaveAdditionalInfoAsync(editor.Text.Trim());
+                
+                // Show success feedback
+                await Application.Current.MainPage.DisplayAlert("Éxito", 
+                    "La información adicional ha sido guardada correctamente.", "OK");
+                
+                try
+                {
+                    Close();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AddInfo popup was disposed after saving: {ex.Message}");
+                }
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Validación", 
+                    "Por favor, ingrese una descripción antes de guardar.", "OK");
             }
         }
-        else
+        catch (Exception ex)
         {
-            try
+            System.Diagnostics.Debug.WriteLine($"Error saving additional info: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", 
+                $"Error al guardar la información: {ex.Message}", "OK");
+        }
+        finally
+        {
+            // Re-enable button
+            if (sender is Button button)
             {
-                Close();
-            }
-            catch (ObjectDisposedException ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"AddInfo popup was disposed without saving: {ex.Message}");
+                button.IsEnabled = true;
+                button.Text = "Guardar";
             }
         }
     }

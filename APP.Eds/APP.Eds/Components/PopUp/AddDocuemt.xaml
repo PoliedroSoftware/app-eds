@@ -1,71 +1,193 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mct:Popup
-	x:Class="APP.Eds.Components.PopUp.AddDocuemt"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
-	CanBeDismissedByTappingOutsideOfPopup="False"
+    x:Class="APP.Eds.Components.PopUp.AddDocuemt"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
     
-	<Frame
-		Padding="16"
-		BorderColor="#6200E8"
-		CornerRadius="15"
-		HasShadow="True"
-		HeightRequest="300"
-		WidthRequest="380">
+    <!-- Modern Minimalist Container -->
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0"
+            WidthRequest="380" 
+            HeightRequest="420">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
+        </Border.Shadow>
+        
+        <Grid RowDefinitions="75,*,65" Padding="0">
+            
+            <!-- Clean Header with Blue Theme -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#2196F3"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0"
+                    Padding="20,20">
+                
+                <Grid ColumnDefinitions="*,40">
+                    <!-- Title Section -->
+                    <StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center" 
+                                 HorizontalOptions="Center"
+                                 Spacing="4">
+                        <Label Text="Agregar comprobante" 
+                               FontAttributes="Bold" 
+                               FontSize="22" 
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Suba un documento del cierre" 
+                               FontSize="13" 
+                               TextColor="#F5F5F5"
+                               FontAttributes="None"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                    
+                    <!-- Modern Close Button -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="#FFFFFF20"
+                            StrokeShape="RoundRectangle 20"
+                            WidthRequest="40" HeightRequest="40">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="✕" 
+                               FontSize="16" 
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"/>
+                    </Border>
+                </Grid>
+            </Border>
 
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
+            <!-- File Selection Content Area -->
+            <Border Grid.Row="1" 
+                    BackgroundColor="#FAFCFF"
+                    Padding="24,20">
+                
+                <VerticalStackLayout Spacing="20">
+                    
+                    <!-- File Upload Card -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#E8F2FF"
+                            StrokeThickness="1"
+                            Padding="20,24">
+                        
+                        <VerticalStackLayout Spacing="20">
+                            <!-- Upload Icon and Title -->
+                            <StackLayout Orientation="Horizontal" 
+                                         Spacing="12"
+                                         HorizontalOptions="Center">
+                                <Border BackgroundColor="#2196F3"
+                                        StrokeShape="RoundRectangle 20"
+                                        WidthRequest="40" HeightRequest="40">
+                                    <Label Text="📎" FontSize="18" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Text="Seleccionar documento" 
+                                       FontSize="17" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <!-- Upload Button -->
+                            <Border BackgroundColor="#F0F7FF"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#90CAF9"
+                                    StrokeThickness="2"
+                                    Padding="20,16"
+                                    HeightRequest="80">
+                                <Border.Shadow>
+                                    <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.1"/>
+                                </Border.Shadow>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSelectFileClicked"/>
+                                </Border.GestureRecognizers>
+                                
+                                <StackLayout VerticalOptions="Center" 
+                                             HorizontalOptions="Center"
+                                             Spacing="8">
+                                    <Label Text="📁" 
+                                           FontSize="24" 
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Toque para seleccionar archivo" 
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#1976D2"
+                                           HorizontalTextAlignment="Center"/>
+                                    <Label Text="PDF, JPG, PNG, DOC (máx. 5MB)" 
+                                           FontSize="11"
+                                           TextColor="#757575"
+                                           HorizontalTextAlignment="Center"/>
+                                </StackLayout>
+                            </Border>
+                            
+                            <!-- File Selected Indicator -->
+                            <Border IsVisible="{Binding IsFileSelected}"
+                                    BackgroundColor="#E8F5E8"
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#4CAF50"
+                                    StrokeThickness="1"
+                                    Padding="12,10">
+                                <StackLayout Orientation="Horizontal" Spacing="10">
+                                    <Label Text="✅" 
+                                           FontSize="16" 
+                                           VerticalOptions="Center"/>
+                                    <StackLayout VerticalOptions="Center" Spacing="2">
+                                        <Label Text="Archivo seleccionado:"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="#2E7D32"/>
+                                        <Label Text="{Binding SelectedFileName}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="#1B5E20"
+                                               AutomationId="SelectedFileNameLabel"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            <!--  Encabezado  -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Padding="0,0,0,10">
-                <Label Grid.Column="1" FontAttributes="Bold" FontSize="22" Text="Agregar comprobante" HorizontalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Button Grid.Column="2"
-                        BackgroundColor="Transparent"
-                        Clicked="OnCloseTapped"
-                        AutomationId="CloseButton"
-                        FontSize="18"  Text="✖"  TextColor="#6200E8"
-                        WidthRequest="30" HeightRequest="30" Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"/>
-            </Grid>
-
-            <!--  Campos de Entrada  -->
-            <Frame Grid.Row="1"
-				Margin="15"
-				Padding="10"
-				CornerRadius="10">
-				<VerticalStackLayout Spacing="10">
-					<Button
-						BackgroundColor="#6200E8"
-                        TextColor="White"
-						Clicked="OnSelectFileClicked"
-                        AutomationId="SelectFileButton"
-						CornerRadius="10"
-						Text="Seleccionar archivo"/>
-					<Label
-						FontAttributes="Bold"
-						IsVisible="{Binding IsFileSelected}"
-						Text="Archivo seleccionado:"
-                        AutomationId="SelectedFileLabel"/>
-					<Label
-						FontAttributes="Italic"
-						Text="{Binding SelectedFileName}"
-                        AutomationId="SelectedFileNameLabel"
-						TextColor="Gray" />
-				</VerticalStackLayout>
-			</Frame>
-
-            <!--  Botón Agregar  -->
-            <Button Grid.Row="2"
-                    BackgroundColor="#6200E8"
-                    Clicked="Add_Dispenser"
-                    AutomationId="AddButton"
-                    CornerRadius="10"
-                    FontSize="18"
-                    Text="Agregar"
-                    TextColor="White"
-                    VerticalOptions="Center"
-                    HeightRequest="40"/>
-		</Grid>
-	</Frame>
+            <!-- Modern Action Button -->
+            <Border Grid.Row="2"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 0,0,20,20"
+                    Padding="20,10">
+                
+                <Border BackgroundColor="#2196F3"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        HeightRequest="45">
+                    <Border.Shadow>
+                        <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
+                    </Border.Shadow>
+                    
+                    <Button BackgroundColor="Transparent"
+                            Clicked="Add_Dispenser"
+                            FontSize="16" 
+                            FontAttributes="Bold"
+                            Text="Agregar" 
+                            TextColor="White"
+                            HeightRequest="45"
+                            AutomationId="AddButton">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding IsFileSelected}" Value="False">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="TextColor" Value="#B3E5FC"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Border>
+            </Border>
+            
+        </Grid>
+    </Border>
 </mct:Popup>

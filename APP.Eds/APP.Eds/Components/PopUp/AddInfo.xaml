@@ -1,50 +1,182 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mct:Popup
-	x:Class="APP.Eds.Components.PopUp.AddInfo"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
-	CanBeDismissedByTappingOutsideOfPopup="False"
+    x:Class="APP.Eds.Components.PopUp.AddInfo"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
     
-    <Frame
-		Padding="20"
-		BorderColor="#6200E8"
-		CornerRadius="15"
-		HasShadow="True"
-		WidthRequest="390"
-        AutomationId="FrameAddInfo">
+    <!-- Modern Minimalist Container -->
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0"
+            WidthRequest="380" 
+            HeightRequest="500">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
+        </Border.Shadow>
+        
+        <Grid RowDefinitions="75,*,70" Padding="0">
+            
+            <!-- Clean Header with Blue Theme -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#2196F3"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0"
+                    Padding="20,20">
+                
+                <Grid ColumnDefinitions="*,40">
+                    <!-- Title Section -->
+                    <StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center" 
+                                 HorizontalOptions="Center"
+                                 Spacing="4">
+                        <Label Text="Información Adicional" 
+                               FontAttributes="Bold" 
+                               FontSize="22" 
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Agregue detalles importantes del turno" 
+                               FontSize="13" 
+                               TextColor="#F5F5F5"
+                               FontAttributes="None"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                    
+                    <!-- Modern Close Button -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="#FFFFFF20"
+                            StrokeShape="RoundRectangle 20"
+                            WidthRequest="40" HeightRequest="40">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="✕" 
+                               FontSize="16" 
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"/>
+                    </Border>
+                </Grid>
+            </Border>
 
-        <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*" RowSpacing="10">
+            <!-- Content Area with Description Input -->
+            <Border Grid.Row="1" 
+                    BackgroundColor="#FAFCFF"
+                    Padding="24,20">
+                
+                <VerticalStackLayout Spacing="16">
+                    <!-- Description Card -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="#E8F2FF"
+                            StrokeThickness="1"
+                            Padding="20,16">
+                        
+                        <VerticalStackLayout Spacing="14">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <Border BackgroundColor="#2196F3"
+                                        StrokeShape="RoundRectangle 20"
+                                        WidthRequest="40" HeightRequest="40">
+                                    <Label Text="📝" FontSize="18" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Text="Descripción detallada" 
+                                       FontSize="17" 
+                                       FontAttributes="Bold"
+                                       TextColor="#1976D2"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <!-- Modern Editor Container -->
+                            <Border BackgroundColor="#FAFCFF"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#E0E9F7"
+                                    StrokeThickness="1"
+                                    Padding="16,12"
+                                    MinimumHeightRequest="240">
+                                <Border.Shadow>
+                                    <Shadow Brush="#2196F3" Offset="0,1" Radius="4" Opacity="0.05"/>
+                                </Border.Shadow>
+                                
+                                <Editor x:Name="EditorDescription"
+                                        AutoSize="TextChanges"
+                                        Placeholder="{Binding EnterADescription}"
+                                        Text="{Binding AditionalInfoDescription, Mode=TwoWay}"
+                                        TextColor="#1976D2"
+                                        PlaceholderColor="#9E9E9E"
+                                        BackgroundColor="Transparent"
+                                        FontSize="15"
+                                        MaxLength="500"
+                                        AutomationId="EditorDescription"/>
+                            </Border>
+                            
+                            <!-- Character Counter -->
+                            <StackLayout Orientation="Horizontal" 
+                                         HorizontalOptions="End"
+                                         Spacing="8">
+                                <Label Text="{Binding Source={x:Reference EditorDescription}, Path=Text.Length, StringFormat='{0}/500 caracteres'}"
+                                       FontSize="11"
+                                       TextColor="#9E9E9E"/>
+                                <Label Text="💡" 
+                                       FontSize="12"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-            <!-- Encabezado -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
-                <Label Text="Información Adicional" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" />
-                <Button Grid.Column="1"
-                        BackgroundColor="Transparent"
-                        Clicked="OnCloseTapped"
-                        FontSize="18" Text="✖" TextColor="#6200E8"
-                        WidthRequest="40" HeightRequest="40"
-                        Padding="0"
-                        HorizontalOptions="End" VerticalOptions="Center"
-                        AutomationId="ButtonClosePopup"/>
-            </Grid>
-
-            <!-- Campos de Entrada -->
-            <Frame Grid.Row="1" Padding="10" CornerRadius="10" BorderColor="LightGray">
-                <Editor
-                    HeightRequest="250"
-                    AutoSize="Disabled"
-                    Placeholder="{Binding EnterADescription}"
-                    Text="{Binding AditionalInfoDescription, Mode=TwoWay}"
-                    AutomationId="EditorDescription"/>
-            </Frame>
-
-            <!-- Botones de Acción -->
-            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Button Grid.Column="0" Text="Cancelar" Clicked="OnCloseTapped" BackgroundColor="#E0E0E0" TextColor="#6200E8" CornerRadius="10" AutomationId="ButtonCancelAddInfo"/>
-                <Button Grid.Column="1" Text="Guardar" Clicked="OnSaveTapped" BackgroundColor="#6200E8" TextColor="White" CornerRadius="10" AutomationId="ButtonSaveAddInfo"/>
-            </Grid>
+            <!-- Modern Action Buttons -->
+            <Border Grid.Row="2"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 0,0,20,20"
+                    Padding="20,12">
+                
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <!-- Cancel Button -->
+                    <Border Grid.Column="0"
+                            BackgroundColor="#F5F5F5"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="0"
+                            HeightRequest="46">
+                        <Border.Shadow>
+                            <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
+                        </Border.Shadow>
+                        <Button BackgroundColor="Transparent"
+                                Clicked="OnCloseTapped"
+                                FontSize="16" 
+                                FontAttributes="Bold"
+                                Text="Cancelar" 
+                                TextColor="#757575"
+                                HeightRequest="46"
+                                AutomationId="ButtonCancelAddInfo"/>
+                    </Border>
+                    
+                    <!-- Save Button -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="#2196F3"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="0"
+                            HeightRequest="46">
+                        <Border.Shadow>
+                            <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
+                        </Border.Shadow>
+                        <Button BackgroundColor="Transparent"
+                                Clicked="OnSaveTapped"
+                                FontSize="16" 
+                                FontAttributes="Bold"
+                                Text="Guardar" 
+                                TextColor="White"
+                                HeightRequest="46"
+                                AutomationId="ButtonSaveAddInfo"/>
+                    </Border>
+                </Grid>
+            </Border>
+            
         </Grid>
-    </Frame>
+    </Border>
 </mct:Popup>
