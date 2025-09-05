@@ -4,8 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}"
     BackgroundColor="#F8F9FA">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DecimalFormatConverter x:Key="DecimalFormat" />
+            <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -230,7 +238,7 @@
                                            FontSize="12"
                                            TextColor="#2E7D32"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalAmount, StringFormat='$ {0:N3}'}" 
+                                    <Label Text="{Binding TotalAmount, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="#1B5E20"
@@ -250,7 +258,7 @@
                                            FontSize="12"
                                            TextColor="#1976D2"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalGallons, StringFormat='{0:N3}'}" 
+                                    <Label Text="{Binding TotalGallons, Converter={StaticResource DecimalFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="#0D47A1"
@@ -270,7 +278,7 @@
                                            FontSize="12"
                                            TextColor="#D32F2F"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalExpenditure, StringFormat='$ {0:N3}'}" 
+                                    <Label Text="{Binding TotalExpenditure, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="#B71C1C"
@@ -290,7 +298,7 @@
                                            FontSize="12"
                                            TextColor="#F57C00"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalTypeOfCollection, StringFormat='$ {0:N3}'}" 
+                                    <Label Text="{Binding TotalTypeOfCollection, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="#E65100"
@@ -310,7 +318,7 @@
                                            FontSize="12"
                                            TextColor="#7B1FA2"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalSales, StringFormat='$ {0:N3}'}" 
+                                    <Label Text="{Binding TotalSales, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
                                            TextColor="#4A148C"
@@ -385,12 +393,12 @@
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
                                                 <Label Text="Monto acumulado" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N3}'}" 
+                                                <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
                                                 <Label Text="Venta en dinero" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AmountDifferenceResult, StringFormat='$ {0:N3}'}" 
+                                                <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
@@ -399,12 +407,12 @@
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
                                                 <Label Text="Galones acumulados" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" 
+                                                <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
                                                 <Label Text="Venta en galones" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding GallonsDifferenceResult, StringFormat='{0:N3}'}" 
+                                                <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
@@ -478,7 +486,7 @@
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
                                                 <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" 
+                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
@@ -621,7 +629,7 @@
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
                                                 <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
-                                                <Label Text="{Binding Amount, StringFormat='$ {0:N3}'}" 
+                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
