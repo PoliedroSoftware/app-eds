@@ -36,7 +36,11 @@ public partial class CourtListView : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is CourtListItemModel selectedCourt)
         {
-            //CourtService.Instance.OpenCourtDetailCommand.Execute(selectedCourt);
+            // Use the CourtService command to open court detail
+            if (BindingContext is CourtService courtService)
+            {
+                courtService.OpenCourtDetailCommand.Execute(selectedCourt);
+            }
 
             ((CollectionView)sender).SelectedItem = null;
         }

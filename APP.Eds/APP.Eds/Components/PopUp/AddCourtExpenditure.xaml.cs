@@ -13,7 +13,8 @@ public partial class AddCourtExpenditure : Popup
 	{
 		InitializeComponent();
         this.courtService = courtService;
-
+        // Fix: Set the BindingContext
+        BindingContext = courtService;
     }
 
     private void OnCloseTapped(object sender, EventArgs e)
@@ -34,25 +35,57 @@ public partial class AddCourtExpenditure : Popup
 
     private async void Add_Expenditure(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService vm && vm.SelectedExpenditure is not null)
+        try
         {
-            var selectedExpenditure = vm.SelectedExpenditure.IdCourtExpenditure;
-        }
-        else
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de Egreso", "OK");
-        }
-        if (courtService.CourtExpenditureAmount <= 0)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
-            return;
-        }
-        await courtService.AddCourtExpenditureFromPopup();
+            // Fix: Improved validation logic
+            if (courtService.SelectedExpenditure is null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de Egreso", "OK");
+                return;
+            }
+            
+            if (courtService.CourtExpenditureAmount <= 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
+                return;
+            }
 
-        ExpenditurePicker.SelectedItem = null;
-        FirstEntry.IsEnabled = false;
-        SecondEntry.IsEnabled = false;
-        await CloseAsync();
+            if (string.IsNullOrWhiteSpace(courtService.ExpenditureDescription))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripción para el gasto", "OK");
+                return;
+            }
+
+            // Disable button to prevent multiple submissions
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+            }
+
+            await courtService.AddCourtExpenditureFromPopup();
+
+            // Reset form
+            ExpenditurePicker.SelectedItem = null;
+            FirstEntry.IsEnabled = false;
+            SecondEntry.IsEnabled = false;
+            FirstEntry.Text = string.Empty;
+            SecondEntry.Text = string.Empty;
+            
+            await CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error adding expenditure: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al agregar el gasto: {ex.Message}", "OK");
+        }
+        finally
+        {
+            // Re-enable button
+            if (sender is Button button)
+            {
+                button.IsEnabled = true;
+            }
+        }
     }
 
     private async Task CloseAsync()
@@ -77,19 +110,30 @@ public partial class AddCourtExpenditure : Popup
 
     private void ExpenditureSelected(object sender, EventArgs e)
     {
-        if (ExpenditurePicker.SelectedIndex != -1)
+        try
         {
-            FirstEntry.IsEnabled = true;
-            SecondEntry.IsEnabled = true;
-            FirstEntry.Focus();
-            FirstEntry.CursorPosition = FirstEntry.Text.Length;
+            if (ExpenditurePicker.SelectedIndex != -1)
+            {
+                FirstEntry.IsEnabled = true;
+                SecondEntry.IsEnabled = true;
+                FirstEntry.Focus();
+                
+                // Fix: Safer cursor positioning
+                if (!string.IsNullOrEmpty(FirstEntry.Text))
+                {
+                    FirstEntry.CursorPosition = FirstEntry.Text.Length;
+                }
+            }
         }
-        
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in ExpenditureSelected: {ex.Message}");
+        }
     }
 
     private async void EntryAmountCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is CourtService)
+        try
         {
             if (courtService.CourtExpenditureAmount <= 0)
             {
@@ -98,25 +142,35 @@ public partial class AddCourtExpenditure : Popup
             }
             
             SecondEntry.Focus();
-            
         }
-        
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in EntryAmountCompleted: {ex.Message}");
+        }
     }
 
     private void FirstEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (sender is Entry entry)
+        try
         {
-            string newText = e.NewTextValue;
-
-            if (string.IsNullOrEmpty(newText))
-                return;
-
-            if (!decimal.TryParse(newText, System.Globalization.NumberStyles.Number,
-                new System.Globalization.CultureInfo("es-CO"), out _))
+            if (sender is Entry entry)
             {
-                entry.Text = e.OldTextValue;
+                string newText = e.NewTextValue;
+
+                if (string.IsNullOrEmpty(newText))
+                    return;
+
+                // Fix: Better number validation with culture handling
+                if (!decimal.TryParse(newText, System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.InvariantCulture, out _))
+                {
+                    entry.Text = e.OldTextValue;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in FirstEntry_TextChanged: {ex.Message}");
         }
     }
 }

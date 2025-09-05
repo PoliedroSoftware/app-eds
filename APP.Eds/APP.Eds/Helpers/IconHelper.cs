@@ -9,56 +9,78 @@ namespace APP.Eds.Helpers
         // Primary icons using geometric shapes and arrows
         public static class Fuel
         {
-            public const string Station = "E";
-            public const string Tank = "T";
-            public const string Pump = "P";
-            public const string Hose = "H";
+            public const string Station = "?";
+            public const string Tank = "???";
+            public const string Pump = "?";
+            public const string Hose = "??";
+            public const string Dispenser = "?";
+            public const string FuelNozzle = "?";
         }
 
         public static class Navigation
         {
-            public const string Next = ">";
-            public const string Previous = "<";
-            public const string Up = "^";
-            public const string Down = "v";
-            public const string Left = "<";
-            public const string Right = ">";
-            public const string Forward = "->";
-            public const string Back = "<-";
+            public const string Next = "??";
+            public const string Previous = "??";
+            public const string Up = "??";
+            public const string Down = "??";
+            public const string Left = "??";
+            public const string Right = "??";
+            public const string Forward = "?";
+            public const string Back = "?";
+            public const string ArrowRight = "?";
         }
 
         public static class Status
         {
-            public const string Success = "OK";
-            public const string Error = "ERR";
-            public const string Warning = "!";
-            public const string Info = "i";
-            public const string Loading = "...";
-            public const string Complete = "DONE";
-            public const string Pending = "WAIT";
+            public const string Success = "?";
+            public const string Error = "?";
+            public const string Warning = "??";
+            public const string Info = "??";
+            public const string Loading = "?";
+            public const string Complete = "?";
+            public const string Pending = "?";
         }
 
         public static class Actions
         {
-            public const string Add = "+";
-            public const string Remove = "-";
-            public const string Edit = "EDIT";
-            public const string Delete = "DEL";
-            public const string Save = "SAVE";
-            public const string Cancel = "CANCEL";
-            public const string Refresh = "REFRESH";
-            public const string View = "VIEW";
-            public const string Search = "SEARCH";
+            public const string Add = "?";
+            public const string Remove = "?";
+            public const string Edit = "??";
+            public const string Delete = "???";
+            public const string Save = "??";
+            public const string Cancel = "?";
+            public const string Refresh = "??";
+            public const string View = "???";
+            public const string Search = "??";
         }
 
         public static class Business
         {
-            public const string Building = "B";
-            public const string Location = "L";
-            public const string Person = "P";
-            public const string Group = "G";
-            public const string Document = "D";
-            public const string Money = "$";
+            public const string Building = "??";
+            public const string Location = "??";
+            public const string Person = "??";
+            public const string Islander = "??";
+            public const string Group = "??";
+            public const string Document = "??";
+            public const string Money = "??";
+            public const string Cash = "??";
+        }
+
+        public static class Time
+        {
+            public const string Clock = "??";
+            public const string Schedule = "??";
+            public const string StartTime = "?";
+            public const string EndTime = "?";
+            public const string Timer = "??";
+        }
+
+        public static class Dispensers
+        {
+            public const string DispenserIcon = "?";
+            public const string HoseNumber = "??";
+            public const string GallonMeter = "??";
+            public const string AmountMeter = "??";
         }
 
         // Alternative text-based icons for maximum compatibility
@@ -67,11 +89,16 @@ namespace APP.Eds.Helpers
             public const string FuelStation = "[EDS]";
             public const string Tank = "[TNK]";
             public const string Pump = "[PMP]";
+            public const string Dispenser = "[DISP]";
             public const string Success = "[OK]";
             public const string Error = "[ERR]";
             public const string Warning = "[!]";
             public const string Info = "[i]";
             public const string Loading = "[...]";
+            public const string Person = "[PER]";
+            public const string Islander = "[ISL]";
+            public const string Money = "[$]";
+            public const string Time = "[TIME]";
         }
 
         /// <summary>
@@ -87,69 +114,75 @@ namespace APP.Eds.Helpers
                 return iconType switch
                 {
                     IconType.FuelStation => TextIcons.FuelStation,
-                    IconType.Tank => TextIcons.Tank,
+                    IconType.Dispenser => TextIcons.Dispenser,
+                    IconType.Person => TextIcons.Person,
+                    IconType.Islander => TextIcons.Islander,
+                    IconType.Money => TextIcons.Money,
+                    IconType.Time => TextIcons.Time,
                     IconType.Success => TextIcons.Success,
                     IconType.Error => TextIcons.Error,
                     IconType.Warning => TextIcons.Warning,
                     IconType.Info => TextIcons.Info,
                     IconType.Loading => TextIcons.Loading,
-                    _ => "[?]"
+                    _ => TextIcons.Info
                 };
             }
 
             return iconType switch
             {
                 IconType.FuelStation => Fuel.Station,
-                IconType.Tank => Fuel.Tank,
+                IconType.Dispenser => Fuel.Dispenser,
+                IconType.Person => Business.Person,
+                IconType.Islander => Business.Islander,
+                IconType.Money => Business.Money,
+                IconType.Time => Time.Clock,
                 IconType.Success => Status.Success,
                 IconType.Error => Status.Error,
                 IconType.Warning => Status.Warning,
                 IconType.Info => Status.Info,
                 IconType.Loading => Status.Loading,
-                IconType.Next => Navigation.Next,
-                IconType.Previous => Navigation.Previous,
+                IconType.ArrowRight => Navigation.ArrowRight,
                 IconType.Add => Actions.Add,
-                IconType.Remove => Actions.Remove,
-                IconType.Refresh => Actions.Refresh,
-                IconType.View => Actions.View,
-                _ => "?"
+                IconType.Edit => Actions.Edit,
+                IconType.Delete => Actions.Delete,
+                _ => Status.Info
             };
         }
 
         /// <summary>
-        /// Gets font family for better icon rendering
+        /// Get appropriate icon for fuel-related elements
         /// </summary>
-        /// <returns>Platform-specific font family for symbols</returns>
-        public static string GetSymbolFontFamily()
+        /// <param name="elementType">Type of fuel element</param>
+        /// <returns>Icon string</returns>
+        public static string GetFuelIcon(string elementType)
         {
-            // Use runtime detection instead of switch expression with DevicePlatform
-            var platform = DeviceInfo.Platform;
-            
-            if (platform == DevicePlatform.Android)
-                return "monospace";
-            else if (platform == DevicePlatform.iOS || platform == DevicePlatform.MacCatalyst)
-                return "Menlo";
-            else if (platform == DevicePlatform.WinUI)
-                return "Segoe UI Symbol";
-            else
-                return "Courier New";
+            return elementType?.ToLowerInvariant() switch
+            {
+                "dispenser" or "dispensador" => Fuel.Dispenser,
+                "hose" or "manguera" => Fuel.Hose,
+                "tank" or "tanque" => Fuel.Tank,
+                "station" or "estacion" => Fuel.Station,
+                "pump" or "bomba" => Fuel.Pump,
+                _ => Fuel.Station
+            };
         }
 
         /// <summary>
-        /// Gets the recommended font size for icons based on context
+        /// Get appropriate icon for Islander roles
         /// </summary>
-        /// <param name="context">Where the icon will be used</param>
-        /// <returns>Font size</returns>
-        public static double GetIconFontSize(IconContext context)
+        /// <param name="role">Islander role</param>
+        /// <returns>Icon string</returns>
+        public static string GetIslanderIcon(string role)
         {
-            return context switch
+            return role?.ToLowerInvariant() switch
             {
-                IconContext.Button => 16,
-                IconContext.Header => 32,
-                IconContext.Card => 20,
-                IconContext.List => 14,
-                IconContext.Navigation => 24,
-                _ => 16
+                "supervisor" => "?????",
+                "encargado de turno" => "?????",
+                "cajero" => "??",
+                "mantenimiento" => "??",
+                "seguridad" => "???",
+                "operario" => "??",
+                _ => "??"
             };
         }
     }
@@ -157,26 +190,19 @@ namespace APP.Eds.Helpers
     public enum IconType
     {
         FuelStation,
-        Tank,
+        Dispenser,
+        Person,
+        Islander,
+        Money,
+        Time,
         Success,
         Error,
         Warning,
         Info,
         Loading,
-        Next,
-        Previous,
+        ArrowRight,
         Add,
-        Remove,
-        Refresh,
-        View
-    }
-
-    public enum IconContext
-    {
-        Button,
-        Header,
-        Card,
-        List,
-        Navigation
+        Edit,
+        Delete
     }
 }

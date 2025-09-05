@@ -1,5 +1,4 @@
-﻿using APP.Eds.Components.PopUp;
-using APP.Eds.Helpers;
+﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Court;
 using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Eds;
@@ -9,7 +8,6 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
 using APP.Eds.UsesCases.Court;
-using CommunityToolkit.Maui.Views;
 using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -2633,7 +2631,7 @@ GetAllEdsData()
             }
         }
 
-        private void OpenCourtDetail(CourtListItemModel selectedCourt)
+        private async void OpenCourtDetail(CourtListItemModel selectedCourt)
         {
             if (selectedCourt == null) return;
 
@@ -2654,7 +2652,6 @@ GetAllEdsData()
             selectedCourt.CourtTranslation = GlobalTranslations.Get("Court");
             selectedCourt.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
             selectedCourt.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
-
 
             foreach (var collection in selectedCourt.Collections)
             {
@@ -2677,14 +2674,13 @@ GetAllEdsData()
                 Dispensers.LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
             }
 
-                foreach (var Documents in selectedCourt.Documents) 
+            foreach (var Documents in selectedCourt.Documents) 
             {
                 Documents.CourtTranslation = GlobalTranslations.Get("Court");
                 Documents.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
-                
             }
 
-                    foreach (var Expenditures in selectedCourt.Expenditures) 
+            foreach (var Expenditures in selectedCourt.Expenditures) 
             {
                 Expenditures.DateTranslation = GlobalTranslations.Get("Date");
                 Expenditures.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
@@ -2692,9 +2688,18 @@ GetAllEdsData()
                 Expenditures.DescriptionTranslation = GlobalTranslations.Get("Description");
             }
 
-            
-
-            Application.Current.MainPage.ShowPopup(new CourtDetailPopup(selectedCourt));
+            // Navigate to the detail page instead of showing popup
+            try
+            {
+                var detailPage = new APP.Eds.UsesCases.Court.CourtDetailPage(selectedCourt);
+                await Application.Current.MainPage.Navigation.PushAsync(detailPage);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error navigating to court detail page: {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    "No se pudo abrir el detalle del corte. Por favor, intente nuevamente.", "OK");
+            }
         }
 
 
