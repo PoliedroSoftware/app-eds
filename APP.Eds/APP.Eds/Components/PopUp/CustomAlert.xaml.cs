@@ -46,6 +46,57 @@ public partial class CustomAlert : Popup
             CancelButtonBorder.IsVisible = false;
             _isConfirm = false;
         }
+
+        // Adjust popup size based on content
+        AdjustPopupSize(message);
+    }
+
+    private void AdjustPopupSize(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return;
+
+        try
+        {
+            // Calculate estimated height needed based on content
+            var lines = content.Split('\n').Length;
+            var estimatedCharactersPerLine = 40; // Approximate characters per line
+            var wordsWrappedLines = Math.Ceiling((double)content.Length / estimatedCharactersPerLine);
+            var totalEstimatedLines = Math.Max(lines, (int)wordsWrappedLines);
+            
+            // Base heights for different sections
+            const int headerHeight = 140;
+            const int buttonHeight = 84;
+            const int basePadding = 60;
+            const int lineHeight = 24;
+            
+            // Calculate content height
+            var contentHeight = Math.Max(120, totalEstimatedLines * lineHeight);
+            var totalHeight = headerHeight + contentHeight + buttonHeight + basePadding;
+            
+            // Set reasonable bounds based on screen size
+            var screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density;
+            var maxAllowedHeight = (int)(screenHeight * 0.8); // 80% of screen height
+            var minHeight = 300;
+            var maxHeight = Math.Min(600, maxAllowedHeight);
+            
+            var finalHeight = Math.Max(minHeight, Math.Min(maxHeight, totalHeight));
+            
+            // Apply the calculated height to the main border
+            if (Content is Border mainBorder)
+            {
+                mainBorder.HeightRequest = finalHeight;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error adjusting popup size: {ex.Message}");
+            // Fallback to a safe default size
+            if (Content is Border fallbackBorder)
+            {
+                fallbackBorder.HeightRequest = 450;
+            }
+        }
     }
 
     private void ConfigureAlertType(AlertType alertType)
@@ -53,44 +104,39 @@ public partial class CustomAlert : Popup
         switch (alertType)
         {
             case AlertType.Error:
-                // Softer red colors - more muted
-                HeaderBorder.BackgroundColor = Color.FromArgb("#E8A5A5"); // Light muted red
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#D78787"); // Softer red
-                // Use simple text symbols instead of emojis for better compatibility
+                HeaderBorder.BackgroundColor = Color.FromArgb("#E8A5A5");
+                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#D78787");
                 IconLabel.Text = "!";
                 IconLabel.FontSize = 32;
                 IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#8B0000"); // Dark red for contrast
+                IconLabel.TextColor = Color.FromArgb("#8B0000");
                 break;
                 
             case AlertType.Warning:
-                // Softer amber/orange colors
-                HeaderBorder.BackgroundColor = Color.FromArgb("#F5E6A3"); // Light muted amber
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#E8D078"); // Softer amber
+                HeaderBorder.BackgroundColor = Color.FromArgb("#F5E6A3");
+                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#E8D078");
                 IconLabel.Text = "!";
                 IconLabel.FontSize = 32;
                 IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#B8860B"); // Dark amber for contrast
+                IconLabel.TextColor = Color.FromArgb("#B8860B");
                 break;
                 
             case AlertType.Info:
-                // Softer blue colors
-                HeaderBorder.BackgroundColor = Color.FromArgb("#A8C8E1"); // Light muted blue
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#7FB3D3"); // Softer blue
+                HeaderBorder.BackgroundColor = Color.FromArgb("#A8C8E1");
+                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#7FB3D3");
                 IconLabel.Text = "i";
                 IconLabel.FontSize = 32;
                 IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#2F4F4F"); // Dark blue-gray for contrast
+                IconLabel.TextColor = Color.FromArgb("#2F4F4F");
                 break;
                 
             case AlertType.Success:
-                // Softer green colors
-                HeaderBorder.BackgroundColor = Color.FromArgb("#B8E6B8"); // Light muted green
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#90D690"); // Softer green
+                HeaderBorder.BackgroundColor = Color.FromArgb("#B8E6B8");
+                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#90D690");
                 IconLabel.Text = "?";
                 IconLabel.FontSize = 28;
                 IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#006400"); // Dark green for contrast
+                IconLabel.TextColor = Color.FromArgb("#006400");
                 break;
         }
     }
@@ -101,6 +147,9 @@ public partial class CustomAlert : Popup
         {
             DetailLabel.Text = detail;
             DetailLabel.IsVisible = true;
+            
+            // Re-adjust size when detail is added
+            AdjustPopupSize(MessageLabel.Text + "\n\n" + detail);
         }
     }
 
@@ -185,6 +234,7 @@ public partial class CustomAlert : Popup
         }
     }
 
+    // Static methods for easy usage
     public static async Task ShowErrorAsync(string message, string title = "Error")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Error);

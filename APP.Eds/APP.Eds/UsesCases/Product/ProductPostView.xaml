@@ -56,9 +56,9 @@
                         <!-- Form Fields -->
                         <VerticalStackLayout Spacing="16">
                             
-                            <!-- Product Name Field -->
+                            <!-- Product Category Selection -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Nombre del Producto" 
+                                <Label Text="Tipo de Combustible" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
                                        TextColor="#2D3436"
@@ -70,94 +70,117 @@
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🏷️" 
+                                        <Label Text="⛽" 
                                                FontSize="18" 
                                                TextColor="#6A1B9A" 
                                                VerticalOptions="Center"/>
                                         
-                                        <Entry Keyboard="Text"
-                                               Placeholder="Ingrese el nombre del producto"
-                                               PlaceholderColor="#9CA3AF"
-                                               Text="{Binding Name, Mode=TwoWay}"
-                                               AutomationId="EntryProductName"
-                                               BackgroundColor="Transparent"
-                                               FontSize="16"
-                                               TextColor="#374151"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="FillAndExpand"/>
+                                        <Picker Title="Seleccione el tipo de combustible"
+                                                ItemsSource="{Binding ProductOptions}"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                SelectedItem="{Binding SelectedProductOption, Mode=TwoWay}"
+                                                AutomationId="PickerProductCategory"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
+                                <Label Text="Seleccione el tipo principal de combustible que desea registrar" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
                             </VerticalStackLayout>
 
-                            <!-- Product Type Selection -->
-                            <VerticalStackLayout Spacing="8">
-                                <StackLayout Orientation="Horizontal" Spacing="8">
-                                    <Label Text="Tipo de Producto" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#2D3436"
-                                           VerticalOptions="Center"
-                                           Margin="4,0,0,0"/>
-                                </StackLayout>
-
-                                <!-- Simplified Product Type Selection -->
+                            <!-- Product Subtype Selection (Only for Gasolina) -->
+                            <VerticalStackLayout Spacing="8" IsVisible="{Binding IsProductTypeSelectionVisible}">
+                                <Label Text="Tipo de Gasolina" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
                                 <Border BackgroundColor="#F8F9FA" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#E5E7EB"
-                                        StrokeThickness="1"
-                                        Padding="16">
-                                    <VerticalStackLayout Spacing="12">
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="✨" 
+                                               FontSize="18" 
+                                               TextColor="#4CAF50" 
+                                               VerticalOptions="Center"/>
                                         
-                                        <!-- Header -->
-                                        <StackLayout Orientation="Horizontal" Spacing="8">
-                                            <Label Text="📋" 
-                                                   FontSize="16" 
-                                                   TextColor="#2196F3" 
-                                                   VerticalOptions="Center"/>
-                                            <Label Text="Seleccione el tipo de producto:" 
-                                                   FontSize="14" 
-                                                   FontAttributes="Bold"
-                                                   TextColor="#374151"
-                                                   VerticalOptions="Center"/>
-                                        </StackLayout>
-
-                                        <!-- Simple Picker for Product Types -->
-                                        <Border BackgroundColor="White"
-                                                StrokeShape="RoundRectangle 8"
-                                                Stroke="#DDD6FE"
-                                                Padding="12">
-                                            <Picker Title="Seleccionar tipo de producto"
-                                                    ItemsSource="{Binding EnhancedProductTypeList}"
-                                                    ItemDisplayBinding="{Binding Description}"
-                                                    SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
-                                                    AutomationId="PickerProductType"
-                                                    FontSize="16"/>
-                                        </Border>
-
-                                        <!-- Add Product Type Button -->
-                                        <Border BackgroundColor="#FF6B35" 
-                                                StrokeShape="RoundRectangle 8"
-                                                StrokeThickness="0"
-                                                Padding="2"
-                                                Margin="0,8,0,0">
-                                            <Border.Shadow>
-                                                <Shadow Brush="#FF6B35" 
-                                                        Offset="0,2" 
-                                                        Radius="6" 
-                                                        Opacity="0.25"/>
-                                            </Border.Shadow>
-                                            <Button Text="➕ Agregar Nuevo Tipo"
-                                                    TextColor="White" 
-                                                    BackgroundColor="Transparent"
-                                                    Clicked="OnAddProductTypeClicked"
-                                                    AutomationId="ButtonAddProductType"
-                                                    FontSize="14"
-                                                    FontAttributes="Bold"
-                                                    HeightRequest="40"
-                                                    CornerRadius="8"/>
-                                        </Border>
-                                    </VerticalStackLayout>
+                                        <Picker Title="Seleccione el tipo de gasolina"
+                                                ItemsSource="{Binding FilteredProductTypes}"
+                                                ItemDisplayBinding="{Binding Description}"
+                                                SelectedItem="{Binding SelectedSpecificProductType, Mode=TwoWay}"
+                                                AutomationId="PickerProductSubtype"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
                                 </Border>
+                                <Label Text="Seleccione si es gasolina corriente o extra" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
+                            </VerticalStackLayout>
+
+                            <!-- ACPM Automatic Selection Message -->
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#4CAF50"
+                                    Padding="16"
+                                    IsVisible="{Binding IsAcpmSelected}">
+                                <StackLayout Orientation="Horizontal" Spacing="12">
+                                    <Label Text="🚛" 
+                                           FontSize="16" 
+                                           VerticalOptions="Start"
+                                           Margin="0,2,0,0"/>
+                                    <Label Text="ACPM seleccionado automáticamente. El tipo de producto se asignará como ACPM."
+                                           FontSize="12"
+                                           TextColor="#2E7D32"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Product Name Display (Read-only) -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Nombre del Producto" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F0F0F0" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#E0E0E0"
+                                        StrokeThickness="1"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏷️" 
+                                               FontSize="18" 
+                                               TextColor="#757575" 
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Label Text="{Binding Name}"
+                                               AutomationId="LabelProductName"
+                                               FontSize="16"
+                                               TextColor="#424242"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand"
+                                               BackgroundColor="Transparent"/>
+                                    </StackLayout>
+                                </Border>
+                                <Label Text="El nombre se genera automáticamente basado en su selección" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
                             </VerticalStackLayout>
 
                             <!-- Purchase Price Field -->
@@ -286,7 +309,7 @@
                                            FontSize="16" 
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
-                                    <Label Text="Solo el nombre y tipo de producto son obligatorios. Los precios y stock son opcionales y pueden configurarse posteriormente si es necesario. Si no se ingresan valores, se guardarán como 0."
+                                    <Label Text="Seleccione el tipo de combustible para generar automáticamente el nombre del producto. Los precios y stock son opcionales y pueden configurarse posteriormente."
                                            FontSize="12"
                                            TextColor="#1565C0"
                                            VerticalOptions="Center"
