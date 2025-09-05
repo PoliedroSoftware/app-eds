@@ -28,6 +28,9 @@ public class HoseCourtModel
     [JsonPropertyName("price")]
     public double Price { get; set; }
 
+    [JsonPropertyName("sellPrice")]
+    public double SellPrice { get; set; }
+
     [JsonPropertyName("dispensersEntity")]
     public DispenserCourtModel DispensersEntity { get; set; }
 
@@ -37,7 +40,27 @@ public class HoseCourtModel
     [JsonPropertyName("edsEntity")]
     public EdsResponse EdsEntity { get; set; }
 
-   
+    [JsonPropertyName("productcourtmodel")]
+    public ProductCourtModel ProductCourtModel { get; set; }
+
+
+
+    public double EffectiveSellPrice
+    {
+        get
+        {
+            
+            if (ProductCourtModel?.SellPrice > 0)
+                return ProductCourtModel.SellPrice;
+
+           
+            if (SellPrice > 0)
+                return SellPrice;
+
+            
+            return Price;
+        }
+    }
 
     public string ProductName => ProductTypeEntity?.Description ?? "Unknown";
     public int DispensersNumber => DispensersEntity?.Number ?? 0;

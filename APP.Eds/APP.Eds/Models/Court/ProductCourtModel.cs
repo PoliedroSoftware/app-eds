@@ -13,7 +13,15 @@ namespace APP.Eds.Models.Court
         [JsonPropertyName("id_produc_type")]
         public int IdProductType { get; set; }
 
-        [JsonPropertyName("price")]
-        public double Price { get; set; }
+        [JsonPropertyName("purchasePrice")]
+        public double PurchasePrice { get; set; }
+
+        [JsonPropertyName("sellPrice")]
+        public double SellPrice { get; set; }
+
+        [JsonPropertyName("stock")]
+        public int Stock { get; set; }
+
+
     }
 }
