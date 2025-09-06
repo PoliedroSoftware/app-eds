@@ -186,11 +186,12 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         try
         {
             LoadingOverlay.ShowLoading();
+            await _compartimentService.GetAllTankData(); // Cargar la lista de tanques
             await _compartimentService.GetCompartimentAsync();
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al cargar la lista de compartimentos:\n\n{ex.Message}", "Error de Carga");
+            await CustomAlert.ShowErrorAsync($"Error al cargar la lista de compartimentos o tanques:\n\n{ex.Message}", "Error de Carga");
         }
         finally
         {

@@ -264,8 +264,8 @@ namespace APP.Eds.Services.Compartiment
         public CompartimentService()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            GetAllTankData();
-            GetCompartimentAsync();
+            // Se llama a GetAllTankData() en OnAppearing de CompartimentPostView.xaml.cs
+            // GetCompartimentAsync(); // Se llama en OnAppearing de CompartimentPostView.xaml.cs
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
             LoadTranslationsAsync();
@@ -310,25 +310,40 @@ namespace APP.Eds.Services.Compartiment
         }
 
         //Data
-        private async void GetAllTankData()
+        public async Task GetAllTankData()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
             try
             {
                 string url = $"{Configuration.BaseUrl}/api/v1/tank";
+                Console.WriteLine($"Solicitando tanques desde: {url}"); // Debugging: Imprimir la URL completa
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var response = await httpClient.GetStringAsync(url);
-                var tankList = JsonSerializer.Deserialize<TankApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                UpdateTankList(tankList?.Data ?? new List<TankResponse>());
+                var httpResponse = await httpClient.GetAsync(url); // Usar GetAsync para verificar el StatusCode
+                
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Respuesta exitosa de la API de tanques: {responseContent}"); // Debugging
+                    var tankList = JsonSerializer.Deserialize<TankApiResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    UpdateTankList(tankList?.Data ?? new List<TankResponse>());
+                    Console.WriteLine($"Número de tanques cargados: {TankList.Count}"); // Debugging
+                }
+                else
+                {
+                    var errorContent = await httpResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error en la API de tanques - StatusCode: {httpResponse.StatusCode}, Contenido: {errorContent}"); // Debugging
+                    await CustomAlert.ShowErrorAsync($"Error al cargar los tanques: {httpResponse.StatusCode} - {errorContent}", "Error de Carga de Tanques");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error cargando los datos: {ex.Message}");
+                Console.WriteLine($"Excepción al cargar los datos del tanque: {ex.Message}"); // Debugging
+                await CustomAlert.ShowErrorAsync($"Excepción al cargar los tanques: {ex.Message}", "Error de Carga de Tanques");
             }
         }
 
