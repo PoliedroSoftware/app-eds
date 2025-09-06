@@ -10,7 +10,7 @@
     <Border BackgroundColor="White"
             StrokeShape="RoundRectangle 20"
             WidthRequest="340"
-            HeightRequest="300">
+            >
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,8" Radius="16" Opacity="0.1"/>
         </Border.Shadow>
@@ -71,7 +71,7 @@
                            TextColor="#636E72"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
-                           IsVisible="False"/>
+                           IsVisible="True"/>
                 </StackLayout>
             </ScrollView>
 
