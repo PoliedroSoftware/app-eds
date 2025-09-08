@@ -432,7 +432,7 @@
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
                                                     CornerRadius="20"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
                                                     CommandParameter="{Binding .}"/>
                                         </Border>
                                     </Grid>
