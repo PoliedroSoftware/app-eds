@@ -340,11 +340,11 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             {
                 if (double.TryParse(e.NewTextValue, out double newSellPrice) && newSellPrice > 0)
                 {
-                    
+                    // Actualizar tanto el SellPrice directo como el del ProductEntity si existe
                     SelectedHose.SellPrice = newSellPrice;
-                    if (SelectedHose.ProductCourtModel != null)
+                    if (SelectedHose.ProductEntity != null)
                     {
-                        SelectedHose.ProductCourtModel.SellPrice = newSellPrice;
+                        SelectedHose.ProductEntity.SellPrice = newSellPrice;
                     }
 
                     if (PricePerGallonLabel != null)
@@ -355,7 +355,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                     if (AccumulatedAmount > LastAccumulatedAmount)
                     {
                         double amountDifference = AccumulatedAmount - LastAccumulatedAmount;
-                        
+                        // Fixed: Add division by zero check
                         if (newSellPrice > 0)
                         {
                             AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
@@ -382,9 +382,9 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                 {
                     // Actualizar tanto el SellPrice directo como el del ProductEntity si existe
                     SelectedHose.SellPrice = newSellPrice;
-                    if (SelectedHose.ProductCourtModel != null)
+                    if (SelectedHose.ProductEntity != null)
                     {
-                        SelectedHose.ProductCourtModel.SellPrice = newSellPrice;
+                        SelectedHose.ProductEntity.SellPrice = newSellPrice;
                     }
 
                     if (PricePerGallonLabel != null)

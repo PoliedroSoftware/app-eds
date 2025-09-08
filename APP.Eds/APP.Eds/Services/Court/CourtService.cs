@@ -3059,28 +3059,62 @@ GetAllEdsData()
         {
             if (dispenser != null && CourtDispensers?.Contains(dispenser) == true)
             {
-                var hose = HoseList.FirstOrDefault(h => h.IdHose == dispenser.IdHose);
-
+                // Remover el dispensador de la lista
                 CourtDispensers.Remove(dispenser);
 
-                if (hose != null)
+                // Buscar la manguera en la lista de mangueras seleccionadas
+                var selectedHose = selectedHoses.FirstOrDefault(h => h.IdHose == dispenser.IdHose);
+                
+                if (selectedHose != null)
                 {
-                    var selectedHose = selectedHoses.FirstOrDefault(h => h.IdHose == hose.IdHose);
-                    if (selectedHose != null)
-                    {
-                        selectedHoses.Remove(selectedHose);
-                    }
-
-                    if (!HoseList.Contains(hose))
+                    // Remover de la lista de mangueras seleccionadas
+                    selectedHoses.Remove(selectedHose);
+                    
+                    // Agregar de vuelta a la lista de mangueras disponibles
+                    HoseList.Add(selectedHose);
+                    
+                    // Ordenar la lista para mantener el orden
+                    var sortedHoses = HoseList
+                        .OrderBy(x => x.IdDispensers)
+                        .ThenBy(x => x.Number)
+                        .ToList();
+                    
+                    HoseList.Clear();
+                    foreach (var hose in sortedHoses)
                     {
                         HoseList.Add(hose);
-                        OnPropertyChanged(nameof(HoseList));
-                        OnPropertyChanged(nameof(AreAvailableHoses));
                     }
+                    
+                    // Notificar cambios en las propiedades relacionadas con mangueras disponibles
+                    OnPropertyChanged(nameof(HoseList));
+                    OnPropertyChanged(nameof(AreAvailableHoses));
+                    OnPropertyChanged(nameof(NewSaleEnabled));
                 }
 
+                // Actualizar los resultados de diferencias - remover los valores del dispensador eliminado
+                var amountToRemove = dispenser.AmountDifferenceResult;
+                var gallonsToRemove = dispenser.GallonsDifferenceResult;
+                
+                if (AmountResults.Contains(amountToRemove))
+                {
+                    AmountResults.Remove(amountToRemove);
+                }
+                
+                if (GallonResults.Contains(gallonsToRemove))
+                {
+                    GallonResults.Remove(gallonsToRemove);
+                }
+
+                // Recalcular totales después de remover los valores
+                TotalAmount = GetTotalAmount();
+                TotalGallons = GetTotalGallons();
                 TotalSales = GetTotalSales();
+                
+                // Notificar cambios en las propiedades
                 OnPropertyChanged(nameof(CourtDispensers));
+                OnPropertyChanged(nameof(TotalAmount));
+                OnPropertyChanged(nameof(TotalGallons));
+                OnPropertyChanged(nameof(TotalSales));
             }
         }
 
