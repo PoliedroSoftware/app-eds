@@ -1,11 +1,12 @@
 ﻿using APP.Eds.Models.Eds;
 using APP.Eds.Models.Product;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
 namespace APP.Eds.Models.Court;
 
-public class HoseCourtModel 
+public class HoseCourtModel
 {
     [JsonPropertyName("idHose")]
     public int IdHose { get; set; }
@@ -37,27 +38,26 @@ public class HoseCourtModel
     [JsonPropertyName("productTypeEntity")]
     public ProductTypeModelResponse ProductTypeEntity { get; set; }
 
+    [JsonPropertyName("productEntity")]
+    public ProductEntity ProductEntity { get; set; }
+
     [JsonPropertyName("edsEntity")]
     public EdsResponse EdsEntity { get; set; }
 
-    [JsonPropertyName("productcourtmodel")]
-    public ProductCourtModel ProductCourtModel { get; set; }
-
-
-
+    // Propiedad computada que retorna sellPrice desde productEntity si existe, sino usa las propiedades directas como fallback
     public double EffectiveSellPrice
     {
         get
         {
-            
-            if (ProductCourtModel?.SellPrice > 0)
-                return ProductCourtModel.SellPrice;
+            // Prioridad 1: sellPrice desde productEntity
+            if (ProductEntity?.SellPrice > 0)
+                return ProductEntity.SellPrice;
 
-           
+            // Prioridad 2: sellPrice directo
             if (SellPrice > 0)
                 return SellPrice;
 
-            
+            // Prioridad 3: price como fallback
             return Price;
         }
     }
@@ -69,6 +69,64 @@ public class HoseCourtModel
 
     public string DisplayText =>
      $"Dispenser: {DispensersNumber}\nHose: {Number}\nProduct: {ProductName}\n-------------------------------------------------";
+}
 
+// Clase para mapear la entidad del producto que viene del backend
+public class ProductEntity
+{
+    [JsonPropertyName("idProduct")]
+    public int IdProduct { get; set; }
 
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("idProductType")]
+    public int IdProductType { get; set; }
+
+    [JsonPropertyName("purchasePrice")]
+    public double PurchasePrice { get; set; }
+
+    [JsonPropertyName("sellPrice")]
+    public double SellPrice { get; set; }
+
+    [JsonPropertyName("stock")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Stock { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+
+    public class SafeIntConverter : JsonConverter<int>
+    {
+        public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.Number:
+                    if (reader.TryGetInt32(out int value))
+                        return value;
+                    if (reader.TryGetDouble(out double doubleValue))
+                        return (int)Math.Round(doubleValue);
+                    break;
+
+                case JsonTokenType.String:
+                    string stringValue = reader.GetString();
+                    if (int.TryParse(stringValue, out int parsedValue))
+                        return parsedValue;
+                    if (double.TryParse(stringValue, out double parsedDouble))
+                        return (int)Math.Round(parsedDouble);
+                    break;
+
+                case JsonTokenType.Null:
+                    return 0; // Default value for null
+            }
+
+            return 0; // Default fallback value
+        }
+
+        public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
+        {
+            writer.WriteNumberValue(value);
+        }
+    }
 }
