@@ -168,7 +168,7 @@
                                                                                           CommandParameter="{Binding}" />
                                                                 </Grid.GestureRecognizers>
                                                                 
-                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="16,12">
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" Padding="16,12">
                                                                     <!-- EDS Icon -->
                                                                     <Frame Grid.Column="0" 
                                                                            BackgroundColor="{AppThemeBinding Light=#059669, Dark=#047857}"
@@ -202,8 +202,21 @@
                                                                                TextColor="{AppThemeBinding Light=#92400E, Dark=#FEF3C7}" />
                                                                     </Frame>
                                                                     
+                                                                    <!-- EDS Total Stock -->
+                                                                    <Frame Grid.Column="3"
+                                                                           BackgroundColor="{AppThemeBinding Light=#EDF7ED, Dark=#1B5E20}"
+                                                                           HasShadow="False"
+                                                                           CornerRadius="8"
+                                                                           Padding="6,3"
+                                                                           Margin="4,0">
+                                                                        <Label Text="{Binding TotalStockText}"
+                                                                               FontSize="9"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#A5D6A7}" />
+                                                                    </Frame>
+                                                                    
                                                                     <!-- Expand Icon -->
-                                                                    <Label Grid.Column="3" 
+                                                                    <Label Grid.Column="4" 
                                                                            FontSize="10" 
                                                                            VerticalOptions="Center"
                                                                            TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}">
