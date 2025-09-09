@@ -161,15 +161,7 @@ public partial class CustomAlert : Popup
     // Static helper methods for easy usage
     public static async Task ShowErrorAsync(string message, string title = "Error")
     {
-        System.Diagnostics.Debug.WriteLine($"Original error message: {message}"); // Log original message for debugging
-
-        string displayMessage = message;
-        if (message.Contains("InternalServerErrorException") || message.Contains("status:500"))
-        {
-            displayMessage = "Error interno del servidor. Por favor, contacte a soporte técnico.";
-        }
-
-        var alert = new CustomAlert(title, displayMessage, "OK", null, AlertType.Error);
+       
         await alert.ShowAsync();
     }
 

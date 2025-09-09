@@ -414,15 +414,33 @@ public class TankService : INotifyPropertyChanged
                 }
 
                 System.Diagnostics.Debug.WriteLine($"Error del servidor ({httpResponse.StatusCode}): {errorDetail}");
+                string displayMessage = "Error interno del servidor al cargar los tanques. Por favor, contacte a soporte técnico.";
+                try
+                {
+                    var error = JsonConvert.DeserializeObject<ErrorResponse>(responseContent);
+                    if (error != null && !string.IsNullOrEmpty(error.Detail))
+                    {
+                        displayMessage = error.Detail;
+                    }
+                    else if (error != null && !string.IsNullOrEmpty(error.Title))
+                    {
+                        displayMessage = error.Title;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error al deserializar ErrorResponse en GetTankAsync: {ex.Message}");
+                }
+
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     await Application.Current.MainPage.DisplayAlert(
                         "Error de Carga de Tanques",
-                        "Error interno del servidor al cargar los tanques. Por favor, contacte a soporte técnico.",
+                        displayMessage,
                         "OK"
                     );
                 });
-                return; // Salir del método después de mostrar el error
+                return;
             }
 
             var tanks = JsonConvert.DeserializeObject<TankApiResponse>(responseContent);
