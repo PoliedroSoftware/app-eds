@@ -6,13 +6,11 @@
     x:Class="APP.Eds.Views.Popups.CategoryPopup"
     CanBeDismissedByTappingOutsideOfPopup="True"
     Color="Transparent"
-    VerticalOptions="Center"
-    HorizontalOptions="Center"
     AutomationId="PopupCategory">
 
     <Border x:Name="Frame"
             BackgroundColor="{StaticResource White}"
-            StrokeShape="RoundRectangle 20"
+            StrokeShape="RoundRectangle 24"
             StrokeThickness="0"
             WidthRequest="380"
             Padding="0"
@@ -20,24 +18,26 @@
             HorizontalOptions="Center"
             AutomationId="FrameCategory">
         
+        <!-- Forzar shadow personalizada para evitar conflictos de estilos globales -->
         <Border.Shadow>
-            <Shadow Brush="{StaticResource Primary}" 
-                    Offset="0,8" 
-                    Radius="25" 
-                    Opacity="0.3"/>
+            <Shadow Brush="{StaticResource Black}" 
+                    Offset="0,12" 
+                    Radius="40" 
+                    Opacity="0.15"/>
         </Border.Shadow>
 
-        <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
+        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*">
 
-            <!-- Encabezado moderno -->
+            <!-- Encabezado premium con gradiente mejorado -->
             <Border Grid.Row="0"
-                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeShape="RoundRectangle 24,24,0,0"
                     StrokeThickness="0"
-                    Padding="25,20">
+                    Padding="24,20,24,16">
                 <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
-                        <GradientStop Color="{StaticResource Secondary}" Offset="1.0" />
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#6366F1" Offset="0.0" />
+                        <GradientStop Color="#8B5CF6" Offset="0.5" />
+                        <GradientStop Color="#D946EF" Offset="1.0" />
                     </LinearGradientBrush>
                 </Border.Background>
                 
@@ -48,49 +48,67 @@
                                FontSize="20"
                                TextColor="{StaticResource White}"
                                AutomationId="LabelCategoryTitle"/>
-                        <Label Text="Selecciona una opción"
-                               FontSize="14"
+                        <Label Text="Elige una opción para continuar"
+                               FontSize="13"
                                TextColor="{StaticResource White}"
-                               Opacity="0.8"/>
+                               Opacity="0.85"
+                               FontAttributes="None"/>
                     </StackLayout>
 
-                    <Border Grid.Column="1"
-                            BackgroundColor="{StaticResource White}"
-                            StrokeShape="RoundRectangle 15"
-                            StrokeThickness="0"
-                            WidthRequest="30" 
-                            HeightRequest="30"
-                            Padding="0"
-                            VerticalOptions="Center"
-                            AutomationId="ButtonClosePopup">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
-                        </Border.GestureRecognizers>
-                        <Label Text="✕"
-                               FontSize="16" 
-                               TextColor="{StaticResource Primary}"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" 
-                               VerticalOptions="Center"/>
-                    </Border>
+                    <Frame Grid.Column="1"
+                           BackgroundColor="{StaticResource White}"
+                           CornerRadius="15"
+                           HasShadow="False"
+                           Padding="0"
+                           WidthRequest="30" 
+                           HeightRequest="30"
+                           HorizontalOptions="End" 
+                           VerticalOptions="Center"
+                           AutomationId="ButtonClosePopup">
+                        <Button BackgroundColor="Transparent"
+                                Clicked="OnCloseTapped"
+                                FontSize="16" 
+                                Text="✕" 
+                                TextColor="#8B5CF6"
+                                FontAttributes="Bold"
+                                WidthRequest="30" 
+                                HeightRequest="30" 
+                                Padding="0"
+                                CornerRadius="15"/>
+                    </Frame>
                 </Grid>
             </Border>
+
+            <!-- Línea separadora sutil -->
+            <Rectangle Grid.Row="1"
+                       HeightRequest="1"
+                       Fill="{StaticResource Gray200}"
+                       Opacity="0.5"/>
             
-            <!-- Lista de elementos del menú -->
-            <ScrollView Grid.Row="1" 
-                        Padding="20,15,20,20">
+            <!-- Lista de elementos del menú con altura automática -->
+            <StackLayout Grid.Row="2" 
+                         Padding="20,16,20,20">
                 <CollectionView x:Name="MenuItemsList"
                                 ItemSizingStrategy="MeasureAllItems"
                                 AutomationId="CollectionViewMenuItems">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="0,4"
-                                    BackgroundColor="{StaticResource Gray50}"
-                                    StrokeShape="RoundRectangle 12"
+                            <Border Margin="0,0,0,10"
+                                    BackgroundColor="{StaticResource White}"
+                                    StrokeShape="RoundRectangle 14"
                                     StrokeThickness="1"
                                     Stroke="{StaticResource Gray200}"
-                                    Padding="18,14"
+                                    Padding="0"
+                                    MinimumHeightRequest="58"
                                     AutomationId="ButtonMenuItem">
+                                
+                                <Border.Shadow>
+                                    <Shadow Brush="{StaticResource Gray300}" 
+                                            Offset="0,2" 
+                                            Radius="6" 
+                                            Opacity="0.08"/>
+                                </Border.Shadow>
+
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding .}" Value="{x:Null}">
                                         <Setter Property="IsVisible" Value="False"/>
@@ -106,64 +124,77 @@
                                     <VisualStateGroup Name="CommonStates">
                                         <VisualState Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{StaticResource Gray50}"/>
+                                                <Setter Property="BackgroundColor" Value="{StaticResource White}"/>
                                                 <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
                                                 <Setter Property="Scale" Value="1"/>
+                                                <Setter Property="Opacity" Value="1"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Property="Scale" Value="0.96"/>
+                                                <Setter Property="Scale" Value="0.97"/>
+                                                <Setter Property="Opacity" Value="0.8"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
 
-                                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-                                    <!-- Icono del elemento -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,12">
+                                    <!-- Icono del elemento con gradiente -->
                                     <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource Secondary}"
-                                            StrokeShape="RoundRectangle 8"
+                                            StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0"
-                                            WidthRequest="32"
-                                            HeightRequest="32"
-                                            Margin="0,0,12,0"
+                                            WidthRequest="40"
+                                            HeightRequest="40"
+                                            Margin="0,0,14,0"
                                             VerticalOptions="Center">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#F3F4F6" Offset="0.0" />
+                                                <GradientStop Color="#E5E7EB" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
                                         <Label Text="{Binding Icon}"
-                                               FontSize="14"
+                                               FontSize="16"
                                                HorizontalOptions="Center"
                                                VerticalOptions="Center"/>
                                     </Border>
                                     
-                                    <!-- Línea indicadora -->
-                                    <Border Grid.Column="1"
-                                            BackgroundColor="{StaticResource Primary}"
-                                            StrokeShape="RoundRectangle 2"
+                                    <!-- Contenido del elemento -->
+                                    <StackLayout Grid.Column="1" 
+                                                 VerticalOptions="Center"
+                                                 Spacing="2">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource Gray900}"/>
+                                        <Label Text="{Binding Description}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource Gray600}"
+                                               IsVisible="{Binding HasDescription}"/>
+                                    </StackLayout>
+                                    
+                                    <!-- Flecha con efecto hover -->
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="{StaticResource Gray100}"
+                                            StrokeShape="RoundRectangle 8"
                                             StrokeThickness="0"
-                                            WidthRequest="4"
-                                            HeightRequest="24"
-                                            Margin="0,0,15,0"
-                                            VerticalOptions="Center"/>
-                                    
-                                    <!-- Texto del elemento -->
-                                    <Label Grid.Column="2"
-                                           Text="{Binding Name}"
-                                           FontSize="16"
-                                           TextColor="{StaticResource Gray900}"
-                                           VerticalOptions="Center"/>
-                                    
-                                    <!-- Flecha -->
-                                    <Label Grid.Column="3"
-                                           Text="▶"
-                                           FontSize="12"
-                                           TextColor="{StaticResource Primary}"
-                                           VerticalOptions="Center"/>
+                                            WidthRequest="28"
+                                            HeightRequest="28"
+                                            VerticalOptions="Center">
+                                        <Label Text="→"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource Primary}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Border>
                                 </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </ScrollView>
+            </StackLayout>
         </Grid>
     </Border>
 
