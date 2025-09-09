@@ -102,7 +102,8 @@ public partial class TankPostView : ContentPage
             }
             catch (Exception ex)
             {
-                await CustomAlert.ShowErrorAsync($"Error al guardar el tanque:\n\n{ex.Message}", "Error del Sistema");
+                System.Diagnostics.Debug.WriteLine($"Error al guardar el tanque: {ex.Message}");
+                await CustomAlert.ShowErrorAsync("Error interno del servidor al cargar los tanques. Por favor, contacte a soporte técnico.", "Error del Sistema");
             }
             finally
             {

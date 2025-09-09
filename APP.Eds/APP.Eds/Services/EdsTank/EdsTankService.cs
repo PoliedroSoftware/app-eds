@@ -166,8 +166,17 @@ public class EdsTankService : INotifyPropertyChanged
             string url = $"{Configuration.BaseUrl}/api/v1/tank";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync(url);
-            var tankResponse = JsonSerializer.Deserialize<TankResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var response = await httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                await CustomAlert.ShowErrorAsync($"Error del servidor ({response.StatusCode}): {errorMsg}", "Error de Carga de Tanques");
+                return;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var tankResponse = JsonSerializer.Deserialize<TankResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -180,7 +189,7 @@ public class EdsTankService : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando tanques: {ex.Message}");
+            await CustomAlert.ShowErrorAsync($"Error inesperado: {ex.Message}", "Error de Carga de Tanques");
         }
     }
 

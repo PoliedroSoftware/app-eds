@@ -1,12 +1,14 @@
 ﻿using APP.Eds.Helpers;
+using APP.Eds.Models.Common; 
 using APP.Eds.Models.Tank;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Translations;
+using Microsoft.Maui.ApplicationModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Windows.Input;
 
 namespace APP.Eds.Services.Tank;
@@ -286,10 +288,7 @@ public class TankService : INotifyPropertyChanged
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/tank/{tankId}");
-            Tank = JsonSerializer.Deserialize<TankModel>(response, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            Tank = JsonConvert.DeserializeObject<TankModel>(response);
         }
         catch (Exception ex)
         {
@@ -312,13 +311,13 @@ public class TankService : INotifyPropertyChanged
                     return;
                 }
 
-                if (Compartment <= 0)
+                if (!Compartment.HasValue || Compartment <= 0)
                 {
                     await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Compartment' debe ser mayor que 0", "OK");
                     return;
                 }
 
-                if (Ability <= 0)
+                if (!Ability.HasValue || Ability <= 0)
                 {
                     await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Ability' debe ser mayor que 0", "OK");
                     return;
@@ -339,7 +338,7 @@ public class TankService : INotifyPropertyChanged
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var json = JsonConvert.SerializeObject(Request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/tank", content);
 
@@ -350,8 +349,24 @@ public class TankService : INotifyPropertyChanged
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Error al enviar datos del tanque: {response.StatusCode}\n{errorContent}");
+                
+                string errorMessage = "Error interno del servidor al guardar los tanques. Por favor, contacte a soporte técnico.";
+                try 
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(errorContent);
+                    if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.Detail))
+                    {
+                        errorMessage = errorResponse.Detail;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error al deserializar respuesta de error: {ex.Message}");
+                }
+                
+                await Application.Current.MainPage.DisplayAlert("Error", errorMessage, "OK");
             }
         }
         catch (Exception ex)
@@ -362,40 +377,104 @@ public class TankService : INotifyPropertyChanged
 
     public async Task GetTankAsync()
     {
-        if (string.IsNullOrEmpty(_authToken))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
-        }
         try
         {
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var httpResponse = await httpClient.GetAsync($"{Configuration.BaseUrl}/api/v1/tank");
-
-            if (httpResponse.IsSuccessStatusCode)
+            if (string.IsNullOrEmpty(_authToken))
             {
-                var responseContent = await httpResponse.Content.ReadAsStringAsync();
-                var tanks = JsonSerializer.Deserialize<TankApiResponse>(responseContent, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
+                throw new Exception("No se encontró el token de autenticación");
+            }
 
+            using var httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var requestUri = $"{Configuration.BaseUrl}/api/v1/tank";
+            System.Diagnostics.Debug.WriteLine($"Realizando petición GET a: {requestUri}");
+
+            var httpResponse = await httpClient.GetAsync(requestUri);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+
+            System.Diagnostics.Debug.WriteLine($"Respuesta recibida: {responseContent}");
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var errorDetail = "";
+                try
+                {
+                    var error = JsonConvert.DeserializeObject<ErrorResponse>(responseContent);
+                    errorDetail = $"{error.Type}: {error.Detail}";
+                }
+                catch
+                {
+                    errorDetail = responseContent;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Error del servidor ({httpResponse.StatusCode}): {errorDetail}");
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error de Carga de Tanques",
+                        "Error interno del servidor al cargar los tanques. Por favor, contacte a soporte técnico.",
+                        "OK"
+                    );
+                });
+                return; // Salir del método después de mostrar el error
+            }
+
+            var tanks = JsonConvert.DeserializeObject<TankApiResponse>(responseContent);
+
+            if (tanks == null || tanks.Data == null)
+            {
+                throw new Exception("La respuesta del servidor no contiene datos válidos");
+            }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
                 TankList.Clear();
                 foreach (var tank in tanks.Data)
                 {
                     TankList.Add(tank);
                 }
-            }
-            else
+            });
+        }
+        catch (HttpRequestException hex)
+        {
+            var message = hex.InnerException?.Message ?? hex.Message;
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                var errorContent = await httpResponse.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error de Carga de Tanques", $"No se pudieron cargar los tanques: {httpResponse.StatusCode}\nDetalles: {errorContent}", "OK");
-            }
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error de Conexión",
+                    $"No se pudo conectar al servidor. Verifique su conexión a internet.\n\nDetalles: {message}",
+                    "OK"
+                );
+            });
+        }
+        catch (TaskCanceledException)
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Tiempo de Espera Agotado",
+                    "La conexión al servidor ha tardado demasiado. Por favor, inténtelo de nuevo.",
+                    "OK"
+                );
+            });
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error de Carga de Tanques", $"Ocurrió un error inesperado: {ex.Message}", "OK");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error de Carga de Tanques",
+                    "No se pudieron cargar los tanques. Por favor, intente de nuevo más tarde o contacte a soporte técnico.",
+                    "OK"
+                );
+            });
+            System.Diagnostics.Debug.WriteLine($"Error en GetTankAsync: {ex}");
         }
     }
 

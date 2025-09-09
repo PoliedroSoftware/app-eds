@@ -161,7 +161,15 @@ public partial class CustomAlert : Popup
     // Static helper methods for easy usage
     public static async Task ShowErrorAsync(string message, string title = "Error")
     {
-        var alert = new CustomAlert(title, message, "OK", null, AlertType.Error);
+        System.Diagnostics.Debug.WriteLine($"Original error message: {message}"); // Log original message for debugging
+
+        string displayMessage = message;
+        if (message.Contains("InternalServerErrorException") || message.Contains("status:500"))
+        {
+            displayMessage = "Error interno del servidor. Por favor, contacte a soporte tÃ©cnico.";
+        }
+
+        var alert = new CustomAlert(title, displayMessage, "OK", null, AlertType.Error);
         await alert.ShowAsync();
     }
 
@@ -171,19 +179,19 @@ public partial class CustomAlert : Popup
         await alert.ShowAsync();
     }
 
-    public static async Task ShowInfoAsync(string message, string title = "Información")
+    public static async Task ShowInfoAsync(string message, string title = "Informaciï¿½n")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Info);
         await alert.ShowAsync();
     }
 
-    public static async Task ShowSuccessAsync(string message, string title = "Éxito")
+    public static async Task ShowSuccessAsync(string message, string title = "ï¿½xito")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Success);
         await alert.ShowAsync();
     }
 
-    public static async Task<bool> ShowConfirmAsync(string message, string title = "Confirmar", string confirmText = "Sí", string cancelText = "No")
+    public static async Task<bool> ShowConfirmAsync(string message, string title = "Confirmar", string confirmText = "Sï¿½", string cancelText = "No")
     {
         var alert = new CustomAlert(title, message, confirmText, cancelText, AlertType.Warning);
         return await alert.ShowAsync();
