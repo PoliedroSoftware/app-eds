@@ -11,6 +11,7 @@ namespace APP.Eds.Components.PopUp;
 public partial class AddCourtTypeOfCollection : Popup
 {
     private readonly CourtService courtService;
+    private System.Timers.Timer _updateTimer;
 
     decimal _remaining;
     public decimal Remaining
@@ -69,6 +70,11 @@ public partial class AddCourtTypeOfCollection : Popup
         // Set BindingContext for proper data binding
         BindingContext = courtService;
 
+        // Inicializar timer para actualización retardada del total
+        _updateTimer = new System.Timers.Timer(1500); // 1.5 segundos de delay
+        _updateTimer.Elapsed += OnUpdateTimerElapsed;
+        _updateTimer.AutoReset = false;
+
         InitializePaymentOptions();
     }
 
@@ -96,9 +102,44 @@ public partial class AddCourtTypeOfCollection : Popup
 
     private void PaymentOption_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(PaymentOption.Amount) || e.PropertyName == nameof(PaymentOption.IsSelected))
+        // Solo actualizar inmediatamente si cambia IsSelected
+        if (e.PropertyName == nameof(PaymentOption.IsSelected))
         {
             RecalcRemaining();
+        }
+        // Si cambia Amount, usar el timer para actualizar con retraso
+        else if (e.PropertyName == nameof(PaymentOption.Amount))
+        {
+            StartUpdateTimer();
+        }
+    }
+
+    private void StartUpdateTimer()
+    {
+        try
+        {
+            _updateTimer?.Stop();
+            _updateTimer?.Start();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error starting update timer: {ex.Message}");
+        }
+    }
+
+    private void OnUpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        try
+        {
+            // Ejecutar en el hilo principal usando la API moderna de MAUI
+            Application.Current?.Dispatcher.Dispatch(() =>
+            {
+                RecalcRemaining();
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in update timer elapsed: {ex.Message}");
         }
     }
 
@@ -120,6 +161,8 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         try
         {
+            _updateTimer?.Stop();
+            _updateTimer?.Dispose();
             Close();
         }
         catch (ObjectDisposedException ex)
@@ -139,10 +182,26 @@ public partial class AddCourtTypeOfCollection : Popup
             if (sender is Entry entry)
             {
                 var newText = e.NewTextValue ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(newText)) return;
+                var oldText = e.OldTextValue ?? string.Empty;
+                
+                // Si el texto anterior era "0.00" y el usuario está escribiendo, limpiar automáticamente
+                if (oldText == "0.00" && !string.IsNullOrEmpty(newText) && newText != "0" && newText != "0.0")
+                {
+                    entry.Text = newText.Replace("0.00", "");
+                    return;
+                }
+                
+                // Validación de formato numérico
+                if (string.IsNullOrWhiteSpace(newText)) 
+                {
+                    // Si está vacío, permitir (el usuario puede querer limpiar)
+                    return;
+                }
 
                 if (!decimal.TryParse(newText, NumberStyles.Number, CultureInfo.InvariantCulture, out _))
-                    entry.Text = e.OldTextValue;
+                {
+                    entry.Text = oldText;
+                }
             }
         }
         catch (Exception ex)
@@ -151,10 +210,61 @@ public partial class AddCourtTypeOfCollection : Popup
         }
     }
 
+    private void Amount_Focused(object sender, FocusEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry)
+            {
+                // Si el valor es 0.00, limpiar cuando el usuario enfoque
+                if (entry.Text == "0.00")
+                {
+                    entry.Text = string.Empty;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Amount_Focused: {ex.Message}");
+        }
+    }
+
+    private void Amount_Unfocused(object sender, FocusEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry)
+            {
+                // Si el usuario sale del campo vacío, restaurar a 0.00
+                if (string.IsNullOrWhiteSpace(entry.Text))
+                {
+                    entry.Text = "0.00";
+                }
+                else
+                {
+                    // Formatear el número correctamente
+                    if (decimal.TryParse(entry.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
+                    {
+                        entry.Text = value.ToString("F2");
+                    }
+                }
+                
+                // Iniciar el timer para actualizar el total después de un retraso
+                StartUpdateTimer();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Amount_Unfocused: {ex.Message}");
+        }
+    }
+
     private void Clear_All(object sender, EventArgs e)
     {
         try
         {
+            _updateTimer?.Stop(); // Detener timer antes de limpiar
+            
             foreach (var p in PaymentOptions)
             {
                 p.IsSelected = false;
@@ -250,6 +360,8 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         try
         {
+            _updateTimer?.Stop();
+            _updateTimer?.Dispose();
             await Task.Delay(100); // Small delay for smooth animation
             Close();
         }
