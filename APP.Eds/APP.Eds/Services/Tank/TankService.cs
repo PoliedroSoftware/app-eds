@@ -248,7 +248,6 @@ public class TankService : INotifyPropertyChanged
         GetByIdTankDataCommand = new Command<int>(async (tankId) => await GetByIdTankDataAsync(tankId));
         SaveTankDataCommand = new Command(async () => await SaveTankDataAsync());
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        GetTankAsync();
         LoadTranslationsAsync();
     }
 
@@ -372,21 +371,31 @@ public class TankService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/tank");
-            var tanks = JsonSerializer.Deserialize<TankApiResponse>(response, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var httpResponse = await httpClient.GetAsync($"{Configuration.BaseUrl}/api/v1/tank");
 
-            TankList.Clear();
-            foreach (var tank in tanks.Data)
+            if (httpResponse.IsSuccessStatusCode)
             {
-                TankList.Add(tank);
+                var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                var tanks = JsonSerializer.Deserialize<TankApiResponse>(responseContent, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                TankList.Clear();
+                foreach (var tank in tanks.Data)
+                {
+                    TankList.Add(tank);
+                }
+            }
+            else
+            {
+                var errorContent = await httpResponse.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error de Carga de Tanques", $"No se pudieron cargar los tanques: {httpResponse.StatusCode}\nDetalles: {errorContent}", "OK");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error de Carga de Tanques", $"Ocurrió un error inesperado: {ex.Message}", "OK");
         }
     }
 
@@ -394,6 +403,9 @@ public class TankService : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public async Task InitializeAsync()
+    {
+        await GetTankAsync();
+    }
 }
-
-

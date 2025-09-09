@@ -183,19 +183,26 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        Console.WriteLine("OnAppearing de CompartimentPostView iniciado.");
         try
         {
             LoadingOverlay.ShowLoading();
+            Console.WriteLine("Intentando cargar datos de tanques...");
             await _compartimentService.GetAllTankData(); // Cargar la lista de tanques
+            Console.WriteLine("Datos de tanques cargados (o intento de carga finalizado).");
+            Console.WriteLine("Intentando cargar datos de compartimentos...");
             await _compartimentService.GetCompartimentAsync();
+            Console.WriteLine("Datos de compartimentos cargados (o intento de carga finalizado).");
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Excepción en OnAppearing: {ex.Message}");
             await CustomAlert.ShowErrorAsync($"Error al cargar la lista de compartimentos o tanques:\n\n{ex.Message}", "Error de Carga");
         }
         finally
         {
             LoadingOverlay.HideLoading();
+            Console.WriteLine("OnAppearing de CompartimentPostView finalizado.");
         }
     }
 

@@ -14,8 +14,8 @@ public class TankResponse
     public string Number { get; set; }
 
     [JsonProperty("ability")]
-    public decimal Ability { get; set; }
+    public double Ability { get; set; }
 
     [JsonProperty("stock")]
-    public decimal Stock { get; set; }
+    public double Stock { get; set; }
 }

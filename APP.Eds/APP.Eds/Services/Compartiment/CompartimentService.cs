@@ -317,6 +317,7 @@ namespace APP.Eds.Services.Compartiment
                 await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
+            Console.WriteLine($"Token de autenticación: {_authToken}"); // Debugging: Imprimir el token
             try
             {
                 string url = $"{Configuration.BaseUrl}/api/v1/tank";
@@ -325,19 +326,25 @@ namespace APP.Eds.Services.Compartiment
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var httpResponse = await httpClient.GetAsync(url); // Usar GetAsync para verificar el StatusCode
                 
+                var responseContent = await httpResponse.Content.ReadAsStringAsync(); // Leer el contenido de la respuesta aquí
+                Console.WriteLine($"Respuesta de la API de tanques - StatusCode: {httpResponse.StatusCode}, Contenido: {responseContent}"); // Debugging
+
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    var responseContent = await httpResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Respuesta exitosa de la API de tanques: {responseContent}"); // Debugging
                     var tankList = JsonSerializer.Deserialize<TankApiResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     UpdateTankList(tankList?.Data ?? new List<TankResponse>());
                     Console.WriteLine($"Número de tanques cargados: {TankList.Count}"); // Debugging
                 }
                 else
                 {
-                    var errorContent = await httpResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error en la API de tanques - StatusCode: {httpResponse.StatusCode}, Contenido: {errorContent}"); // Debugging
-                    await CustomAlert.ShowErrorAsync($"Error al cargar los tanques: {httpResponse.StatusCode} - {errorContent}", "Error de Carga de Tanques");
+                    if (httpResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        await CustomAlert.ShowErrorAsync($"Error interno del servidor al cargar los tanques. Por favor, contacte a soporte técnico. Detalles: {responseContent}", "Error de Carga de Tanques");
+                    }
+                    else
+                    {
+                        await CustomAlert.ShowErrorAsync($"Error al cargar los tanques: {httpResponse.StatusCode} - {responseContent}", "Error de Carga de Tanques");
+                    }
                 }
             }
             catch (Exception ex)

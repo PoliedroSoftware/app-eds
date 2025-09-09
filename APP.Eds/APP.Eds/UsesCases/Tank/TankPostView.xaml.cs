@@ -13,6 +13,7 @@ public partial class TankPostView : ContentPage
         InitializeComponent();
         _tankService = new TankService();
         BindingContext = _tankService;
+        _ = _tankService.InitializeAsync(); 
     }
 
     private async void SendData(object sender, EventArgs e)
@@ -31,37 +32,37 @@ public partial class TankPostView : ContentPage
                 // Enhanced validation with professional alerts
                 if (string.IsNullOrWhiteSpace(vm.Number))
                 {
-                    await CustomAlert.ShowErrorAsync("El número del tanque es obligatorio para identificar el equipo", "Número Requerido");
+                    await CustomAlert.ShowErrorAsync("El nï¿½mero del tanque es obligatorio para identificar el equipo", "Nï¿½mero Requerido");
                     return;
                 }
 
                 if (vm.Number.Length < 2)
                 {
-                    await CustomAlert.ShowErrorAsync("El número del tanque debe tener al menos 2 caracteres", "Número Muy Corto");
+                    await CustomAlert.ShowErrorAsync("El nï¿½mero del tanque debe tener al menos 2 caracteres", "Nï¿½mero Muy Corto");
                     return;
                 }
 
                 if (vm.Number.Length > 20)
                 {
-                    await CustomAlert.ShowErrorAsync("El número del tanque no puede exceder 20 caracteres", "Número Muy Largo");
+                    await CustomAlert.ShowErrorAsync("El nï¿½mero del tanque no puede exceder 20 caracteres", "Nï¿½mero Muy Largo");
                     return;
                 }
 
                 if (vm.Compartment <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un número válido de compartimientos (mayor que 0)", "Compartimientos Inválidos");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un nï¿½mero vï¿½lido de compartimientos (mayor que 0)", "Compartimientos Invï¿½lidos");
                     return;
                 }
 
                 if (vm.Compartment > 10)
                 {
-                    await CustomAlert.ShowErrorAsync("El número de compartimientos no puede ser mayor a 10 por razones de seguridad", "Demasiados Compartimientos");
+                    await CustomAlert.ShowErrorAsync("El nï¿½mero de compartimientos no puede ser mayor a 10 por razones de seguridad", "Demasiados Compartimientos");
                     return;
                 }
 
                 if (vm.Ability <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar una capacidad válida del tanque (mayor que 0 litros)", "Capacidad Inválida");
+                    await CustomAlert.ShowErrorAsync("Debe especificar una capacidad vï¿½lida del tanque (mayor que 0 litros)", "Capacidad Invï¿½lida");
                     return;
                 }
 
@@ -74,14 +75,14 @@ public partial class TankPostView : ContentPage
                 // Validate stock if provided
                 if (vm.Stock.HasValue && vm.Stock < 0)
                 {
-                    await CustomAlert.ShowErrorAsync("El stock actual no puede ser negativo", "Stock Inválido");
+                    await CustomAlert.ShowErrorAsync("El stock actual no puede ser negativo", "Stock Invï¿½lido");
                     return;
                 }
 
                 if (vm.Stock.HasValue && vm.Stock > vm.Ability)
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El stock actual ({vm.Stock:F2} L) es mayor que la capacidad del tanque ({vm.Ability:F2} L).\n\n¿Está seguro de que estos valores son correctos?",
+                        $"El stock actual ({vm.Stock:F2} L) es mayor que la capacidad del tanque ({vm.Ability:F2} L).\n\nï¿½Estï¿½ seguro de que estos valores son correctos?",
                         "Stock Excede Capacidad",
                         "Continuar",
                         "Revisar");
@@ -94,9 +95,9 @@ public partial class TankPostView : ContentPage
                 
                 await CustomAlert.ShowSuccessAsync(
                     $"Tanque #{vm.Number} registrado exitosamente:\n\n" +
-                    $"• Compartimientos: {vm.Compartment}\n" +
-                    $"• Capacidad: {vm.Ability:F2} L\n" +
-                    $"• Stock: {(vm.Stock?.ToString("F2") ?? "No especificado")} L",
+                    $"ï¿½ Compartimientos: {vm.Compartment}\n" +
+                    $"ï¿½ Capacidad: {vm.Ability:F2} L\n" +
+                    $"ï¿½ Stock: {(vm.Stock?.ToString("F2") ?? "No especificado")} L",
                     "Tanque Registrado");
             }
             catch (Exception ex)
