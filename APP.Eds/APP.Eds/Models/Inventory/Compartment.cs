@@ -31,10 +31,32 @@ namespace APP.Eds.Models.Inventory
         public int IdProduct { get; set; }
 
         [JsonPropertyName("product")]
-        public string Product { get; set; } = string.Empty;
+        public string Product 
+        { 
+            get => _product;
+            set
+            {
+                _product = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProductWithType));
+                OnPropertyChanged(nameof(FuelTypeShort));
+            }
+        }
+        private string _product = string.Empty;
 
         [JsonPropertyName("productType")]
-        public string ProductType { get; set; } = string.Empty;
+        public string ProductType 
+        { 
+            get => _productType;
+            set
+            {
+                _productType = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProductWithType));
+                OnPropertyChanged(nameof(FuelTypeShort));
+            }
+        }
+        private string _productType = string.Empty;
 
         [JsonPropertyName("stock")]
         public double Stock { get; set; }
@@ -51,6 +73,9 @@ namespace APP.Eds.Models.Inventory
             {
                 try
                 {
+                    // Debug: Log para ver los datos que llegan
+                    System.Diagnostics.Debug.WriteLine($"ProductWithType - Product: '{Product}', ProductType: '{ProductType}'");
+
                     // Si el producto está vacío, retornar valor por defecto
                     if (string.IsNullOrWhiteSpace(Product))
                         return "Sin producto";
@@ -59,49 +84,64 @@ namespace APP.Eds.Models.Inventory
                     var product = Product.Trim();
                     var productType = ProductType?.Trim() ?? "";
 
+                    // Combinar ambos campos para análisis más completo
+                    var combinedText = $"{product} {productType}".ToLowerInvariant();
+
                     // Si es ACPM, mostrar solo ACPM
-                    if (product.ToLowerInvariant().Contains("acpm") || 
-                        productType.ToLowerInvariant().Contains("acpm"))
+                    if (combinedText.Contains("acpm") || combinedText.Contains("diésel") || combinedText.Contains("diesel"))
                     {
                         return "ACPM";
                     }
 
-                    // Si es gasolina, agregar el tipo específico
-                    if (product.ToLowerInvariant().Contains("gasolina"))
+                    // Si es gasolina, determinar el tipo específico
+                    if (combinedText.Contains("gasolina") || combinedText.Contains("gas") || combinedText.Contains("nafta"))
                     {
-                        // Extraer tipo específico del ProductType si está disponible
-                        if (!string.IsNullOrWhiteSpace(productType))
+                        // Detectar tipo específico de gasolina
+                        if (combinedText.Contains("corriente") || combinedText.Contains("regular") || combinedText.Contains("común"))
                         {
-                            var typeLower = productType.ToLowerInvariant();
-                            
-                            if (typeLower.Contains("corriente"))
-                                return "Gasolina Corriente";
-                            else if (typeLower.Contains("extra") || typeLower.Contains("premium"))
-                                return "Gasolina Extra";
-                            else if (typeLower.Contains("super") || typeLower.Contains("suprema"))
-                                return "Gasolina Super";
-                            else
-                            {
-                                // Si el productType tiene información útil, usarla
-                                return $"Gasolina {productType}";
-                            }
+                            return "Gasolina Corriente";
+                        }
+                        else if (combinedText.Contains("extra") || combinedText.Contains("premium") || combinedText.Contains("plus"))
+                        {
+                            return "Gasolina Extra";
+                        }
+                        else if (combinedText.Contains("super") || combinedText.Contains("suprema") || combinedText.Contains("supreme"))
+                        {
+                            return "Gasolina Super";
+                        }
+                        else if (combinedText.Contains("95") || combinedText.Contains("octanos 95"))
+                        {
+                            return "Gasolina 95";
+                        }
+                        else if (combinedText.Contains("91") || combinedText.Contains("octanos 91"))
+                        {
+                            return "Gasolina 91";
                         }
                         
-                        // Si el Product ya incluye el tipo, usarlo directamente
-                        if (product.Length > "Gasolina".Length)
+                        // Si el producto ya incluye información de tipo en el nombre
+                        if (product.ToLowerInvariant() != "gasolina" && product.ToLowerInvariant().Contains("gasolina"))
                         {
-                            return product;
+                            return product; // Usar el nombre completo que viene del servidor
                         }
                         
-                        // Por defecto, si solo dice "Gasolina", asumir Corriente
-                        return "Gasolina Corriente";
+                        // Si ProductType tiene información adicional útil
+                        if (!string.IsNullOrWhiteSpace(productType) && 
+                            !productType.ToLowerInvariant().Contains("combustible") &&
+                            !productType.ToLowerInvariant().Contains("liquid"))
+                        {
+                            return $"Gasolina {productType}";
+                        }
+                        
+                        // Por defecto, si solo dice "Gasolina", marcar como tipo desconocido
+                        return "Gasolina";
                     }
 
                     // Para otros productos, mostrar el nombre tal como viene
                     return product;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Error en ProductWithType: {ex.Message}");
                     return Product ?? "Sin producto";
                 }
             }
