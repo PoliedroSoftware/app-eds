@@ -313,7 +313,7 @@
                                                AutomationId="AccumulatedGallonsEntry" 
                                                Keyboard="Numeric" 
                                                Placeholder="Ingrese los galones"
-                                               Text="{Binding AccumulatedGallons, Mode=TwoWay}"
+                                               Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}"
                                                BackgroundColor="Transparent"
                                                FontSize="13"
                                                Completed="EntryGallonsCompleted"
