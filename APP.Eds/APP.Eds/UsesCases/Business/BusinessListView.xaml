@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Business.BusinessListView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Gestion de Negocios"
+    BackgroundColor="#F1F5F9">
+    
+    <Grid RowDefinitions="140,*,Auto">
+        
+        <!-- Professional Header Section -->
+        <Border Grid.Row="0"
+                StrokeThickness="0"
+                Padding="20,40,20,20">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#667EEA" Offset="0.0" />
+                    <GradientStop Color="#764BA2" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Shadow>
+                <Shadow Brush="#764BA2" Offset="0,8" Radius="20" Opacity="0.15"/>
+            </Border.Shadow>
+            
+            <Grid RowDefinitions="Auto,Auto,Auto">
+                <!-- Title and Icon -->
+                <StackLayout Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
+                    <Border BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="2"
+                            Stroke="{StaticResource White}"
+                            WidthRequest="40" HeightRequest="40"
+                            VerticalOptions="Center">
+                        <Label Text="??" FontSize="20" 
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Gestion de Negocios" 
+                           FontSize="26" 
+                           FontAttributes="Bold" 
+                           TextColor="White" 
+                           VerticalOptions="Center"/>
+                </StackLayout>
+                
+                <!-- Subtitle -->
+                <Label Grid.Row="1" 
+                       Text="Administre sus unidades de negocio" 
+                       FontSize="14" 
+                       TextColor="#E0E7FF" 
+                       HorizontalOptions="Center"
+                       Margin="0,8,0,0"/>
+                
+                <!-- Business count indicator -->
+                <Border Grid.Row="2"
+                        BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="1"
+                        Stroke="{StaticResource White}"
+                        Opacity="0.8"
+                        Padding="16,8"
+                        HorizontalOptions="Center"
+                        Margin="0,12,0,0">
+                    <StackLayout Orientation="Horizontal" Spacing="8">
+                        <Label Text="??" FontSize="14" TextColor="White" VerticalOptions="Center"/>
+                        <Label Text="{Binding BusinessList.Count, StringFormat='Total: {0} negocios'}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               VerticalOptions="Center"/>
+                    </StackLayout>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding BusinessList}" 
+                            SelectionChanged="OnBusinessSelected"
+                            BackgroundColor="Transparent">
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Enhanced Business Card -->
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 20"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                Padding="0"
+                                Margin="20,10,20,10">
+                            <Border.Shadow>
+                                <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
+                            </Border.Shadow>
+                            
+                            <!-- Left Color Bar for Visual Separation -->
+                            <Grid ColumnDefinitions="6,*">
+                                
+                                <!-- Color-coded Left Border -->
+                                <Border Grid.Column="0"
+                                        BackgroundColor="#3B82F6"
+                                        StrokeShape="RoundRectangle 20,0,0,20"/>
+                                
+                                <!-- Main Content -->
+                                <Grid Grid.Column="1" RowDefinitions="*,Auto">
+                                    
+                                    <!-- Content Section -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="24,20">
+                                        
+                                        <!-- Business Icon -->
+                                        <Border Grid.Column="0"
+                                                StrokeShape="RoundRectangle 25"
+                                                WidthRequest="50" HeightRequest="50"
+                                                VerticalOptions="Center"
+                                                Margin="0,0,16,0">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#667EEA" Offset="0.0" />
+                                                    <GradientStop Color="#764BA2" Offset="1.0" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Label Text="??" 
+                                                   FontSize="24" 
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                        
+                                        <!-- Business Info -->
+                                        <StackLayout Grid.Column="1" 
+                                                     VerticalOptions="Center"
+                                                     Spacing="8">
+                                            <Label Text="{Binding Name}" 
+                                                   FontSize="20" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#1E293B"
+                                                   LineBreakMode="TailTruncation"/>
+                                            
+                                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                                <!-- ID Badge -->
+                                                <Border BackgroundColor="#FEF3C7"
+                                                        StrokeShape="RoundRectangle 12"
+                                                        Stroke="#F59E0B"
+                                                        StrokeThickness="1"
+                                                        Padding="8,4">
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="#" FontSize="12" TextColor="#92400E" FontAttributes="Bold" VerticalOptions="Center"/>
+                                                        <Label Text="{Binding IdBusiness}" 
+                                                               FontSize="12"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#92400E"
+                                                               VerticalOptions="Center"/>
+                                                    </StackLayout>
+                                                </Border>
+                                                
+                                                <!-- Status Badge -->
+                                                <Border BackgroundColor="#F0FDF4"
+                                                        StrokeShape="RoundRectangle 12"
+                                                        Stroke="#10B981"
+                                                        StrokeThickness="1"
+                                                        Padding="8,4">
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="?" FontSize="10" TextColor="#059669" VerticalOptions="Center"/>
+                                                        <Label Text="Activo" 
+                                                               FontSize="12"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#059669"
+                                                               VerticalOptions="Center"/>
+                                                    </StackLayout>
+                                                </Border>
+                                            </StackLayout>
+                                        </StackLayout>
+                                        
+                                        <!-- Action Button -->
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="#3B82F6"
+                                                StrokeShape="RoundRectangle 12"
+                                                WidthRequest="40" HeightRequest="40"
+                                                VerticalOptions="Center">
+                                            <Border.Shadow>
+                                                <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.2"/>
+                                            </Border.Shadow>
+                                            
+                                            <Button Text=">"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewBusinessDetailCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="White"
+                                                    FontSize="18"
+                                                    FontAttributes="Bold"
+                                                    WidthRequest="40" HeightRequest="40"
+                                                    CornerRadius="12"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Action Footer -->
+                                    <Border Grid.Row="1"
+                                            BackgroundColor="#F8FAFC"
+                                            StrokeShape="RoundRectangle 0,0,0,20"
+                                            Padding="24,12">
+                                        
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <!-- Info -->
+                                            <StackLayout Grid.Column="0" 
+                                                         Orientation="Horizontal" 
+                                                         Spacing="8"
+                                                         VerticalOptions="Center">
+                                                <Label Text="??" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="Toque para ver detalles y gestionar" 
+                                                       FontSize="11"
+                                                       TextColor="#64748B"
+                                                       VerticalOptions="Center"/>
+                                            </StackLayout>
+                                            
+                                            <!-- Edit Button -->
+                                            <Button Grid.Column="1"
+                                                    Text="Edit"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditBusinessCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    BackgroundColor="#FEF3C7"
+                                                    TextColor="#92400E"
+                                                    FontSize="12"
+                                                    WidthRequest="36" HeightRequest="36"
+                                                    CornerRadius="18"
+                                                    Margin="0,0,8,0"/>
+                                            
+                                            <!-- Options Button -->
+                                            <Button Grid.Column="2"
+                                                    Text="Opt"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.BusinessOptionsCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    BackgroundColor="#EFF6FF"
+                                                    TextColor="#1D4ED8"
+                                                    FontSize="12"
+                                                    WidthRequest="36" HeightRequest="36"
+                                                    CornerRadius="18"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                
+                <!-- Enhanced Empty State -->
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 24"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                Padding="48,40">
+                            <Border.Shadow>
+                                <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
+                            </Border.Shadow>
+                            
+                            <StackLayout Spacing="20" HorizontalOptions="Center">
+                                <Border StrokeShape="RoundRectangle 50"
+                                        WidthRequest="100" HeightRequest="100">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#F8FAFC" Offset="0.0" />
+                                            <GradientStop Color="#E2E8F0" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Text="??" FontSize="48" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"
+                                           Opacity="0.6"/>
+                                </Border>
+                                
+                                <StackLayout Spacing="12">
+                                    <Label Text="No hay negocios registrados" 
+                                           FontSize="22" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#374151" 
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Comience creando su primer negocio para administrar sus estaciones de servicio" 
+                                           FontSize="14" 
+                                           TextColor="#6B7280" 
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"
+                                           MaximumWidthRequest="300"
+                                           LineHeight="1.4"/>
+                                </StackLayout>
+                                
+                                <Button Text="+ Crear Primer Negocio"
+                                        Command="{Binding CreateBusinessCommand}"
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        WidthRequest="220"
+                                        HeightRequest="50"
+                                        Margin="0,12,0,0">
+                                    <Button.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#667EEA" Offset="0.0" />
+                                            <GradientStop Color="#764BA2" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Button.Background>
+                                    <Button.Shadow>
+                                        <Shadow Brush="#667EEA" Offset="0,4" Radius="12" Opacity="0.3"/>
+                                    </Button.Shadow>
+                                </Button>
+                            </StackLayout>
+                        </Border>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Floating Action Button -->
+        <Border Grid.Row="2"
+                BackgroundColor="#3B82F6"
+                StrokeShape="RoundRectangle 28"
+                WidthRequest="56" HeightRequest="56"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20,0,20,20">
+            <Border.Shadow>
+                <Shadow Brush="#3B82F6" Offset="0,6" Radius="16" Opacity="0.3"/>
+            </Border.Shadow>
+            
+            <Button Text="+"
+                    Command="{Binding CreateBusinessCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    WidthRequest="56" HeightRequest="56"
+                    CornerRadius="28"
+                    AutomationId="ButtonAddBusiness"/>
+        </Border>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              Grid.RowSpan="3"
+                              AutomationId="LoadingOverlay"/>
+    </Grid>
+</ContentPage>

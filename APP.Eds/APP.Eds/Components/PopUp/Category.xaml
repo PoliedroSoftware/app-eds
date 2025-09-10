@@ -18,7 +18,7 @@
             HorizontalOptions="Center"
             AutomationId="FrameCategory">
         
-        <!-- Forzar shadow personalizada para evitar conflictos de estilos globales -->
+        <!-- Sombra personalizada -->
         <Border.Shadow>
             <Shadow Brush="{StaticResource Black}" 
                     Offset="0,12" 
@@ -28,7 +28,7 @@
 
         <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*">
 
-            <!-- Encabezado premium con gradiente mejorado -->
+            <!-- Encabezado premium con gradiente -->
             <Border Grid.Row="0"
                     StrokeShape="RoundRectangle 24,24,0,0"
                     StrokeThickness="0"
@@ -48,7 +48,7 @@
                                FontSize="20"
                                TextColor="{StaticResource White}"
                                AutomationId="LabelCategoryTitle"/>
-                        <Label Text="Elige una opción para continuar"
+                        <Label Text="Seleccione una opcion para continuar"
                                FontSize="13"
                                TextColor="{StaticResource White}"
                                Opacity="0.85"
@@ -68,7 +68,7 @@
                         <Button BackgroundColor="Transparent"
                                 Clicked="OnCloseTapped"
                                 FontSize="16" 
-                                Text="✕" 
+                                Text="X" 
                                 TextColor="#8B5CF6"
                                 FontAttributes="Bold"
                                 WidthRequest="30" 
@@ -79,13 +79,13 @@
                 </Grid>
             </Border>
 
-            <!-- Línea separadora sutil -->
+            <!-- Linea separadora -->
             <Rectangle Grid.Row="1"
                        HeightRequest="1"
                        Fill="{StaticResource Gray200}"
                        Opacity="0.5"/>
             
-            <!-- Lista de elementos del menú con altura automática -->
+            <!-- Lista de elementos del menu -->
             <StackLayout Grid.Row="2" 
                          Padding="20,16,20,20">
                 <CollectionView x:Name="MenuItemsList"
@@ -140,7 +140,7 @@
                                 </VisualStateManager.VisualStateGroups>
 
                                 <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,12">
-                                    <!-- Icono del elemento con gradiente -->
+                                    <!-- Icono del elemento -->
                                     <Border Grid.Column="0"
                                             StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0"
@@ -174,7 +174,7 @@
                                                IsVisible="{Binding HasDescription}"/>
                                     </StackLayout>
                                     
-                                    <!-- Flecha con efecto hover -->
+                                    <!-- Flecha -->
                                     <Border Grid.Column="2"
                                             BackgroundColor="{StaticResource Gray100}"
                                             StrokeShape="RoundRectangle 8"
@@ -182,7 +182,7 @@
                                             WidthRequest="28"
                                             HeightRequest="28"
                                             VerticalOptions="Center">
-                                        <Label Text="→"
+                                        <Label Text=">"
                                                FontSize="14"
                                                FontAttributes="Bold"
                                                TextColor="{StaticResource Primary}"

@@ -50,13 +50,36 @@ public partial class BusinessPostView : ContentPage
             
             if (originalName != _businessService.Name)
             {
-                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente del nombre", "Nombre Limpiado");
+                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automaticamente del nombre", "Nombre Limpiado");
             }
 
             LoadingOverlay.ShowLoading();
             await _businessService.SaveBusinessDataAsync();
             
-            await CustomAlert.ShowSuccessAsync($"El negocio '{_businessService.Name}' ha sido registrado exitosamente en el sistema", "Negocio Registrado");
+            // Show success message with options
+            var action = await Application.Current.MainPage.DisplayActionSheet(
+                $"El negocio '{_businessService.Name}' ha sido registrado exitosamente. ¿Que desea hacer ahora?",
+                null,
+                null,
+                "Ver todos los negocios",
+                "Crear otro negocio",
+                "Continuar configuracion");
+
+            switch (action)
+            {
+                case "Ver todos los negocios":
+                    // Navigate back to business list
+                    await Navigation.PopAsync();
+                    break;
+                case "Crear otro negocio":
+                    // Clear form and stay on same page
+                    Name = string.Empty;
+                    break;
+                case "Continuar configuracion":
+                    // Navigate to EDS creation or wizard
+                    await Navigation.PopAsync(); // Go back to list for now
+                    break;
+            }
         }
         catch (Exception ex)
         {
@@ -66,15 +89,47 @@ public partial class BusinessPostView : ContentPage
         {
             LoadingOverlay.HideLoading();
             
-            // Reset the form after successful submission
-            Name = string.Empty;
-            
             // Re-enable button
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "?? Registrar Negocio";
+                button.Text = "Registrar Negocio";
             }
+        }
+    }
+
+    private async void OnViewListClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // Navigate to business list
+            if (Application.Current?.MainPage is NavigationPage navPage)
+            {
+                await navPage.PushAsync(new BusinessListView());
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", 
+                $"No se pudo abrir el listado de negocios: {ex.Message}", "OK");
+        }
+    }
+
+    private void OnClearFormClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // Clear the form
+            Name = string.Empty;
+            
+            // Show confirmation
+            Application.Current.MainPage.DisplayAlert("Formulario Limpio", 
+                "El formulario ha sido limpiado. Puede ingresar un nuevo negocio.", "OK");
+        }
+        catch (Exception ex)
+        {
+            Application.Current.MainPage.DisplayAlert("Error", 
+                $"Error al limpiar el formulario: {ex.Message}", "OK");
         }
     }
 
