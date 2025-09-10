@@ -186,7 +186,8 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         try
         {
             LoadingOverlay.ShowLoading();
-            await _compartimentService.GetCompartimentAsync();
+            await _compartimentService.GetAllTankDataAsync(); // Cargar la lista de tanques
+            await _compartimentService.GetCompartimentAsync(); // Cargar la lista de compartimentos
         }
         catch (Exception ex)
         {

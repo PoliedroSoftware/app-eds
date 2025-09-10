@@ -17,7 +17,16 @@ namespace APP.Eds.Services.Compartiment
     {
         private string? _authToken;
         public event PropertyChangedEventHandler? PropertyChanged;
-        public ObservableCollection<TankResponse> TankList { get; set; } = [];
+        private ObservableCollection<TankResponse> _tankList = [];
+        public ObservableCollection<TankResponse> TankList
+        {
+            get => _tankList;
+            set
+            {
+                _tankList = value;
+                OnPropertyChanged(nameof(TankList));
+            }
+        }
         public ObservableCollection<CompartimentResponse> CompartimentList { get; set; } = [];
         private CompartimentRequest Request { get; set; }
 
@@ -264,8 +273,6 @@ namespace APP.Eds.Services.Compartiment
         public CompartimentService()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            GetAllTankData();
-            GetCompartimentAsync();
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
             LoadTranslationsAsync();
@@ -310,7 +317,7 @@ namespace APP.Eds.Services.Compartiment
         }
 
         //Data
-        private async void GetAllTankData()
+        public async Task GetAllTankDataAsync()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
@@ -324,22 +331,42 @@ namespace APP.Eds.Services.Compartiment
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var response = await httpClient.GetStringAsync(url);
                 var tankList = JsonSerializer.Deserialize<TankApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                UpdateTankList(tankList?.Data ?? new List<TankResponse>());
+
+                if (tankList?.Data != null && tankList.Data.Any())
+                {
+                    UpdateTankList(tankList.Data);
+                    await CustomAlert.ShowSuccessAsync($"Se cargaron {tankList.Data.Count} tanques.", "Carga de Tanques Exitosa");
+                }
+                else
+                {
+                    await CustomAlert.ShowWarningAsync("No se encontraron tanques para mostrar.", "Sin Tanques");
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                await CustomAlert.ShowErrorAsync($"Error de conexión al cargar tanques: {httpEx.Message}", "Error de Red");
+            }
+            catch (JsonException jsonEx)
+            {
+                await CustomAlert.ShowErrorAsync($"Error de formato de datos al cargar tanques: {jsonEx.Message}", "Error de Datos");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error cargando los datos: {ex.Message}");
+                await CustomAlert.ShowErrorAsync($"Error inesperado al cargar tanques: {ex.Message}", "Error del Sistema");
             }
         }
 
         //List
         private void UpdateTankList(IEnumerable<TankResponse> tank)
         {
-            TankList.Clear();
-            foreach (var item in tank)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                TankList.Add(item);
-            }
+                TankList.Clear();
+                foreach (var item in tank)
+                {
+                    TankList.Add(item);
+                }
+            });
         }
         public async Task GetByIdCompartimentDataAsync(int CompartimentId)
         {
