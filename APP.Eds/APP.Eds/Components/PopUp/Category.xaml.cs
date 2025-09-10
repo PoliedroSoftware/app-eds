@@ -17,23 +17,23 @@ namespace APP.Eds.Views.Popups
             MenuItemsList.ItemsSource = items;
             UpdateHeight(items.Count);
             
-            // Inicializar con animación de entrada mejorada
+            // Inicializar con animaciï¿½n de entrada mejorada
             _ = AnimateEntry();
         }
 
         public void UpdateHeight(int itemCount)
         {
-            // Para altura automática, no establecemos HeightRequest en el Frame
-            // El popup se ajustará automáticamente al contenido
+            // Para altura automï¿½tica, no establecemos HeightRequest en el Frame
+            // El popup se ajustarï¿½ automï¿½ticamente al contenido
             System.Diagnostics.Debug.WriteLine($"Popup auto-sizing for {itemCount} items");
             
-            // Si hay muchos items, podríamos mostrar información sobre scroll potencial
-            if (itemCount > 8) // Aproximadamente cuando empezaría a necesitar scroll con MaximumHeightRequest="600"
+            // Si hay muchos items, podrï¿½amos mostrar informaciï¿½n sobre scroll potencial
+            if (itemCount > 8) // Aproximadamente cuando empezarï¿½a a necesitar scroll con MaximumHeightRequest="600"
             {
                 System.Diagnostics.Debug.WriteLine($"Popup may need scrolling for {itemCount} items");
             }
             
-            // Información de debug sobre la altura esperada
+            // Informaciï¿½n de debug sobre la altura esperada
             const double ItemHeight = 58;
             const double HeaderHeight = 85;
             const double Padding = 40;
@@ -46,17 +46,17 @@ namespace APP.Eds.Views.Popups
 
         private async Task AnimateEntry()
         {
-            // Asegurar centrado perfecto antes de la animación
+            // Asegurar centrado perfecto antes de la animaciï¿½n
             await EnsureCentering();
             
-            // Iniciar con escala pequeña y transparente, sin desplazamiento que pueda afectar el centrado
+            // Iniciar con escala pequeï¿½a y transparente, sin desplazamiento que pueda afectar el centrado
             Frame.Scale = 0.8;
             Frame.Opacity = 0;
             Frame.TranslationY = 0; // Mantener centrado, sin desplazamiento
-            Frame.TranslationX = 0; // Asegurar que esté centrado horizontalmente
-            Frame.Rotation = 0; // Sin rotación para mantener centrado
+            Frame.TranslationX = 0; // Asegurar que estï¿½ centrado horizontalmente
+            Frame.Rotation = 0; // Sin rotaciï¿½n para mantener centrado
             
-            // Animar entrada centrada con efectos más suaves
+            // Animar entrada centrada con efectos mï¿½s suaves
             await Task.WhenAll(
                 Frame.ScaleTo(1, 400, Easing.SpringOut),
                 Frame.FadeTo(1, 300, Easing.CubicOut)
@@ -64,7 +64,7 @@ namespace APP.Eds.Views.Popups
         }
 
         /// <summary>
-        /// Método auxiliar para asegurar centrado perfecto en Android y otras plataformas
+        /// Mï¿½todo auxiliar para asegurar centrado perfecto en Android y otras plataformas
         /// </summary>
         private async Task EnsureCentering()
         {
@@ -131,7 +131,7 @@ namespace APP.Eds.Views.Popups
         {
             try
             {
-                // Feedback háptico mejorado
+                // Feedback hï¿½ptico mejorado
                 try
                 {
 #if ANDROID || IOS
@@ -146,7 +146,7 @@ namespace APP.Eds.Views.Popups
                     {
                         await MainThread.InvokeOnMainThreadAsync(async () =>
                         {
-                            // Efecto de selección más elegante
+                            // Efecto de selecciï¿½n mï¿½s elegante
                             await Task.WhenAll(
                                 border.ScaleTo(0.95, 80, Easing.CubicOut),
                                 border.FadeTo(0.7, 80)
@@ -180,7 +180,7 @@ namespace APP.Eds.Views.Popups
 
         private async Task AnimateExit()
         {
-            // Animación de salida manteniendo el centrado
+            // Animaciï¿½n de salida manteniendo el centrado
             await Task.WhenAll(
                 Frame.ScaleTo(0.85, 200, Easing.CubicIn),
                 Frame.FadeTo(0, 150, Easing.CubicIn)

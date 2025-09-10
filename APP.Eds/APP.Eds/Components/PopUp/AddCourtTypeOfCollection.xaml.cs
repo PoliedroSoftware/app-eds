@@ -318,7 +318,7 @@ public partial class AddCourtTypeOfCollection : Popup
             if (Math.Abs(amountNew) > 0.01m) // Allow for small rounding differences
             {
                 bool confirm = await Application.Current.MainPage.DisplayAlert("Confirmación",
-                    $"El total del día no coincide exactamente (diferencia: ${amountNew:F2}).\n\n¿Desea continuar de todas formas?", 
+                    $"El total del día no coincide exactamente (diferencia: ${amountNew:F2}).", 
                     "Continuar", "Revisar");
                 
                 if (!confirm) return;

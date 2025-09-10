@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+             x:Class="APP.Eds.UsesCases.StrongBox.StrongBoxView"
+             Title="Caja Fuerte"
+             BackgroundColor="#F8F9FA">
+    
+    <VerticalStackLayout Padding="20"
+                         Spacing="16">
+        
+        <Label Text="Saldo actual:"
+               FontAttributes="Bold"
+               FontSize="18" />
+        <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
+               FontSize="32"
+               TextColor="Green" />
+        
+
+        <Entry Placeholder="Monto a retirar"
+               Keyboard="Numeric"
+               Text="{Binding WithdrawAmount, Mode=TwoWay}" />
+        
+        <Button Text="Retirar"
+                Command="{Binding WithdrawCommand}"
+                IsEnabled="{Binding CanWithdraw}" />
+
+        <Label Text="Movimientos recientes"
+               FontAttributes="Bold"
+               FontSize="18"
+               Margin="0,24,0,0" />
+        
+        <CollectionView ItemsSource="{Binding Movements}"
+                        HeightRequest="300">
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,4"
+                           Padding="8"
+                           BorderColor="#DDD"
+                           CornerRadius="8">
+                        
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Type}" FontAttributes="Bold" />
+                            <Label Text="{Binding Ammount, StringFormat='Monto: ${0:N2}'}" />
+                            <Label Text="{Binding Saldo, StringFormat='Saldo: ${0:N2}'}" />
+                            <Label Text="{Binding Note, StringFormat='Nota: {0}'}" />
+                            <Label Text="{Binding CreatedAt, StringFormat='Fecha: {0:dd/MM/yyyy HH:mm}'}" />
+                            <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="Cargar más" Command="{Binding LoadMoreMovementsCommand}" />
+    </VerticalStackLayout>
+</ContentPage>        
