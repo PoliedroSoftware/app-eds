@@ -22,7 +22,7 @@ public class StrongBoxService : INotifyPropertyChanged
 
     public ObservableCollection<StrongBoxListModel> Movements { get; } = [];
 
-    private StrongBoxGetLastBalanceModel _currentBalance = new() { Saldo = 0d };
+    private StrongBoxGetLastBalanceModel _currentBalance;
     public StrongBoxGetLastBalanceModel CurrentBalance
     {
         get => _currentBalance;
@@ -148,7 +148,7 @@ public class StrongBoxService : INotifyPropertyChanged
     }
 
     // 2) Obtener lista de movimientos (paginación simple)
-    public async Task GetMovementsAsync(int pageNumber = 1, int pageSize = 20)
+    public async Task GetMovementsAsync(int pageNumber = 1, int pageSize = 10)
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -166,7 +166,7 @@ public class StrongBoxService : INotifyPropertyChanged
             if (!response.IsSuccessStatusCode)
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    return; // No mostrar error, solo no hay más datos
+                    return; 
                 var error = await response.Content.ReadAsStringAsync();
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo obtener los movimientos: {response.StatusCode}\n{error}", "OK");
                 return;
