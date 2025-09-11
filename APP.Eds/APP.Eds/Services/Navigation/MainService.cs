@@ -75,7 +75,7 @@ namespace APP.Eds.Services.Navigation
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
                         new("Negocio", typeof(BusinessPostView), "🏢"),
-                        new("Registre una EDS", typeof(EdsPostView), "🏪"),
+                        new("EDS", typeof(EdsPostView), "🏪"),
                         new("Caja Fuerte", typeof(StrongBoxView), "💼")
 
                     }),
@@ -87,7 +87,7 @@ namespace APP.Eds.Services.Navigation
                     }),
                     new("Compras y productos", "🛒", new List<MenuItemModel>
                     {
-                        new("Agregar productos", typeof(ProductPostView), "➕"),
+                        new("Productos", typeof(ProductPostView), "➕"),
                         new("Compras", typeof(ShoppingPostView), "🛒"),
                         new("Proveedor", typeof(ProviderPostView), "🏭"),
                         new("Categoría", typeof(CategoryPostView), "📂")
@@ -103,10 +103,10 @@ namespace APP.Eds.Services.Navigation
                     }),
                     new("EDS y otros", "🏪", new List<MenuItemModel>
                     {
-                        new("Tipos de G", typeof(ExpendituresPostView), "💳"),
-                        new("Registre un Islero", typeof(IslanderPostView), "👤"),
+                        new("Gasto", typeof(ExpendituresPostView), "💳"),
+                        new("Islero", typeof(IslanderPostView), "👤"),
                         new("Isla", typeof(IslandPostView), "🏝️"),
-                        new("Tipo de colección", typeof(TypeOfCollectionPostView), "📝")
+                        new("Formas de Pago", typeof(TypeOfCollectionPostView), "📝")
                     }),
                     // Cambio de modal a navegación directa
                     new("Inventario", "📦", NavigateToInventoryCommand, isDirectNavigation: true)

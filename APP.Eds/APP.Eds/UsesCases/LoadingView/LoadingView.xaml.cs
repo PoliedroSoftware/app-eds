@@ -22,13 +22,26 @@ namespace APP.Eds.UsesCases.LoadingView
                 LoadingLabel.Text = loadingText;
                 LoadingDescription.Text = description;
 
-                // Show the overlay
+                // Show the overlay immediately for better UX
                 LoadingOverlay.IsVisible = true;
                 LoadingIndicator.IsRunning = true;
                 LoadingLabel.IsVisible = true;
                 
-                // Start entrance animation
-                await AnimateEntrance();
+                // Start entrance animation asynchronously - no await to avoid blocking
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await AnimateEntrance();
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error in entrance animation: {ex.Message}");
+                    }
+                });
                 
                 // Start continuous animations
                 StartContinuousAnimations();
@@ -47,16 +60,33 @@ namespace APP.Eds.UsesCases.LoadingView
         {
             try
             {
-                // Stop animations
+                // Stop animations immediately
                 LoadingIndicator.IsRunning = false;
                 _animationCancellation?.Cancel();
 
-                // Animate exit
-                await AnimateExit();
-
-                // Hide overlay
+                // Hide overlay immediately for better UX - no need to wait for animation
                 LoadingOverlay.IsVisible = false;
                 LoadingLabel.IsVisible = false;
+
+                // Optional: Run exit animation in background without blocking
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            // Quick exit animation - reduced duration
+                            await Task.WhenAll(
+                                LoadingContainer.ScaleTo(0.95, 150, Easing.CubicIn),
+                                LoadingContainer.FadeTo(0, 100, Easing.CubicIn)
+                            );
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error in exit animation: {ex.Message}");
+                    }
+                });
             }
             catch (Exception ex)
             {
