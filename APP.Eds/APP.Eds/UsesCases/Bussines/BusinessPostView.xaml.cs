@@ -14,6 +14,24 @@ public partial class BusinessPostView : ContentPage
         BindingContext = _businessService;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        try
+        {
+            LoadingOverlay?.ShowLoading();
+            await _businessService.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+        }
+        finally
+        {
+            LoadingOverlay?.HideLoading();
+        }
+    }
+
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try
@@ -22,114 +40,29 @@ public partial class BusinessPostView : ContentPage
             if (sender is Button button)
             {
                 button.IsEnabled = false;
-                button.Text = "Guardando...";
+                button.Text = "Registrando...";
             }
 
-            // Enhanced validation with professional alerts
-            if (string.IsNullOrWhiteSpace(_businessService.Name))
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio es obligatorio para el registro", "Nombre Requerido");
-                return;
-            }
+            // Show loading
+            LoadingOverlay?.ShowLoading();
 
-            if (_businessService.Name.Length < 3)
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio debe tener al menos 3 caracteres", "Nombre Muy Corto");
-                return;
-            }
-
-            if (_businessService.Name.Length > 100)
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio no puede exceder 100 caracteres", "Nombre Muy Largo");
-                return;
-            }
-
-            // Clean up name
-            string originalName = _businessService.Name;
-            _businessService.Name = _businessService.Name.Trim();
-            
-            if (originalName != _businessService.Name)
-            {
-                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automaticamente del nombre", "Nombre Limpiado");
-            }
-
-            LoadingOverlay.ShowLoading();
+            // Execute save command
             await _businessService.SaveBusinessDataAsync();
-            
-            // Show success message with options
-            var action = await Application.Current.MainPage.DisplayActionSheet(
-                $"El negocio '{_businessService.Name}' ha sido registrado exitosamente. ¿Que desea hacer ahora?",
-                null,
-                null,
-                "Ver todos los negocios",
-                "Crear otro negocio",
-                "Continuar configuracion");
-
-            switch (action)
-            {
-                case "Ver todos los negocios":
-                    // Navigate back to business list
-                    await Navigation.PopAsync();
-                    break;
-                case "Crear otro negocio":
-                    // Clear form and stay on same page
-                    Name = string.Empty;
-                    break;
-                case "Continuar configuracion":
-                    // Navigate to EDS creation or wizard
-                    await Navigation.PopAsync(); // Go back to list for now
-                    break;
-            }
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar el negocio:\n\n{ex.Message}", "Error del Sistema");
+            await DisplayAlert("Error", $"Error al registrar el negocio: {ex.Message}", "OK");
         }
         finally
         {
-            LoadingOverlay.HideLoading();
+            LoadingOverlay?.HideLoading();
             
             // Re-enable button
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "Registrar Negocio";
+                button.Text = "?? Registrar Negocio";
             }
-        }
-    }
-
-    private async void OnViewListClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            // Navigate to business list
-            if (Application.Current?.MainPage is NavigationPage navPage)
-            {
-                await navPage.PushAsync(new BusinessListView());
-            }
-        }
-        catch (Exception ex)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                $"No se pudo abrir el listado de negocios: {ex.Message}", "OK");
-        }
-    }
-
-    private void OnClearFormClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            // Clear the form
-            Name = string.Empty;
-            
-            // Show confirmation
-            Application.Current.MainPage.DisplayAlert("Formulario Limpio", 
-                "El formulario ha sido limpiado. Puede ingresar un nuevo negocio.", "OK");
-        }
-        catch (Exception ex)
-        {
-            Application.Current.MainPage.DisplayAlert("Error", 
-                $"Error al limpiar el formulario: {ex.Message}", "OK");
         }
     }
 
@@ -139,6 +72,26 @@ public partial class BusinessPostView : ContentPage
         set
         {
             _businessService.Name = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Description
+    {
+        get => _businessService.Description;
+        set
+        {
+            _businessService.Description = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string BusinessNotes
+    {
+        get => _businessService.BusinessNotes;
+        set
+        {
+            _businessService.BusinessNotes = value;
             OnPropertyChanged();
         }
     }

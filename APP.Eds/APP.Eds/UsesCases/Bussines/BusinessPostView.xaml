@@ -10,235 +10,479 @@
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="24">
+            <VerticalStackLayout Padding="16" Spacing="16">
                 
-                <!-- Header Card with Purple Gradient -->
-                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
-                    <StackLayout Spacing="8">
+                <!-- Header Card with Blue Gradient -->
+                <Border BackgroundColor="#3B82F6" 
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20"
+                        StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow Brush="#3B82F6" Offset="0,4" Radius="12" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <StackLayout>
                         <Label Text="🏢 Gestion de Negocios" 
-                               FontSize="28" 
+                               FontSize="24" 
                                FontAttributes="Bold" 
                                TextColor="White" 
                                HorizontalOptions="Center"/>
-                        <Label Text="Administre sus unidades de negocio" 
+                        <Label Text="Configure y administre las unidades de negocio principales" 
                                FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"/>
+                               TextColor="#BFDBFE" 
+                               HorizontalOptions="Center"
+                               Margin="0,5,0,0"/>
                     </StackLayout>
                 </Border>
 
-                <!-- Quick Actions Card -->
-                <Border Style="{StaticResource ModernCardStyle}">
-                    <VerticalStackLayout Spacing="16">
-                        <Label Text="Acciones rapidas" 
-                               FontSize="16" 
-                               FontAttributes="Bold" 
-                               TextColor="#2D3436"
-                               HorizontalOptions="Center"/>
+                <!-- Business Registration Form Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="20">
                         
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                            <!-- View List Button -->
-                            <Border Grid.Column="0" 
-                                    BackgroundColor="#E3F2FD"
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
-                                    Padding="0">
-                                <Button Text="📋 Ver Lista"
-                                        BackgroundColor="Transparent"
-                                        TextColor="#1976D2"
-                                        FontSize="14"
-                                        FontAttributes="Bold"
-                                        HeightRequest="48"
-                                        Clicked="OnViewListClicked"
-                                        AutomationId="ButtonViewBusinessList"/>
-                            </Border>
+                        <!-- Form Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="🏪" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Configuracion de Nuevo Negocio" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Business Information Grid -->
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
                             
-                            <!-- New Business Button -->
-                            <Border Grid.Column="1" 
-                                    BackgroundColor="#E8F5E8"
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#4CAF50"
-                                    Padding="0">
-                                <Button Text="➕ Nuevo"
-                                        BackgroundColor="Transparent"
-                                        TextColor="#388E3C"
-                                        FontSize="14"
-                                        FontAttributes="Bold"
-                                        HeightRequest="48"
-                                        Clicked="OnClearFormClicked"
-                                        AutomationId="ButtonNewBusiness"/>
+                            <!-- Business Name -->
+                            <StackLayout Grid.Row="0" Grid.ColumnSpan="2">
+                                <Label Text="Nombre del Negocio" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#BFDBFE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Ingrese el nombre completo del negocio"
+                                           Text="{Binding Name, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryBusinessName"
+                                           PlaceholderColor="#9CA3AF">
+                                        <Entry.Behaviors>
+                                            <behaviors:LettersOnlyBehavior />
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                </Border>
+                                
+                                <!-- Error Message -->
+                                <Border BackgroundColor="#FEF2F2" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#F87171" 
+                                        Padding="8"
+                                        IsVisible="{Binding ShowNameError}">
+                                    <Label Text="El nombre debe tener al menos 3 caracteres y solo contener letras" 
+                                           FontSize="12" 
+                                           TextColor="#DC2626"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Description -->
+                            <StackLayout Grid.Row="1" Grid.Column="0">
+                                <Label Text="Descripcion Corta" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#BFDBFE" 
+                                        Padding="4">
+                                    <Entry Keyboard="Text"
+                                           Placeholder="Ej: Red de estaciones del norte"
+                                           Text="{Binding Description, Mode=TwoWay}"
+                                           BackgroundColor="Transparent"
+                                           AutomationId="EntryBusinessDescription"
+                                           PlaceholderColor="#9CA3AF"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Status -->
+                            <StackLayout Grid.Row="1" Grid.Column="1">
+                                <Label Text="Estado Operativo" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#BFDBFE" 
+                                        Padding="4">
+                                    <Picker Title="Estado del negocio"
+                                            ItemsSource="{Binding StatusOptions}"
+                                            SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="PickerStatus"/>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Additional Configuration -->
+                            <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
+                                <Label Text="Configuraciones Adicionales" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"/>
+                                <StackLayout Orientation="Horizontal" Spacing="20">
+                                    <StackLayout Orientation="Horizontal" Spacing="6">
+                                        <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
+                                                  Color="#3B82F6"
+                                                  AutomationId="CheckBoxIsActive"/>
+                                        <Label Text="Activo para Operaciones" 
+                                               FontSize="13" 
+                                               TextColor="#636E72"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </StackLayout>
+
+                                <!-- Notes -->
+                                <Label Text="Observaciones/Notas" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       FontSize="14"
+                                       Margin="0,10,0,5"/>
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#BFDBFE" 
+                                        Padding="4">
+                                    <Editor Placeholder="Informacion adicional sobre el negocio..."
+                                            Text="{Binding BusinessNotes, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            AutomationId="EditorNotes"
+                                            PlaceholderColor="#9CA3AF"
+                                            HeightRequest="60"/>
+                                </Border>
+                            </StackLayout>
+                        </Grid>
+
+                        <!-- Action Button -->
+                        <Border BackgroundColor="#3B82F6" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Margin="0,10,0,0">
+                            <Border.Shadow>
+                                <Shadow Brush="#3B82F6" Offset="0,3" Radius="8" Opacity="0.3"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Button_Clicked_1"
+                                    Text="🏢 Registrar Negocio"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    AutomationId="ButtonSendData"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Business Statistics Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        
+                        <!-- Stats Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="📊" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Resumen de Negocios" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Statistics Grid -->
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                            <!-- Total Businesses -->
+                            <Border BackgroundColor="#EFF6FF" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#3B82F6"
+                                    Padding="12"
+                                    Grid.Column="0">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Total" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#1D4ED8"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalBusinesses}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#1E40AF"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Active Businesses -->
+                            <Border BackgroundColor="#F0FDF4" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#10B981"
+                                    Padding="12"
+                                    Grid.Column="1">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Activos" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#059669"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding ActiveBusinesses}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#047857"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Total EDS -->
+                            <Border BackgroundColor="#FEF3C7" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#F59E0B"
+                                    Padding="12"
+                                    Grid.Column="2">
+                                <StackLayout Spacing="6">
+                                    <Label Text="EDS" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#D97706"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalEdsCount}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#B45309"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- New Today -->
+                            <Border BackgroundColor="#F3E8FF" 
+                                    StrokeShape="RoundRectangle 8"
+                                    Stroke="#8B5CF6"
+                                    Padding="12"
+                                    Grid.Column="3">
+                                <StackLayout Spacing="6">
+                                    <Label Text="Hoy" 
+                                           FontAttributes="Bold" 
+                                           FontSize="11"
+                                           TextColor="#7C3AED"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding NewBusinessesToday}" 
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#6D28D9"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
                             </Border>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Business Form Card -->
-                <Border Style="{StaticResource ModernCardStyle}">
-                    <VerticalStackLayout Spacing="20">
+                <!-- Business List Card -->
+                <Border BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
                         
-                        <!-- Section Header -->
-                        <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E8F5E8" 
-                                    StrokeShape="RoundRectangle 20"
-                                    WidthRequest="40" HeightRequest="40"
-                                    VerticalOptions="Center">
-                                <Label Text="🏪" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
-                                       VerticalOptions="Center"/>
-                            </Border>
-                            
-                            <StackLayout VerticalOptions="Center">
-                                <Label Text="Nuevo Negocio" 
-                                       FontSize="20" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
-                                <Label Text="Registre una nueva unidad de negocio" 
-                                       FontSize="12" 
-                                       TextColor="#636E72"/>
-                            </StackLayout>
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="🏢" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Lista de Negocios Configurados" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <!-- Business Name Input Section -->
-                        <VerticalStackLayout Spacing="12">
-                            <Label Text="Nombre del Negocio" 
-                                   FontSize="14" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2D3436"
-                                   Margin="4,0,0,0"/>
-                                   
-                            <Border BackgroundColor="#F8F9FA" 
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#DDD6FE"
-                                    StrokeThickness="2"
-                                    Padding="0">
-                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                    <Label Text="🏢" 
-                                           FontSize="18" 
-                                           TextColor="#6A1B9A" 
-                                           VerticalOptions="Center"/>
-                                    
-                                    <Entry Keyboard="Text"
-                                           Placeholder="Ingrese el nombre del negocio"
-                                           PlaceholderColor="#9CA3AF"
-                                           Text="{Binding Name, Mode=TwoWay}"
-                                           AutomationId="EntryBusinessName"
-                                           BackgroundColor="Transparent"
-                                           FontSize="16"
-                                           TextColor="#374151"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="FillAndExpand">
-                                        <Entry.Behaviors>
-                                            <behaviors:LettersOnlyBehavior />
-                                        </Entry.Behaviors>
-                                    </Entry>
-                                </StackLayout>
-                                
-                                <!-- Border animation triggers -->
-                                <Border.Triggers>
-                                    <DataTrigger TargetType="Border" Binding="{Binding ShowNameError}" Value="True">
-                                        <Setter Property="Stroke" Value="#F44336"/>
-                                    </DataTrigger>
-                                </Border.Triggers>
-                            </Border>
+                        <!-- Filter Options -->
+                        <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                            <Button Text="Todos" 
+                                    BackgroundColor="{Binding FilterAllColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterAllCommand}"/>
+                            <Button Text="Activos" 
+                                    BackgroundColor="{Binding FilterActiveColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterActiveCommand}"/>
+                            <Button Text="Inactivos" 
+                                    BackgroundColor="{Binding FilterInactiveColor}"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    Padding="12,6"
+                                    CornerRadius="15"
+                                    Command="{Binding FilterInactiveCommand}"/>
+                        </StackLayout>
 
-                            <!-- Error Message -->
-                            <Border BackgroundColor="#FFEBEE" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#F44336"
-                                    Padding="12,8"
-                                    IsVisible="{Binding ShowNameError}">
-                                <StackLayout Orientation="Horizontal" Spacing="8">
-                                    <Label Text="⚠️" 
+                        <!-- Businesses Collection -->
+                        <CollectionView ItemsSource="{Binding EnhancedBusinessList}" 
+                                        Margin="0,10,0,0"
+                                        AutomationId="CollectionViewBusinesses">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FEFEFE" 
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="#E5E7EB"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
+                                            
+                                            <!-- Business Icon -->
+                                            <Border BackgroundColor="#3B82F6" 
+                                                    StrokeShape="RoundRectangle 25"
+                                                    WidthRequest="50" 
+                                                    HeightRequest="50"
+                                                    Grid.RowSpan="4" 
+                                                    Grid.Column="0"
+                                                    VerticalOptions="Center">
+                                                <Label Text="🏢" 
+                                                       FontSize="24" 
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Business Information -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                                                <Border BackgroundColor="#EFF6FF"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="{Binding Id, StringFormat='#{0}'}" 
+                                                           FontSize="10" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#3B82F6"/>
+                                                </Border>
+                                                <Border BackgroundColor="#F0FDF4"
+                                                        StrokeShape="RoundRectangle 10"
+                                                        Padding="6,2"
+                                                        VerticalOptions="Center"
+                                                        IsVisible="{Binding IsActive, FallbackValue=true}">
+                                                    <Label Text="ACTIVO" 
+                                                           FontSize="9" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="#10B981"/>
+                                                </Border>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="📅" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding CreationDate, StringFormat='{0:dd/MM/yyyy}'}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="•" FontSize="12" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Status}" FontSize="13" TextColor="#6B7280"/>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                <Label Text="📋" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Description}" FontSize="13" TextColor="#374151" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                            </StackLayout>
+
+                                            <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                                <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                                                    <Label Text="🏪" FontSize="11" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding TotalEds}" FontSize="12" TextColor="#3B82F6" FontAttributes="Bold"/>
+                                                    <Label Text="EDS total" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                </StackLayout>
+                                                
+                                                <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
+                                                    <Label Text="✅" FontSize="11" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding ActiveEds}" FontSize="12" TextColor="#10B981" FontAttributes="Bold"/>
+                                                    <Label Text="activas" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#EFF6FF" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#3B82F6"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#3B82F6"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditBusinessCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                                
+                                                <!-- Delete Button -->
+                                                <Border BackgroundColor="#FEF2F2" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#EF4444"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="🗑️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#EF4444"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteBusinessCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
+                                    <Label Text="🏢" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="No hay negocios configurados" 
+                                           FontSize="16" 
+                                           TextColor="#6B7280" 
+                                           HorizontalOptions="Center"
+                                           FontAttributes="Bold"/>
+                                    <Label Text="Configure el primer negocio usando el formulario superior" 
                                            FontSize="14" 
-                                           VerticalOptions="Center"/>
-                                    <Label Text="Por favor, ingrese un nombre valido. Solo se permiten letras."
-                                           TextColor="#D32F2F"
-                                           FontSize="12"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="FillAndExpand"/>
+                                           TextColor="#9CA3AF" 
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center"/>
                                 </StackLayout>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <!-- Register Button -->
-                        <Border Style="{StaticResource PrimarySendButtonStyle}">
-                            <Button Text="🚀 Registrar Negocio"
-                                    TextColor="White" 
-                                    BackgroundColor="Transparent"
-                                    Clicked="Button_Clicked_1"
-                                    AutomationId="ButtonSendBusinessData"
-                                    FontSize="18"
-                                    FontAttributes="Bold"
-                                    HeightRequest="56"
-                                    CornerRadius="16"/>
-                        </Border>
-
-                        <!-- Info Card -->
-                        <Border BackgroundColor="#E3F2FD" 
-                                StrokeShape="RoundRectangle 12"
-                                Stroke="#2196F3"
-                                Padding="16"
-                                Opacity="0.9">
-                            <StackLayout Orientation="Horizontal" Spacing="12">
-                                <Label Text="ℹ️" 
-                                       FontSize="16" 
-                                       VerticalOptions="Start"
-                                       Margin="0,2,0,0"/>
-                                <Label Text="El negocio es la unidad principal que agrupa todas las estaciones de servicio (EDS) bajo una misma administracion."
-                                       FontSize="12"
-                                       TextColor="#1565C0"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="FillAndExpand"/>
-                            </StackLayout>
-                        </Border>
-
-                        <!-- Help Section -->
-                        <Border BackgroundColor="#FFF3E0" 
-                                StrokeShape="RoundRectangle 12"
-                                Stroke="#FF9800"
-                                Padding="16"
-                                Opacity="0.9">
-                            <StackLayout Spacing="8">
-                                <StackLayout Orientation="Horizontal" Spacing="8">
-                                    <Label Text="💡" FontSize="16" VerticalOptions="Center"/>
-                                    <Label Text="Proximos pasos despues del registro:"
-                                           FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="#E65100"
-                                           VerticalOptions="Center"/>
-                                </StackLayout>
-                                
-                                <StackLayout Spacing="4" Margin="24,0,0,0">
-                                    <StackLayout Orientation="Horizontal" Spacing="8">
-                                        <Label Text="1." FontSize="12" TextColor="#F57C00" FontAttributes="Bold"/>
-                                        <Label Text="Agregar estaciones de servicio (EDS)"
-                                               FontSize="12" TextColor="#F57C00"/>
-                                    </StackLayout>
-                                    <StackLayout Orientation="Horizontal" Spacing="8">
-                                        <Label Text="2." FontSize="12" TextColor="#F57C00" FontAttributes="Bold"/>
-                                        <Label Text="Configurar tanques e islas"
-                                               FontSize="12" TextColor="#F57C00"/>
-                                    </StackLayout>
-                                    <StackLayout Orientation="Horizontal" Spacing="8">
-                                        <Label Text="3." FontSize="12" TextColor="#F57C00" FontAttributes="Bold"/>
-                                        <Label Text="Asignar isleros y productos"
-                                               FontSize="12" TextColor="#F57C00"/>
-                                    </StackLayout>
-                                </StackLayout>
-                            </StackLayout>
-                        </Border>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Bottom Spacer -->
-                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+                <!-- Bottom Margin for Better Scrolling -->
+                <BoxView HeightRequest="20" Color="Transparent"/>
+                
             </VerticalStackLayout>
         </ScrollView>
-
+        
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
-                              AbsoluteLayout.LayoutFlags="All"/>
+                              AbsoluteLayout.LayoutFlags="All"
+                              AutomationId="LoadingOverlay"/>
     </AbsoluteLayout>
 </ContentPage>
