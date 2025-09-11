@@ -73,7 +73,7 @@ namespace APP.Eds.Services.Navigation
                     new("Administración", "⚙️", new List<MenuItemModel>
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
-                        new("Negocio", typeof(BusinessListView), "🏢"),
+                        new("Negocio", typeof(BusinessPostView), "🏢"),
                         new("Registre una EDS", typeof(EdsPostView), "🏪")
                     }),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
