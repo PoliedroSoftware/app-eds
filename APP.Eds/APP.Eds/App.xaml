@@ -16,6 +16,7 @@
             <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
             <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
             <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
