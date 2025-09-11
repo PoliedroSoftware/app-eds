@@ -145,7 +145,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 confirmationMessage += $"• Precio de venta: ${_productService.SellPrice:F2}\n";
 
             if (_productService.Stock > 0)
-                confirmationMessage += $"• Stock inicial: {_productService.Stock} unidades\n";
+                confirmationMessage += $"• Stock inicial: {_productService.Stock:N0} galones\n";
 
             bool finalConfirm = await CustomAlert.ShowConfirmAsync(
                 confirmationMessage,
@@ -291,6 +291,12 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    // Propiedades adicionales para mejorar la UX del stock
+    public string StockUnit => _productService.StockUnit;
+    public string StockPlaceholder => _productService.StockPlaceholder;
+    public string StockLabel => _productService.StockLabel;
+    public string StockHint => _productService.StockHint;
 
     public new event PropertyChangedEventHandler? PropertyChanged;
 

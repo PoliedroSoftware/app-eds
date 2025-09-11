@@ -251,6 +251,9 @@
 	  <MauiXaml Update="UsesCases\Shopping\ShoppingPostView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="UsesCases\StrongBox\StrongBoxView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UsesCases\Tank\TankPostView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

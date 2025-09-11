@@ -24,7 +24,8 @@ using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Diagnostics; 
+using System.Diagnostics;
+using APP.Eds.UsesCases.StrongBox;
 
 namespace APP.Eds.Services.Navigation
 {
@@ -74,7 +75,9 @@ namespace APP.Eds.Services.Navigation
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
                         new("Negocio", typeof(BusinessPostView), "🏢"),
-                        new("Registre una EDS", typeof(EdsPostView), "🏪")
+                        new("Registre una EDS", typeof(EdsPostView), "🏪"),
+                        new("Caja Fuerte", typeof(StrongBoxView), "💼")
+
                     }),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
