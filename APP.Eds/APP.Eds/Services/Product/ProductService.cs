@@ -18,7 +18,7 @@ public class ProductOption
     public int Id { get; set; }
     public string Name { get; set; }
     public string Icon { get; set; }
-    
+
     public ProductOption(int id, string name, string icon)
     {
         Id = id;
@@ -34,7 +34,7 @@ public class SpecificProductType
     public string Description { get; set; }
     public int ParentProductId { get; set; }
     public string Icon { get; set; }
-    
+
     public SpecificProductType(int id, string description, int parentProductId, string icon)
     {
         Id = id;
@@ -53,7 +53,7 @@ public class EnhancedProductTypeItem : ProductTypeModelResponse
     {
         IdProductType = original.IdProductType;
         Description = original.Description;
-        
+
         // Set icon based on description
         TypeIcon = GetTypeIcon(Description);
         CategoryDescription = GetCategoryDescription(Description);
@@ -62,7 +62,7 @@ public class EnhancedProductTypeItem : ProductTypeModelResponse
     private string GetTypeIcon(string description)
     {
         var desc = description?.ToLowerInvariant() ?? "";
-        
+
         if (desc.Contains("combustible") || desc.Contains("gasolina") || desc.Contains("diesel") || desc.Contains("gnv"))
             return "⛽";
         else if (desc.Contains("lubricante") || desc.Contains("aceite") || desc.Contains("grasa"))
@@ -82,7 +82,7 @@ public class EnhancedProductTypeItem : ProductTypeModelResponse
     private string GetCategoryDescription(string description)
     {
         var desc = description?.ToLowerInvariant() ?? "";
-        
+
         if (desc.Contains("combustible") || desc.Contains("gasolina") || desc.Contains("diesel"))
             return "Combustibles y carburantes";
         else if (desc.Contains("lubricante") || desc.Contains("aceite"))
@@ -105,16 +105,16 @@ public class ProductService : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
-    
+
     // Nuevas colecciones para el sistema de productos específicos
     public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
     public ObservableCollection<SpecificProductType> AvailableProductTypes { get; set; } = [];
     public ObservableCollection<SpecificProductType> FilteredProductTypes { get; set; } = [];
-    
+
     private ProductRequest Request { get; set; }
     private ProductModel _product;
     private string? _authToken;
-    
+
     public ProductModel ProductModel
     {
         get => _product;
@@ -124,7 +124,7 @@ public class ProductService : INotifyPropertyChanged
             OnPropertyChanged(nameof(ProductModel));
         }
     }
-    
+
     private string _name;
     public string Name
     {
@@ -185,7 +185,7 @@ public class ProductService : INotifyPropertyChanged
         {
             _selectedSpecificProductType = value;
             OnPropertyChanged(nameof(SelectedSpecificProductType));
-            
+
             if (_selectedSpecificProductType != null && SelectedProductOption != null)
             {
                 // Lógica especial para evitar duplicación en ACPM
@@ -200,7 +200,7 @@ public class ProductService : INotifyPropertyChanged
                     var productName = $"{SelectedProductOption.Name} {_selectedSpecificProductType.Description}".Trim();
                     Name = productName;
                 }
-                
+
                 // Establecer el tipo de producto correcto
                 UpdateProductTypeFromSelection();
             }
@@ -295,7 +295,7 @@ public class ProductService : INotifyPropertyChanged
             // Filtrar tipos de producto según la opción seleccionada
             FilteredProductTypes.Clear();
             var filteredTypes = AvailableProductTypes.Where(pt => pt.ParentProductId == SelectedProductOption.Id);
-            
+
             foreach (var type in filteredTypes)
             {
                 FilteredProductTypes.Add(type);
@@ -326,10 +326,10 @@ public class ProductService : INotifyPropertyChanged
 
         // Buscar en la lista de tipos de producto existentes
         var searchTerm = SelectedSpecificProductType.Description.ToLowerInvariant();
-        var matchingType = EnhancedProductTypeList.FirstOrDefault(pt => 
+        var matchingType = EnhancedProductTypeList.FirstOrDefault(pt =>
         {
             var ptDesc = pt.Description.ToLowerInvariant();
-            
+
             // Para gasolina, buscar coincidencia exacta con el tipo (corriente/extra)
             if (SelectedProductOption.Id == 1) // Gasolina
             {
@@ -340,7 +340,7 @@ public class ProductService : INotifyPropertyChanged
             {
                 return ptDesc.Contains("acpm");
             }
-            
+
             return false;
         });
 
@@ -398,7 +398,7 @@ public class ProductService : INotifyPropertyChanged
                 "Confirmar Stock Alto",
                 "Continuar",
                 "Revisar");
-            
+
             if (!confirmStock) return false;
         }
 
@@ -412,7 +412,7 @@ public class ProductService : INotifyPropertyChanged
                               "• Solo el nombre y tipo de producto son obligatorios\n" +
                               "• Los precios y stock son opcionales\n" +
                               "• El stock debe especificarse en galones (G)";
-            
+
             await CustomAlert.ShowErrorAsync(errorMessage, "Formulario Incompleto");
             return false;
         }
@@ -434,7 +434,7 @@ public class ProductService : INotifyPropertyChanged
             string url = $"{Configuration.BaseUrl}/api/v1/producttype";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
+
             var response = await httpClient.GetStringAsync(url);
             var productTypeResponse = JsonSerializer.Deserialize<ProductTypeResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
@@ -490,7 +490,7 @@ public class ProductService : INotifyPropertyChanged
         {
             ProductTypeList.Clear();
             EnhancedProductTypeList.Clear();
-            
+
             if (data != null)
             {
                 foreach (var item in data)
@@ -499,7 +499,7 @@ public class ProductService : INotifyPropertyChanged
                     EnhancedProductTypeList.Add(new EnhancedProductTypeItem(item));
                 }
             }
-            
+
             // Notify that collections have changed
             OnPropertyChanged(nameof(ProductTypeList));
             OnPropertyChanged(nameof(EnhancedProductTypeList));
@@ -562,7 +562,7 @@ public class ProductService : INotifyPropertyChanged
         {
             return;
         }
-        
+
         try
         {
             // Crear el modelo de producto con los datos validados
@@ -582,17 +582,17 @@ public class ProductService : INotifyPropertyChanged
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
+
             // Configurar opciones de serialización para coincidir con el formato esperado por la API
-            var jsonOptions = new JsonSerializerOptions 
-            { 
+            var jsonOptions = new JsonSerializerOptions
+            {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = false 
+                WriteIndented = false
             };
-            
+
             var json = JsonSerializer.Serialize(Request, jsonOptions);
             System.Diagnostics.Debug.WriteLine($"JSON enviado: {json}"); // Para depuración
-            
+
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/product", content);
 
@@ -601,15 +601,15 @@ public class ProductService : INotifyPropertyChanged
                 // Construir mensaje de éxito dinámico
                 var successMessage = $"✅ Producto Registrado\n\n" +
                                    $"El producto '{Name}' ha sido registrado exitosamente";
-                
+
                 var details = new List<string>();
 
                 if (PurchasePrice > 0)
                     details.Add($"• Precio de compra: ${PurchasePrice:F2}");
-                
+
                 if (SellPrice > 0)
                     details.Add($"• Precio de venta: ${SellPrice:F2}");
-                
+
                 if (Stock > 0)
                     details.Add($"• Stock inicial: {Stock:N0} galones");
 
@@ -632,9 +632,9 @@ public class ProductService : INotifyPropertyChanged
             {
                 var serverError = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Error del servidor: {serverError}"); // Para depuración
-                
+
                 var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
-                
+
                 await CustomAlert.ShowErrorAsync(userFriendlyError, "Error al Registrar Producto");
             }
         }
@@ -645,7 +645,7 @@ public class ProductService : INotifyPropertyChanged
                 "No se pudo conectar con el servidor. Verifique:\n\n" +
                 "• Su conexión a internet\n" +
                 "• Que el servidor esté disponible\n" +
-                "• Intente nuevamente en unos momentos", 
+                "• Intente nuevamente en unos momentos",
                 "Error de Conexión");
         }
         catch (JsonException jsonEx)
@@ -653,7 +653,7 @@ public class ProductService : INotifyPropertyChanged
             await CustomAlert.ShowErrorAsync(
                 "📝 Error de Formato\n\n" +
                 "Error al procesar la respuesta del servidor.\n\n" +
-                "Si el problema persiste, contacte al soporte técnico.", 
+                "Si el problema persiste, contacte al soporte técnico.",
                 "Error de Datos");
         }
         catch (Exception ex)
@@ -661,7 +661,7 @@ public class ProductService : INotifyPropertyChanged
             await CustomAlert.ShowErrorAsync(
                 $"❗ Error Inesperado\n\n" +
                 $"Se produjo un error inesperado al registrar el producto:\n\n{ex.Message}\n\n" +
-                $"Si el problema persiste, contacte al soporte técnico.", 
+                $"Si el problema persiste, contacte al soporte técnico.",
                 "Error del Sistema");
         }
     }
@@ -676,29 +676,48 @@ public class ProductService : INotifyPropertyChanged
         }
 
         var errorLower = serverError.ToLowerInvariant();
-        
-        // Detectar errores de producto duplicado
-        if (errorLower.Contains("duplicate") || 
+
+        // Detectar errores de producto duplicado - patrones más específicos
+        if (errorLower.Contains("duplicate") ||
             errorLower.Contains("already exists") ||
             errorLower.Contains("unique constraint") ||
             errorLower.Contains("duplicado") ||
             errorLower.Contains("ya existe") ||
             errorLower.Contains("product_unique") ||
             errorLower.Contains("violates unique constraint") ||
-            errorLower.Contains("duplicate key"))
+            errorLower.Contains("duplicate key") ||
+            errorLower.Contains("unique key constraint") ||
+            errorLower.Contains("cannot insert duplicate key") ||
+            errorLower.Contains("duplicate entry") ||
+            errorLower.Contains("constraint violation") ||
+            errorLower.Contains("ix_") ||  // Índices únicos SQL Server
+            errorLower.Contains("uc_") ||  // Unique constraints
+            errorLower.Contains("pk_") ||  // Primary key violations
+            errorLower.Contains("23505") || // PostgreSQL unique violation
+            errorLower.Contains("2627") ||  // SQL Server unique constraint violation
+            errorLower.Contains("1062") ||  // MySQL duplicate entry
+            (errorLower.Contains("status") && errorLower.Contains("500") && errorLower.Contains("processing")) ||
+            (errorLower.Contains("internalservererror") && (errorLower.Contains("product") || errorLower.Contains("name"))))
         {
-            var productTypeDisplay = !string.IsNullOrEmpty(productSubtype) ? 
-                $"{productType} {productSubtype}" : 
+            var productTypeDisplay = !string.IsNullOrEmpty(productSubtype) ?
+                $"{productType} {productSubtype}" :
                 (productType ?? "el tipo seleccionado");
 
-            return $"⚠️ Producto Duplicado\n\n" +
-                   $"Ya existe un producto llamado '{productName}' del tipo '{productTypeDisplay}'.\n\n" +
-                   $"En el sistema no pueden existir dos productos con el mismo nombre y tipo.\n\n" +
-                   $"💡 Opciones disponibles:\n" +
-                   $"• Usar un nombre diferente para este producto\n" +
-                   $"• Verificar si el producto ya está registrado\n" +
-                   $"• Agregar especificaciones al nombre (ej: marca, presentación)\n" +
-                   $"• Seleccionar un tipo de producto diferente";
+            return $"⚠️ Producto Ya Existente\n\n" +
+                   $"Ya existe un producto con el nombre '{productName}' del tipo '{productTypeDisplay}' en el sistema.\n\n" +
+                   $"🚫 No se pueden registrar productos duplicados\n\n" +
+                   $"💡 Soluciones disponibles:\n\n" +
+                   $"✅ Cambiar el nombre del producto:\n" +
+                   $"   • Agregar marca o proveedor\n" +
+                   $"   • Incluir características específicas\n" +
+                   $"   • Usar numeración (ej: '{productName} 2')\n\n" +
+                   $"✅ Verificar productos existentes:\n" +
+                   $"   • El producto podría ya estar registrado\n" +
+                   $"   • Revisar la lista de productos actuales\n\n" +
+                   $"✅ Seleccionar un tipo diferente:\n" +
+                   $"   • Si el producto es de otro tipo\n" +
+                   $"   • Verificar la categoría correcta\n\n" +
+                   $"📞 Si necesita ayuda, contacte al soporte técnico.";
         }
 
         // Detectar errores de campos requeridos
@@ -758,11 +777,30 @@ public class ProductService : INotifyPropertyChanged
                    "Contacte al administrador para aumentar su cuota de productos.";
         }
 
+        // Detectar errores de servidor interno (500) genéricos
+        if ((errorLower.Contains("internalservererror") || errorLower.Contains("internal server error") ||
+             errorLower.Contains("status") && errorLower.Contains("500")) &&
+            !errorLower.Contains("duplicate") && !errorLower.Contains("unique"))
+        {
+            return $"⚠️ Error del Servidor\n\n" +
+                   $"Se produjo un error interno en el servidor al procesar su solicitud.\n\n" +
+                   $"🔄 Posibles causas:\n" +
+                   $"• Problemas temporales del servidor\n" +
+                   $"• Sobrecarga del sistema\n" +
+                   $"• Error en el procesamiento de datos\n\n" +
+                   $"💡 Recomendaciones:\n" +
+                   $"• Espere unos minutos e intente nuevamente\n" +
+                   $"• Verifique que todos los campos estén correctos\n" +
+                   $"• Si persiste, contacte al soporte técnico\n\n" +
+                   $"🔧 Si necesita ayuda inmediata, proporcione estos detalles al soporte:\n" +
+                   $"'{serverError.Substring(0, Math.Min(serverError.Length, 200))}'";
+        }
+
         // Detectar errores de validación generales
         if (errorLower.Contains("validation") || errorLower.Contains("invalid"))
         {
             return $"❌ Error de Validación\n\n" +
-                   $"Los datos ingresados no cumplen con los requisitos:\n\n" +
+                   $"Los datos ingresados no cumplen con los requisitos del sistema:\n\n" +
                    $"✅ Campos obligatorios:\n" +
                    $"• Nombre: obligatorio, no vacío\n" +
                    $"• Tipo de producto: obligatorio, debe ser válido\n\n" +
@@ -770,14 +808,23 @@ public class ProductService : INotifyPropertyChanged
                    $"• Precios: deben ser números positivos (en pesos)\n" +
                    $"• Stock: debe ser número entero positivo (en galones)\n\n" +
                    $"💡 Ejemplo de stock: 1500 = 1,500 galones\n\n" +
-                   $"Detalle del error: {serverError}";
+                   $"🔧 Para soporte técnico, detalle del error:\n" +
+                   $"'{serverError.Substring(0, Math.Min(serverError.Length, 150))}'";
         }
 
-        // Error genérico mejorado
-        return $"❗ Error del Servidor\n\n" +
-               $"Se produjo un error inesperado al registrar el producto.\n\n" +
-               $"Detalle: {serverError}\n\n" +
-               $"Si el problema persiste, contacte al soporte técnico con estos detalles.";
+        // Error genérico mejorado para cualquier otro caso
+        return $"❗ Error Inesperado\n\n" +
+               $"Se produjo un error al registrar el producto que no pudimos identificar específicamente.\n\n" +
+               $"🔄 Recomendaciones:\n" +
+               $"• Verifique que toda la información esté correcta\n" +
+               $"• Intente registrar el producto nuevamente\n" +
+               $"• Si el error persiste, contacte al soporte técnico\n\n" +
+               $"🔧 Información del error para soporte técnico:\n" +
+               $"'{serverError.Substring(0, Math.Min(serverError.Length, 200))}'\n\n" +
+               $"📞 Al contactar soporte, proporcione esta información junto con:\n" +
+               $"• Nombre del producto: '{productName}'\n" +
+               $"• Tipo: '{productType ?? "No especificado"}'\n" +
+               $"• Fecha y hora del intento";
     }
 
     // Delete product
@@ -821,7 +868,7 @@ public class ProductService : INotifyPropertyChanged
         var errorLower = serverError.ToLowerInvariant();
 
         // Detectar restricciones de integridad referencial
-        if (errorLower.Contains("foreign key") || 
+        if (errorLower.Contains("foreign key") ||
             errorLower.Contains("constraint") ||
             errorLower.Contains("referenced") ||
             errorLower.Contains("in use"))
@@ -901,7 +948,7 @@ public class ProductService : INotifyPropertyChanged
         var errorLower = serverError.ToLowerInvariant();
 
         // Detectar errores de producto duplicado en actualización
-        if (errorLower.Contains("duplicate") || 
+        if (errorLower.Contains("duplicate") ||
             errorLower.Contains("already exists") ||
             errorLower.Contains("unique constraint") ||
             errorLower.Contains("duplicado") ||
@@ -977,7 +1024,7 @@ public class ProductService : INotifyPropertyChanged
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        
+
         // Actualizar el estado del comando de guardar cuando cambie la validez del formulario
         if (propertyName == nameof(IsFormValid))
         {
