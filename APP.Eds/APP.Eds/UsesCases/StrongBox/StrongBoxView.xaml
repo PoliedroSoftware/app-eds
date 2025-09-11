@@ -5,53 +5,365 @@
              x:Class="APP.Eds.UsesCases.StrongBox.StrongBoxView"
              Title="Caja Fuerte"
              BackgroundColor="#F8F9FA">
-    
-    <VerticalStackLayout Padding="20"
-                         Spacing="16">
-        
-        <Label Text="Saldo actual:"
-               FontAttributes="Bold"
-               FontSize="18" />
-        <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
-               FontSize="32"
-               TextColor="Green" />
-        
 
-        <Entry Placeholder="Monto a retirar"
-               Keyboard="Numeric"
-               Text="{Binding WithdrawAmount, Mode=TwoWay}" />
-        
-        <Button Text="Retirar"
-                Command="{Binding WithdrawCommand}"
-                IsEnabled="{Binding CanWithdraw}" />
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <VerticalStackLayout Spacing="0">
+                
+                <!-- Header moderno con gradiente purpura -->
+                <Border StrokeShape="RoundRectangle 0,0,24,24"
+                        StrokeThickness="0"
+                        Padding="20,40,20,20"
+                        BackgroundColor="#6A1B9A">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#6A1B9A" Offset="0.0" />
+                            <GradientStop Color="#8E24AA" Offset="0.5" />
+                            <GradientStop Color="#9C27B0" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Shadow>
+                        <Shadow Brush="#6A1B9A" Offset="0,4" Radius="16" Opacity="0.3"/>
+                    </Border.Shadow>
+                    
+                    <StackLayout Spacing="8">
+                        <Label Text="💰 Caja Fuerte" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Gestione el efectivo disponible de forma segura" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-        <Label Text="Movimientos recientes"
-               FontAttributes="Bold"
-               FontSize="18"
-               Margin="0,24,0,0" />
-        
-        <CollectionView ItemsSource="{Binding Movements}"
-                        HeightRequest="300">
-            
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Margin="0,4"
-                           Padding="8"
-                           BorderColor="#DDD"
-                           CornerRadius="8">
+                <!-- Contenido principal -->
+                <VerticalStackLayout Padding="20,24,20,20" Spacing="20">
+                    
+                    <!-- Tarjeta de saldo actual -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0"
+                            Padding="24,20">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/>
+                        </Border.Shadow>
                         
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Type}" FontAttributes="Bold" />
-                            <Label Text="{Binding Ammount, StringFormat='Monto: ${0:N2}'}" />
-                            <Label Text="{Binding Saldo, StringFormat='Saldo: ${0:N2}'}" />
-                            <Label Text="{Binding Note, StringFormat='Nota: {0}'}" />
-                            <Label Text="{Binding CreatedAt, StringFormat='Fecha: {0:dd/MM/yyyy HH:mm}'}" />
-                            <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}" />
+                        <VerticalStackLayout Spacing="16">
+                            <!-- Header de saldo -->
+                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                <Border BackgroundColor="#E8F5E8"
+                                        StrokeShape="RoundRectangle 12"
+                                        WidthRequest="40" HeightRequest="40"
+                                        VerticalOptions="Center">
+                                    <Label Text="💵" FontSize="20" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Text="Saldo actual:" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#374151"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <!-- Monto del saldo -->
+                            <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
+                                   FontSize="36"
+                                   FontAttributes="Bold"
+                                   TextColor="#059669"
+                                   HorizontalOptions="Center"
+                                   Margin="0,8,0,16"/>
+                            
+                            <!-- Campo de retiro -->
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Monto a retirar" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#374151"/>
+                                
+                                <Border BackgroundColor="#F9FAFB"
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#D1D5DB"
+                                        StrokeThickness="1"
+                                        Padding="16,12">
+                                    <StackLayout Orientation="Horizontal" Spacing="12">
+                                        <Label Text="$" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold"
+                                               TextColor="#6B7280" 
+                                               VerticalOptions="Center"/>
+                                        <Entry Placeholder="0.00"
+                                               Keyboard="Numeric"
+                                               Text="{Binding WithdrawAmount, Mode=TwoWay}"
+                                               BackgroundColor="Transparent"
+                                               FontSize="16"
+                                               TextColor="#111827"
+                                               PlaceholderColor="#9CA3AF"
+                                               HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                            
+                            <!-- Botones de retiro -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <!-- Boton retiro normal -->
+                                <Border Grid.Column="0"
+                                        BackgroundColor="#6A1B9A"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="4"
+                                        IsEnabled="{Binding CanWithdraw}">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding CanWithdraw}" Value="False">
+                                            <Setter Property="BackgroundColor" Value="#9CA3AF"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.Shadow>
+                                        <Shadow Brush="#6A1B9A" Offset="0,3" Radius="8" Opacity="0.3"/>
+                                    </Border.Shadow>
+                                    
+                                    <Button Text="💸 Retirar"
+                                            Command="{Binding WithdrawCommand}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            HeightRequest="48"/>
+                                </Border>
+
+                                <!-- Boton retirar todo -->
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#DC2626"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="4"
+                                        IsEnabled="{Binding CanWithdrawAll}">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding CanWithdrawAll}" Value="False">
+                                            <Setter Property="BackgroundColor" Value="#9CA3AF"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.Shadow>
+                                        <Shadow Brush="#DC2626" Offset="0,3" Radius="8" Opacity="0.3"/>
+                                    </Border.Shadow>
+                                    
+                                    <Button Text="🏦 Retirar Todo"
+                                            Command="{Binding WithdrawAllCommand}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            HeightRequest="48"/>
+                                </Border>
+                            </Grid>
                         </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        <Button Text="Cargar más" Command="{Binding LoadMoreMovementsCommand}" />
-    </VerticalStackLayout>
-</ContentPage>        
+                    </Border>
+
+                    <!-- Seccion de movimientos recientes -->
+                    <VerticalStackLayout Spacing="16">
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#FEF3C7"
+                                    StrokeShape="RoundRectangle 12"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Movimientos recientes" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#374151"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <!-- Lista de movimientos -->
+                        <CollectionView ItemsSource="{Binding Movements}"
+                                        MaximumHeightRequest="400">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E5E7EB"
+                                            StrokeThickness="1"
+                                            Margin="0,0,0,12"
+                                            Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.06"/>
+                                        </Border.Shadow>
+                                        
+                                        <!-- Gesto tap para todos los movimientos -->
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewCourtDetailCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                        
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            
+                                            <!-- Icono del tipo de movimiento -->
+                                            <Border Grid.RowSpan="4" Grid.Column="0"
+                                                    WidthRequest="48" HeightRequest="48"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    VerticalOptions="Center">
+                                                <Border.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="RETIRO">
+                                                        <Setter Property="BackgroundColor" Value="#FEF2F2"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="CORTE">
+                                                        <Setter Property="BackgroundColor" Value="#F0FDF4"/>
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                                
+                                                <Label FontSize="20" 
+                                                       HorizontalOptions="Center" 
+                                                       VerticalOptions="Center">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="RETIRO">
+                                                            <Setter Property="Text" Value="💸"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="CORTE">
+                                                            <Setter Property="Text" Value="💰"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </Border>
+
+                                            <!-- Tipo y monto -->
+                                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                                                <StackLayout Orientation="Horizontal" Spacing="8">
+                                                    <Label Text="{Binding Type}" 
+                                                           FontSize="16" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="#111827"/>
+                                                    
+                                                    <!-- Indicador visual para CORTE clickeable -->
+                                                    <Border BackgroundColor="#E0F2FE"
+                                                            StrokeShape="RoundRectangle 8"
+                                                            Padding="4,2"
+                                                            VerticalOptions="Center">
+                                                        <Border.Triggers>
+                                                            <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="CORTE">
+                                                                <Setter Property="IsVisible" Value="{Binding IdCorte, Converter={StaticResource IsNotNullConverter}}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="RETIRO">
+                                                                <Setter Property="IsVisible" Value="False"/>
+                                                            </DataTrigger>
+                                                        </Border.Triggers>
+                                                        <Label Text="👆 Ver detalles" 
+                                                               FontSize="9" 
+                                                               TextColor="#0369A1"
+                                                               FontAttributes="Bold"/>
+                                                    </Border>
+                                                </StackLayout>
+                                                
+                                                <Label Text="{Binding Ammount, StringFormat='Monto: ${0:N2}'}" 
+                                                       FontSize="14" 
+                                                       TextColor="#059669"/>
+                                            </StackLayout>
+
+                                            <!-- Saldo resultante -->
+                                            <StackLayout Grid.Row="0" Grid.Column="2" VerticalOptions="Center">
+                                                <Label Text="{Binding Saldo, StringFormat='${0:N2}'}" 
+                                                       FontSize="14" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#6B7280"
+                                                       HorizontalOptions="End"/>
+                                            </StackLayout>
+
+                                            <!-- Nota (si existe) -->
+                                            <StackLayout Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+                                                         IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}">
+                                                <Label Text="{Binding Note, StringFormat='Nota: {0}'}" 
+                                                       FontSize="12" 
+                                                       TextColor="#6B7280"
+                                                       LineBreakMode="WordWrap"/>
+                                            </StackLayout>
+
+                                            <!-- ID del corte (si existe) -->
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+                                                         IsVisible="{Binding IdCorte, Converter={StaticResource IsNotNullConverter}}"
+                                                         Orientation="Horizontal" 
+                                                         Spacing="8">
+                                                <Label Text="🎯" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding IdCorte, StringFormat='ID Corte: #{0}'}" 
+                                                       FontSize="12" 
+                                                       TextColor="#0369A1"
+                                                       FontAttributes="Bold"
+                                                       VerticalOptions="Center"/>
+                                            </StackLayout>
+
+                                            <!-- Fecha y usuario -->
+                                            <StackLayout Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
+                                                         Orientation="Horizontal" 
+                                                         Spacing="16">
+                                                <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                                                       FontSize="11" 
+                                                       TextColor="#9CA3AF"/>
+                                                <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}" 
+                                                       FontSize="11" 
+                                                       TextColor="#9CA3AF"/>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            
+                            <!-- Estado vacio -->
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" 
+                                             Spacing="16" Padding="32">
+                                    <Border BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 16"
+                                            Stroke="#E5E7EB"
+                                            Padding="32,24">
+                                        <StackLayout Spacing="16" HorizontalOptions="Center">
+                                            <Label Text="📋" FontSize="48" 
+                                                   HorizontalOptions="Center" 
+                                                   TextColor="#9CA3AF"/>
+                                            <Label Text="No hay movimientos registrados" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#6B7280" 
+                                                   HorizontalOptions="Center"/>
+                                            <Label Text="Los movimientos de efectivo apareceran aqui" 
+                                                   FontSize="14" 
+                                                   TextColor="#9CA3AF" 
+                                                   HorizontalOptions="Center"
+                                                   HorizontalTextAlignment="Center"/>
+                                        </StackLayout>
+                                    </Border>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+
+                        <!-- Boton cargar mas -->
+                        <Border BackgroundColor="#F3F4F6"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="#D1D5DB"
+                                Padding="4">
+                            <Button Text="📄 Cargar mas" 
+                                    Command="{Binding LoadMoreMovementsCommand}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#6B7280"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    HeightRequest="44"/>
+                        </Border>
+                    </VerticalStackLayout>
+                    
+                    <!-- Espaciado inferior -->
+                    <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"
+                              IsVisible="{Binding IsLoading}"/>
+    </AbsoluteLayout>
+</ContentPage>

@@ -10,34 +10,33 @@
 
     <Border x:Name="Frame"
             BackgroundColor="{StaticResource White}"
-            StrokeShape="RoundRectangle 24"
+            StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
-            WidthRequest="380"
+            WidthRequest="340"
             Padding="0"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             AutomationId="FrameCategory">
         
-        <!-- Sombra personalizada -->
+        <!-- Sombra moderna -->
         <Border.Shadow>
             <Shadow Brush="{StaticResource Black}" 
-                    Offset="0,12" 
-                    Radius="40" 
-                    Opacity="0.15"/>
+                    Offset="0,8" 
+                    Radius="32" 
+                    Opacity="0.12"/>
         </Border.Shadow>
 
-        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*">
+        <VerticalStackLayout Spacing="0">
 
-            <!-- Encabezado premium con gradiente -->
-            <Border Grid.Row="0"
-                    StrokeShape="RoundRectangle 24,24,0,0"
+            <!-- Header moderno con gradiente purpura -->
+            <Border StrokeShape="RoundRectangle 20,20,0,0"
                     StrokeThickness="0"
-                    Padding="24,20,24,16">
+                    Padding="20,16">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#6366F1" Offset="0.0" />
-                        <GradientStop Color="#8B5CF6" Offset="0.5" />
-                        <GradientStop Color="#D946EF" Offset="1.0" />
+                        <GradientStop Color="#6A1B9A" Offset="0.0" />
+                        <GradientStop Color="#8E24AA" Offset="0.5" />
+                        <GradientStop Color="#9C27B0" Offset="1.0" />
                     </LinearGradientBrush>
                 </Border.Background>
                 
@@ -45,68 +44,62 @@
                     <StackLayout Grid.Column="0" Spacing="4">
                         <Label x:Name="CategoryTitle"
                                FontAttributes="Bold" 
-                               FontSize="20"
+                               FontSize="18"
                                TextColor="{StaticResource White}"
                                AutomationId="LabelCategoryTitle"/>
-                        <Label Text="Seleccione una opcion para continuar"
-                               FontSize="13"
+                        <Label Text="Seleccione una opcion"
+                               FontSize="12"
                                TextColor="{StaticResource White}"
-                               Opacity="0.85"
-                               FontAttributes="None"/>
+                               Opacity="0.85"/>
                     </StackLayout>
 
-                    <Frame Grid.Column="1"
-                           BackgroundColor="{StaticResource White}"
-                           CornerRadius="15"
-                           HasShadow="False"
-                           Padding="0"
-                           WidthRequest="30" 
-                           HeightRequest="30"
-                           HorizontalOptions="End" 
-                           VerticalOptions="Center"
-                           AutomationId="ButtonClosePopup">
-                        <Button BackgroundColor="Transparent"
-                                Clicked="OnCloseTapped"
-                                FontSize="16" 
-                                Text="X" 
-                                TextColor="#8B5CF6"
-                                FontAttributes="Bold"
-                                WidthRequest="30" 
-                                HeightRequest="30" 
-                                Padding="0"
-                                CornerRadius="15"/>
-                    </Frame>
+                    <!-- Boton cerrar mejorado -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource White}"
+                            StrokeThickness="1"
+                            WidthRequest="24" 
+                            HeightRequest="24"
+                            HorizontalOptions="End" 
+                            VerticalOptions="Center"
+                            Opacity="0.8"
+                            AutomationId="ButtonClosePopup">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="✕"
+                               FontSize="12" 
+                               TextColor="{StaticResource White}"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
                 </Grid>
             </Border>
-
-            <!-- Linea separadora -->
-            <Rectangle Grid.Row="1"
-                       HeightRequest="1"
-                       Fill="{StaticResource Gray200}"
-                       Opacity="0.5"/>
             
-            <!-- Lista de elementos del menu -->
-            <StackLayout Grid.Row="2" 
-                         Padding="20,16,20,20">
+            <!-- Contenido principal -->
+            <StackLayout Padding="16,12,16,16" Spacing="8">
                 <CollectionView x:Name="MenuItemsList"
                                 ItemSizingStrategy="MeasureAllItems"
                                 AutomationId="CollectionViewMenuItems">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="0,0,0,10"
+                            <Border Margin="0,0,0,8"
                                     BackgroundColor="{StaticResource White}"
-                                    StrokeShape="RoundRectangle 14"
+                                    StrokeShape="RoundRectangle 12"
                                     StrokeThickness="1"
                                     Stroke="{StaticResource Gray200}"
                                     Padding="0"
-                                    MinimumHeightRequest="58"
+                                    MinimumHeightRequest="56"
                                     AutomationId="ButtonMenuItem">
                                 
+                                <!-- Sombra sutil -->
                                 <Border.Shadow>
-                                    <Shadow Brush="{StaticResource Gray300}" 
+                                    <Shadow Brush="{StaticResource Gray400}" 
                                             Offset="0,2" 
-                                            Radius="6" 
-                                            Opacity="0.08"/>
+                                            Radius="4" 
+                                            Opacity="0.06"/>
                                 </Border.Shadow>
 
                                 <Border.Triggers>
@@ -120,6 +113,7 @@
                                                           Tapped="OnMenuItemClicked"/>
                                 </Border.GestureRecognizers>
                                 
+                                <!-- Estados visuales para interacciones -->
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
                                         <VisualState Name="Normal">
@@ -132,26 +126,27 @@
                                         </VisualState>
                                         <VisualState Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Property="Scale" Value="0.97"/>
-                                                <Setter Property="Opacity" Value="0.8"/>
+                                                <Setter Property="Scale" Value="0.98"/>
+                                                <Setter Property="Opacity" Value="0.7"/>
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Gray50}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
 
-                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,12">
-                                    <!-- Icono del elemento -->
+                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="14,12">
+                                    <!-- Icono mejorado -->
                                     <Border Grid.Column="0"
                                             StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0"
-                                            WidthRequest="40"
-                                            HeightRequest="40"
-                                            Margin="0,0,14,0"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            Margin="0,0,12,0"
                                             VerticalOptions="Center">
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="#F3F4F6" Offset="0.0" />
-                                                <GradientStop Color="#E5E7EB" Offset="1.0" />
+                                                <GradientStop Color="#F8F9FA" Offset="0.0" />
+                                                <GradientStop Color="#E9ECEF" Offset="1.0" />
                                             </LinearGradientBrush>
                                         </Border.Background>
                                         <Label Text="{Binding Icon}"
@@ -160,29 +155,29 @@
                                                VerticalOptions="Center"/>
                                     </Border>
                                     
-                                    <!-- Contenido del elemento -->
+                                    <!-- Contenido texto -->
                                     <StackLayout Grid.Column="1" 
                                                  VerticalOptions="Center"
                                                  Spacing="2">
                                         <Label Text="{Binding Name}"
-                                               FontSize="15"
+                                               FontSize="14"
                                                FontAttributes="Bold"
                                                TextColor="{StaticResource Gray900}"/>
                                         <Label Text="{Binding Description}"
-                                               FontSize="12"
+                                               FontSize="11"
                                                TextColor="{StaticResource Gray600}"
                                                IsVisible="{Binding HasDescription}"/>
                                     </StackLayout>
                                     
-                                    <!-- Flecha -->
+                                    <!-- Indicador de accion -->
                                     <Border Grid.Column="2"
                                             BackgroundColor="{StaticResource Gray100}"
                                             StrokeShape="RoundRectangle 8"
                                             StrokeThickness="0"
-                                            WidthRequest="28"
-                                            HeightRequest="28"
+                                            WidthRequest="24"
+                                            HeightRequest="24"
                                             VerticalOptions="Center">
-                                        <Label Text=">"
+                                        <Label Text="›"
                                                FontSize="14"
                                                FontAttributes="Bold"
                                                TextColor="{StaticResource Primary}"
@@ -195,7 +190,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </StackLayout>
-        </Grid>
+        </VerticalStackLayout>
     </Border>
 
 </toolkit:Popup>
