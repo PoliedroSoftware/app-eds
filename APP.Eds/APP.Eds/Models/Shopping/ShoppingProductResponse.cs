@@ -17,8 +17,11 @@ public class ShoppingProductResponse
     [JsonPropertyName("quantity")]
     public double Quantity { get; set; }
 
-    [JsonPropertyName("price")]
-    public double Price { get; set; }
+    [JsonPropertyName("purchase_price")]
+    public double PurchasePrice { get; set; }
+
+    [JsonPropertyName("sell_price")]
+    public double SellPrice { get; set; }
 
     [JsonPropertyName("idCompartment")]
     public int IdCompartment { get; set; }

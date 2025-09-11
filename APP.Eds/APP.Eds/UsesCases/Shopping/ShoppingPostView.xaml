@@ -183,6 +183,7 @@
                                                 ItemsSource="{Binding CategoryList}"
                                                 ItemDisplayBinding="{Binding Description}"
                                                 SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                                                SelectedIndexChanged="OpenShoppingPopUp"
                                                 AutomationId="PickerCategory"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
