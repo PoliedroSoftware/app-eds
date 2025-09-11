@@ -14,6 +14,24 @@ public partial class BusinessPostView : ContentPage
         BindingContext = _businessService;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        try
+        {
+            LoadingOverlay?.ShowLoading();
+            await _businessService.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+        }
+        finally
+        {
+            LoadingOverlay?.HideLoading();
+        }
+    }
+
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try
@@ -22,52 +40,22 @@ public partial class BusinessPostView : ContentPage
             if (sender is Button button)
             {
                 button.IsEnabled = false;
-                button.Text = "Guardando...";
+                button.Text = "Registrando...";
             }
 
-            // Enhanced validation with professional alerts
-            if (string.IsNullOrWhiteSpace(_businessService.Name))
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio es obligatorio para el registro", "Nombre Requerido");
-                return;
-            }
+            // Show loading
+            LoadingOverlay?.ShowLoading();
 
-            if (_businessService.Name.Length < 3)
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio debe tener al menos 3 caracteres", "Nombre Muy Corto");
-                return;
-            }
-
-            if (_businessService.Name.Length > 100)
-            {
-                await CustomAlert.ShowErrorAsync("El nombre del negocio no puede exceder 100 caracteres", "Nombre Muy Largo");
-                return;
-            }
-
-            // Clean up name
-            string originalName = _businessService.Name;
-            _businessService.Name = _businessService.Name.Trim();
-            
-            if (originalName != _businessService.Name)
-            {
-                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente del nombre", "Nombre Limpiado");
-            }
-
-            LoadingOverlay.ShowLoading();
+            // Execute save command
             await _businessService.SaveBusinessDataAsync();
-            
-            await CustomAlert.ShowSuccessAsync($"El negocio '{_businessService.Name}' ha sido registrado exitosamente en el sistema", "Negocio Registrado");
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar el negocio:\n\n{ex.Message}", "Error del Sistema");
+            await DisplayAlert("Error", $"Error al registrar el negocio: {ex.Message}", "OK");
         }
         finally
         {
-            LoadingOverlay.HideLoading();
-            
-            // Reset the form after successful submission
-            Name = string.Empty;
+            LoadingOverlay?.HideLoading();
             
             // Re-enable button
             if (sender is Button button)
@@ -84,6 +72,26 @@ public partial class BusinessPostView : ContentPage
         set
         {
             _businessService.Name = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Description
+    {
+        get => _businessService.Description;
+        set
+        {
+            _businessService.Description = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string BusinessNotes
+    {
+        get => _businessService.BusinessNotes;
+        set
+        {
+            _businessService.BusinessNotes = value;
             OnPropertyChanged();
         }
     }
