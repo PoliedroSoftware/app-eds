@@ -11,8 +11,8 @@ namespace APP.Eds.Converters
             {
                 return title switch
                 {
-                    var t when t.Contains("Configuración Inicial") => "?????",
-                    var t when t.Contains("Administración") => "??",
+                    var t when t.Contains("Configuraciï¿½n Inicial") => "?????",
+                    var t when t.Contains("Administraciï¿½n") => "??",
                     var t when t.Contains("Dispensadores") => "?",
                     var t when t.Contains("Compras") => "??",
                     var t when t.Contains("Tanques") => "???",

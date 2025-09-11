@@ -528,7 +528,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
                 {
-                    await CustomAlert.ShowErrorAsync("Debe agregar al menos un tipo de recaudo al cierre", "Tipos de Recaudo Requeridos");
+                    await CustomAlert.ShowErrorAsync("No puede cerrar turno sin registrar al menos un método de pago. Por favor agregue uno antes de continuar.", "Medios de pago requeridos");
                     return;
                 }
 
