@@ -66,7 +66,7 @@ public partial class ShoppingPostView : ContentPage
             }
 
             // Validate total amount
-            double totalAmount = vm.ShoppingProduct?.Sum(p => p.Quantity * p.Price) ?? 0;
+            double totalAmount = vm.ShoppingProduct?.Sum(p => p.Quantity * p.PurchasePrice) ?? 0;
             if (totalAmount <= 0)
             {
                 await CustomAlert.ShowErrorAsync("El monto total de la compra debe ser mayor que cero", "Monto Inválido");
