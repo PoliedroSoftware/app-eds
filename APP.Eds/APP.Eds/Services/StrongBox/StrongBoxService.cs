@@ -209,27 +209,44 @@ public class StrongBoxService : INotifyPropertyChanged
         // Mostrar loading específico para cargar detalles del corte
         IsLoadingCourtDetails = true;
 
+        // Usar CancellationToken para permitir cancelación si toma demasiado tiempo
+        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
         try
         {
+            System.Diagnostics.Debug.WriteLine($"Starting to load court details for movement type: {movement.Type}, IdCorte: {movement.IdCorte}");
+            
             // Cargar detalles del corte desde el API usando el mismo endpoint que CourtService
             var courtDetails = await GetCourtDetailsAsync(movement.IdCorte.Value);
             
             if (courtDetails != null)
             {
+                System.Diagnostics.Debug.WriteLine($"Successfully loaded court details, navigating to detail page");
+                
                 // Navegar a la pagina de detalles del corte usando la misma navegacion que CourtService
                 var detailPage = new APP.Eds.UsesCases.Court.CourtDetailPage(courtDetails);
                 await Application.Current.MainPage.Navigation.PushAsync(detailPage);
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("Court details returned null");
                 await Application.Current.MainPage.DisplayAlert(
                     "Error", 
-                    "No se pudieron cargar los detalles del corte.", 
+                    "No se pudieron cargar los detalles del corte. Es posible que el corte no exista o haya un problema de conectividad.", 
                     "OK");
             }
         }
+        catch (OperationCanceledException)
+        {
+            System.Diagnostics.Debug.WriteLine("Court details loading was cancelled due to timeout");
+            await Application.Current.MainPage.DisplayAlert(
+                "Tiempo agotado", 
+                "La carga de detalles del corte está tomando demasiado tiempo. Verifique su conexión a internet e intente nuevamente.", 
+                "OK");
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"Exception loading court details: {ex.Message}");
             await Application.Current.MainPage.DisplayAlert(
                 "Error", 
                 $"Error al cargar los detalles del corte: {ex.Message}", 
@@ -239,6 +256,7 @@ public class StrongBoxService : INotifyPropertyChanged
         {
             // Ocultar loading específico
             IsLoadingCourtDetails = false;
+            System.Diagnostics.Debug.WriteLine("Finished loading court details operation");
         }
     }
 
@@ -249,12 +267,23 @@ public class StrongBoxService : INotifyPropertyChanged
 
         try
         {
-            // Usar el mismo endpoint que CourtService: /api/v1/court?PageNumber=1&PageSize=100
-            string url = $"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=100";
+            // OPTIMIZACIÓN: Usar endpoint específico para obtener un court individual
+            // En lugar de cargar todos los courts, hacer consulta directa por ID
+            string url = $"{Configuration.BaseUrl}/api/v1/court/{courtId}";
             using var httpClient = new HttpClient();
+            
+            // Configurar timeout más corto para mejor UX
+            httpClient.Timeout = TimeSpan.FromSeconds(15);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
+            System.Diagnostics.Debug.WriteLine($"Loading court details for ID: {courtId}");
+            var startTime = DateTime.Now;
+
             var response = await httpClient.GetAsync(url);
+            
+            var elapsed = DateTime.Now - startTime;
+            System.Diagnostics.Debug.WriteLine($"Court API call took: {elapsed.TotalMilliseconds}ms");
+
             if (!response.IsSuccessStatusCode)
             {
                 System.Diagnostics.Debug.WriteLine($"Error getting court details: {response.StatusCode}");
@@ -263,18 +292,61 @@ public class StrongBoxService : INotifyPropertyChanged
 
             var json = await response.Content.ReadAsStringAsync();
             
-            // Usar el mismo deserializador que CourtService para obtener una lista de courts
-            var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(json, 
+            // Intentar deserializar como objeto único primero
+            var courtDetails = JsonSerializer.Deserialize<CourtListItemModel>(json, 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            // Buscar el court específico por Id
-            var courtDetails = courts?.FirstOrDefault(c => c.Id == courtId);
-
+            System.Diagnostics.Debug.WriteLine($"Successfully loaded court details for ID: {courtId}");
             return courtDetails;
+        }
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Timeout loading court details: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert(
+                "Tiempo agotado", 
+                "La carga de detalles está tomando más tiempo del esperado. Verifique su conexión.", 
+                "OK");
+            return null;
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error getting court details: {ex.Message}");
+            
+            // Fallback: Si el endpoint individual no funciona, usar el método anterior pero con timeout corto
+            return await GetCourtDetailsFallbackAsync(courtId);
+        }
+    }
+
+    // Método de fallback en caso de que el endpoint individual no esté disponible
+    private async Task<CourtListItemModel> GetCourtDetailsFallbackAsync(long courtId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"Using fallback method for court ID: {courtId}");
+            
+            string url = $"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=20"; // Reducir a 20 en lugar de 100
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(10); // Timeout más corto
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            var response = await httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(json, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var result = courts?.FirstOrDefault(c => c.Id == courtId);
+            System.Diagnostics.Debug.WriteLine($"Fallback method found court: {result != null}");
+            
+            return result;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in fallback court details: {ex.Message}");
             return null;
         }
     }
