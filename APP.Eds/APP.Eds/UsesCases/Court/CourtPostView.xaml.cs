@@ -534,7 +534,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
                 double cash = totalTypeOfCollection - totalExpenditures;
                 const double epsilon = 1e-6;
-                if (cash < -epsilon)
+                if (cash < epsilon)
                 {
                     await CustomAlert.ShowErrorAsync($"El total de efectivo no puede ser negativo.\n\nTotal recaudo: ${totalTypeOfCollection:F2}\nTotal gastos: ${totalExpenditures:F2}", "Error en Cálculos");
                     return;
