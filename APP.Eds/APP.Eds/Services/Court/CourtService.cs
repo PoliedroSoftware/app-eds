@@ -6,6 +6,7 @@ using APP.Eds.Models.Hose;
 using APP.Eds.Models.Inventory;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
+using APP.Eds.Models.Product; // Agregamos esta referencia para ProductModel
 using APP.Eds.Services.Config;
 using APP.Eds.UsesCases.Court;
 using Microsoft.VisualBasic;
@@ -21,11 +22,13 @@ using System.Windows.Input;
 namespace APP.Eds.Services.Court
 {
     public class CourtService : INotifyPropertyChanged
-
     {
         public bool LastSendWasSuccessful { get; private set; }
         public string UserRole { get; set; } = string.Empty;
         public bool IsUserRole => Preferences.Get("userRole", "") == "User";
+
+        // Nueva propiedad para almacenar los productos que han sido modificados
+        private List<(int IdProduct, double NewSellPrice)> _modifiedProducts = new List<(int, double)>();
 
         private static CourtService _instance;
         public static CourtService Instance => _instance ??= new CourtService();
@@ -50,6 +53,8 @@ namespace APP.Eds.Services.Court
             _instance.CourtTypeOfCollections = null;
             _instance.AdditionalInfoDescription = null;
             
+            // Limpiar también los productos modificados
+            _instance._modifiedProducts.Clear();
         }
         public static void DestroyInstance()
         {
@@ -2716,6 +2721,52 @@ GetAllEdsData()
                 CourtDispensers = new ObservableCollection<CourtDispenser>();
             }
 
+            // Verificar si el precio del producto fue modificado
+            if (SelectedHose != null && SelectedHose.ProductEntity != null)
+            {
+                var originalPrice = SelectedHose.EffectiveSellPrice;
+                var currentPrice = SelectedHose.SellPrice;
+                
+                Console.WriteLine($"🔍 DIAGNÓSTICO DE PRECIO:");
+                Console.WriteLine($"   Producto ID: {SelectedHose.ProductEntity.IdProduct}");
+                Console.WriteLine($"   Precio original (EffectiveSellPrice): ${originalPrice:F2}");
+                Console.WriteLine($"   Precio actual (SellPrice): ${currentPrice:F2}");
+                Console.WriteLine($"   Diferencia absoluta: {Math.Abs(originalPrice - currentPrice):F4}");
+                
+                // Si el precio fue modificado, agregarlo a la lista de productos modificados
+                if (Math.Abs(originalPrice - currentPrice) > 0.01) // Comparación con tolerancia para decimales
+                {
+                    var productId = SelectedHose.ProductEntity.IdProduct;
+                    
+                    // Remover entrada anterior si existe
+                    var previousCount = _modifiedProducts.Count;
+                    _modifiedProducts.RemoveAll(mp => mp.IdProduct == productId);
+                    
+                    // Agregar la nueva modificación
+                    _modifiedProducts.Add((productId, currentPrice));
+                    
+                    Console.WriteLine($"✅ PRECIO MODIFICADO DETECTADO:");
+                    Console.WriteLine($"   Producto {productId} agregado a lista de modificados");
+                    Console.WriteLine($"   Nuevo precio: ${currentPrice:F2}");
+                    Console.WriteLine($"   Total productos modificados: {_modifiedProducts.Count}");
+                }
+                else
+                {
+                    Console.WriteLine($"ℹ️ NO HAY CAMBIO DE PRECIO:");
+                    Console.WriteLine($"   La diferencia ({Math.Abs(originalPrice - currentPrice):F4}) es menor que el umbral (0.01)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"⚠️ DIAGNÓSTICO FALLIDO:");
+                Console.WriteLine($"   SelectedHose: {(SelectedHose != null ? "✓" : "✗")}");
+                Console.WriteLine($"   ProductEntity: {(SelectedHose?.ProductEntity != null ? "✓" : "✗")}");
+                if (SelectedHose?.ProductEntity != null)
+                {
+                    Console.WriteLine($"   ProductEntity.IdProduct: {SelectedHose.ProductEntity.IdProduct}");
+                }
+            }
+
             var newDispenser = new CourtDispenser
             {
                
@@ -2740,129 +2791,178 @@ GetAllEdsData()
             TotalSales = GetTotalSales();
         }
 
-        public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
+        // Nuevo método para actualizar un producto individual
+        public async Task<bool> UpdateProductPriceAsync(int productId, double newSellPrice)
         {
-            if (Court == null)
-                Court = new CourtModel();
-
-            if (CourtDocuments == null)
-                CourtDocuments = new ObservableCollection<CourtDocument>();
-
-            for (int i = 0; i < filesBase64.Count; i++)
+            if (string.IsNullOrEmpty(_authToken))
             {
-                var newDocument = new CourtDocument
+                Console.WriteLine($"❌ Error: Token de autenticación vacío");
+                return false;
+            }
+
+            try
+            {
+                Console.WriteLine($"🔍 Obteniendo datos actuales del producto {productId}...");
+                
+                // Primero obtener el producto actual para conservar sus otros datos
+                using var httpClientGet = new HttpClient();
+                httpClientGet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                
+                var getResponse = await httpClientGet.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product/{productId}");
+                
+                Console.WriteLine($"📥 Respuesta del servidor: {getResponse.Substring(0, Math.Min(200, getResponse.Length))}...");
+                
+                // Deserializar como un objeto dinámico para obtener todos los campos
+                var currentProductJson = JsonSerializer.Deserialize<JsonElement>(getResponse);
+
+                if (!currentProductJson.TryGetProperty("idProduct", out var idElement) ||
+                    !currentProductJson.TryGetProperty("name", out var nameElement) ||
+                    !currentProductJson.TryGetProperty("idProductType", out var typeElement))
                 {
-                    Descripcion = filesBase64[i], 
-                    DocumentName = nombresDocumentos[i],
+                    Console.WriteLine($"❌ No se pudo obtener información completa del producto con ID {productId}");
+                    Console.WriteLine($"   idProduct presente: {currentProductJson.TryGetProperty("idProduct", out _)}");
+                    Console.WriteLine($"   name presente: {currentProductJson.TryGetProperty("name", out _)}");
+                    Console.WriteLine($"   idProductType presente: {currentProductJson.TryGetProperty("idProductType", out _)}");
+                    return false;
+                }
+
+                // Extraer valores con valores por defecto seguros
+                var name = nameElement.GetString() ?? "";
+                var idProductType = typeElement.GetInt32();
+                var purchasePrice = currentProductJson.TryGetProperty("purchasePrice", out var purchaseElement) 
+                    ? purchaseElement.GetDouble() : 0.0;
+                var stock = currentProductJson.TryGetProperty("stock", out var stockElement) 
+                    ? stockElement.GetInt32() : 0;
+                var currentSellPrice = currentProductJson.TryGetProperty("sellPrice", out var sellPriceElement) 
+                    ? sellPriceElement.GetDouble() : 0.0;
+
+                Console.WriteLine($"📋 Datos del producto:");
+                Console.WriteLine($"   ID: {productId}");
+                Console.WriteLine($"   Nombre: {name}");
+                Console.WriteLine($"   Tipo: {idProductType}");
+                Console.WriteLine($"   Precio compra: ${purchasePrice:F2}");
+                Console.WriteLine($"   Precio venta actual: ${currentSellPrice:F2}");
+                Console.WriteLine($"   Precio venta nuevo: ${newSellPrice:F2}");
+                Console.WriteLine($"   Stock: {stock}");
+
+                // Crear el modelo de producto para la actualización
+                var productModel = new ProductModel
+                {
+                    Name = name,
+                    IdProductType = idProductType,
+                    SellPrice = newSellPrice,
+                    PurchasePrice = purchasePrice,
+                    Stock = stock
                 };
 
-                CourtDocuments.Add(newDocument);
+                // Crear el request con el formato que espera el backend
+                var updateRequest = new ProductRequest
+                {
+                    Request = productModel
+                };
+
+                using var httpClientPut = new HttpClient();
+                httpClientPut.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                
+                var json = JsonSerializer.Serialize(updateRequest, new JsonSerializerOptions 
+                { 
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase 
+                });
+                
+                Console.WriteLine($"📤 JSON de actualización: {json}");
+                
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                // CORRECCIÓN: Usar la URL correcta con el ID del producto en la URL
+                var putUrl = $"{Configuration.BaseUrl}/api/v1/product/{productId}";
+                Console.WriteLine($"🌐 URL de actualización: {putUrl}");
+                
+                var response = await httpClientPut.PutAsync(putUrl, content);
+
+                Console.WriteLine($"📡 Respuesta del servidor: {response.StatusCode} - {response.ReasonPhrase}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"✅ Precio del producto {productId} actualizado exitosamente de ${currentSellPrice:F2} a ${newSellPrice:F2}");
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"❌ Error al actualizar precio del producto {productId}:");
+                    Console.WriteLine($"   Código: {response.StatusCode}");
+                    Console.WriteLine($"   Mensaje: {response.ReasonPhrase}");
+                    Console.WriteLine($"   Detalle: {error}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Excepción al actualizar precio del producto {productId}:");
+                Console.WriteLine($"   Tipo: {ex.GetType().Name}");
+                Console.WriteLine($"   Mensaje: {ex.Message}");
+                Console.WriteLine($"   StackTrace: {ex.StackTrace}");
+                return false;
+            }
+        }
+
+        // Método para actualizar todos los productos modificados
+        private async Task<bool> UpdateModifiedProductPricesAsync()
+        {
+            Console.WriteLine($"🔄 INICIANDO ACTUALIZACIÓN DE PRECIOS:");
+            Console.WriteLine($"   Productos en lista de modificados: {_modifiedProducts.Count}");
+            
+            if (!_modifiedProducts.Any())
+            {
+                Console.WriteLine($"ℹ️ No hay productos para actualizar");
+                return true; // No hay productos para actualizar
             }
 
-            Court.CourtDocuments = CourtDocuments.ToList();
-            VisibleDocuments = true;
-        }
-
-
-
-        public async Task AddCourtExpenditureFromPopup()
-        {
-            if (Court == null)
+            // Mostrar todos los productos que van a ser actualizados
+            foreach (var (idProduct, newSellPrice) in _modifiedProducts)
             {
-                Court = new CourtModel();
+                Console.WriteLine($"   📋 Producto {idProduct} → ${newSellPrice:F2}");
             }
 
-            if (CourtExpenditures == null)
+            bool allUpdatesSuccessful = true;
+            var successfulUpdates = new List<(int IdProduct, double NewSellPrice)>();
+
+            foreach (var (idProduct, newSellPrice) in _modifiedProducts)
             {
-                CourtExpenditures = new ObservableCollection<CourtExpenditure>();
+                try
+                {
+                    Console.WriteLine($"🔄 Actualizando producto {idProduct}...");
+                    bool updateResult = await UpdateProductPriceAsync(idProduct, newSellPrice);
+                    if (updateResult)
+                    {
+                        successfulUpdates.Add((idProduct, newSellPrice));
+                        Console.WriteLine($"✅ Precio actualizado: Producto {idProduct} → ${newSellPrice:F2}");
+                    }
+                    else
+                    {
+                        allUpdatesSuccessful = false;
+                        Console.WriteLine($"❌ Error actualizando: Producto {idProduct} → ${newSellPrice:F2}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    allUpdatesSuccessful = false;
+                    Console.WriteLine($"❌ Excepción actualizando producto {idProduct}: {ex.Message}");
+                }
             }
 
-            var newCourtExpenditure = new CourtExpenditure
+            // Limpiar solo los productos que se actualizaron exitosamente
+            foreach (var successfulUpdate in successfulUpdates)
             {
-                ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
-                Amount = CourtExpenditureAmount,
-                Description = ExpenditureDescription,
-                IdExpenditure =SelectedExpenditure.IdExpenditure,
-            };
-
-            CourtExpenditures.Add(newCourtExpenditure);
-            Court.CourtExpenditures = CourtExpenditures.ToList();
-            VisibleExpenses = true;
-
-            TotalSales = GetTotalSales();
-            CourtExpenditureAmount = 0;
-            ExpenditureDescription = "";
-        }
-
-
-        public async Task AddCourtTypeOfCollectionFromPopup()
-        {
-            if (Court == null)
-            {
-                Court = new CourtModel();
+                _modifiedProducts.RemoveAll(mp => mp.IdProduct == successfulUpdate.IdProduct);
             }
 
-            if (CourtTypeOfCollections == null)
-            {
-                CourtTypeOfCollections = new ObservableCollection<CourtTypeOfCollection>();
-            }
-            var newCourtTypeOfCollection = new CourtTypeOfCollection
-            {
-                TypeOfCollectionName = SelectedTypeOfCollection.Description ?? string.Empty,
-                Amount = CourtTypeOfCollectionAmount,
-                Description = CourtTypeOfCollectionDescription,
-                IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
-            };
+            Console.WriteLine($"📊 RESUMEN DE ACTUALIZACIÓN:");
+            Console.WriteLine($"   Exitosas: {successfulUpdates.Count}");
+            Console.WriteLine($"   Fallidas: {_modifiedProducts.Count}");
+            Console.WriteLine($"   Resultado general: {(allUpdatesSuccessful ? "✅ ÉXITO" : "⚠️ PARCIAL")}");
 
-            CourtTypeOfCollections.Add(newCourtTypeOfCollection);
-            Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
-            VisibleReceipts = true;
-
-            TotalSales = GetTotalSales();
-            CourtTypeOfCollectionAmount = 0;
-            CourtTypeOfCollectionDescription = "";
-        }
-
-        public double GetTotalAmount()
-        {
-            if (AmountResults == null || !AmountResults.Any())
-                return 0;
-
-            return AmountResults.Sum();
-        }
-
-        public double GetTotalGallons()
-        {
-            if (GallonResults == null || !GallonResults.Any())
-                return 0;
-
-            return GallonResults.Sum();
-        }
-
-        public double GetTotalExpenditure()
-        {
-            if (CourtExpenditures == null || !CourtExpenditures.Any())
-                return 0;
-
-            return CourtExpenditures.Sum(item => item.Amount);
-        }      
-
-        public double GetTotalTypeOfCollection()
-        {
-            if (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any())
-                return 0;
-
-            return CourtTypeOfCollections.Sum(item => item.Amount);
-        }
-
-        public double GetTotalSales()
-        {
-            TotalAmount = GetTotalAmount();
-            TotalGallons = GetTotalGallons();
-            TotalExpenditure = GetTotalExpenditure();
-            TotalTypeOfCollection = GetTotalTypeOfCollection();
-
-            return TotalAmount - TotalExpenditure;
+            return allUpdatesSuccessful;
         }
 
         public async Task SendCourtDataAsync()
@@ -2902,6 +3002,24 @@ GetAllEdsData()
                 Court.Distintic = Distintic;
                 Court.CourtDocuments = CourtDocuments?.ToList();
 
+                // Intentar actualizar los precios de productos modificados antes de enviar el corte
+                bool priceUpdatesSuccessful = await UpdateModifiedProductPricesAsync();
+                
+                if (!priceUpdatesSuccessful && _modifiedProducts.Any())
+                {
+                    // Mostrar advertencia pero permitir continuar
+                    bool continueAnyway = await Application.Current.MainPage.DisplayAlert(
+                        "Advertencia - Precios", 
+                        $"Algunos precios de productos no se pudieron actualizar ({_modifiedProducts.Count} pendientes).\n\n¿Desea continuar enviando el corte de todas formas?", 
+                        "Continuar", 
+                        "Cancelar");
+                    
+                    if (!continueAnyway)
+                    {
+                        return;
+                    }
+                }
+
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var json = JsonSerializer.Serialize(Court, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
@@ -2912,6 +3030,17 @@ GetAllEdsData()
                 if (response.IsSuccessStatusCode)
                 {
                     LastSendWasSuccessful = true;
+
+                    // Mostrar información sobre actualizaciones de precios en el mensaje de éxito
+                    string successMessage = "Datos y documentos enviados correctamente";
+                    if (_modifiedProducts.Any())
+                    {
+                        successMessage += $"\n\nNota: {_modifiedProducts.Count} precio(s) de producto(s) no se pudieron actualizar, pero el corte se guardó exitosamente.";
+                    }
+                    else if (priceUpdatesSuccessful)
+                    {
+                        successMessage += "\n\nTodos los precios de productos fueron actualizados correctamente.";
+                    }
 
                     if (CourtDocuments?.Any() == true)
                     {
@@ -2940,18 +3069,16 @@ GetAllEdsData()
                             catch (Exception ex)
                             {
                                 LastSendWasSuccessful = false;
-
                                 Console.WriteLine($"Error subiendo {doc.DocumentName}: {ex.Message}");
                             }
                         }
                     }
 
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos y documentos enviados correctamente", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Éxito", successMessage, "OK");
                 }
                 else
                 {
                     LastSendWasSuccessful = false;
-
                     var error = await response.Content.ReadAsStringAsync();
                     
                     string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo más tarde.";
@@ -2976,9 +3103,7 @@ GetAllEdsData()
             }
             catch (Exception ex)
             {
-
                 LastSendWasSuccessful = false;
-
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
             }
         }
@@ -3145,6 +3270,331 @@ GetAllEdsData()
                 TotalSales = GetTotalSales();
                 OnPropertyChanged(nameof(CourtTypeOfCollections));
             }
+        }
+
+        public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
+        {
+            if (Court == null)
+                Court = new CourtModel();
+
+            if (CourtDocuments == null)
+                CourtDocuments = new ObservableCollection<CourtDocument>();
+
+            for (int i = 0; i < filesBase64.Count; i++)
+            {
+                var newDocument = new CourtDocument
+                {
+                    Descripcion = filesBase64[i], 
+                    DocumentName = nombresDocumentos[i],
+                };
+
+                CourtDocuments.Add(newDocument);
+            }
+
+            Court.CourtDocuments = CourtDocuments.ToList();
+            VisibleDocuments = true;
+        }
+
+        public async Task AddCourtExpenditureFromPopup()
+        {
+            if (Court == null)
+            {
+                Court = new CourtModel();
+            }
+
+            if (CourtExpenditures == null)
+            {
+                CourtExpenditures = new ObservableCollection<CourtExpenditure>();
+            }
+
+            var newCourtExpenditure = new CourtExpenditure
+            {
+                ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
+                Amount = CourtExpenditureAmount,
+                Description = ExpenditureDescription,
+                IdExpenditure =SelectedExpenditure.IdExpenditure,
+            };
+
+            CourtExpenditures.Add(newCourtExpenditure);
+            Court.CourtExpenditures = CourtExpenditures.ToList();
+            VisibleExpenses = true;
+
+            TotalSales = GetTotalSales();
+            CourtExpenditureAmount = 0;
+            ExpenditureDescription = "";
+        }
+
+        public async Task AddCourtTypeOfCollectionFromPopup()
+        {
+            if (Court == null)
+            {
+                Court = new CourtModel();
+            }
+
+            if (CourtTypeOfCollections == null)
+            {
+                CourtTypeOfCollections = new ObservableCollection<CourtTypeOfCollection>();
+            }
+            var newCourtTypeOfCollection = new CourtTypeOfCollection
+            {
+                TypeOfCollectionName = SelectedTypeOfCollection.Description ?? string.Empty,
+                Amount = CourtTypeOfCollectionAmount,
+                Description = CourtTypeOfCollectionDescription,
+                IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
+            };
+
+            CourtTypeOfCollections.Add(newCourtTypeOfCollection);
+            Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
+            VisibleReceipts = true;
+
+            TotalSales = GetTotalSales();
+            CourtTypeOfCollectionAmount = 0;
+            CourtTypeOfCollectionDescription = "";
+        }
+
+        public double GetTotalAmount()
+        {
+            if (AmountResults == null || !AmountResults.Any())
+                return 0;
+
+            return AmountResults.Sum();
+        }
+
+        public double GetTotalGallons()
+        {
+            if (GallonResults == null || !GallonResults.Any())
+                return 0;
+
+            return GallonResults.Sum();
+        }
+
+        public double GetTotalExpenditure()
+        {
+            if (CourtExpenditures == null || !CourtExpenditures.Any())
+                return 0;
+
+            return CourtExpenditures.Sum(item => item.Amount);
+        }      
+
+        public double GetTotalTypeOfCollection()
+        {
+            if (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any())
+                return 0;
+
+            return CourtTypeOfCollections.Sum(item => item.Amount);
+        }
+
+        public double GetTotalSales()
+        {
+            TotalAmount = GetTotalAmount();
+            TotalGallons = GetTotalGallons();
+            TotalExpenditure = GetTotalExpenditure();
+            TotalTypeOfCollection = GetTotalTypeOfCollection();
+
+            return TotalAmount - TotalExpenditure;
+        }
+
+        // Método de depuración para verificar el estado de los productos modificados
+        public void DebugModifiedProducts()
+        {
+            Console.WriteLine($"🔍 DEBUG: Estado de productos modificados");
+            Console.WriteLine($"   Total productos en lista: {_modifiedProducts.Count}");
+            
+            if (_modifiedProducts.Any())
+            {
+                Console.WriteLine($"   Lista de productos modificados:");
+                foreach (var (idProduct, newSellPrice) in _modifiedProducts)
+                {
+                    Console.WriteLine($"     • Producto {idProduct}: ${newSellPrice:F2}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"   ℹ️ No hay productos modificados en la lista");
+            }
+
+            // Verificar el estado de la manguera seleccionada actual
+            if (SelectedHose != null)
+            {
+                Console.WriteLine($"   Manguera seleccionada actual:");
+                Console.WriteLine($"     • ID Manguera: {SelectedHose.IdHose}");
+                Console.WriteLine($"     • SellPrice: ${SelectedHose.SellPrice:F2}");
+                Console.WriteLine($"     • EffectiveSellPrice: ${SelectedHose.EffectiveSellPrice:F2}");
+            }
+            else
+            {
+                Console.WriteLine($"   SelectedHose: null");
+            }
+        }
+
+        // Método para forzar la actualización de precios (para debugging)
+        public async Task<bool> ForceUpdateModifiedProductsAsync()
+        {
+            Console.WriteLine($"🚀 FORZANDO ACTUALIZACIÓN DE PRODUCTOS MODIFICADOS");
+            return await UpdateModifiedProductPricesAsync();
+        }
+
+        // Método de prueba específico para probar la actualización de un producto
+        public async Task<bool> TestSingleProductUpdateAsync(int productId, double newPrice)
+        {
+            Console.WriteLine($"🧪 PRUEBA DE ACTUALIZACIÓN INDIVIDUAL:");
+            Console.WriteLine($"   Producto ID: {productId}");
+            Console.WriteLine($"   Precio nuevo: ${newPrice:F2}");
+            
+            var result = await UpdateProductPriceAsync(productId, newPrice);
+            
+            Console.WriteLine($"   Resultado: {(result ? "✅ ÉXITO" : "❌ FALLO")}");
+            
+            // Verificar que se actualizó consultando de nuevo
+            if (result)
+            {
+                await Task.Delay(2000); // Esperar 2 segundos
+                await VerifyProductUpdateAsync(productId, newPrice);
+            }
+            
+            return result;
+        }
+
+        // Método para verificar que un producto se actualizó correctamente
+        public async Task<bool> VerifyProductUpdateAsync(int productId, double expectedPrice)
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                Console.WriteLine($"❌ No hay token para verificación");
+                return false;
+            }
+
+            try
+            {
+                Console.WriteLine($"🔍 VERIFICANDO ACTUALIZACIÓN del producto {productId}...");
+                
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                
+                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product/{productId}");
+                var productJson = JsonSerializer.Deserialize<JsonElement>(response);
+
+                if (productJson.TryGetProperty("sellPrice", out var sellPriceElement))
+                {
+                    var currentPrice = sellPriceElement.GetDouble();
+                    var difference = Math.Abs(currentPrice - expectedPrice);
+                    
+                    Console.WriteLine($"   Precio esperado: ${expectedPrice:F2}");
+                    Console.WriteLine($"   Precio actual en BD: ${currentPrice:F2}");
+                    Console.WriteLine($"   Diferencia: {difference:F4}");
+                    
+                    if (difference < 0.01)
+                    {
+                        Console.WriteLine($"✅ VERIFICACIÓN EXITOSA: El precio se actualizó correctamente");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"❌ VERIFICACIÓN FALLIDA: El precio NO se actualizó en la base de datos");
+                        Console.WriteLine($"   Esto indica un problema con:");
+                        Console.WriteLine($"   • El endpoint del servidor");
+                        Console.WriteLine($"   • Los permisos de actualización");
+                        Console.WriteLine($"   • La transacción en la base de datos");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"❌ No se pudo obtener el sellPrice del producto");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error en verificación: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Método mejorado para depurar todo el proceso de actualización de precios
+        public async Task<string> GetDetailedPriceUpdateDiagnosisAsync()
+        {
+            var diagnosis = new StringBuilder();
+            diagnosis.AppendLine("🔍 DIAGNÓSTICO COMPLETO DE ACTUALIZACIÓN DE PRECIOS");
+            diagnosis.AppendLine("==================================================");
+            
+            // 1. Estado del token
+            diagnosis.AppendLine($"1. Token de autenticación:");
+            diagnosis.AppendLine($"   • Disponible: {(!string.IsNullOrEmpty(_authToken) ? "✅ SÍ" : "❌ NO")}" );
+            if (!string.IsNullOrEmpty(_authToken))
+            {
+                diagnosis.AppendLine($"   • Longitud: {_authToken.Length} caracteres");
+                diagnosis.AppendLine($"   • Primeros 20 chars: {_authToken.Substring(0, Math.Min(20, _authToken.Length))}...");
+            }
+            
+            // 2. Estado de productos modificados
+            diagnosis.AppendLine($"\n2. Productos modificados pendientes:");
+            diagnosis.AppendLine($"   • Total: {_modifiedProducts.Count}");
+            if (_modifiedProducts.Any())
+            {
+                foreach (var (idProduct, newSellPrice) in _modifiedProducts)
+                {
+                    diagnosis.AppendLine($"     - Producto {idProduct}: ${newSellPrice:F2}");
+                }
+            }
+            else
+            {
+                diagnosis.AppendLine($"   • No hay productos modificados pendientes");
+            }
+            
+            // 3. Estado de la manguera seleccionada
+            diagnosis.AppendLine($"\n3. Manguera seleccionada actual:");
+            if (SelectedHose != null)
+            {
+                diagnosis.AppendLine($"   • ID Manguera: {SelectedHose.IdHose}");
+                diagnosis.AppendLine($"   • SellPrice actual: ${SelectedHose.SellPrice:F2}");
+                diagnosis.AppendLine($"   • EffectiveSellPrice: ${SelectedHose.EffectiveSellPrice:F2}");
+                diagnosis.AppendLine($"   • Diferencia: {Math.Abs(SelectedHose.SellPrice - SelectedHose.EffectiveSellPrice):F4}");
+                
+                if (SelectedHose.ProductEntity != null)
+                {
+                    diagnosis.AppendLine($"   • ProductEntity.IdProduct: {SelectedHose.ProductEntity.IdProduct}");
+                    diagnosis.AppendLine($"   • ProductEntity.SellPrice: ${SelectedHose.ProductEntity.SellPrice:F2}");
+                }
+                else
+                {
+                    diagnosis.AppendLine($"   • ProductEntity: ❌ NULL");
+                }
+            }
+            else
+            {
+                diagnosis.AppendLine($"   • ❌ No hay manguera seleccionada");
+            }
+            
+            // 4. Configuración del servidor
+            diagnosis.AppendLine($"\n4. Configuración del servidor:");
+            diagnosis.AppendLine($"   • Base URL: {Configuration.BaseUrl}");
+            diagnosis.AppendLine($"   • Endpoint productos: {Configuration.BaseUrl}/api/v1/product");
+            
+            // 5. Recomendaciones
+            diagnosis.AppendLine($"\n5. Recomendaciones para resolver el problema:");
+            
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                diagnosis.AppendLine($"   ❌ CRÍTICO: No hay token de autenticación");
+                diagnosis.AppendLine($"   🔧 Solución: Reiniciar sesión o verificar autenticación");
+            }
+            
+            if (!_modifiedProducts.Any() && SelectedHose != null)
+            {
+                diagnosis.AppendLine($"   ⚠️ No se detectaron productos modificados");
+                diagnosis.AppendLine($"   🔧 Verificar que el precio se esté cambiando correctamente en el popup");
+            }
+            
+            if (SelectedHose?.ProductEntity == null)
+            {
+                diagnosis.AppendLine($"   ⚠️ La manguera no tiene ProductEntity");
+                diagnosis.AppendLine($"   🔧 Verificar que la manguera tenga un producto asociado");
+            }
+            
+            diagnosis.AppendLine($"\n📞 Para soporte técnico, comparte este diagnóstico completo.");
+            
+            return diagnosis.ToString();
         }
     }
 }
