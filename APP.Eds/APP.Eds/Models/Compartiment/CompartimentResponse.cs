@@ -26,6 +26,9 @@ public class CompartimentResponse
     [JsonPropertyName("idTank")]
     public int IdTank { get; set; }
 
+    [JsonPropertyName("idProduct")]
+    public int IdProduct { get; set; }
+
     public string DisplayCompartiment =>
         $"Compartiment: {Number}\nNominal: {Nominal}\nOperative: {Operative}\nStock: {Stock}\nHeight: {Height}\n-------------------------------------------------";
 }

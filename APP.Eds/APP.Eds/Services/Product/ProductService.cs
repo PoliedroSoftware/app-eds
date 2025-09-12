@@ -311,15 +311,14 @@ public class ProductService : INotifyPropertyChanged
         return matchingType?.IdProductType ?? 1;
     }
 
-    private async void GetAllProductTypeData()
+    public async Task<IEnumerable<ProductTypeModelResponse>> GetAllProductTypeData()
     {
         try
         {
             if (string.IsNullOrEmpty(_authToken))
             {
-                System.Diagnostics.Debug.WriteLine("No authentication token found, using sample data");
-                AddSampleData();
-                return;
+                System.Diagnostics.Debug.WriteLine("No authentication token found, returning empty list");
+                return Enumerable.Empty<ProductTypeModelResponse>();
             }
 
             string url = $"{Configuration.BaseUrl}/api/v1/producttype";
@@ -332,27 +331,28 @@ public class ProductService : INotifyPropertyChanged
             if (productTypeResponse?.Data != null)
             {
                 UpdateProductTypeList(productTypeResponse.Data);
+                return productTypeResponse.Data;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("No data received from API, using sample data");
-                AddSampleData();
+                System.Diagnostics.Debug.WriteLine("No data received from API, returning empty list");
+                return Enumerable.Empty<ProductTypeModelResponse>();
             }
         }
         catch (HttpRequestException httpEx)
         {
             System.Diagnostics.Debug.WriteLine($"HTTP error loading product types: {httpEx.Message}");
-            AddSampleData();
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
         catch (JsonException jsonEx)
         {
             System.Diagnostics.Debug.WriteLine($"JSON parsing error: {jsonEx.Message}");
-            AddSampleData();
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"General error loading product types: {ex.Message}");
-            AddSampleData();
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
     }
 

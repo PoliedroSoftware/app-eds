@@ -89,6 +89,39 @@
                                 </Border>
                             </VerticalStackLayout>
 
+                            <!-- Product Selection Field -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding SelectProduct}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+                                       
+                                <Border BackgroundColor="#F8F9FA"
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="📦"
+                                               FontSize="18"
+                                               TextColor="#6A1B9A"
+                                               VerticalOptions="Center"/>
+                                        
+                                        <Picker Title="{Binding SelectProduct}"
+                                                ItemsSource="{Binding ProductList}"
+                                                ItemDisplayBinding="{Binding Description}"
+                                                SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                                AutomationId="PickerProduct"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
                             <!-- Grid for Number and Height -->
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                                 

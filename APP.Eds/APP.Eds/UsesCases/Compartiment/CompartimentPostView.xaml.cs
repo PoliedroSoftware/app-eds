@@ -62,6 +62,12 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                     return;
                 }
 
+                if (vm.SelectedProduct == null)
+                {
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar un producto antes de crear el compartimento", "Producto Requerido");
+                    return;
+                }
+
                 if (vm.Number <= 0)
                 {
                     await CustomAlert.ShowErrorAsync("Debe especificar un número de compartimento válido (mayor que 0)", "Número Inválido");
@@ -165,6 +171,8 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                 Stock = 0;
                 Height = 0;
                 IdTank = 0;
+                IdProduct = 0; 
+                vm.SelectedProduct = null; 
 
                 // Re-enable button
                 if (sender is Button button)
@@ -187,6 +195,7 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         {
             LoadingOverlay.ShowLoading();
             await _compartimentService.GetAllTankDataAsync(); // Cargar la lista de tanques
+            await _compartimentService.GetAllProductDataAsync(); // Cargar la lista de productos
             await _compartimentService.GetCompartimentAsync(); // Cargar la lista de compartimentos
         }
         catch (Exception ex)
@@ -259,6 +268,16 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    public int IdProduct
+    {
+        get => _compartimentService.IdProduct;
+        set
+        {
+            _compartimentService.IdProduct = value;
+            OnPropertyChanged();
+        }
+    }
+
     private async void OnEditCompartiment(object obj)
     {
         if (obj is CompartimentResponse compartiment)
@@ -269,12 +288,20 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
             Stock = compartiment.Stock;
             Height = compartiment.Height;
             IdTank = compartiment.IdTank;
+            IdProduct = compartiment.IdProduct; 
             
             // Find and select the corresponding tank
             var tank = _compartimentService.TankList.FirstOrDefault(t => t.IdTank == compartiment.IdTank);
             if (tank != null)
             {
                 _compartimentService.SelectedTank = tank;
+            }
+
+            // Find and select the corresponding product
+            var product = _compartimentService.ProductList.FirstOrDefault(p => p.IdProductType == compartiment.IdProduct);
+            if (product != null)
+            {
+                _compartimentService.SelectedProduct = product;
             }
 
             await CustomAlert.ShowInfoAsync($"Los datos del compartimento #{compartiment.Number} han sido cargados en el formulario para su edición", "Edición Activada");

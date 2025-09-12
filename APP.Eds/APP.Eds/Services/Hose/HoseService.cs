@@ -315,12 +315,12 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
-    private async void GetAllProductTypeData()
+    private async Task<IEnumerable<ProductTypeModelResponse>> GetAllProductTypeData()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
         try
         {
@@ -328,13 +328,33 @@ public class HoseService : INotifyPropertyChanged
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
-            var ProductTypeList = JsonSerializer.Deserialize<ProductTypeResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var productTypeResponse = JsonSerializer.Deserialize<ProductTypeResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            UpdateProducTypeList(ProductTypeList.Data);
+            if (productTypeResponse?.Data != null)
+            {
+                UpdateProducTypeList(productTypeResponse.Data);
+                return productTypeResponse.Data;
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("No data received from API, returning empty list");
+                return Enumerable.Empty<ProductTypeModelResponse>();
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"HTTP error loading product types: {httpEx.Message}");
+            return Enumerable.Empty<ProductTypeModelResponse>();
+        }
+        catch (JsonException jsonEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"JSON parsing error: {jsonEx.Message}");
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"General error loading product types: {ex.Message}");
+            return Enumerable.Empty<ProductTypeModelResponse>();
         }
     }
 

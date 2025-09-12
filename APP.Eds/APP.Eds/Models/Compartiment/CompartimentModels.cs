@@ -8,5 +8,6 @@
         public double Stock { get; set; }
         public double Height { get; set; }
         public int IdTank { get; set; }
+        public int IdProduct { get; set; }
     }
 }

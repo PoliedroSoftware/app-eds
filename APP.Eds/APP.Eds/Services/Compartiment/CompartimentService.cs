@@ -4,12 +4,14 @@ using System.Text;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using APP.Eds.Models.Compartiment;
+using APP.Eds.Models.Product; /* Nueva importación */
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
 using System.Linq;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Services.Product; /* Nueva importación */
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -108,6 +110,17 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
+        private int _idProduct;
+        public int IdProduct
+        {
+            get => _idProduct;
+            set
+            {
+                _idProduct = value;
+                OnPropertyChanged(nameof(IdProduct));
+            }
+        }
+
         private TankResponse _selectedTank;
         public TankResponse SelectedTank
         {
@@ -120,6 +133,32 @@ namespace APP.Eds.Services.Compartiment
                 {
                     IdTank = _selectedTank.IdTank;
                 }
+            }
+        }
+
+        private ProductTypeModelResponse _selectedProduct;
+        public ProductTypeModelResponse SelectedProduct
+        {
+            get => _selectedProduct;
+            set
+            {
+                _selectedProduct = value;
+                OnPropertyChanged(nameof(SelectedProduct));
+                if (_selectedProduct != null)
+                {
+                    IdProduct = _selectedProduct.IdProductType;
+                }
+            }
+        }
+
+        private ObservableCollection<ProductTypeModelResponse> _productList = [];
+        public ObservableCollection<ProductTypeModelResponse> ProductList
+        {
+            get => _productList;
+            set
+            {
+                _productList = value;
+                OnPropertyChanged(nameof(ProductList));
             }
         }
 
@@ -249,6 +288,20 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
+        private string _SelectProduct = string.Empty;
+        public string SelectProduct
+        {
+            get => _SelectProduct;
+            set
+            {
+                if (_SelectProduct != value)
+                {
+                    _SelectProduct = value;
+                    OnPropertyChanged(nameof(SelectProduct));
+                }
+            }
+        }
+
         private string _ListDispensers = string.Empty;
         public string ListDispensers
         {
@@ -269,12 +322,15 @@ namespace APP.Eds.Services.Compartiment
         public string? NewDispenserNumber { get; internal set; }
         public string? NewDispenserNominal { get; internal set; }
 
+        private ProductService _productService;
+
         //ejecutando el metodo
         public CompartimentService()
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
+            _productService = new ProductService(); /* Inicializar ProductService */
             LoadTranslationsAsync();
 
         }
@@ -292,6 +348,7 @@ namespace APP.Eds.Services.Compartiment
             EnterStock = GlobalTranslations.Get("EnterStock");
             EnterHeight = GlobalTranslations.Get("EnterHeight");
              SelectTank = GlobalTranslations.Get("SelectTank");
+            SelectProduct = GlobalTranslations.Get("SelectProduct"); /* Nueva traducción */
             ListDispensers = GlobalTranslations.Get("ListDispensers");
 
         }
@@ -494,7 +551,8 @@ namespace APP.Eds.Services.Compartiment
                     Operative = Operative,
                     Stock = Stock,
                     Height = Height,
-                    IdTank = SelectedTank.IdTank
+                    IdTank = SelectedTank.IdTank,
+                    IdProduct = SelectedProduct.IdProductType /* Agregar IdProductType */
                 };
 
                 Request = new CompartimentRequest
@@ -594,6 +652,45 @@ namespace APP.Eds.Services.Compartiment
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public async Task GetAllProductDataAsync()
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
+                return;
+            }
+            try
+            {
+                // Llamar a GetAllProductTypeData para obtener ProductTypeModelResponse
+                var productTypes = await _productService.GetAllProductTypeData();
+                
+                if (productTypes != null && productTypes.Any())
+                {
+                    UpdateProductList(productTypes); // Ahora ProductList es de tipo ProductTypeModelResponse
+                }
+                else
+                {
+                    await CustomAlert.ShowWarningAsync("No se encontraron productos para mostrar.", "Sin Productos");
+                }
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync($"Error al cargar la lista de productos: {ex.Message}", "Error de Carga");
+            }
+        }
+
+        private void UpdateProductList(IEnumerable<ProductTypeModelResponse> products)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ProductList.Clear();
+                foreach (var item in products)
+                {
+                    ProductList.Add(item);
+                }
+            });
         }
 
         internal void AddNewDispenser()
