@@ -293,7 +293,7 @@ public partial class AddCourtTypeOfCollection : Popup
             
             if (selected.Count == 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Validación", 
+                await Application.Current.MainPage.DisplayAlert("Error", 
                     "Debe seleccionar al menos un método de pago.", "OK");
                 return;
             }
@@ -303,7 +303,7 @@ public partial class AddCourtTypeOfCollection : Popup
             {
                 if (p.Amount <= 0m)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Validación",
+                    await Application.Current.MainPage.DisplayAlert("Error",
                         $"El monto para '{p.Type.Description}' debe ser mayor a 0.", "OK");
                     return;
                 }
@@ -315,14 +315,15 @@ public partial class AddCourtTypeOfCollection : Popup
             decimal dataNew = selected.Sum(p => p.Amount);
             decimal amountNew = totalSalesDay - addedNow - dataNew;
 
-            if (Math.Abs(amountNew) > 0.01m) // Allow for small rounding differences
+            if (Math.Abs(amountNew) > 0)
             {
-                bool confirm = await Application.Current.MainPage.DisplayAlert("Confirmación",
-                    $"El total del día no coincide exactamente (diferencia: ${amountNew:F2}).", 
-                    "Continuar", "Revisar");
-                
-                if (!confirm) return;
+                await Application.Current.MainPage.DisplayAlert("Error",
+                    $"El total de los métodos de pago seleccionados ({dataNew:C2}) no coincide con el total de la venta ({totalSalesDay:C2}).\n\n" +
+                    $"Diferencia: {amountNew:C2}", "OK");
+                return;
             }
+
+            
 
             // Add selected payment methods
             foreach (var p in selected)
