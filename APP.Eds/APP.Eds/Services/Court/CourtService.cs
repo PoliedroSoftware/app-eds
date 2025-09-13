@@ -2274,11 +2274,6 @@ namespace APP.Eds.Services.Court
             VisibleReceipts = false;
             VisibleAdditionalInfo = false;
            
- 
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            
-
-
             HideLists = new Command(() =>
             {
                 VisibleLists = !VisibleLists;
@@ -2306,7 +2301,6 @@ namespace APP.Eds.Services.Court
             {
                 VisibleReceipts = !VisibleReceipts;
             });
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetAllEdsData();
             DateStarttime = DateTime.Now;
             DateEndtime = DateTime.Now;
@@ -2321,8 +2315,11 @@ namespace APP.Eds.Services.Court
 
         public async 
         Task
-GetAllEdsData()
+        GetAllEdsData()
         {
+            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms); // Cargar token aquí
+            System.Diagnostics.Debug.WriteLine($"AuthToken en GetAllEdsData: {_authToken}"); // Depuración
+
             if (string.IsNullOrEmpty(_authToken))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
@@ -2331,7 +2328,6 @@ GetAllEdsData()
             
             try
             {
-                
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
@@ -2874,7 +2870,6 @@ GetAllEdsData()
             }
             try
             {
-
                 if (Court == null)
                 {
                     Court = new CourtModel();
@@ -2892,8 +2887,7 @@ GetAllEdsData()
                     Court.IdEds = int.Parse(Preferences.Get("edsId", string.Empty));
                     Court.IdIslander = int.Parse(Preferences.Get("islanderId", string.Empty));
                 }
-            
-               
+
                 Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
                 Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
                 Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
@@ -2904,7 +2898,7 @@ GetAllEdsData()
 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var json = JsonSerializer.Serialize(Court, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var json = JsonSerializer.Serialize(Court, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true });
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/court", content);
@@ -3054,7 +3048,6 @@ GetAllEdsData()
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
         private void DeleteDispenser(CourtDispenser dispenser)
         {
             if (dispenser != null && CourtDispensers?.Contains(dispenser) == true)

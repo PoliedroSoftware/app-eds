@@ -13,7 +13,7 @@ public partial class App : Application
         var sessionManager = new KeycloakSessionManager();
 
         
-        sessionManager.ClearCurrentSession();
+        // sessionManager.ClearCurrentSession(); // Comentado para depuración
         MainPage = new NavigationPage(new MainPage());
     }
 
