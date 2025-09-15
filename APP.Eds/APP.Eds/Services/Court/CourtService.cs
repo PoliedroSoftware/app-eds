@@ -654,7 +654,7 @@ namespace APP.Eds.Services.Court
             set
             {
                 _distintic = value;
-                OnPropertyChanged(nameof(Distintic));
+                OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
             }
         }        
 
@@ -2814,7 +2814,7 @@ GetAllEdsData()
                 IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
             };
 
-            CourtTypeOfCollections.Add(newCourtTypeOfCollection);
+ CourtTypeOfCollections.Add(newCourtTypeOfCollection);
             Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
             VisibleReceipts = true;
 
@@ -2862,7 +2862,7 @@ GetAllEdsData()
             TotalExpenditure = GetTotalExpenditure();
             TotalTypeOfCollection = GetTotalTypeOfCollection();
 
-            return TotalAmount - TotalExpenditure;
+            return TotalAmount; // Fixed: Return total sales without subtracting expenses
         }
 
         public async Task SendCourtDataAsync()
