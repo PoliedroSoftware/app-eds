@@ -18,4 +18,9 @@ public class TankResponse
 
     [JsonProperty("stock")]
     public decimal Stock { get; set; }
+
+    /// <summary>
+    /// Propiedad calculada para mostrar el tanque en formato "Tanque # - capacidad del tanque"
+    /// </summary>
+    public string DisplayText => $"Tanque {Number} - Capacidad {Ability:N0} L";
 }
