@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
 using System.Linq;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Models.Product;
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -19,6 +20,7 @@ namespace APP.Eds.Services.Compartiment
         public event PropertyChangedEventHandler? PropertyChanged;
         public ObservableCollection<TankResponse> TankList { get; set; } = [];
         public ObservableCollection<CompartimentResponse> CompartimentList { get; set; } = [];
+        public ObservableCollection<ProductModelResponse> ProductList { get; set; } = [];
         private CompartimentRequest Request { get; set; }
 
 
@@ -66,17 +68,6 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
-        private double _stock;
-        public double Stock
-        {
-            get => _stock;
-            set
-            {
-                _stock = value;
-                OnPropertyChanged(nameof(Stock));
-            }
-        }
-
         private double _height;
         public double Height
         {
@@ -110,6 +101,32 @@ namespace APP.Eds.Services.Compartiment
                 if (_selectedTank != null)
                 {
                     IdTank = _selectedTank.IdTank;
+                }
+            }
+        }
+
+        private int _idProduct;
+        public int IdProduct
+        {
+            get => _idProduct;
+            set
+            {
+                _idProduct = value;
+                OnPropertyChanged(nameof(IdProduct));
+            }
+        }
+
+        private ProductModelResponse _selectedProduct;
+        public ProductModelResponse SelectedProduct
+        {
+            get => _selectedProduct;
+            set
+            {
+                _selectedProduct = value;
+                OnPropertyChanged(nameof(SelectedProduct));
+                if (_selectedProduct != null)
+                {
+                    IdProduct = _selectedProduct.IdProduct;
                 }
             }
         }
@@ -198,20 +215,6 @@ namespace APP.Eds.Services.Compartiment
             }
         }
 
-        private string _EnterStock = string.Empty;
-        public string EnterStock
-        {
-            get => _EnterStock;
-            set
-            {
-                if (_EnterStock != value)
-                {
-                    _EnterStock = value;
-                    OnPropertyChanged(nameof(EnterStock));
-                }
-            }
-        }
-
         private string _EnterHeight = string.Empty;
         public string EnterHeight
         {
@@ -236,6 +239,20 @@ namespace APP.Eds.Services.Compartiment
                 {
                     _SelectTank = value;
                     OnPropertyChanged(nameof(SelectTank));
+                }
+            }
+        }
+
+        private string _SelectProduct = string.Empty;
+        public string SelectProduct
+        {
+            get => _SelectProduct;
+            set
+            {
+                if (_SelectProduct != value)
+                {
+                    _SelectProduct = value;
+                    OnPropertyChanged(nameof(SelectProduct));
                 }
             }
         }
@@ -265,11 +282,11 @@ namespace APP.Eds.Services.Compartiment
         {
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetAllTankData();
+            GetAllProductData();
             GetCompartimentAsync();
             GetByIdCompartimentDataCommand = new Command<int>(async (CompartimentId) => await GetByIdCompartimentDataAsync(CompartimentId));
             SaveCompartimentDataCommand = new Command(async () => await SaveCompartimentDataAsync());
             LoadTranslationsAsync();
-
         }
 
         public async Task LoadTranslationsAsync()
@@ -282,12 +299,12 @@ namespace APP.Eds.Services.Compartiment
             EnterNumber = GlobalTranslations.Get("EnterNumber");
             EnterNominal = GlobalTranslations.Get("EnterNominal");
             EnterOperative = GlobalTranslations.Get("EnterOperative");
-            EnterStock = GlobalTranslations.Get("EnterStock");
             EnterHeight = GlobalTranslations.Get("EnterHeight");
-             SelectTank = GlobalTranslations.Get("SelectTank");
+            SelectTank = GlobalTranslations.Get("SelectTank");
+            SelectProduct = GlobalTranslations.Get("SelectProduct");
             ListDispensers = GlobalTranslations.Get("ListDispensers");
-
         }
+
         public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
         {
             if (string.IsNullOrEmpty(_authToken))
@@ -306,7 +323,6 @@ namespace APP.Eds.Services.Compartiment
             return data.Translations.TryGetValue(languageTag, out var translations)
                 ? translations
                 : new Dictionary<string, string>();
-
         }
 
         //Data
@@ -341,6 +357,40 @@ namespace APP.Eds.Services.Compartiment
                 TankList.Add(item);
             }
         }
+
+        //Data productos
+        private async void GetAllProductData()
+        {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return;
+            }
+            try
+            {
+                string url = $"{Configuration.BaseUrl}/api/v1/product?includeProductType=true";
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                var response = await httpClient.GetStringAsync(url);
+                var productResponse = JsonSerializer.Deserialize<ProductResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                UpdateProductList(productResponse?.Data ?? new List<ProductModelResponse>());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error cargando los productos: {ex.Message}");
+            }
+        }
+
+        //List productos
+        private void UpdateProductList(IEnumerable<ProductModelResponse> products)
+        {
+            ProductList.Clear();
+            foreach (var item in products)
+            {
+                ProductList.Add(item);
+            }
+        }
+
         public async Task GetByIdCompartimentDataAsync(int CompartimentId)
         {
             if (string.IsNullOrEmpty(_authToken))
@@ -365,6 +415,7 @@ namespace APP.Eds.Services.Compartiment
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
             }
         }
+
         public async Task GetCompartimentAsync()
         {
             if (string.IsNullOrEmpty(_authToken))
@@ -404,7 +455,6 @@ namespace APP.Eds.Services.Compartiment
             }
             try
             {
-                
                 await GetCompartimentAsync();
 
                 if (Number <= 0)
@@ -425,12 +475,6 @@ namespace APP.Eds.Services.Compartiment
                     return;
                 }
 
-                if (Stock < 0)
-                {
-                    await CustomAlert.ShowErrorAsync("El stock no puede ser negativo", "Stock Inválido");
-                    return;
-                }
-
                 if (Height < 0)
                 {
                     await CustomAlert.ShowErrorAsync("La altura no puede ser negativa", "Altura Inválida");
@@ -440,6 +484,12 @@ namespace APP.Eds.Services.Compartiment
                 if (SelectedTank is null)
                 {
                     await CustomAlert.ShowErrorAsync("Por favor, seleccione un tanque", "Tanque Requerido");
+                    return;
+                }
+
+                if (SelectedProduct is null)
+                {
+                    await CustomAlert.ShowErrorAsync("Por favor, seleccione un producto", "Producto Requerido");
                     return;
                 }
 
@@ -465,9 +515,9 @@ namespace APP.Eds.Services.Compartiment
                     Number = Number,
                     Nominal = Nominal,
                     Operative = Operative,
-                    Stock = Stock,
                     Height = Height,
-                    IdTank = SelectedTank.IdTank
+                    IdTank = SelectedTank.IdTank,
+                    IdProduct = SelectedProduct.IdProduct
                 };
 
                 Request = new CompartimentRequest

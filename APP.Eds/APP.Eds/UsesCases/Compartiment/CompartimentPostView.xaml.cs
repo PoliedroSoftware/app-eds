@@ -62,6 +62,12 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                     return;
                 }
 
+                if (vm.SelectedProduct == null)
+                {
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar un producto para el compartimento", "Producto Requerido");
+                    return;
+                }
+
                 if (vm.Number <= 0)
                 {
                     await CustomAlert.ShowErrorAsync("Debe especificar un número de compartimento válido (mayor que 0)", "Número Inválido");
@@ -107,32 +113,14 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.Height <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar una altura válida del compartimento (mayor que 0 metros)", "Altura Inválida");
+                    await CustomAlert.ShowErrorAsync("Debe especificar una altura válida del compartimento (mayor que 0 centímetros)", "Altura Inválida");
                     return;
                 }
 
-                if (vm.Height > 50)
+                if (vm.Height > 5000)
                 {
-                    await CustomAlert.ShowErrorAsync("La altura no puede ser mayor a 50 metros por razones de seguridad", "Altura Excesiva");
+                    await CustomAlert.ShowErrorAsync("La altura no puede ser mayor a 5000 centímetros (50 metros) por razones de seguridad", "Altura Excesiva");
                     return;
-                }
-
-                // Validate stock if provided
-                if (vm.Stock < 0)
-                {
-                    await CustomAlert.ShowErrorAsync("El stock actual no puede ser negativo", "Stock Inválido");
-                    return;
-                }
-
-                if (vm.Stock > vm.Operative)
-                {
-                    bool confirmStock = await CustomAlert.ShowConfirmAsync(
-                        $"El stock actual ({vm.Stock:F2} L) excede la capacidad operativa ({vm.Operative:F2} L).\n\n¿Confirma que este valor es correcto?",
-                        "Stock Excede Capacidad",
-                        "Confirmar",
-                        "Revisar");
-                    
-                    if (!confirmStock) return;
                 }
 
                 LoadingOverlay.ShowLoading();
@@ -144,10 +132,10 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                 await CustomAlert.ShowSuccessAsync(
                     $"Compartimento #{vm.Number} creado exitosamente:\n\n" +
                     $"• Tanque: {vm.SelectedTank.Number}\n" +
+                    $"• Producto: {vm.SelectedProduct.Name}\n" +
                     $"• Capacidad Nominal: {vm.Nominal:F2} L\n" +
                     $"• Capacidad Operativa: {vm.Operative:F2} L\n" +
-                    $"• Altura: {vm.Height:F2} m\n" +
-                    $"• Stock Inicial: {vm.Stock:F2} L",
+                    $"• Altura: {vm.Height:F0} cm",
                     "Compartimento Creado");
             }
             catch (Exception ex)
@@ -162,9 +150,13 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                 Number = 0;
                 Nominal = 0;
                 Operative = 0;
-                Stock = 0;
                 Height = 0;
                 IdTank = 0;
+                IdProduct = 0;
+
+                // Clear selected items
+                _compartimentService.SelectedTank = null;
+                _compartimentService.SelectedProduct = null;
 
                 // Re-enable button
                 if (sender is Button button)
@@ -228,16 +220,6 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         }
     }
     
-    public double Stock
-    {
-        get => _compartimentService.Stock;
-        set
-        {
-            _compartimentService.Stock = value;
-            OnPropertyChanged();
-        }
-    }
-    
     public double Height
     {
         get => _compartimentService.Height;
@@ -258,6 +240,16 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    public int IdProduct
+    {
+        get => _compartimentService.IdProduct;
+        set
+        {
+            _compartimentService.IdProduct = value;
+            OnPropertyChanged();
+        }
+    }
+
     private async void OnEditCompartiment(object obj)
     {
         if (obj is CompartimentResponse compartiment)
@@ -265,15 +257,22 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
             Number = compartiment.Number;
             Nominal = compartiment.Nominal;
             Operative = compartiment.Operative;
-            Stock = compartiment.Stock;
             Height = compartiment.Height;
             IdTank = compartiment.IdTank;
+            IdProduct = compartiment.IdProduct;
             
             // Find and select the corresponding tank
             var tank = _compartimentService.TankList.FirstOrDefault(t => t.IdTank == compartiment.IdTank);
             if (tank != null)
             {
                 _compartimentService.SelectedTank = tank;
+            }
+
+            // Find and select the corresponding product
+            var product = _compartimentService.ProductList.FirstOrDefault(p => p.IdProduct == compartiment.IdProduct);
+            if (product != null)
+            {
+                _compartimentService.SelectedProduct = product;
             }
 
             await CustomAlert.ShowInfoAsync($"Los datos del compartimento #{compartiment.Number} han sido cargados en el formulario para su edición", "Edición Activada");
@@ -284,11 +283,14 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
     {
         if (obj is CompartimentResponse compartiment)
         {
+            // Obtener el nombre del producto para mostrar en el mensaje
+            var productName = _compartimentService.ProductList.FirstOrDefault(p => p.IdProduct == compartiment.IdProduct)?.Name ?? "No asignado";
+
             bool confirm = await CustomAlert.ShowConfirmAsync(
                 $"¿Está seguro de que desea eliminar el compartimento #{compartiment.Number}?\n\n" +
                 $"• Capacidad Nominal: {compartiment.Nominal:F2} L\n" +
                 $"• Capacidad Operativa: {compartiment.Operative:F2} L\n" +
-                $"• Stock Actual: {compartiment.Stock:F2} L\n\n" +
+                $"• Producto Asignado: {productName}\n\n" +
                 $"Esta acción no se puede deshacer.",
                 "Confirmar Eliminación", 
                 "Eliminar", 
