@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Models.TypeOfCollection;
+using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text;
@@ -575,7 +576,7 @@ namespace APP.Eds.Services.TypeOfCollection
         {
             if (string.IsNullOrEmpty(_authToken))
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
             try
@@ -601,12 +602,20 @@ namespace APP.Eds.Services.TypeOfCollection
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Exito", "Forma de pago registrada correctamente", "OK");
-                    
+                    await CustomAlert.ShowSuccessAsync(
+                        $"Método de pago registrado exitosamente:\n\n" +
+                        $"• Nombre: {PaymentName}\n" +
+                        $"• Tipo: {SelectedPaymentType}\n" +
+                        $"• Método: {SelectedPaymentMethod}\n" +
+                        $"• Proveedor: {PaymentProvider}\n" +
+                        $"• Comisión: {ProcessingFee}%\n" +
+                        $"• Estado: {SelectedStatus}", 
+                        "Método de Pago Registrado");
+            
                     // Add to local list
                     var icon = GetPaymentIcon(SelectedPaymentType);
                     decimal.TryParse(ProcessingFee, out decimal fee);
-                    
+            
                     var newMethod = new PaymentMethodItem
                     {
                         Id = PaymentMethodsList.Count + 1,
@@ -620,21 +629,23 @@ namespace APP.Eds.Services.TypeOfCollection
                         Description = Description,
                         Icon = icon
                     };
-                    
+            
                     PaymentMethodsList.Insert(0, newMethod);
                     UpdateStatistics();
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    await Application.Current.MainPage.DisplayAlert("Error", 
-                        $"No se pudo registrar la forma de pago: {response.StatusCode}\n{error}", "OK");
+                    await CustomAlert.ShowErrorAsync(
+                        $"No se pudo registrar la forma de pago: {response.StatusCode}\n{error}", 
+                        "Error del Servidor");
                 }
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", 
-                    $"Error al registrar la forma de pago: {ex.Message}", "OK");
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al registrar la forma de pago: {ex.Message}", 
+                    "Error del Sistema");
             }
         }
 
