@@ -86,9 +86,13 @@ public partial class AddCourtTypeOfCollection : Popup
             {
                 foreach (var t in courtService.TypeOfCollectionList)
                 {
-                    var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m };
-                    opt.PropertyChanged += PaymentOption_PropertyChanged;
-                    PaymentOptions.Add(opt);
+                 
+                    if (t.Description != "Retiro Caja")
+                    {
+                        var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m };
+                        opt.PropertyChanged += PaymentOption_PropertyChanged;
+                        PaymentOptions.Add(opt);
+                    }
                 }
 
                 RecalcRemaining();
