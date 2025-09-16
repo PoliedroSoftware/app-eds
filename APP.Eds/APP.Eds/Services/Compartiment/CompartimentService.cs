@@ -538,7 +538,7 @@ namespace APP.Eds.Services.Compartiment
                     await CustomAlert.ShowSuccessAsync(
                         $"Compartimento registrado exitosamente:\n\n" +
                         $"• Número: {Number}\n" +
-                        $"• Tanque: {SelectedTank.Description ?? SelectedTank.Code}\n" +
+                        $"• Tanque: {SelectedTank.Number} (Cap: {SelectedTank.Ability:N0} L)\n" +
                         $"• Producto: {SelectedProduct.Name}\n" +
                         $"• Capacidad Nominal: {Nominal:N2} L\n" +
                         $"• Capacidad Operativa: {Operative:N2} L\n" +
