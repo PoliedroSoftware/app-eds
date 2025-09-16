@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Services.Court;
+using APP.Eds.Components.PopUp;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -50,15 +51,13 @@ public partial class AddInfo : Popup
                 // Validate description length
                 if (editor.Text.Length < 10)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Validación", 
-                        "La descripción debe tener al menos 10 caracteres para ser informativa.", "OK");
+                    await CustomAlert.ShowWarningAsync("La descripción debe tener al menos 10 caracteres para ser informativa.", "Descripción Muy Corta");
                     return;
                 }
 
                 if (editor.Text.Length > 500)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Validación", 
-                        "La descripción no puede exceder 500 caracteres.", "OK");
+                    await CustomAlert.ShowWarningAsync("La descripción no puede exceder 500 caracteres.", "Descripción Muy Larga");
                     return;
                 }
 
@@ -66,8 +65,11 @@ public partial class AddInfo : Popup
                 await courtService.SaveAdditionalInfoAsync(editor.Text.Trim());
                 
                 // Show success feedback
-                await Application.Current.MainPage.DisplayAlert("Éxito", 
-                    "La información adicional ha sido guardada correctamente.", "OK");
+                await CustomAlert.ShowSuccessAsync(
+                    $"La información adicional ha sido guardada correctamente:\n\n" +
+                    $"• Caracteres guardados: {editor.Text.Trim().Length}\n" +
+                    $"• Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}", 
+                    "Información Guardada");
                 
                 try
                 {
@@ -80,15 +82,13 @@ public partial class AddInfo : Popup
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Validación", 
-                    "Por favor, ingrese una descripción antes de guardar.", "OK");
+                await CustomAlert.ShowWarningAsync("Por favor, ingrese una descripción antes de guardar.", "Descripción Requerida");
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error saving additional info: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                $"Error al guardar la información: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la información:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

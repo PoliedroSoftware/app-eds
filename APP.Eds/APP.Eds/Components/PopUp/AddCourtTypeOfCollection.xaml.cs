@@ -1,4 +1,5 @@
 using APP.Eds.Services.Court;
+using APP.Eds.Components.PopUp;
 using CommunityToolkit.Maui.Views;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
@@ -293,8 +294,7 @@ public partial class AddCourtTypeOfCollection : Popup
             
             if (selected.Count == 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", 
-                    "Debe seleccionar al menos un método de pago.", "OK");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar al menos un método de pago.", "Selección Requerida");
                 return;
             }
 
@@ -303,8 +303,7 @@ public partial class AddCourtTypeOfCollection : Popup
             {
                 if (p.Amount <= 0m)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error",
-                        $"El monto para '{p.Type.Description}' debe ser mayor a 0.", "OK");
+                    await CustomAlert.ShowErrorAsync($"El monto para '{p.Type.Description}' debe ser mayor a 0.", "Monto Inválido");
                     return;
                 }
             }
@@ -317,13 +316,12 @@ public partial class AddCourtTypeOfCollection : Popup
 
             if (Math.Abs(amountNew) > 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Error",
+                await CustomAlert.ShowErrorAsync(
                     $"El total de los métodos de pago seleccionados ({dataNew:C2}) no coincide con el total de la venta ({totalSalesDay:C2}).\n\n" +
-                    $"Diferencia: {amountNew:C2}", "OK");
+                    $"Diferencia: {amountNew:C2}", 
+                    "Total No Coincide");
                 return;
             }
-
-            
 
             // Add selected payment methods
             foreach (var p in selected)
@@ -335,16 +333,18 @@ public partial class AddCourtTypeOfCollection : Popup
                 await courtService.AddCourtTypeOfCollectionFromPopup();
             }
 
-            await Application.Current.MainPage.DisplayAlert("Éxito", 
-                $"Se agregaron {selected.Count} método(s) de pago correctamente.", "OK");
+            await CustomAlert.ShowSuccessAsync(
+                $"Se agregaron {selected.Count} método(s) de pago correctamente:\n\n" +
+                $"• Total procesado: {dataNew:C2}\n" +
+                $"• Métodos agregados: {string.Join(", ", selected.Select(s => s.Type.Description))}", 
+                "Métodos de Pago Agregados");
 
             await CloseAsync();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error adding selected payment methods: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                $"Error al agregar métodos de pago:\n\n{ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al agregar métodos de pago:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

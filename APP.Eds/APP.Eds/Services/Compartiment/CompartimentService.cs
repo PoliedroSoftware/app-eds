@@ -11,6 +11,7 @@ using APP.Eds.Models.Translations;
 using System.Linq;
 using APP.Eds.Components.PopUp;
 using APP.Eds.Models.Product;
+using static APP.Eds.Components.PopUp.CustomAlert;
 
 namespace APP.Eds.Services.Compartiment
 {
@@ -498,7 +499,7 @@ namespace APP.Eds.Services.Compartiment
                     c.Number == Number && c.IdTank == SelectedTank.IdTank);
                 if (existingCompartment != null)
                 {
-                    await CustomAlert.ShowErrorAsync("Este compartimiento ya fue registrado para el tanque.", "Compartimento Existente");
+                    await CustomAlert.ShowErrorAsync("Este compartimento ya fue registrado para el tanque.", "Compartimento Existente");
                     return;
                 }
 
@@ -534,7 +535,15 @@ namespace APP.Eds.Services.Compartiment
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await CustomAlert.ShowSuccessAsync("Datos enviados correctamente", "Éxito");
+                    await CustomAlert.ShowSuccessAsync(
+                        $"Compartimento registrado exitosamente:\n\n" +
+                        $"• Número: {Number}\n" +
+                        $"• Tanque: {SelectedTank.Description ?? SelectedTank.Code}\n" +
+                        $"• Producto: {SelectedProduct.Name}\n" +
+                        $"• Capacidad Nominal: {Nominal:N2} L\n" +
+                        $"• Capacidad Operativa: {Operative:N2} L\n" +
+                        $"• Altura: {Height:N2} m", 
+                        "Compartimento Creado");
                 }
                 else
                 {
