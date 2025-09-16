@@ -1,5 +1,6 @@
 <ContentPage
     x:Class="APP.Eds.UsesCases.Court.CourtPostView"
+    x:Name="CortePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
@@ -18,7 +19,7 @@
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
             <VerticalStackLayout Padding="16" Spacing="16">
-                
+
                 <!-- Header Card with Purple Gradient -->
                 <Border BackgroundColor="#6A1B9A" 
                         StrokeShape="RoundRectangle 16"
@@ -60,7 +61,7 @@
                                    TextColor="#2D3436"
                                    VerticalOptions="Center"/>
                         </StackLayout>
-                        
+
                         <Grid ColumnDefinitions="100, *" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
                             <!-- Business -->
                             <Label Text="Negocio" 
@@ -81,7 +82,7 @@
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>
                             </Border>
-                            
+
                             <!-- EDS -->
                             <Label Text="EDS" 
                                    FontAttributes="Bold" 
@@ -102,7 +103,7 @@
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>
                             </Border>
-                            
+
                             <!-- Islander -->
                             <Label Text="Islero" 
                                    FontAttributes="Bold" 
@@ -145,7 +146,7 @@
                                    TextColor="#2D3436"
                                    VerticalOptions="Center"/>
                         </StackLayout>
-                        
+
                         <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
                             <!-- Date -->
                             <StackLayout Grid.Row="0" Grid.Column="0">
@@ -224,7 +225,7 @@
                                    TextColor="#2D3436"
                                    VerticalOptions="Center"/>
                         </StackLayout>
-                        
+
                         <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="16">
                             <!-- Sales in Money -->
                             <Border BackgroundColor="#E8F5E8" 
@@ -354,7 +355,18 @@
                 </Border>
 
                 <!-- Sales by Hoses Section -->
-                <StackLayout x:Name="AddedDispensers" IsVisible="{Binding VisibleDispenser}">
+                <StackLayout x:Name="AddedDispensers"
+                             IsVisible="{Binding VisibleDispenser}"
+                             IsEnabled="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}">
+                    <StackLayout.Triggers>
+                        <!-- Ocultar después del envío -->
+                        <DataTrigger TargetType="StackLayout"
+                                     Binding="{Binding Source={x:Reference CortePage}, Path=SeccionesVisibles}"
+                                     Value="False">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+
                     <Border BackgroundColor="#E8F5E8" 
                             StrokeShape="RoundRectangle 8"
                             Stroke="#4CAF50"
@@ -442,8 +454,18 @@
                     </CollectionView>
                 </StackLayout>
 
-                <!-- Collections Section -->
-                <StackLayout x:Name="TypesofAggregateCollections" IsVisible="{Binding VisibleReceipts}">
+                <!-- Collections Section (Formas de pago) -->
+                <StackLayout x:Name="TypesofAggregateCollections"
+                             IsVisible="{Binding VisibleReceipts}"
+                             IsEnabled="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}">
+                    <StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout"
+                                     Binding="{Binding Source={x:Reference CortePage}, Path=SeccionesVisibles}"
+                                     Value="False">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+
                     <Border BackgroundColor="#E3F2FD" 
                             StrokeShape="RoundRectangle 8"
                             Stroke="#2196F3"
@@ -523,7 +545,7 @@
                     </CollectionView>
                 </StackLayout>
 
-                <!-- Documents Section -->
+                <!-- Documents Section (no se oculta por la tarea) -->
                 <StackLayout x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
                     <Border BackgroundColor="#FFF3E0" 
                             StrokeShape="RoundRectangle 8"
@@ -586,7 +608,18 @@
                 </StackLayout>
 
                 <!-- Expenses Section -->
-                <StackLayout x:Name="AddedExpenses" IsVisible="{Binding VisibleExpenses}">
+                <StackLayout x:Name="AddedExpenses"
+                             IsVisible="{Binding VisibleExpenses}"
+                             IsEnabled="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}">
+                    <StackLayout.Triggers>
+                        <!-- Ocultar después del envío -->
+                        <DataTrigger TargetType="StackLayout"
+                                     Binding="{Binding Source={x:Reference CortePage}, Path=SeccionesVisibles}"
+                                     Value="False">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+
                     <Border BackgroundColor="#FFEBEE" 
                             StrokeShape="RoundRectangle 8"
                             Stroke="#F44336"
@@ -668,11 +701,11 @@
 
                 <!-- Main Action Buttons Section -->
                 <VerticalStackLayout Spacing="16" x:Name="Button" Margin="0,0,0,110">
-                    
+
                     <!-- Required Actions Card -->
                     <Border Style="{StaticResource RequiredActionsCardStyle}"
                             Margin="0,8">
-                        
+
                         <VerticalStackLayout Spacing="16">
                             <!-- Header -->
                             <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
@@ -683,7 +716,7 @@
                                        TextColor="#D32F2F"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Required Buttons Grid -->
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                                 <Button Text="{Binding NewSale}"
@@ -693,15 +726,32 @@
                                         Command="{Binding OpenDispenserCommand}"
                                         AutomationId="AddSaleButton"
                                         IsEnabled="{Binding NewSaleEnabled}"
-                                        Grid.Column="0"/>
-                                
+                                        Grid.Column="0">
+                                    <Button.Triggers>
+                                        <!-- Bloquear si el corte ya fue enviado -->
+                                        <DataTrigger TargetType="Button"
+                                                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                                                     Value="False">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+
                                 <Button Text="{Binding AddCollectionType}"
                                         Style="{StaticResource CompactActionButtonStyle}"
                                         BackgroundColor="#2196F3"
                                         Clicked="OpenTypeOfCollectionPopUp"
                                         AutomationId="AddCollectionTypeButton"
                                         IsEnabled="{Binding IsEdsSelected}"
-                                        Grid.Column="1"/>
+                                        Grid.Column="1">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button"
+                                                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                                                     Value="False">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
@@ -709,7 +759,7 @@
                     <!-- Primary Send Button - Destacado -->
                     <Border Style="{StaticResource PrimarySendButtonStyle}"
                             Margin="0,8">
-                        
+
                         <Button x:Name="SendData" 
                                 AutomationId="SendDataButton"
                                 Text="{Binding SendData}"
@@ -725,6 +775,12 @@
                                     <Setter Property="IsEnabled" Value="False" />
                                     <Setter Property="TextColor" Value="#BDBDBD" />
                                 </DataTrigger>
+                                <!-- Deshabilitar tras enviar -->
+                                <DataTrigger TargetType="Button"
+                                             Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                                             Value="False">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
                             </Button.Triggers>
                         </Button>
                     </Border>
@@ -736,16 +792,15 @@
         <Border Style="{StaticResource EnhancedBottomNavContainerStyle}"
                 AbsoluteLayout.LayoutBounds="0,1,1,95"
                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
-            
+
             <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24" RowDefinitions="Auto,Auto">
-                
+                <!-- (sin cambios, el bloqueo lo hace el code-behind) -->
+
                 <!-- Upload Document Button -->
                 <Grid Grid.Column="0" x:Name="DocumentButton">
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnDocumentTapped"/>
                     </Grid.GestureRecognizers>
-                    
-                    <!-- Background Circle -->
                     <Ellipse Fill="#FFF3E0" 
                              Style="{StaticResource NavCircleIndicatorStyle}"
                              x:Name="DocumentCircle">
@@ -756,8 +811,6 @@
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
-                    
-                    <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="📄" FontSize="22" HorizontalOptions="Center"/>
                         <Label Text="Docs" 
@@ -774,8 +827,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
                     <Ellipse Fill="#FF9800"
                              Style="{StaticResource NavDotIndicatorStyle}"
                              x:Name="DocumentDot">
@@ -792,8 +843,6 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnExpenseTapped"/>
                     </Grid.GestureRecognizers>
-                    
-                    <!-- Background Circle -->
                     <Ellipse Fill="#F3E5F5" 
                              Style="{StaticResource NavCircleIndicatorStyle}"
                              x:Name="ExpenseCircle">
@@ -804,8 +853,6 @@
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
-                    
-                    <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="💸" FontSize="22" HorizontalOptions="Center"/>
                         <Label Text="Gastos" 
@@ -822,8 +869,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
                     <Ellipse Fill="#9C27B0"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
@@ -839,8 +884,6 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnInfoTapped"/>
                     </Grid.GestureRecognizers>
-                    
-                    <!-- Background Circle -->
                     <Ellipse Fill="#E8EAF6" 
                              Style="{StaticResource NavCircleIndicatorStyle}">
                         <Ellipse.Triggers>
@@ -850,8 +893,6 @@
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
-                    
-                    <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="💬" FontSize="22" HorizontalOptions="Center"/>
                         <Label Text="Info" 
@@ -868,8 +909,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
                     <Ellipse Fill="#3F51B5"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
@@ -885,8 +924,6 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnHistoryTapped"/>
                     </Grid.GestureRecognizers>
-                    
-                    <!-- Background Circle -->
                     <Ellipse Fill="#E8F5E8" 
                              Style="{StaticResource NavCircleIndicatorStyle}">
                         <Ellipse.Triggers>
@@ -896,8 +933,6 @@
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
-                    
-                    <!-- Content -->
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="📜" FontSize="22" HorizontalOptions="Center"/>
                         <Label Text="Lista" 
@@ -914,8 +949,6 @@
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    
-                    <!-- Active Dot Indicator -->
                     <Ellipse Fill="#4CAF50"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
@@ -925,7 +958,7 @@
                         </Ellipse.Triggers>
                     </Ellipse>
                 </Grid>
-                
+
                 <!-- Dynamic Sliding Indicator Background -->
                 <Border x:Name="SlidingBackground"
                         BackgroundColor="#6A1B9A"
