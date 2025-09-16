@@ -190,7 +190,7 @@
                         <Picker x:Name="TankPicker"
                                 Title="? Seleccionar Tanque"
                                 ItemsSource="{Binding TankList}"
-                                ItemDisplayBinding="{Binding Number}"
+                                ItemDisplayBinding="{Binding DisplayText}"
                                 SelectedItem="{Binding SelectTank, Mode=TwoWay}"
                                 FontSize="14"
                                 TextColor="#1A1A1A"
