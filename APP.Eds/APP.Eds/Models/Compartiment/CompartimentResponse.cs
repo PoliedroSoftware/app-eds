@@ -17,15 +17,15 @@ public class CompartimentResponse
     [JsonPropertyName("operative")]
     public double Operative { get; set; }
 
-    [JsonPropertyName("stock")]
-    public double Stock { get; set; }
-
     [JsonPropertyName("height")]
     public double Height { get; set; }
 
     [JsonPropertyName("idTank")]
     public int IdTank { get; set; }
 
+    [JsonPropertyName("idProduct")]
+    public int IdProduct { get; set; }
+
     public string DisplayCompartiment =>
-        $"Compartiment: {Number}\nNominal: {Nominal}\nOperative: {Operative}\nStock: {Stock}\nHeight: {Height}\n-------------------------------------------------";
+        $"Compartiment: {Number}\nNominal: {Nominal}\nOperative: {Operative}\nHeight: {Height}\nProduct ID: {IdProduct}\n-------------------------------------------------";
 }
