@@ -17,12 +17,38 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
     private CourtService _service;
     public string UserRole { get; set; } = string.Empty;
-    
+
+    // === NUEVO: control de visibilidad / edición de secciones ===
+    private bool _seccionesVisibles = true;
+    public bool SeccionesVisibles
+    {
+        get => _seccionesVisibles;
+        set
+        {
+            if (_seccionesVisibles == value) return;
+            _seccionesVisibles = value;
+            OnPropertyChanged(nameof(SeccionesVisibles));
+        }
+    }
+
+    private bool _puedeEditar = true;
+    public bool PuedeEditar
+    {
+        get => _puedeEditar;
+        set
+        {
+            if (_puedeEditar == value) return;
+            _puedeEditar = value;
+            OnPropertyChanged(nameof(PuedeEditar));
+        }
+    }
+    // ============================================================
+
     // Propiedad para el elemento activo del menú
     private string _activeNavItem = "Document";
-    public string ActiveNavItem 
-    { 
-        get => _activeNavItem; 
+    public string ActiveNavItem
+    {
+        get => _activeNavItem;
         set
         {
             _activeNavItem = value;
@@ -48,8 +74,14 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         _service = CourtService.Instance;
         _service.DateStarttime = DateTime.Today;
+
+        // Mantén el BindingContext en el servicio (no romper Court.* bindings)
         BindingContext = _service;
-        
+
+        // Estado inicial: visible y editable
+        SeccionesVisibles = true;
+        PuedeEditar = true;
+
         // Configurar DatePicker después de la inicialización
         ConfigureDatePickerAsync();
 
@@ -64,18 +96,18 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             ApplyConfig(config);
         }
-        
+
         // Establecer el elemento activo inicial
         ActiveNavItem = "Document";
     }
 
     private async void ConfigureDatePickerAsync()
     {
-        await Task.Run(async () => 
+        await Task.Run(async () =>
         {
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                try 
+                try
                 {
                     var picker = this.FindByName<DatePicker>("datePicker");
                     if (picker != null)
@@ -98,10 +130,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             Children =
             {
-                new Label 
-                { 
-                    Text = "🏪 Cierre De Turno", 
-                    FontSize = 24, 
+                new Label
+                {
+                    Text = "🏪 Cierre De Turno",
+                    FontSize = 24,
                     FontAttributes = FontAttributes.Bold,
                     HorizontalOptions = LayoutOptions.Center,
                     TextColor = Colors.Purple
@@ -118,22 +150,22 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             // Manejo seguro de LoadingOverlay
             var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
             try { loadingOverlay?.ShowLoading(); } catch { }
-            
+
             // Manejo seguro de MainContent
             var mainContent = this.FindByName<ScrollView>("MainContent");
             try { if (mainContent != null) mainContent.IsVisible = false; } catch { }
-            
+
             // Manejo seguro de Business visibility
             var businessBorder = this.FindByName<Border>("Business");
-            try 
-            { 
+            try
+            {
                 if (businessBorder != null)
                     businessBorder.IsVisible = (UserRole is "Admin");
-            } 
+            }
             catch { }
 
             await _service.LoadTranslationsAsync();
-            
+
             // Animar la entrada del menú
             await AnimateBottomNavEntry();
         }
@@ -204,13 +236,20 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
+            // 🚫 bloqueo de navegación/edición tras enviar
+            if (!PuedeEditar)
+            {
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado. Edición bloqueada.", "Corte cerrado");
+                return;
+            }
+
             Debug.WriteLine($"Navigation tap: {navItem}");
 
             ActiveNavItem = navItem;
-            
+
             // Animar el tap
             await AnimateNavItemTap(navItem);
-            
+
             // Ejecutar la acción correspondiente
             await ExecuteNavAction(navItem);
         }
@@ -229,7 +268,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             string navItem = null;
-            
+
             if (sender is TapGestureRecognizer tapGesture && tapGesture.CommandParameter is string commandParam)
             {
                 navItem = commandParam;
@@ -267,13 +306,13 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             var slidingBackground = this.FindByName<Border>("SlidingBackground");
             var bottomNavBorder = slidingBackground?.Parent?.Parent as Border;
-            
+
             if (bottomNavBorder != null)
             {
                 // Inicializar posición fuera de pantalla
                 bottomNavBorder.TranslationY = 120;
                 bottomNavBorder.Opacity = 0;
-                
+
                 // Animar entrada del menú completo
                 await Task.WhenAll(
                     bottomNavBorder.TranslateTo(0, 0, 700, Easing.SpringOut),
@@ -287,7 +326,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 await Task.Delay(200);
                 slidingBackground.Opacity = 0;
                 await slidingBackground.FadeTo(0.15, 300, Easing.CubicOut);
-                
+
                 // Inicializar posición del indicador
                 await AnimateToActiveItem(ActiveNavItem);
             }
@@ -328,7 +367,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 slidingBackground.TranslateTo(indicatorPosition, 0, 350, Easing.CubicOut),
                 slidingBackground.ScaleTo(1.1, 200, Easing.SpringOut)
             );
-            
+
             await slidingBackground.ScaleTo(1.0, 150, Easing.SpringIn);
         }
         catch (Exception ex)
@@ -346,7 +385,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             var itemGrid = this.FindByName<Grid>($"{navItem}Button");
             var itemCircle = this.FindByName<Ellipse>($"{navItem}Circle");
-            
+
             if (itemGrid == null) return;
 
             // Animación de pulso con escalado del círculo
@@ -381,12 +420,15 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             switch (navItem)
             {
                 case "Document":
+                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
                     await OpenDocumentPopUp();
                     break;
                 case "Expense":
+                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
                     await OpenExpenditurePopUp();
                     break;
                 case "Info":
+                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
                     await OpenAdditionalInfoPopUp();
                     break;
                 case "History":
@@ -403,6 +445,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async Task OpenDocumentPopUp()
     {
+        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
             var popup = new AddDocuemt(_service);
@@ -417,6 +460,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async Task OpenExpenditurePopUp()
     {
+        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
             var popup = new AddCourtExpenditure(_service);
@@ -431,6 +475,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async Task OpenAdditionalInfoPopUp()
     {
+        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
             var popup = new AddInfo(_service);
@@ -459,6 +504,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     // Métodos existentes adaptados
     private async void OpenDispenserPopUp(object sender, EventArgs e)
     {
+        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
             var popup = new AddDispenser(_service);
@@ -473,6 +519,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async void OpenTypeOfCollectionPopUp(object sender, EventArgs e)
     {
+        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
             var popup = new AddCourtTypeOfCollection(_service);
@@ -554,6 +601,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
                 if (vm.LastSendWasSuccessful)
                 {
+                    // 🔴 Oculta secciones y bloquea edición tras envío
+                    OcultarSeccionesCierre();
+
+                    // (si necesitas refrescar datos generales)
                     CourtService.ResetInstanceFields();
                     _service = CourtService.Instance;
                     BindingContext = _service;
@@ -577,13 +628,29 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // === NUEVO: método que oculta secciones y bloquea edición ===
+    private void OcultarSeccionesCierre()
+    {
+        // Bloquear edición
+        PuedeEditar = false;
+
+        // Ocultar usando binding (si tu XAML usa x:Reference CortePage)
+        SeccionesVisibles = false;
+
+        // Respaldo: ocultar por nombre si existen estos contenedores
+        this.FindByName<VisualElement>("SectionHoses")?.SetValue(VisualElement.IsVisibleProperty, false);     // Ventas por mangueras
+        this.FindByName<VisualElement>("SectionPayments")?.SetValue(VisualElement.IsVisibleProperty, false);  // Formas de pago
+        this.FindByName<VisualElement>("SectionExpenses")?.SetValue(VisualElement.IsVisibleProperty, false);  // Gastos
+    }
+    // ============================================================
+
     private void OnBusinessSelected(object sender, EventArgs e)
     {
         var picker = sender as Picker;
         if (picker == null) return;
-        
+
         Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-        
+
         Dispatcher.Dispatch(() =>
         {
             try
@@ -612,9 +679,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         var picker = sender as Picker;
         if (picker == null) return;
-        
+
         Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-        
+
         Dispatcher.Dispatch(() =>
         {
             try
@@ -642,9 +709,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         var picker = sender as Picker;
         if (picker == null) return;
-        
+
         Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-        
+
         Dispatcher.Dispatch(() =>
         {
             try
@@ -695,7 +762,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     return null;
                 }
             });
-            
+
             return result;
         }
         catch (Exception ex)
