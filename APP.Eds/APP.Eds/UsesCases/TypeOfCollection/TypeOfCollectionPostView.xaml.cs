@@ -24,6 +24,10 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
         {
             LoadingOverlay?.ShowLoading();
             await _typeOfCollectionService.InitializeAsync();
+            
+            // ? NUEVO: Configurar total de ventas desde una fuente externa
+            // Ejemplo: obtener desde preferencias, servicio de Court, etc.
+            await ConfigureSalesTotalAsync();
         }
         catch (Exception ex)
         {
@@ -32,6 +36,37 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
         finally
         {
             LoadingOverlay?.HideLoading();
+        }
+    }
+
+    /// <summary>
+    /// ? NUEVO: Método para configurar el total de ventas
+    /// </summary>
+    private async Task ConfigureSalesTotalAsync()
+    {
+        try
+        {
+            // Opción 1: Obtener desde el servicio de Court si está disponible
+            // var courtService = DependencyService.Get<CourtService>();
+            // if (courtService != null)
+            // {
+            //     var totalVentas = courtService.GetTotalAmount();
+            //     _typeOfCollectionService.SetSalesTotal((decimal)totalVentas);
+            // }
+
+            // Opción 2: Obtener desde preferencias
+            var savedTotal = Preferences.Get("CurrentSalesTotal", 0.0);
+            if (savedTotal > 0)
+            {
+                _typeOfCollectionService.SetSalesTotal((decimal)savedTotal);
+            }
+
+            // Opción 3: Permitir que el usuario ingrese el total manualmente
+            // Esto se podría implementar con un Entry en la UI
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error configurando total de ventas: {ex.Message}");
         }
     }
 
