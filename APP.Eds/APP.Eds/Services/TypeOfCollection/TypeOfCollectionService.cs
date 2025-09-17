@@ -1,15 +1,13 @@
-﻿using APP.Eds.Models.TypeOfCollection;
-using APP.Eds.Components.PopUp;
-using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using APP.Eds.Services.Config;
+﻿using APP.Eds.Components.PopUp;
 using APP.Eds.Helpers;
-using System.Net.Http.Headers;
-using APP.Eds.Models.Translations;
+using APP.Eds.Models.TypeOfCollection;
+using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
 
 namespace APP.Eds.Services.TypeOfCollection
 {
@@ -114,6 +112,30 @@ namespace APP.Eds.Services.TypeOfCollection
             {
                 _processingFee = value;
                 OnPropertyChanged(nameof(ProcessingFee));
+            }
+        }
+
+        // ✨ NUEVO: Campo para el monto específico del método de pago
+        private string _paymentAmount;
+        public string PaymentAmount
+        {
+            get => _paymentAmount;
+            set
+            {
+                _paymentAmount = value;
+                OnPropertyChanged(nameof(PaymentAmount));
+                OnPropertyChanged(nameof(PaymentAmountDecimal));
+            }
+        }
+
+        // Propiedad calculada para obtener el monto como decimal
+        public decimal PaymentAmountDecimal
+        {
+            get
+            {
+                if (decimal.TryParse(_paymentAmount?.Replace(",", ""), out decimal amount))
+                    return amount;
+                return 0m;
             }
         }
 
@@ -317,6 +339,7 @@ namespace APP.Eds.Services.TypeOfCollection
         public ICommand DeletePaymentMethodCommand { get; private set; }
         public ICommand ValidatePaymentCompletionCommand { get; private set; }
         public ICommand ShowPaymentMethodsPopupCommand { get; private set; }
+        public ICommand CheckBeforeAddPaymentMethodCommand { get; private set; } // ✨ NUEVO: Comando para validar antes de agregar
 
         public TypeOfCollectionService()
         {
@@ -337,6 +360,7 @@ namespace APP.Eds.Services.TypeOfCollection
             DeletePaymentMethodCommand = new Command<PaymentMethodItem>(async (method) => await DeletePaymentMethodAsync(method));
             ValidatePaymentCompletionCommand = new Command(async () => await ValidatePaymentCompletionAsync());
             ShowPaymentMethodsPopupCommand = new Command(async () => await ShowPaymentMethodsPopupAsync());
+            CheckBeforeAddPaymentMethodCommand = new Command(async () => await CheckBeforeAddPaymentMethodAsync()); // ✨ NUEVO: Inicializar comando
         }
 
         private void InitializeOptions()
@@ -693,10 +717,57 @@ namespace APP.Eds.Services.TypeOfCollection
                 await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
+
             try
             {
-                // Create comprehensive payment method description
-                var fullDescription = $"[{PaymentName}] Tipo: {SelectedPaymentType}, Metodo: {SelectedPaymentMethod}, Proveedor: {PaymentProvider}, Comision: {ProcessingFee}%, Estado: {SelectedStatus} - {Description}";
+                // ✨ VALIDACIÓN: Verificar si ya se completaron todos los pagos ANTES de permitir agregar más
+                CalculateTotalPaymentMethodsAmount();
+                
+                if (IsPaymentComplete && TotalSalesAmount > 0)
+                {
+                    await CustomAlert.ShowSuccessAsync(
+                        $"✅ Pagos Completos\n\n" +
+                        $"Ya se han registrado todos los métodos de pago necesarios:\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total pagos registrados: ${TotalPaymentMethodsAmount:N2}\n\n" +
+                        $"No es necesario agregar más métodos de pago.\n" +
+                        $"Los pagos han sido registrados correctamente.",
+                        "Pagos Ya Registrados");
+                    return; // ✨ IMPORTANTE: Salir sin guardar más métodos
+                }
+
+                // ✨ VALIDACIÓN: Verificar que el monto no exceda el total de ventas
+                if (TotalSalesAmount > 0 && PaymentAmountDecimal > 0)
+                {
+                    var totalAfterAddition = TotalPaymentMethodsAmount + PaymentAmountDecimal;
+                    if (totalAfterAddition > TotalSalesAmount)
+                    {
+                        var excedente = totalAfterAddition - TotalSalesAmount;
+                        await CustomAlert.ShowWarningAsync(
+                            $"⚠️ Monto Excedente\n\n" +
+                            $"El monto que intenta agregar excede el total de ventas:\n\n" +
+                            $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                            $"• Pagos actuales: ${TotalPaymentMethodsAmount:N2}\n" +
+                            $"• Monto a agregar: ${PaymentAmountDecimal:N2}\n" +
+                            $"• Excedente: ${excedente:N2}\n\n" +
+                            $"El monto máximo que puede agregar es: ${TotalSalesAmount - TotalPaymentMethodsAmount:N2}",
+                            "Monto Excede Total");
+                        return;
+                    }
+                }
+
+                // Validar que se haya ingresado un monto
+                if (PaymentAmountDecimal <= 0)
+                {
+                    await CustomAlert.ShowErrorAsync(
+                        "Debe ingresar un monto válido para el método de pago.\n\n" +
+                        "El monto debe ser mayor a cero.",
+                        "Monto Requerido");
+                    return;
+                }
+
+                // Create comprehensive payment method description including amount
+                var fullDescription = $"[{PaymentName}] Tipo: {SelectedPaymentType}, Metodo: {SelectedPaymentMethod}, Proveedor: {PaymentProvider}, Monto: ${PaymentAmountDecimal:N2}, Comision: {ProcessingFee}%, Estado: {SelectedStatus} - {Description}";
 
                 TypeOfCollection = new TypeOfCollectionModel
                 {
@@ -716,13 +787,31 @@ namespace APP.Eds.Services.TypeOfCollection
 
                 if (response.IsSuccessStatusCode)
                 {
+                    // ✨ CREAR Y AGREGAR el método con el monto específico a la lista local
+                    var newPaymentMethod = new PaymentMethodItem
+                    {
+                        Id = PaymentMethodsList.Count + 1, // Temporal ID
+                        Name = PaymentName,
+                        Type = SelectedPaymentType,
+                        Provider = PaymentProvider,
+                        ProcessingFee = decimal.TryParse(ProcessingFee, out decimal fee) ? fee : 0,
+                        Status = SelectedStatus,
+                        RequiresAuth = RequiresAuth,
+                        IsDefault = IsDefault,
+                        Description = Description,
+                        Icon = GetPaymentIcon(SelectedPaymentType),
+                        Amount = PaymentAmountDecimal // ✨ IMPORTANTE: Asignar el monto específico
+                    };
+
+                    PaymentMethodsList.Add(newPaymentMethod);
+
                     await CustomAlert.ShowSuccessAsync(
                         $"Método de pago registrado exitosamente:\n\n" +
                         $"• Nombre: {PaymentName}\n" +
                         $"• Tipo: {SelectedPaymentType}\n" +
                         $"• Método: {SelectedPaymentMethod}\n" +
+                        $"• Monto: ${PaymentAmountDecimal:N2}\n" +
                         $"• Proveedor: {PaymentProvider}\n" +
-                        $"• Comisión: {ProcessingFee}%\n" +
                         $"• Estado: {SelectedStatus}", 
                         "Método de Pago Registrado");
             
@@ -730,7 +819,7 @@ namespace APP.Eds.Services.TypeOfCollection
                     await LoadPaymentMethodsAsync();
                     UpdateStatistics();
                     
-                    // Auto-validate payment completion after saving
+                    // ✨ VALIDACIÓN AUTOMÁTICA después de guardar
                     await ValidatePaymentCompletionAsync();
                     
                     // Clear form fields
@@ -739,6 +828,7 @@ namespace APP.Eds.Services.TypeOfCollection
                     SelectedPaymentMethod = string.Empty;
                     PaymentProvider = string.Empty;
                     ProcessingFee = string.Empty;
+                    PaymentAmount = string.Empty; // ✨ Limpiar también el monto
                     SelectedStatus = string.Empty;
                     Description = string.Empty;
                     RequiresAuth = false;
@@ -1023,6 +1113,44 @@ namespace APP.Eds.Services.TypeOfCollection
                 await CustomAlert.ShowErrorAsync(
                     $"Error al agregar método de pago:\n\n{ex.Message}",
                     "Error del Sistema");
+            }
+        }
+
+        // Comando para verificar antes de agregar un método de pago
+        private async Task CheckBeforeAddPaymentMethodAsync()
+        {
+            try
+            {
+                // Calcular el monto total de los métodos de pago activos
+                CalculateTotalPaymentMethodsAmount();
+
+                if (IsPaymentComplete)
+                {
+                    await CustomAlert.ShowSuccessAsync(
+                        $"✅ Verificación Exitosa\n\n" +
+                        $"Todos los métodos de pago necesarios ya están registrados.\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total pagos registrados: ${TotalPaymentMethodsAmount:N2}\n\n" +
+                        $"No es necesario agregar más métodos de pago.",
+                        "Información");
+                }
+                else
+                {
+                    await CustomAlert.ShowWarningAsync(
+                        $"⚠️ Atención Requerida\n\n" +
+                        $"Aún faltan métodos de pago por agregar:\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total métodos de pago: ${TotalPaymentMethodsAmount:N2}\n" +
+                        $"• Pendiente: ${RemainingAmount:N2}\n\n" +
+                        $"Por favor, continúe agregando formas de pago.",
+                        "Verificación Pendiente");
+                }
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al verificar métodos de pago:\n\n{ex.Message}",
+                    "Error de Validación");
             }
         }
 
