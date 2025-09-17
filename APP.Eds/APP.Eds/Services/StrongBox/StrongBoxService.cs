@@ -196,11 +196,13 @@ public class StrongBoxService : INotifyPropertyChanged
     {
         if (movement == null) return;
         
+        System.Diagnostics.Debug.WriteLine($"ViewCourtDetailAsync called for movement: {movement.Type}, IdCorte: {movement.IdCorte}");
+        
         // Solo permitir navegacion para movimientos de tipo CORTE que tengan IdCorte
         if (movement.Type != "CORTE" || movement.IdCorte == null)
         {
             await Application.Current.MainPage.DisplayAlert(
-                "Informacion", 
+                "Información", 
                 "Este movimiento no tiene detalles de corte disponibles.", 
                 "OK");
             return;
@@ -222,6 +224,9 @@ public class StrongBoxService : INotifyPropertyChanged
             if (courtDetails != null)
             {
                 System.Diagnostics.Debug.WriteLine($"Successfully loaded court details, navigating to detail page");
+                
+                // Asegurar que las traducciones estén configuradas antes de navegar
+                await SetCourtTranslationsAsync(courtDetails);
                 
                 // Navegar a la pagina de detalles del corte usando la misma navegacion que CourtService
                 var detailPage = new APP.Eds.UsesCases.Court.CourtDetailPage(courtDetails);
@@ -260,10 +265,95 @@ public class StrongBoxService : INotifyPropertyChanged
         }
     }
 
+    // Nuevo método para configurar traducciones
+    private async Task SetCourtTranslationsAsync(CourtListItemModel courtDetails)
+    {
+        try
+        {
+            // Configurar traducciones principales
+            courtDetails.DateTranslation = "Fecha";
+            courtDetails.ConsecutiveTranslation = "Consecutivo";
+            courtDetails.IslanderTranslation = "Islero";
+            courtDetails.CourtDetailTranslation = "Detalle del Corte";
+            courtDetails.ShiftTranslation = "Turno";
+            courtDetails.TotalsTranslation = "Totales";
+            courtDetails.AccumulatedAmountTranslation = "Monto Acumulado";
+            courtDetails.AccumulatedGallonsTranslations = "Galones Acumulados";
+            courtDetails.DistincTranslation = "Distinc";
+            courtDetails.DispensersTranslation = "Dispensadores";
+            courtDetails.LastAccumulatedAmountTranslation = "Último Monto Acumulado";
+            courtDetails.LastAccumulatedGallonsTranslation = "Últimos Galones Acumulados";
+            courtDetails.DocumentsTranslation = "Documentos";
+            courtDetails.ExpendituresTranslation = "Gastos";
+            courtDetails.CourtTranslation = "Corte";
+            courtDetails.ThereIsNoImageTranslation = "No hay imagen";
+            courtDetails.ExpenditureTranslation = "Gasto";
+
+            // Configurar traducciones para colecciones
+            if (courtDetails.Collections != null)
+            {
+                foreach (var collection in courtDetails.Collections)
+                {
+                    collection.DateTranslation = "Fecha";
+                    collection.CollectionTranslation = "Cobro";
+                    collection.AmountTranslation = "Monto";
+                    collection.DescriptionTranslation = "Descripción";
+                }
+            }
+
+            // Configurar traducciones para dispensadores
+            if (courtDetails.Dispensers != null)
+            {
+                foreach (var dispenser in courtDetails.Dispensers) 
+                {
+                    dispenser.DispenserTranslation = "Dispensador";
+                    dispenser.NumberHoseTranslation = "Número de Manguera";
+                    dispenser.ProductTranslation = "Producto";
+                    dispenser.PriceTranslation = "Precio";
+                    dispenser.StarttimeTranslation = "Hora de Inicio";
+                    dispenser.EndtimeTranslation = "Hora de Fin";
+                    dispenser.AccumulatedAmountTranslation = "Monto Acumulado";
+                    dispenser.AccumulatedGallonsTranslations = "Galones Acumulados";
+                    dispenser.LastAccumulatedAmountTranslation = "Último Monto Acumulado";
+                    dispenser.LastAccumulatedGallonsTranslation = "Últimos Galones Acumulados";
+                }
+            }
+
+            // Configurar traducciones para documentos
+            if (courtDetails.Documents != null)
+            {
+                foreach (var document in courtDetails.Documents) 
+                {
+                    document.CourtTranslation = "Corte";
+                    document.ThereIsNoImageTranslation = "No hay imagen";
+                }
+            }
+
+            // Configurar traducciones para gastos
+            if (courtDetails.Expenditures != null)
+            {
+                foreach (var expenditure in courtDetails.Expenditures) 
+                {
+                    expenditure.DateTranslation = "Fecha";
+                    expenditure.ExpenditureTranslation = "Gasto";
+                    expenditure.AmountTranslation = "Monto";
+                    expenditure.DescriptionTranslation = "Descripción";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error setting translations: {ex.Message}");
+        }
+    }
+
     private async Task<CourtListItemModel> GetCourtDetailsAsync(long courtId)
     {
         if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("No auth token available");
             return null;
+        }
 
         try
         {
@@ -276,27 +366,54 @@ public class StrongBoxService : INotifyPropertyChanged
             httpClient.Timeout = TimeSpan.FromSeconds(15);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            System.Diagnostics.Debug.WriteLine($"Loading court details for ID: {courtId}");
+            System.Diagnostics.Debug.WriteLine($"Loading court details for ID: {courtId} from URL: {url}");
             var startTime = DateTime.Now;
 
             var response = await httpClient.GetAsync(url);
             
             var elapsed = DateTime.Now - startTime;
-            System.Diagnostics.Debug.WriteLine($"Court API call took: {elapsed.TotalMilliseconds}ms");
+            System.Diagnostics.Debug.WriteLine($"Court API call took: {elapsed.TotalMilliseconds}ms, Status: {response.StatusCode}");
 
             if (!response.IsSuccessStatusCode)
             {
-                System.Diagnostics.Debug.WriteLine($"Error getting court details: {response.StatusCode}");
-                return null;
+                System.Diagnostics.Debug.WriteLine($"Error getting court details: {response.StatusCode} - {response.ReasonPhrase}");
+                
+                // Intentar leer el contenido del error para más detalles
+                try
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"Error content: {errorContent}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Could not read error content: {ex.Message}");
+                }
+                
+                // Si el endpoint individual falla, intentar con el método de fallback
+                System.Diagnostics.Debug.WriteLine("Trying fallback method...");
+                return await GetCourtDetailsFallbackAsync(courtId);
             }
 
             var json = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Received JSON response length: {json?.Length ?? 0} characters");
+            
+            if (string.IsNullOrEmpty(json))
+            {
+                System.Diagnostics.Debug.WriteLine("Received empty JSON response");
+                return await GetCourtDetailsFallbackAsync(courtId);
+            }
             
             // Intentar deserializar como objeto único primero
             var courtDetails = JsonSerializer.Deserialize<CourtListItemModel>(json, 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            System.Diagnostics.Debug.WriteLine($"Successfully loaded court details for ID: {courtId}");
+            if (courtDetails == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Deserialization returned null");
+                return await GetCourtDetailsFallbackAsync(courtId);
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Successfully loaded court details for ID: {courtId}, Court: {courtDetails.Id}");
             return courtDetails;
         }
         catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
@@ -308,9 +425,23 @@ public class StrongBoxService : INotifyPropertyChanged
                 "OK");
             return null;
         }
+        catch (HttpRequestException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"HTTP error getting court details: {ex.Message}");
+            
+            // Intentar el método de fallback en caso de error HTTP
+            return await GetCourtDetailsFallbackAsync(courtId);
+        }
+        catch (JsonException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"JSON deserialization error: {ex.Message}");
+            
+            // Intentar el método de fallback en caso de error de JSON
+            return await GetCourtDetailsFallbackAsync(courtId);
+        }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error getting court details: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Unexpected error getting court details: {ex.Message}");
             
             // Fallback: Si el endpoint individual no funciona, usar el método anterior pero con timeout corto
             return await GetCourtDetailsFallbackAsync(courtId);
@@ -324,23 +455,79 @@ public class StrongBoxService : INotifyPropertyChanged
         {
             System.Diagnostics.Debug.WriteLine($"Using fallback method for court ID: {courtId}");
             
-            string url = $"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=20"; // Reducir a 20 en lugar de 100
+            string url = $"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=50"; // Aumentar un poco el tamaño para mejor cobertura
             using var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(10); // Timeout más corto
+            httpClient.Timeout = TimeSpan.FromSeconds(15); // Timeout un poco más largo para el fallback
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
+            System.Diagnostics.Debug.WriteLine($"Fallback: Loading from URL: {url}");
             var response = await httpClient.GetAsync(url);
+            
             if (!response.IsSuccessStatusCode)
             {
+                System.Diagnostics.Debug.WriteLine($"Fallback: HTTP error {response.StatusCode} - {response.ReasonPhrase}");
                 return null;
             }
 
             var json = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Fallback: Received JSON response length: {json?.Length ?? 0} characters");
+            
+            if (string.IsNullOrEmpty(json))
+            {
+                System.Diagnostics.Debug.WriteLine("Fallback: Received empty JSON response");
+                return null;
+            }
+
             var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(json, 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            var result = courts?.FirstOrDefault(c => c.Id == courtId);
+            if (courts == null || !courts.Any())
+            {
+                System.Diagnostics.Debug.WriteLine("Fallback: No courts found in response");
+                return null;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Fallback: Found {courts.Count} courts, searching for ID: {courtId}");
+            
+            var result = courts.FirstOrDefault(c => c.Id == courtId);
             System.Diagnostics.Debug.WriteLine($"Fallback method found court: {result != null}");
+            
+            if (result == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Fallback: Court with ID {courtId} not found in the first {courts.Count} courts");
+                
+                // Intentar con más páginas si no se encuentra en la primera
+                for (int page = 2; page <= 3; page++) // Intentar hasta 3 páginas
+                {
+                    try
+                    {
+                        string pageUrl = $"{Configuration.BaseUrl}/api/v1/court?PageNumber={page}&PageSize=50";
+                        System.Diagnostics.Debug.WriteLine($"Fallback: Trying page {page} - {pageUrl}");
+                        
+                        var pageResponse = await httpClient.GetAsync(pageUrl);
+                        if (pageResponse.IsSuccessStatusCode)
+                        {
+                            var pageJson = await pageResponse.Content.ReadAsStringAsync();
+                            var pageCourts = JsonSerializer.Deserialize<List<CourtListItemModel>>(pageJson, 
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            
+                            if (pageCourts?.Any() == true)
+                            {
+                                result = pageCourts.FirstOrDefault(c => c.Id == courtId);
+                                if (result != null)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Fallback: Found court in page {page}");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Fallback: Error loading page {page}: {ex.Message}");
+                    }
+                }
+            }
             
             return result;
         }

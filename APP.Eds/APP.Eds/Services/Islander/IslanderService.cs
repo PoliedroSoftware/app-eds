@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Islander;
 using APP.Eds.Services.Config;
+using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -540,13 +541,13 @@ public class IslanderService : INotifyPropertyChanged
         {
             if (string.IsNullOrEmpty(_authToken))
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
                 return;
             }
 
             if (SelectedEds is null)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un EDS", "OK");
+                await CustomAlert.ShowErrorAsync("Por favor, seleccione un EDS", "EDS Requerido");
                 return;
             }
 
@@ -575,7 +576,15 @@ public class IslanderService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Islero registrado correctamente", "OK");
+                await CustomAlert.ShowSuccessAsync(
+                    $"Islero registrado exitosamente:\n\n" +
+                    $"• Nombre: {Name}\n" +
+                    $"• Email: {Email}\n" +
+                    $"• Primer Nombre: {FirstName}\n" +
+                    $"• Apellidos: {LastName}\n" +
+                    $"• EDS: {SelectedEds.Name}\n" +
+                    $"• Rol: {SelectedRole ?? "Operario"}", 
+                    "Islero Registrado");
                 
                 // Add to enhanced list
                 var newIslander = new EnhancedIslanderItem
@@ -604,12 +613,12 @@ public class IslanderService : INotifyPropertyChanged
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo registrar el islero: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync($"No se pudo registrar el islero: {response.StatusCode}\n{error}", "Error del Servidor");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al registrar el islero: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync($"Error al registrar el islero: {ex.Message}", "Error del Sistema");
         }
     }
 
