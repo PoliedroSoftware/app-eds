@@ -9,6 +9,7 @@ using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace APP.Eds.Services.TypeOfCollection
 {
@@ -24,6 +25,15 @@ namespace APP.Eds.Services.TypeOfCollection
         public bool IsDefault { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Icon { get; set; } = "💳";
+        
+        // New property for handling specific payment amounts
+        public decimal Amount { get; set; }
+        
+        // Property to show formatted amount for display
+        public string FormattedAmount => $"${Amount:N2}";
+        
+        // Property to check if this payment method has an amount assigned
+        public bool HasAmount => Amount > 0;
     }
 
     public class TypeOfCollectionService : INotifyPropertyChanged
@@ -305,6 +315,8 @@ namespace APP.Eds.Services.TypeOfCollection
         public ICommand FilterDigitalCommand { get; private set; }
         public ICommand EditPaymentMethodCommand { get; private set; }
         public ICommand DeletePaymentMethodCommand { get; private set; }
+        public ICommand ValidatePaymentCompletionCommand { get; private set; }
+        public ICommand ShowPaymentMethodsPopupCommand { get; private set; }
 
         public TypeOfCollectionService()
         {
@@ -323,6 +335,8 @@ namespace APP.Eds.Services.TypeOfCollection
             FilterDigitalCommand = new Command(() => FilterPaymentMethods("digital"));
             EditPaymentMethodCommand = new Command<PaymentMethodItem>(async (method) => await EditPaymentMethodAsync(method));
             DeletePaymentMethodCommand = new Command<PaymentMethodItem>(async (method) => await DeletePaymentMethodAsync(method));
+            ValidatePaymentCompletionCommand = new Command(async () => await ValidatePaymentCompletionAsync());
+            ShowPaymentMethodsPopupCommand = new Command(async () => await ShowPaymentMethodsPopupAsync());
         }
 
         private void InitializeOptions()
@@ -405,10 +419,138 @@ namespace APP.Eds.Services.TypeOfCollection
 
         private async Task LoadPaymentMethodsAsync()
         {
+            if (string.IsNullOrEmpty(_authToken))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+                return;
+            }
+
             try
             {
-                // Create sample payment methods
-                // In real implementation, this would come from the API
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                
+                // Call the type-of-collection API endpoint to get payment methods
+                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection");
+                
+                var apiResponse = JsonSerializer.Deserialize<TypeOfCollectionApiResponse>(response, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                PaymentMethodsList.Clear();
+                
+                if (apiResponse?.Data != null)
+                {
+                    foreach (var item in apiResponse.Data.OrderBy(x => x.Description))
+                    {
+                        // Parse the description to extract payment method details
+                        var paymentMethod = ParsePaymentMethodFromDescription(item.IdTypeOfCollection, item.Description);
+                        if (paymentMethod != null)
+                        {
+                            PaymentMethodsList.Add(paymentMethod);
+                        }
+                    }
+                }
+
+                // If no payment methods are loaded from API, add some default sample data as fallback
+                if (!PaymentMethodsList.Any())
+                {
+                    await LoadSamplePaymentMethodsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading payment methods from API: {ex.Message}");
+                
+                // Fallback to sample data if API call fails
+                await LoadSamplePaymentMethodsAsync();
+                
+                // Show error message to user
+                await Application.Current.MainPage.DisplayAlert("Advertencia", 
+                    $"No se pudieron cargar los métodos de pago desde el servidor. Se muestran datos de ejemplo.\nError: {ex.Message}", "OK");
+            }
+        }
+
+        private PaymentMethodItem ParsePaymentMethodFromDescription(int id, string description)
+        {
+            try
+            {
+                // Example description format: "[Efectivo Pesos] Tipo: Efectivo, Metodo: Efectivo Pesos, Proveedor: N/A, Comision: 0%, Estado: Activo - Pago en efectivo moneda nacional"
+                
+                if (string.IsNullOrWhiteSpace(description))
+                {
+                    return new PaymentMethodItem 
+                    { 
+                        Id = id, 
+                        Name = "Método sin nombre", 
+                        Type = "Generico", 
+                        Provider = "N/A", 
+                        ProcessingFee = 0, 
+                        Status = "Activo", 
+                        Description = description ?? "", 
+                        Icon = "💳" 
+                    };
+                }
+
+                var paymentMethod = new PaymentMethodItem { Id = id, Description = description };
+
+                // Extract name from brackets [Name]
+                var nameMatch = System.Text.RegularExpressions.Regex.Match(description, @"\[(.*?)\]");
+                paymentMethod.Name = nameMatch.Success ? nameMatch.Groups[1].Value : "Método desconocido";
+
+                // Extract type
+                var typeMatch = System.Text.RegularExpressions.Regex.Match(description, @"Tipo:\s*([^,]+)");
+                paymentMethod.Type = typeMatch.Success ? typeMatch.Groups[1].Value.Trim() : "Generico";
+
+                // Extract provider
+                var providerMatch = System.Text.RegularExpressions.Regex.Match(description, @"Proveedor:\s*([^,]+)");
+                paymentMethod.Provider = providerMatch.Success ? providerMatch.Groups[1].Value.Trim() : "N/A";
+
+                // Extract processing fee
+                var feeMatch = System.Text.RegularExpressions.Regex.Match(description, @"Comision:\s*([0-9.,]+)");
+                if (feeMatch.Success && decimal.TryParse(feeMatch.Groups[1].Value.Replace("%", "").Trim(), out decimal fee))
+                {
+                    paymentMethod.ProcessingFee = fee;
+                }
+
+                // Extract status
+                var statusMatch = System.Text.RegularExpressions.Regex.Match(description, @"Estado:\s*([^-]+)");
+                paymentMethod.Status = statusMatch.Success ? statusMatch.Groups[1].Value.Trim() : "Activo";
+
+                // Set icon based on type
+                paymentMethod.Icon = GetPaymentIcon(paymentMethod.Type);
+
+                // Set authentication and default flags based on type
+                paymentMethod.RequiresAuth = paymentMethod.Type != "Efectivo";
+                paymentMethod.IsDefault = paymentMethod.Type == "Efectivo" && paymentMethod.Name.Contains("Pesos");
+
+                return paymentMethod;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error parsing payment method description: {ex.Message}");
+                
+                // Return a basic payment method if parsing fails
+                return new PaymentMethodItem 
+                { 
+                    Id = id, 
+                    Name = description?.Length > 50 ? description.Substring(0, 50) + "..." : description ?? "Método desconocido", 
+                    Type = "Generico", 
+                    Provider = "N/A", 
+                    ProcessingFee = 0, 
+                    Status = "Activo", 
+                    Description = description ?? "", 
+                    Icon = "💳" 
+                };
+            }
+        }
+
+        private async Task LoadSamplePaymentMethodsAsync()
+        {
+            try
+            {
+                // Create sample payment methods as fallback
                 var sampleMethods = new List<PaymentMethodItem>
                 {
                     new PaymentMethodItem { Id = 1, Name = "Efectivo Pesos", Type = "Efectivo", Provider = "N/A", ProcessingFee = 0, Status = "Activo", RequiresAuth = false, IsDefault = true, Description = "Pago en efectivo moneda nacional", Icon = "💵" },
@@ -425,7 +567,7 @@ namespace APP.Eds.Services.TypeOfCollection
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando formas de pago: {ex.Message}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando formas de pago de ejemplo: {ex.Message}", "OK");
             }
         }
 
@@ -492,19 +634,11 @@ namespace APP.Eds.Services.TypeOfCollection
                     UpdateStatistics();
                     await Application.Current.MainPage.DisplayAlert("Exito", "Forma de pago eliminada correctamente", "OK");
                 }
-            }
+            }   
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error eliminando forma de pago: {ex.Message}", "OK");
             }
-        }
-
-        private void UpdateStatistics()
-        {
-            TotalPaymentMethods = PaymentMethodsList.Count;
-            ActivePaymentMethods = PaymentMethodsList.Count(x => x.Status == "Activo");
-            DigitalPaymentMethods = PaymentMethodsList.Count(x => x.Type.Contains("Digital") || x.Type.Contains("Electronico") || x.Type.Contains("Transferencia"));
-            CashPaymentMethods = PaymentMethodsList.Count(x => x.Type.Contains("Efectivo"));
         }
 
         public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
@@ -526,26 +660,6 @@ namespace APP.Eds.Services.TypeOfCollection
 
             return data.Translations.TryGetValue(languageTag, out var translations) ? translations
                 : new Dictionary<string, string>();
-        }
-
-        public async Task LoadTranslationsAsync()
-        {
-            try
-            {
-                var result = await GetTranslationsByLanguageAsync("es-CO");
-                GlobalTranslations.SetTranslations(result ?? []);
-                DescriptionTitle = GlobalTranslations.Get("DescriptionTitle");
-                DescriptionLabel = GlobalTranslations.Get("DescriptionLabel");
-                DescriptionPlaceHolder = GlobalTranslations.Get("DescriptionPlaceHolder");
-                SendData = GlobalTranslations.Get("SendData");
-                ErrorEmpty = GlobalTranslations.Get("ErrorEmpty");
-                ErrorCharacteres = GlobalTranslations.Get("ErrorCharacteres");
-            }
-            catch (Exception ex)
-            {
-                // Fallback to default values if translation fails
-                Console.WriteLine($"Translation error: {ex.Message}");
-            }
         }
 
         public async Task GetByIdTypeOfCollectionDataAsync(int typeOfCollectionId)
@@ -612,26 +726,23 @@ namespace APP.Eds.Services.TypeOfCollection
                         $"• Estado: {SelectedStatus}", 
                         "Método de Pago Registrado");
             
-                    // Add to local list
-                    var icon = GetPaymentIcon(SelectedPaymentType);
-                    decimal.TryParse(ProcessingFee, out decimal fee);
-            
-                    var newMethod = new PaymentMethodItem
-                    {
-                        Id = PaymentMethodsList.Count + 1,
-                        Name = PaymentName,
-                        Type = SelectedPaymentType,
-                        Provider = PaymentProvider,
-                        ProcessingFee = fee,
-                        Status = SelectedStatus,
-                        RequiresAuth = RequiresAuth,
-                        IsDefault = IsDefault,
-                        Description = Description,
-                        Icon = icon
-                    };
-            
-                    PaymentMethodsList.Insert(0, newMethod);
+                    // Reload payment methods from API to get the latest data
+                    await LoadPaymentMethodsAsync();
                     UpdateStatistics();
+                    
+                    // Auto-validate payment completion after saving
+                    await ValidatePaymentCompletionAsync();
+                    
+                    // Clear form fields
+                    PaymentName = string.Empty;
+                    SelectedPaymentType = string.Empty;
+                    SelectedPaymentMethod = string.Empty;
+                    PaymentProvider = string.Empty;
+                    ProcessingFee = string.Empty;
+                    SelectedStatus = string.Empty;
+                    Description = string.Empty;
+                    RequiresAuth = false;
+                    IsDefault = false;
                 }
                 else
                 {
@@ -647,6 +758,76 @@ namespace APP.Eds.Services.TypeOfCollection
                     $"Error al registrar la forma de pago: {ex.Message}", 
                     "Error del Sistema");
             }
+        }
+
+        public async Task LoadTranslationsAsync()
+        {
+            try
+            {
+                var result = await GetTranslationsByLanguageAsync("es-CO");
+                GlobalTranslations.SetTranslations(result ?? []);
+                DescriptionTitle = GlobalTranslations.Get("DescriptionTitle");
+                DescriptionLabel = GlobalTranslations.Get("DescriptionLabel");
+                DescriptionPlaceHolder = GlobalTranslations.Get("DescriptionPlaceHolder");
+                SendData = GlobalTranslations.Get("SendData");
+                ErrorEmpty = GlobalTranslations.Get("ErrorEmpty");
+                ErrorCharacteres = GlobalTranslations.Get("ErrorCharacteres");
+            }
+            catch (Exception ex)
+            {
+                // Fallback to default values if translation fails
+                Console.WriteLine($"Translation error: {ex.Message}");
+            }
+        }
+
+        // Sales and Payment Validation Properties
+        private decimal _totalSalesAmount;
+        public decimal TotalSalesAmount
+        {
+            get => _totalSalesAmount;
+            set
+            {
+                _totalSalesAmount = value;
+                OnPropertyChanged(nameof(TotalSalesAmount));
+                OnPropertyChanged(nameof(RemainingAmount));
+                OnPropertyChanged(nameof(IsPaymentComplete));
+            }
+        }
+
+        private decimal _totalPaymentMethodsAmount;
+        public decimal TotalPaymentMethodsAmount
+        {
+            get => _totalPaymentMethodsAmount;
+            set
+            {
+                _totalPaymentMethodsAmount = value;
+                OnPropertyChanged(nameof(TotalPaymentMethodsAmount));
+                OnPropertyChanged(nameof(RemainingAmount));
+                OnPropertyChanged(nameof(IsPaymentComplete));
+            }
+        }
+
+        public decimal RemainingAmount => TotalSalesAmount - TotalPaymentMethodsAmount;
+
+        public bool IsPaymentComplete => Math.Abs(RemainingAmount) < 0.01m; // Using small tolerance for decimal comparison
+
+        private bool _showPaymentMethodsPopup;
+        public bool ShowPaymentMethodsPopup
+        {
+            get => _showPaymentMethodsPopup;
+            set
+            {
+                _showPaymentMethodsPopup = value;
+                OnPropertyChanged(nameof(ShowPaymentMethodsPopup));
+            }
+        }
+
+        private void UpdateStatistics()
+        {
+            TotalPaymentMethods = PaymentMethodsList.Count;
+            ActivePaymentMethods = PaymentMethodsList.Count(x => x.Status == "Activo");
+            DigitalPaymentMethods = PaymentMethodsList.Count(x => x.Type.Contains("Digital") || x.Type.Contains("Electronico") || x.Type.Contains("Transferencia"));
+            CashPaymentMethods = PaymentMethodsList.Count(x => x.Type.Contains("Efectivo"));
         }
 
         private string GetPaymentIcon(string paymentType)
@@ -665,9 +846,206 @@ namespace APP.Eds.Services.TypeOfCollection
             };
         }
 
+        private async Task ValidatePaymentCompletionAsync()
+        {
+            try
+            {
+                // Recalculate total payment methods amount
+                CalculateTotalPaymentMethodsAmount();
+
+                if (IsPaymentComplete)
+                {
+                    await CustomAlert.ShowSuccessAsync(
+                        $"¡Felicitaciones!\n\n" +
+                        $"Se han agregado todas las formas de pago necesarias:\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total métodos de pago: ${TotalPaymentMethodsAmount:N2}\n" +
+                        $"• Diferencia: ${RemainingAmount:N2}\n\n" +
+                        $"La totalidad de los pagos ha sido registrada correctamente.",
+                        "Pagos Completos");
+
+                    // Show payment methods popup after validation
+                    await ShowPaymentMethodsPopupAsync();
+                }
+                else if (TotalPaymentMethodsAmount > TotalSalesAmount)
+                {
+                    await CustomAlert.ShowWarningAsync(
+                        $"⚠️ Atención\n\n" +
+                        $"El total de métodos de pago excede las ventas:\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total métodos de pago: ${TotalPaymentMethodsAmount:N2}\n" +
+                        $"• Excedente: ${Math.Abs(RemainingAmount):N2}\n\n" +
+                        $"Por favor, revise los montos ingresados.",
+                        "Exceso en Pagos");
+                }
+                else
+                {
+                    await CustomAlert.ShowInfoAsync(
+                        $"📋 Estado de Pagos\n\n" +
+                        $"Aún faltan métodos de pago por agregar:\n\n" +
+                        $"• Total de ventas: ${TotalSalesAmount:N2}\n" +
+                        $"• Total métodos de pago: ${TotalPaymentMethodsAmount:N2}\n" +
+                        $"• Pendiente: ${RemainingAmount:N2}\n\n" +
+                        $"Continue agregando formas de pago para completar el total.",
+                        "Pagos Pendientes");
+                }
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al validar la completitud de pagos:\n\n{ex.Message}",
+                    "Error de Validación");
+            }
+        }
+
+        public async Task ShowPaymentMethodsPopupAsync()
+        {
+            try
+            {
+                ShowPaymentMethodsPopup = true;
+                
+                // Here you can implement the logic to show the actual popup
+                // This could be navigation to a popup page or showing a modal
+                await Application.Current.MainPage.DisplayAlert(
+                    "Métodos de Pago",
+                    $"Mostrando popup con {PaymentMethodsList.Count} métodos de pago disponibles.\n\n" +
+                    $"• Total configurado: ${TotalPaymentMethodsAmount:N2}\n" +
+                    $"• Métodos activos: {ActivePaymentMethods}\n" +
+                    $"• Métodos digitales: {DigitalPaymentMethods}",
+                    "Cerrar");
+                
+                ShowPaymentMethodsPopup = false;
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al mostrar popup de métodos de pago:\n\n{ex.Message}",
+                    "Error del Sistema");
+            }
+        }
+
+        private void CalculateTotalPaymentMethodsAmount()
+        {
+            try
+            {
+                // Calculate total based on the Amount property of active payment methods
+                decimal total = 0;
+
+                foreach (var method in PaymentMethodsList.Where(x => x.Status == "Activo"))
+                {
+                    // Use Amount property if available, otherwise fall back to ProcessingFee
+                    total += method.HasAmount ? method.Amount : method.ProcessingFee;
+                }
+
+                TotalPaymentMethodsAmount = total;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error calculating total payment methods amount: {ex.Message}");
+                TotalPaymentMethodsAmount = 0;
+            }
+        }
+
+        public void SetSalesTotal(decimal salesAmount)
+        {
+            TotalSalesAmount = salesAmount;
+            CalculateTotalPaymentMethodsAmount();
+        }
+
+        // Method to update sales total from court service or external source
+        public async Task UpdateSalesTotalFromSourceAsync()
+        {
+            try
+            {
+                // Here you can implement logic to get sales total from court service or other source
+                // For now, this is a placeholder method
+                
+                // Example: Get total from court service if available
+                // var courtService = DependencyService.Get<ICourtService>();
+                // if (courtService != null)
+                // {
+                //     TotalSalesAmount = await courtService.GetTotalSalesAmountAsync();
+                // }
+                
+                CalculateTotalPaymentMethodsAmount();
+                
+                // Auto-validate after updating totals
+                if (TotalSalesAmount > 0)
+                {
+                    await ValidatePaymentCompletionAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating sales total: {ex.Message}");
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al actualizar el total de ventas:\n\n{ex.Message}",
+                    "Error del Sistema");
+            }
+        }
+
+        // Method to manually trigger validation
+        public async Task TriggerPaymentValidationAsync()
+        {
+            try
+            {
+                CalculateTotalPaymentMethodsAmount();
+                await ValidatePaymentCompletionAsync();
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al validar pagos:\n\n{ex.Message}",
+                    "Error de Validación");
+            }
+        }
+
+        public async Task AddPaymentMethodWithAmountAsync(PaymentMethodItem method, decimal amount)
+        {
+            try
+            {
+                // Set the specific amount for this payment method
+                method.Amount = amount;
+                PaymentMethodsList.Add(method);
+                
+                // Recalculate totals
+                UpdateStatistics();
+                CalculateTotalPaymentMethodsAmount();
+                
+                // Auto-validate if payment is complete
+                if (IsPaymentComplete)
+                {
+                    await ValidatePaymentCompletionAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"Error al agregar método de pago:\n\n{ex.Message}",
+                    "Error del Sistema");
+            }
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    // API response models
+    public class TypeOfCollectionApiResponse
+    {
+        public List<TypeOfCollectionData> Data { get; set; } = new();
+    }
+
+    public class TypeOfCollectionData
+    {
+        public int IdTypeOfCollection { get; set; }
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class TranslationsResponse
+    {
+        public Dictionary<string, Dictionary<string, string>> Translations { get; set; } = new();
     }
 }
