@@ -201,6 +201,16 @@
                                                                   CommandParameter="{Binding .}"/>
                                         </Border.GestureRecognizers>
                                         
+                                        <!-- Efecto visual para indicar que es clickeable -->
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="CORTE">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="Stroke" Value="#3B82F6"/>
+                                                    <Setter Property="StrokeThickness" Value="2"/>
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        
                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" RowSpacing="8" ColumnSpacing="12">
                                             
                                             <!-- Icono del tipo de movimiento -->
