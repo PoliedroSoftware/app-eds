@@ -4,11 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Cortes"
     BackgroundColor="#F1F5F9">
-    
+
+    <!-- Recursos necesarios (faltaba el convertidor de hora) -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid RowDefinitions="120,*">
-        
+
         <!-- Professional Header Section -->
         <Border Grid.Row="0"
                 BackgroundColor="#3B82F6" 
@@ -18,7 +26,7 @@
             <Border.Shadow>
                 <Shadow Brush="#3B82F6" Offset="0,6" Radius="20" Opacity="0.15"/>
             </Border.Shadow>
-            
+
             <StackLayout>
                 <Label Text="📋 Historial de Cortes" 
                        FontSize="26" 
@@ -37,8 +45,9 @@
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding CourtList}" 
                         SelectionChanged="OnCourtSelected"
+                        SelectionMode="None"
                         BackgroundColor="Transparent">
-            
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <!-- Enhanced Court Card with Better Differentiation -->
@@ -51,24 +60,24 @@
                         <Border.Shadow>
                             <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
                         </Border.Shadow>
-                        
+
                         <!-- Left Color Bar for Visual Separation -->
                         <Grid ColumnDefinitions="6,*">
-                            
+
                             <!-- Color-coded Left Border -->
                             <Border Grid.Column="0"
                                     BackgroundColor="#10B981"
                                     StrokeShape="RoundRectangle 16,0,0,16"/>
-                            
+
                             <!-- Main Content -->
                             <Grid Grid.Column="1" RowDefinitions="Auto,*,Auto">
-                                
+
                                 <!-- Header Section with Islander Name -->
                                 <Border Grid.Row="0"
                                         BackgroundColor="#F8FAFC"
                                         StrokeShape="RoundRectangle 0,16,0,0"
                                         Padding="24,20">
-                                    
+
                                     <Grid ColumnDefinitions="Auto,*,Auto">
                                         <Border Grid.Column="0"
                                                 BackgroundColor="#3B82F6"
@@ -81,7 +90,7 @@
                                                    VerticalOptions="Center"
                                                    TextColor="White"/>
                                         </Border>
-                                        
+
                                         <StackLayout Grid.Column="1" 
                                                      VerticalOptions="Center" 
                                                      Margin="16,0,0,0">
@@ -93,7 +102,7 @@
                                                    FontSize="13" 
                                                    TextColor="#64748B"/>
                                         </StackLayout>
-                                        
+
                                         <!-- Enhanced Status Indicator -->
                                         <Border Grid.Column="2"
                                                 BackgroundColor="#F0FDF4"
@@ -120,10 +129,10 @@
 
                                 <!-- Content Section with Enhanced Layout -->
                                 <StackLayout Grid.Row="1" Padding="24,20" Spacing="16">
-                                    
+
                                     <!-- Date and Time Row with Better Contrast -->
                                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
-                                        
+
                                         <!-- Date Section -->
                                         <Border Grid.Column="0"
                                                 BackgroundColor="#FEF3C7"
@@ -184,7 +193,7 @@
 
                                     <!-- Financial Summary Row with Professional Design -->
                                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
-                                        
+
                                         <!-- Total Money -->
                                         <Border Grid.Column="0"
                                                 BackgroundColor="#F0FDF4"
@@ -240,7 +249,7 @@
                                         BackgroundColor="#F8FAFC"
                                         StrokeShape="RoundRectangle 0,0,0,16"
                                         Padding="24,16">
-                                    
+
                                     <Grid ColumnDefinitions="*,Auto">
                                         <!-- Performance Indicator -->
                                         <StackLayout Grid.Column="0" 
@@ -262,7 +271,7 @@
                                                 </StackLayout>
                                             </Border>
                                         </StackLayout>
-                                        
+
                                         <!-- Detail Button with Enhanced Design -->
                                         <Border Grid.Column="1"
                                                 BackgroundColor="#3B82F6"
@@ -272,7 +281,7 @@
                                             <Border.Shadow>
                                                 <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.2"/>
                                             </Border.Shadow>
-                                            
+
                                             <Button Text="📋"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
                                                     CommandParameter="{Binding}"
@@ -293,7 +302,7 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            
+
             <!-- Enhanced Empty State -->
             <CollectionView.EmptyView>
                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
@@ -305,7 +314,7 @@
                         <Border.Shadow>
                             <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
                         </Border.Shadow>
-                        
+
                         <StackLayout Spacing="16" HorizontalOptions="Center">
                             <Border BackgroundColor="#F8FAFC"
                                     StrokeShape="RoundRectangle 40"
