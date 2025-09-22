@@ -15,10 +15,27 @@ namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
+    private async Task ShowOperationalSectionsAsync()
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            // 1) Activa flags que controlan IsVisible en XAML
+            //    (XAML: AddedDispensers -> VisibleDispenser, TypesofAggregateCollections -> VisibleReceipts)
+            _service.VisibleDispenser = true;
+            _service.VisibleReceipts = true;
+
+            // 2) Fallback directo por si alguna binding no dispara
+            this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, true);
+            this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, true);
+
+            // 3) Opcional: refresca las CollectionView por si ya hay datos cargados
+            await RefreshSectionsAsync(refreshDispensers: true, refreshPayments: true);
+        });
+    }
     private CourtService _service;
     public string UserRole { get; set; } = string.Empty;
 
-    // === NUEVO: control de visibilidad / edición de secciones ===
+    // --- Estado de edición/visibilidad controlado por la página (x:Reference CortePage)
     private bool _seccionesVisibles = true;
     public bool SeccionesVisibles
     {
@@ -42,9 +59,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             OnPropertyChanged(nameof(PuedeEditar));
         }
     }
-    // ============================================================
+    // ---------------------------------------------------------------------------
 
-    // Propiedad para el elemento activo del menú
+    // Menú inferior: elemento activo (solo visual/animación)
     private string _activeNavItem = "Document";
     public string ActiveNavItem
     {
@@ -59,14 +76,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     public CourtPostView()
     {
-        // Inicialización manual si InitializeComponent no está disponible
-        try
-        {
-            InitializeComponent();
-        }
+        try { InitializeComponent(); }
         catch
         {
-            // Fallback manual initialization
             Title = "Cierre De Turno";
             BackgroundColor = Color.FromArgb("#F8F9FA");
             Content = CreateContent();
@@ -75,58 +87,44 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         _service = CourtService.Instance;
         _service.DateStarttime = DateTime.Today;
 
-        // Mantén el BindingContext en el servicio (no romper Court.* bindings)
+        // El BindingContext sigue siendo el servicio (todas las bindings Court.* funcionan)
         BindingContext = _service;
 
-        // Estado inicial: visible y editable
-        SeccionesVisibles = true;
-        PuedeEditar = true;
+        // Estado inicial para un flujo nuevo
+        SetEditingState(canEdit: true, showSections: true);
 
-        // Configurar DatePicker después de la inicialización
         ConfigureDatePickerAsync();
-
-        Task.Run(async () => await _service.LoadTranslationsAsync());
+        _ = _service.LoadTranslationsAsync();
 
         UserRole = Preferences.Get("userRole", string.Empty);
 
+        // Aplica configuración persistida sobre el SERVICIO (no sobre controles)
         string configJson = Preferences.Get("userConfig", "{}");
         var config = JsonSerializer.Deserialize<Dictionary<string, bool>>(configJson);
+        if (config is not null) ApplyConfigToService(config);
 
-        if (config != null)
-        {
-            ApplyConfig(config);
-        }
-
-        // Establecer el elemento activo inicial
         ActiveNavItem = "Document";
     }
 
     private async void ConfigureDatePickerAsync()
     {
-        await Task.Run(async () =>
+        await MainThread.InvokeOnMainThreadAsync(() =>
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
+            try
             {
-                try
-                {
-                    var picker = this.FindByName<DatePicker>("datePicker");
-                    if (picker != null)
-                    {
-                        picker.MinimumDate = new DateTime(1900, 1, 1);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error setting datePicker MinimumDate: {ex.Message}");
-                }
-            });
+                var picker = this.FindByName<DatePicker>("datePicker");
+                if (picker != null)
+                    picker.MinimumDate = new DateTime(1900, 1, 1);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error setting datePicker MinimumDate: {ex.Message}");
+            }
         });
     }
 
-    private View CreateContent()
-    {
-        // Crear contenido básico si no se puede usar InitializeComponent
-        return new StackLayout
+    private View CreateContent() =>
+        new StackLayout
         {
             Children =
             {
@@ -140,33 +138,27 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 }
             }
         };
-    }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        // Siempre que se abre esta página se asume un nuevo flujo editable
+        SetEditingState(canEdit: true, showSections: true);
+
+        var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+        var mainContent = this.FindByName<ScrollView>("MainContent");
         try
         {
-            // Manejo seguro de LoadingOverlay
-            var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
-            try { loadingOverlay?.ShowLoading(); } catch { }
+            loadingOverlay?.ShowLoading();
+            if (mainContent != null) mainContent.IsVisible = false;
 
-            // Manejo seguro de MainContent
-            var mainContent = this.FindByName<ScrollView>("MainContent");
-            try { if (mainContent != null) mainContent.IsVisible = false; } catch { }
-
-            // Manejo seguro de Business visibility
+            // Mostrar/ocultar tarjeta Business por rol (Admin la ve)
             var businessBorder = this.FindByName<Border>("Business");
-            try
-            {
-                if (businessBorder != null)
-                    businessBorder.IsVisible = (UserRole is "Admin");
-            }
-            catch { }
+            if (businessBorder != null)
+                businessBorder.IsVisible = (UserRole == "Admin");
 
             await _service.LoadTranslationsAsync();
-
-            // Animar la entrada del menú
             await AnimateBottomNavEntry();
         }
         catch (Exception ex)
@@ -175,82 +167,47 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
         finally
         {
-            // Manejo seguro de LoadingOverlay y MainContent
-            var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
-            var mainContent = this.FindByName<ScrollView>("MainContent");
             try { loadingOverlay?.HideLoading(); } catch { }
-            try { if (mainContent != null) mainContent.IsVisible = true; } catch { }
+            if (mainContent != null) mainContent.IsVisible = true;
         }
     }
 
-    protected override void OnDisappearing()
+    // Aplica banderas de visibilidad guardadas al SERVICE (no a la UI)
+    private void ApplyConfigToService(Dictionary<string, bool> config)
     {
-        base.OnDisappearing();
+        if (config.TryGetValue("VisibleDispenser", out bool v1)) _service.VisibleDispenser = v1;
+        if (config.TryGetValue("VisibleReceipts", out bool v2)) _service.VisibleReceipts = v2;
+        if (config.TryGetValue("VisibleDocuments", out bool v3)) _service.VisibleDocuments = v3;
+        if (config.TryGetValue("VisibleExpenses", out bool v4)) _service.VisibleExpenses = v4;
     }
 
-    private void ApplyConfig(Dictionary<string, bool> config)
+    // Helper: establece edición/visibilidad y notifica a XAML
+    private void SetEditingState(bool canEdit, bool showSections)
     {
-        foreach (var kvp in config)
-        {
-            var element = this.FindByName<VisualElement>(kvp.Key);
-            if (element != null)
-            {
-                element.IsVisible = kvp.Value;
-            }
-        }
+        PuedeEditar = canEdit;
+        SeccionesVisibles = showSections;
     }
 
-    /// <summary>
-    /// Métodos específicos para cada botón del menú inferior
-    /// </summary>
-    private async void OnDocumentTapped(object sender, EventArgs e)
-    {
-        await HandleNavTap("Document");
-    }
+    // === Navegación inferior ===
+    private async void OnDocumentTapped(object sender, EventArgs e) => await HandleNavTap("Document");
+    private async void OnExpenseTapped(object sender, EventArgs e) => await HandleNavTap("Expense");
+    private async void OnInfoTapped(object sender, EventArgs e) => await HandleNavTap("Info");
+    private async void OnHistoryTapped(object sender, EventArgs e) => await HandleNavTap("History");
 
-    private async void OnExpenseTapped(object sender, EventArgs e)
-    {
-        await HandleNavTap("Expense");
-    }
-
-    private async void OnInfoTapped(object sender, EventArgs e)
-    {
-        await HandleNavTap("Info");
-    }
-
-    private async void OnHistoryTapped(object sender, EventArgs e)
-    {
-        await HandleNavTap("History");
-    }
-
-    /// <summary>
-    /// Maneja los taps en el menú de navegación inferior (método centralizado)
-    /// </summary>
     private async Task HandleNavTap(string navItem)
     {
         try
         {
-            if (string.IsNullOrEmpty(navItem))
-            {
-                Debug.WriteLine("NavItem is null or empty");
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(navItem)) return;
 
-            // 🚫 bloqueo de navegación/edición tras enviar
-            if (!PuedeEditar)
+            if (!PuedeEditar && navItem is "Document" or "Expense" or "Info")
             {
                 await CustomAlert.ShowErrorAsync("El corte ya fue enviado. Edición bloqueada.", "Corte cerrado");
                 return;
             }
 
-            Debug.WriteLine($"Navigation tap: {navItem}");
-
             ActiveNavItem = navItem;
-
-            // Animar el tap
             await AnimateNavItemTap(navItem);
-
-            // Ejecutar la acción correspondiente
             await ExecuteNavAction(navItem);
         }
         catch (Exception ex)
@@ -260,46 +217,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Maneja los taps en el menú de navegación inferior (método original mantenido por compatibilidad)
-    /// </summary>
-    private async void OnBottomNavTapped(object sender, EventArgs e)
-    {
-        try
-        {
-            string navItem = null;
-
-            if (sender is TapGestureRecognizer tapGesture && tapGesture.CommandParameter is string commandParam)
-            {
-                navItem = commandParam;
-            }
-            else if (sender is View viewElement && viewElement.GestureRecognizers.FirstOrDefault() is TapGestureRecognizer gesture && gesture.CommandParameter is string param)
-            {
-                navItem = param;
-            }
-            else if (e is TappedEventArgs tappedArgs && tappedArgs.Parameter is string tappedParam)
-            {
-                navItem = tappedParam;
-            }
-
-            if (string.IsNullOrEmpty(navItem))
-            {
-                Debug.WriteLine("No se pudo determinar el elemento de navegación");
-                return;
-            }
-
-            await HandleNavTap(navItem);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error in bottom nav tap: {ex.Message}");
-            await CustomAlert.ShowErrorAsync("No se pudo procesar la acción del menú", "Error de Navegación");
-        }
-    }
-
-    /// <summary>
-    /// Anima la entrada del menú inferior con efectos mejorados
-    /// </summary>
     private async Task AnimateBottomNavEntry()
     {
         try
@@ -309,25 +226,19 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
             if (bottomNavBorder != null)
             {
-                // Inicializar posición fuera de pantalla
                 bottomNavBorder.TranslationY = 120;
                 bottomNavBorder.Opacity = 0;
-
-                // Animar entrada del menú completo
                 await Task.WhenAll(
                     bottomNavBorder.TranslateTo(0, 0, 700, Easing.SpringOut),
                     bottomNavBorder.FadeTo(1, 400, Easing.CubicOut)
                 );
             }
 
-            // Animar el indicador deslizante después de un breve delay
             if (slidingBackground != null)
             {
                 await Task.Delay(200);
                 slidingBackground.Opacity = 0;
                 await slidingBackground.FadeTo(0.15, 300, Easing.CubicOut);
-
-                // Inicializar posición del indicador
                 await AnimateToActiveItem(ActiveNavItem);
             }
         }
@@ -337,9 +248,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Anima el indicador deslizante hacia el elemento activo
-    /// </summary>
     private async Task AnimateToActiveItem(string activeItem)
     {
         try
@@ -347,7 +255,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             var slidingBackground = this.FindByName<Border>("SlidingBackground");
             if (slidingBackground == null) return;
 
-            // Calcular la posición del indicador basada en el elemento activo
             double targetX = activeItem switch
             {
                 "Document" => 0,
@@ -357,17 +264,14 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 _ => 0
             };
 
-            // Obtener el ancho de la pantalla y calcular la posición
             var screenWidth = Application.Current?.MainPage?.Width ?? 400;
             var itemWidth = screenWidth / 4;
-            var indicatorPosition = (targetX * itemWidth) + (itemWidth / 2) - 28; // Centrar el círculo
+            var indicatorPosition = (targetX * itemWidth) + (itemWidth / 2) - 28;
 
-            // Animar el background deslizante con efecto suave
             await Task.WhenAll(
                 slidingBackground.TranslateTo(indicatorPosition, 0, 350, Easing.CubicOut),
                 slidingBackground.ScaleTo(1.1, 200, Easing.SpringOut)
             );
-
             await slidingBackground.ScaleTo(1.0, 150, Easing.SpringIn);
         }
         catch (Exception ex)
@@ -376,29 +280,22 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Anima el elemento del menú cuando se toca con efectos mejorados
-    /// </summary>
     private async Task AnimateNavItemTap(string navItem)
     {
         try
         {
             var itemGrid = this.FindByName<Grid>($"{navItem}Button");
             var itemCircle = this.FindByName<Ellipse>($"{navItem}Circle");
-
             if (itemGrid == null) return;
 
-            // Animación de pulso con escalado del círculo
             await Task.WhenAll(
                 itemGrid.ScaleTo(0.9, 80, Easing.CubicOut),
                 itemCircle?.ScaleTo(0.85, 80, Easing.CubicOut) ?? Task.CompletedTask
             );
-
             await Task.WhenAll(
                 itemGrid.ScaleTo(1.05, 120, Easing.SpringOut),
                 itemCircle?.ScaleTo(1.2, 120, Easing.SpringOut) ?? Task.CompletedTask
             );
-
             await Task.WhenAll(
                 itemGrid.ScaleTo(1, 100, Easing.CubicOut),
                 itemCircle?.ScaleTo(1, 100, Easing.CubicOut) ?? Task.CompletedTask
@@ -410,30 +307,16 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Ejecuta la acción correspondiente al elemento del menú
-    /// </summary>
     private async Task ExecuteNavAction(string navItem)
     {
         try
         {
             switch (navItem)
             {
-                case "Document":
-                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-                    await OpenDocumentPopUp();
-                    break;
-                case "Expense":
-                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-                    await OpenExpenditurePopUp();
-                    break;
-                case "Info":
-                    if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-                    await OpenAdditionalInfoPopUp();
-                    break;
-                case "History":
-                    await OnShowCourtListClicked();
-                    break;
+                case "Document": await OpenDocumentPopUp(); break;
+                case "Expense": await OpenExpenditurePopUp(); break;
+                case "Info": await OpenAdditionalInfoPopUp(); break;
+                case "History": await OnShowCourtListClicked(); break;
             }
         }
         catch (Exception ex)
@@ -443,14 +326,64 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // ====== REFRESCO FINO DE SECCIONES (sin recargar toda la página) ======
+    // ====== REFRESCO FINO DE SECCIONES (sin recargar toda la página) ======
+    private async Task RefreshSectionsAsync(bool refreshDispensers, bool refreshPayments)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            // 1) Ventas por mangueras
+            if (refreshDispensers)
+            {
+                var cvDisp = this.FindByName<CollectionView>("CourtDispensers");
+                if (cvDisp != null)
+                {
+                    // Truco: quitar ItemsSource y togglear visibilidad para forzar render
+                    var wasVisible = cvDisp.IsVisible;
+
+                    cvDisp.ItemsSource = null;
+                    cvDisp.IsVisible = false;
+                    await Task.Yield();            // cede un frame al UI thread
+                    cvDisp.ItemsSource = _service.CourtDispensers; // ideal: ObservableCollection<>
+                    cvDisp.IsVisible = wasVisible || true;
+                }
+            }
+
+            // 2) Formas de pago
+            if (refreshPayments)
+            {
+                var cvPays = this.FindByName<CollectionView>("CourtTypeOfCollections");
+                if (cvPays != null)
+                {
+                    var wasVisible = cvPays.IsVisible;
+
+                    cvPays.ItemsSource = null;
+                    cvPays.IsVisible = false;
+                    await Task.Yield();
+                    cvPays.ItemsSource = _service.CourtTypeOfCollections; // ideal: ObservableCollection<>
+                    cvPays.IsVisible = wasVisible || true;
+                }
+            }
+
+            // 3) (Opcional) recalcular tarjetas/resúmenes si el servicio no lanza PropertyChanged
+            try
+            {
+                _service.TotalAmount = _service.GetTotalAmount();
+                _service.TotalTypeOfCollection = _service.GetTotalTypeOfCollection();
+                _service.TotalExpenditure = _service.GetTotalExpenditure();
+                _service.TotalSales = _service.TotalAmount; // o tu fórmula real
+            }
+            catch { /* si alguna propiedad no existe, el rebind ya refresca la UI */ }
+        });
+    }
+
+    // ======================================================================
+
+    // --- Popups
     private async Task OpenDocumentPopUp()
     {
         if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-        try
-        {
-            var popup = new AddDocuemt(_service);
-            await ShowPopupSafelyAsync<object>(popup);
-        }
+        try { await ShowPopupSafelyAsync<object>(new AddDocuemt(_service)); }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening document popup: {ex.Message}");
@@ -461,11 +394,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private async Task OpenExpenditurePopUp()
     {
         if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-        try
-        {
-            var popup = new AddCourtExpenditure(_service);
-            await ShowPopupSafelyAsync<object>(popup);
-        }
+        try { await ShowPopupSafelyAsync<object>(new AddCourtExpenditure(_service)); }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening expenditure popup: {ex.Message}");
@@ -476,11 +405,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private async Task OpenAdditionalInfoPopUp()
     {
         if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-        try
-        {
-            var popup = new AddInfo(_service);
-            await ShowPopupSafelyAsync<object>(popup);
-        }
+        try { await ShowPopupSafelyAsync<object>(new AddInfo(_service)); }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening info popup: {ex.Message}");
@@ -490,10 +415,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async Task OnShowCourtListClicked()
     {
-        try
-        {
-            await Navigation.PushAsync(new CourtListView());
-        }
+        try { await Navigation.PushAsync(new CourtListView()); }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error navigating to court list: {ex.Message}");
@@ -501,14 +423,15 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    // Métodos existentes adaptados
+    // --- Botones obligatorios
     private async void OpenDispenserPopUp(object sender, EventArgs e)
     {
         if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
-            var popup = new AddDispenser(_service);
-            await ShowPopupSafelyAsync<object>(popup);
+            await ShowPopupSafelyAsync<object>(new AddDispenser(_service));
+            // Refrescar SOLO ventas por mangueras
+            await RefreshSectionsAsync(refreshDispensers: true, refreshPayments: false);
         }
         catch (Exception ex)
         {
@@ -522,8 +445,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
         try
         {
-            var popup = new AddCourtTypeOfCollection(_service);
-            await ShowPopupSafelyAsync<object>(popup);
+            await ShowPopupSafelyAsync<object>(new AddCourtTypeOfCollection(_service));
+            // Refrescar SOLO formas de pago
+            await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: true);
         }
         catch (Exception ex)
         {
@@ -532,140 +456,158 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // --- Envío del corte
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        var button = sender as Button;
-        if (button != null)
-        {
-            button.IsEnabled = false;
-        }
+        var btn = sender as Button;                // una sola variable -> sin CS0136
+        if (btn != null) btn.IsEnabled = false;
 
         try
         {
-            if (BindingContext is CourtService vm)
+            if (BindingContext is not CourtService vm) return;
+
+            // --- Reglas para Administrador (datos maestros) ---
+            if (UserRole == "Admin")
             {
-                double totalAmount = vm.GetTotalAmount();
-                double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
-                double totalExpenditures = vm.GetTotalExpenditure();
-
-                if (UserRole == "Admin")
+                if (vm.SelectedBusiness is null)
                 {
-                    if (vm.SelectedBusiness is null)
-                    {
-                        await CustomAlert.ShowErrorAsync("Debe seleccionar un negocio para continuar con el cierre", "Negocio Requerido");
-                        return;
-                    }
-                    if (vm.SelectedEds is null)
-                    {
-                        await CustomAlert.ShowErrorAsync("Debe seleccionar una estación de servicio (EDS) para continuar", "EDS Requerida");
-                        return;
-                    }
-                    if (vm.SelectedIslander is null)
-                    {
-                        await CustomAlert.ShowErrorAsync("Debe seleccionar un islero responsable para continuar", "Islero Requerido");
-                        return;
-                    }
-                }
-
-                if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
-                {
-                    await CustomAlert.ShowErrorAsync("Debe agregar al menos un dispensador al cierre de turno", "Dispensadores Requeridos");
+                    await CustomAlert.ShowErrorAsync(
+                        "Debe seleccionar un negocio para continuar con el cierre.",
+                        "Negocio requerido");
                     return;
                 }
-
-                if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
+                if (vm.SelectedEds is null)
                 {
-                    await CustomAlert.ShowErrorAsync("No puede cerrar turno sin registrar al menos un método de pago. Por favor agregue uno antes de continuar.", "Medios de pago requeridos");
+                    await CustomAlert.ShowErrorAsync(
+                        "Debe seleccionar una EDS para continuar.",
+                        "EDS requerida");
                     return;
                 }
-
-                double cash = totalTypeOfCollection - totalExpenditures;
-                const double epsilon = 1e-6;
-                if (cash < epsilon)
+                if (vm.SelectedIslander is null)
                 {
-                    await CustomAlert.ShowErrorAsync($"El total de efectivo no puede ser negativo.\n\nTotal recaudo: ${totalTypeOfCollection:F2}\nTotal gastos: ${totalExpenditures:F2}", "Error en Cálculos");
+                    await CustomAlert.ShowErrorAsync(
+                        "Debe seleccionar un islero responsable.",
+                        "Islero requerido");
                     return;
                 }
+            }
 
-                try
-                {
-                    var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
-                    try { loadingOverlay?.ShowLoading(); } catch { }
-                    await vm.SendCourtDataAsync();
-                }
-                finally
-                {
-                    var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
-                    try { loadingOverlay?.HideLoading(); } catch { }
-                }
+            // --- Totales actuales ---
+            double totalAmount = vm.GetTotalAmount();                  // ventas (dinero)
+            double totalTypeOfCollection = vm.GetTotalTypeOfCollection(); // formas de pago
+            double totalExpenditures = vm.GetTotalExpenditure();       // gastos
+            double cash = totalTypeOfCollection - totalExpenditures;
 
-                if (vm.LastSendWasSuccessful)
-                {
-                    // 🔴 Oculta secciones y bloquea edición tras envío
-                    OcultarSeccionesCierre();
+            // 1) Debe existir al menos un método de pago
+            if (vm.CourtTypeOfCollections == null || !vm.CourtTypeOfCollections.Any())
+            {
+                await CustomAlert.ShowErrorAsync(
+                    "Debe registrar al menos un método de pago antes de enviar.",
+                    "Medios de pago requeridos");
+                return;
+            }
 
-                    // (si necesitas refrescar datos generales)
-                    CourtService.ResetInstanceFields();
-                    _service = CourtService.Instance;
-                    BindingContext = _service;
+            // 2) Si no hay ventas/dispensadores, NO bloqueamos el envío; solo log informativo
+            if (vm.CourtDispensers == null || !vm.CourtDispensers.Any())
+            {
+                Debug.WriteLine("Aviso: enviando corte sin ventas registradas (dispensadores vacíos).");
+            }
 
-                    await _service.GetAllEdsData();
-                }
+            // 3) Efectivo no puede ser negativo
+            const double epsilon = 1e-6;
+            if (cash < -epsilon)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"El total de efectivo no puede ser negativo.\n\n" +
+                    $"Recaudo: ${totalTypeOfCollection:F2}\n" +
+                    $"Gastos : ${totalExpenditures:F2}",
+                    "Error en cálculos");
+                return;
+            }
+
+            // --- Envío ---
+            var overlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+            try { overlay?.ShowLoading(); } catch { }
+
+            await vm.SendCourtDataAsync();
+
+            try { overlay?.HideLoading(); } catch { }
+
+            if (vm.LastSendWasSuccessful)
+            {
+                // Evitar doble submit inmediatamente
+                OcultarSeccionesCierre();
+
+                // Preparar NUEVO flujo de cierre (rehabilita y muestra todo)
+                await ResetForNewCloseAsync();
+            }
+            else
+            {
+                await CustomAlert.ShowErrorAsync(
+                    "No se pudo completar el envío del corte.",
+                    "Envío fallido");
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error in Button_Clicked: {ex.Message}");
-            await CustomAlert.ShowErrorAsync($"Ocurrió un error al enviar los datos del cierre:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync(
+                $"Ocurrió un error al enviar los datos del cierre:\n\n{ex.Message}",
+                "Error del sistema");
         }
         finally
         {
-            // Re-habilitar el botón después de completar la operación
-            if (button != null)
-            {
-                button.IsEnabled = true;
-            }
+            if (btn != null) btn.IsEnabled = true; // re-habilita el MISMO botón
         }
     }
 
-    // === NUEVO: método que oculta secciones y bloquea edición ===
+    /// <summary>
+    /// Rehabilita botones y secciones para un NUEVO cierre de turno,
+    /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
+    /// </summary>
+    private async Task ResetForNewCloseAsync()
+    {
+        // Refresca el servicio/Bindings
+        CourtService.ResetInstanceFields();
+        _service = CourtService.Instance;
+        BindingContext = _service;
+
+        // Estado para nuevo flujo
+        SetEditingState(canEdit: true, showSections: true);
+
+        // Re-cargar catálogos si aplica
+        try { await _service.GetAllEdsData(); } catch { }
+    }
+
+    // Oculta secciones tras envío y bloquea edición (para evitar doble click)
     private void OcultarSeccionesCierre()
     {
-        // Bloquear edición
-        PuedeEditar = false;
+        SetEditingState(canEdit: false, showSections: false);
 
-        // Ocultar usando binding (si tu XAML usa x:Reference CortePage)
-        SeccionesVisibles = false;
-
-        // Respaldo: ocultar por nombre si existen estos contenedores
-        this.FindByName<VisualElement>("SectionHoses")?.SetValue(VisualElement.IsVisibleProperty, false);     // Ventas por mangueras
-        this.FindByName<VisualElement>("SectionPayments")?.SetValue(VisualElement.IsVisibleProperty, false);  // Formas de pago
-        this.FindByName<VisualElement>("SectionExpenses")?.SetValue(VisualElement.IsVisibleProperty, false);  // Gastos
+        // Fallback directo sobre contenedores XAML (por si alguna binding no alcanza)
+        this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, false);
+        this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, false);
+        this.FindByName<VisualElement>("AddedExpenses")?.SetValue(VisualElement.IsVisibleProperty, false);
+        this.FindByName<VisualElement>("AddedDocuments")?.SetValue(VisualElement.IsVisibleProperty, false);
     }
-    // ============================================================
 
+    // --- Pickers
     private void OnBusinessSelected(object sender, EventArgs e)
     {
-        var picker = sender as Picker;
-        if (picker == null) return;
+        if (sender is not Picker picker) return;
 
-        Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-
-        Dispatcher.Dispatch(() =>
+        Dispatcher.Dispatch(async () =>
         {
             try
             {
                 if (picker.SelectedItem is BusinessModel selectedBusiness)
                 {
-                    int businessId = selectedBusiness.IdBusiness;
-                    Debug.WriteLine($"Negocio seleccionado: {selectedBusiness.Name}, ID: {businessId}");
-                    _service.LoadEdsByBusiness(businessId);
+                    _service.LoadEdsByBusiness(selectedBusiness.IdBusiness);
                     _service.IslanderSelectList.Clear();
                     _service.IsBusinessSelected = true;
-                }
-                else
-                {
-                    Debug.WriteLine("El SelectedItem no es del tipo esperado o es null");
+
+                    // 👇 Mostrar secciones al elegir Negocio
+                    await ShowOperationalSectionsAsync();
                 }
             }
             catch (Exception ex)
@@ -677,25 +619,19 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private void OnEdsSelected(object sender, EventArgs e)
     {
-        var picker = sender as Picker;
-        if (picker == null) return;
+        if (sender is not Picker picker) return;
 
-        Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-
-        Dispatcher.Dispatch(() =>
+        Dispatcher.Dispatch(async () =>
         {
             try
             {
                 if (picker.SelectedItem is EdsCourtModel selectedEds)
                 {
-                    int edsId = selectedEds.IdEds;
-                    Debug.WriteLine($"Eds seleccionado: {selectedEds.Name}, ID: {edsId}");
-                    _service.LoadIslandersByEds(edsId);
+                    _service.LoadIslandersByEds(selectedEds.IdEds);
                     _service.IsEdsSelected = true;
-                }
-                else
-                {
-                    Debug.WriteLine("El SelectedItem no es del tipo esperado o es null");
+
+                    // 👇 Mostrar secciones al elegir EDS
+                    await ShowOperationalSectionsAsync();
                 }
             }
             catch (Exception ex)
@@ -707,24 +643,18 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private void OnIslanderSelected(object sender, EventArgs e)
     {
-        var picker = sender as Picker;
-        if (picker == null) return;
+        if (sender is not Picker picker) return;
 
-        Debug.WriteLine($"Tipo de SelectedItem: {picker.SelectedItem?.GetType()}");
-
-        Dispatcher.Dispatch(() =>
+        Dispatcher.Dispatch(async () =>
         {
             try
             {
                 if (picker.SelectedItem is IslanderResponse selectedIslander)
                 {
-                    int islanderId = selectedIslander.IdIslander;
-                    Debug.WriteLine($"Islander seleccionado: {selectedIslander.Name}, ID: {islanderId}");
-                    _service.LoadEdsByBusiness(islanderId);
-                }
-                else
-                {
-                    Debug.WriteLine("El SelectedItem no es del tipo esperado o es null");
+                    // (si necesitas cargar algo extra, hazlo aquí)
+
+                    // 👇 Mostrar secciones al elegir Islero
+                    await ShowOperationalSectionsAsync();
                 }
             }
             catch (Exception ex)
@@ -734,33 +664,22 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         });
     }
 
+
+    // INotifyPropertyChanged local para x:Reference CortePage
     public new event PropertyChangedEventHandler? PropertyChanged;
-
     protected new virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+    // Mostrar popups con seguridad
     private static async Task<T> ShowPopupSafelyAsync<T>(Popup popup) where T : class
     {
         try
         {
             var result = await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                try
-                {
-                    return await Application.Current.MainPage.ShowPopupAsync(popup) as T;
-                }
-                catch (ObjectDisposedException ex)
-                {
-                    Debug.WriteLine($"Popup was disposed during show: {ex.Message}");
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error showing popup: {ex.Message}");
-                    return null;
-                }
+                try { return await Application.Current.MainPage.ShowPopupAsync(popup) as T; }
+                catch (ObjectDisposedException ex) { Debug.WriteLine($"Popup disposed: {ex.Message}"); return null; }
+                catch (Exception ex) { Debug.WriteLine($"Show popup error: {ex.Message}"); return null; }
             });
 
             return result;
