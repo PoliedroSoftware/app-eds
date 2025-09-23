@@ -1,11 +1,9 @@
+using APP.Eds.Models.Court;
 using APP.Eds.Services.Court;
-using APP.Eds.Components.PopUp;
 using CommunityToolkit.Maui.Views;
-using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using APP.Eds.Models.Court;
 
 namespace APP.Eds.Components.PopUp;
 
@@ -76,15 +74,50 @@ public partial class AddCourtTypeOfCollection : Popup
         _updateTimer.Elapsed += OnUpdateTimerElapsed;
         _updateTimer.AutoReset = false;
 
-        InitializePaymentOptions();
+        // Inicializar las opciones de pago con verificación y reintento
+        InitializePaymentOptionsAsync();
     }
 
-    private void InitializePaymentOptions()
+    private async void InitializePaymentOptionsAsync()
     {
         try
         {
-            if (courtService.TypeOfCollectionList is not null)
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Iniciando inicialización de opciones de pago");
+            
+            // Verificar si los datos están disponibles
+            if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
             {
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: TypeOfCollectionList está vacía, intentando recargar datos...");
+                
+                // Intentar recargar los datos
+                await courtService.GetAllEdsData();
+                
+                // Esperar un poco para permitir que los datos se carguen
+                await Task.Delay(500);
+            }
+
+            // Verificar nuevamente después del reintento
+            if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
+            {
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: No se pudieron cargar los tipos de colección después del reintento");
+                await CustomAlert.ShowWarningAsync(
+                    "No se pudieron cargar los métodos de pago disponibles.\n\n" +
+                    "Esto puede deberse a:\n" +
+                    "• Problemas de conexión a internet\n" +
+                    "• Problemas con el servidor\n" +
+                    "• Problemas de autenticación\n\n" +
+                    "Por favor, verifique su conexión e intente nuevamente.",
+                    "Datos No Disponibles");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Creando {courtService.TypeOfCollectionList.Count} opciones de pago");
+            
+            // Ejecutar en el hilo principal para asegurar que la UI se actualice correctamente
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                PaymentOptions.Clear();
+                
                 foreach (var t in courtService.TypeOfCollectionList)
                 {
                     var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m };
@@ -92,12 +125,17 @@ public partial class AddCourtTypeOfCollection : Popup
                     PaymentOptions.Add(opt);
                 }
 
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Se agregaron {PaymentOptions.Count} opciones de pago a la colección");
+                
                 RecalcRemaining();
-            }
+            });
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error initializing payment options: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Error inicializando opciones de pago: {ex.Message}");
+            await CustomAlert.ShowErrorAsync(
+                $"Error al inicializar los métodos de pago:\n\n{ex.Message}",
+                "Error de Inicialización");
         }
     }
 
