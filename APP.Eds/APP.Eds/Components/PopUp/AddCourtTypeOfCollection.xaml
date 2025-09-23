@@ -92,8 +92,8 @@
                     Padding="20,16">
                 
                 <ScrollView>
-                    <VerticalStackLayout Spacing="16"
-                                         BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
+                    <StackLayout Spacing="16"
+                                 BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <!-- Payment Method Card -->
@@ -151,12 +151,12 @@
                                                     <Setter Property="StrokeThickness" Value="2"/>
                                                 </DataTrigger>
                                             </Border.Triggers>
-                                            <Entry Placeholder="0"
+                                            <Entry Placeholder="0.00"
                                                    Keyboard="Numeric"
                                                    MaxLength="16"
                                                    HorizontalTextAlignment="Center"
                                                    IsEnabled="{Binding IsSelected}"
-                                                   Text="{Binding Amount,Converter={StaticResource CurrencyFormat}}"
+                                                   Text="{Binding Amount, Mode=TwoWay}"
                                                    TextChanged="Amount_TextChanged"
                                                    Focused="Amount_Focused"
                                                    Unfocused="Amount_Unfocused"
@@ -194,7 +194,7 @@
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
+                    </StackLayout>
                 </ScrollView>
             </Border>
 
