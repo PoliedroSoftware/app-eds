@@ -1361,8 +1361,6 @@ namespace APP.Eds.Services.Court
             }
         }
 
-
-
         private string _GallonsAccumulated = string.Empty;
         public string GallonsAccumulated
         {
@@ -2325,87 +2323,110 @@ GetAllEdsData()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticación no encontrado");
                 await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
                 return;
             }
             
             try
             {
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Iniciando carga de datos desde API");
                 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+                httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos más lentos
 
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de business, islander y eds...");
                 var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
                 var IslanderResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
                 var edsResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
-
-
 
                 var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-
                 UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
                 UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
                 UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
 
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos adicionales...");
                 var productResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100");
                 var compartimentResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
                 var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
                 var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
+                
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de type-of-collection...");
                 var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
                 
                 var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
 
-                
                 var productList = JsonSerializer.Deserialize<ProductCourtResponseModel>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-     
                 var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-               
                 UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
                 UpdateCompartiment(compartimentList?.Data ?? new List<CompartimentCourtModel>());
                 UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
                 UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
+                
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Actualizando TypeOfCollection con {typeOfCollectionList?.Data?.Count ?? 0} elementos");
                 UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
                 
                 UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
 
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Datos cargados exitosamente. TypeOfCollectionList tiene {TypeOfCollectionList?.Count ?? 0} elementos");
+            }
+            catch (HttpRequestException httpEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexión HTTP: {httpEx.Message}");
+                Console.WriteLine($"Error de conexión cargando los datos: {httpEx.Message}");
+            }
+            catch (TaskCanceledException timeoutEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operación: {timeoutEx.Message}");
+                Console.WriteLine($"Timeout cargando los datos: {timeoutEx.Message}");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error general: {ex.Message}");
                 Console.WriteLine($"Error cargando los datos: {ex.Message}");
-
-
             }
 
-            var username = Preferences.Get("Usernamelogin", "");
-
-            var islander = IslanderList.FirstOrDefault(i => i.Name == username);
-            if (islander != null)
+            // Ejecutar la lógica de preferencias después de cargar los datos
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                Preferences.Set("islanderId", islander.IdIslander.ToString());
-
-                var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
-                if (eds != null)
+                try
                 {
-                    Preferences.Set("edsId", eds.IdEds.ToString());
-                    Preferences.Set("edsName", eds.Name);
+                    var username = Preferences.Get("Usernamelogin", "");
 
-                    var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
-                    if (business != null)
+                    var islander = IslanderList.FirstOrDefault(i => i.Name == username);
+                    if (islander != null)
                     {
-                        Preferences.Set("businessId", business.IdBusiness.ToString());
-                        Preferences.Set("businessName", business.Name);
+                        Preferences.Set("islanderId", islander.IdIslander.ToString());
+
+                        var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
+                        if (eds != null)
+                        {
+                            Preferences.Set("edsId", eds.IdEds.ToString());
+                            Preferences.Set("edsName", eds.Name);
+
+                            var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
+                            if (business != null)
+                            {
+                                Preferences.Set("businessId", business.IdBusiness.ToString());
+                                Preferences.Set("businessName", business.Name);
+                            }
+                        }
                     }
                 }
-            }
-
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error configurando preferencias: {ex.Message}");
+                }
+            });
         }
 
         private async void LoadLastAccumulated(int idDispenser, int idHose)
@@ -2524,10 +2545,29 @@ GetAllEdsData()
 
         private void UpdateTypeOfCollection(IEnumerable<TypeOfCollectionCourtModel> typeOfCollectionData)
         {
-            TypeOfCollectionList.Clear();
-            foreach (var typeOfCollection in typeOfCollectionData)
+            try
             {
-                TypeOfCollectionList.Add(typeOfCollection);
+                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualización con {typeOfCollectionData?.Count() ?? 0} elementos");
+                
+                TypeOfCollectionList.Clear();
+                
+                if (typeOfCollectionData != null)
+                {
+                    foreach (var typeOfCollection in typeOfCollectionData)
+                    {
+                        TypeOfCollectionList.Add(typeOfCollection);
+                        System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Agregado '{typeOfCollection.Description}' (ID: {typeOfCollection.IdTypeOfCollection})");
+                    }
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualización completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
+                
+                // Notificar cambio en la propiedad para refrescar la UI
+                OnPropertyChanged(nameof(TypeOfCollectionList));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Error actualizando lista: {ex.Message}");
             }
         }
 
