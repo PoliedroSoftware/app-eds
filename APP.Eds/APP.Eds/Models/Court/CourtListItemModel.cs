@@ -1,4 +1,4 @@
-  namespace APP.Eds.Models.Court;
+namespace APP.Eds.Models.Court;
 
 public class CourtListItemModel
 {
@@ -15,12 +15,48 @@ public class CourtListItemModel
     public double Distinc { get; set; }
     public double TotalAccumulatedAmount { get; set; }
     public double TotalAccumulatedGallons { get; set; }
-    public List<CollectionItem> Collections { get; set; }
-    public List<DispenserItem> Dispensers { get; set; }
-    public List<DocumentItem> Documents { get; set; }
-    public List<ExpenditureItem> Expenditures { get; set; }
+    
+    // Propiedades de listas con inicialización segura
+    private List<CollectionItem> _collections;
+    public List<CollectionItem> Collections 
+    { 
+        get => _collections ??= new List<CollectionItem>(); 
+        set => _collections = value ?? new List<CollectionItem>(); 
+    }
+    
+    private List<DispenserItem> _dispensers;
+    public List<DispenserItem> Dispensers 
+    { 
+        get => _dispensers ??= new List<DispenserItem>(); 
+        set => _dispensers = value ?? new List<DispenserItem>(); 
+    }
+    
+    private List<DocumentItem> _documents;
+    public List<DocumentItem> Documents 
+    { 
+        get => _documents ??= new List<DocumentItem>(); 
+        set => _documents = value ?? new List<DocumentItem>(); 
+    }
+    
+    private List<ExpenditureItem> _expenditures;
+    public List<ExpenditureItem> Expenditures 
+    { 
+        get => _expenditures ??= new List<ExpenditureItem>(); 
+        set => _expenditures = value ?? new List<ExpenditureItem>(); 
+    }
 
-//Traducciones
+    // Constructor to ensure proper initialization
+    public CourtListItemModel()
+    {
+        // Las propiedades ya se inicializan automáticamente en sus getters
+        // pero podemos asegurar la inicialización aquí también
+        Collections = new List<CollectionItem>();
+        Dispensers = new List<DispenserItem>();
+        Documents = new List<DocumentItem>();
+        Expenditures = new List<ExpenditureItem>();
+    }
+
+    //Traducciones
     public string DateTranslation { get; set; }
     public string ConsecutiveTranslation { get; set; }
     public string IslanderTranslation { get; set; }
@@ -39,8 +75,6 @@ public class CourtListItemModel
     public string CourtTranslation { get; set; }
     public string ThereIsNoImageTranslation { get; set; }
     public string ExpenditureTranslation { get; set; }
-
-
 }
 
 public class Translation
