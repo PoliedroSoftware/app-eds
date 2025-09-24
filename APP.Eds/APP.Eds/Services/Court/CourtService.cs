@@ -2914,6 +2914,51 @@ GetAllEdsData()
             }
             try
             {
+                var totalVentas = GetTotalAmount();
+                var totalMetodosPago = GetTotalTypeOfCollection();
+                var tolerancia = 0.01; 
+
+                if (Math.Abs(totalVentas - totalMetodosPago) > tolerancia)
+                {
+                    var diferencia = totalVentas - totalMetodosPago;
+                    string mensajeError;
+
+                    if (diferencia > 0)
+                    {
+                        mensajeError = $"⚠️ Validación de Pagos Fallida\n\n" +
+                                      $"El total de métodos de pago es menor al total de ventas:\n\n" +
+                                      $"• Total de ventas: ${totalVentas:N2}\n" +
+                                      $"• Total métodos de pago: ${totalMetodosPago:N2}\n" +
+                                      $"• Faltante: ${diferencia:N2}\n\n" +
+                                      $"Por favor, agregue métodos de pago por el monto faltante antes de enviar el corte.";
+                    }
+                    else
+                    {
+                        mensajeError = $"⚠️ Validación de Pagos Fallida\n\n" +
+                                      $"El total de métodos de pago excede al total de ventas:\n\n" +
+                                      $"• Total de ventas: ${totalVentas:N2}\n" +
+                                      $"• Total métodos de pago: ${totalMetodosPago:N2}\n" +
+                                      $"• Excedente: ${Math.Abs(diferencia):N2}\n\n" +
+                                      $"Por favor, ajuste los métodos de pago antes de enviar el corte.";
+                    }
+
+                    LastSendWasSuccessful = false;
+                    await Application.Current.MainPage.DisplayAlert("Validación Fallida", mensajeError, "Entendido");
+                    return;
+                }
+
+                if (totalVentas > 0 && (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any()))
+                {
+                    LastSendWasSuccessful = false;
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Métodos de Pago Requeridos",
+                        $"No se pueden enviar datos del corte sin registrar métodos de pago.\n\n" +
+                        $"Total de ventas: ${totalVentas:N2}\n" +
+                        $"Métodos de pago registrados: 0\n\n" +
+                        $"Por favor, agregue al menos un método de pago que cubra el total de ventas.",
+                        "Entendido");
+                    return;
+                }
 
                 if (Court == null)
                 {
@@ -2986,7 +3031,15 @@ GetAllEdsData()
                         }
                     }
 
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Datos y documentos enviados correctamente", "OK");
+                    await Application.Current.MainPage.DisplayAlert(
+                        "✅ Corte Enviado Exitosamente", 
+                        $"El corte se ha enviado correctamente:\n\n" +
+                        $"• Total de ventas: ${totalVentas:N2}\n" +
+                        $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
+                        $"• Gastos: ${GetTotalExpenditure():N2}\n" +
+                        $"• Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
+                        $"La validación de pagos fue exitosa.", 
+                        "Completado");
                 }
                 else
                 {
