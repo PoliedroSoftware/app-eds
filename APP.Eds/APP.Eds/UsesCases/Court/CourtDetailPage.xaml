@@ -195,8 +195,8 @@
                     </Grid>
                 </StackLayout>
 
-                <!-- Collections Section -->
-                <StackLayout Spacing="10" IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}}">
+                <!-- Collections Section - Enhanced with better visibility logic -->
+                <StackLayout Spacing="10">
                     <Border BackgroundColor="#FFF3E0"
                             StrokeShape="RoundRectangle 6"
                             Stroke="#FF9800"
@@ -208,14 +208,37 @@
                                HorizontalOptions="Center"/>
                     </Border>
 
-                    <CollectionView ItemsSource="{Binding Collections}" AutomationId="CollectionViewCollections">
+                    <!-- Show message when no collections -->
+                    <Border BackgroundColor="#FAFAFA"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#E0E0E0"
+                            Padding="16,12"
+                            IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=inverse}">
+                        <StackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="💳" FontSize="28" HorizontalOptions="Center" Opacity="0.6"/>
+                            <Label Text="No hay medios de pago registrados" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold"
+                                   TextColor="#666666"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Los métodos de pago se mostrarán aquí cuando estén disponibles" 
+                                   FontSize="11" 
+                                   TextColor="#999999"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Collections list -->
+                    <CollectionView ItemsSource="{Binding Collections}" 
+                                    AutomationId="CollectionViewCollections"
+                                    IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border BackgroundColor="White"
                                         StrokeShape="RoundRectangle 6"
                                         Stroke="#E0E0E0"
                                         Margin="0,2"
-                                        Padding="10,6">
+                                        Padding="12,8">
                                     <Border.Shadow>
                                         <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
                                     </Border.Shadow>
@@ -228,7 +251,7 @@
                                         
                                         <!-- Collection Type -->
                                         <StackLayout Grid.Row="0" Grid.Column="1" Spacing="1">
-                                            <Label Text="Cobro" 
+                                            <Label Text="Método de Pago" 
                                                    FontSize="9" 
                                                    FontAttributes="Bold" 
                                                    TextColor="#636E72"/>
@@ -254,7 +277,7 @@
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="1" Grid.ColumnSpan="3" IsVisible="{Binding Description, Converter={StaticResource StringNotEmptyConverter}}" Spacing="1">
-                                            <Label Text="Descripcion" 
+                                            <Label Text="Descripción" 
                                                    FontSize="9" 
                                                    FontAttributes="Bold" 
                                                    TextColor="#636E72"/>

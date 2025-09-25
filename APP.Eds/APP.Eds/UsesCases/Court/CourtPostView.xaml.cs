@@ -3,6 +3,7 @@ using APP.Eds.Models.Court;
 using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Services.Court;
+using APP.Eds.UsesCases.Court.APP.Eds.Models.Business;
 using APP.Eds.UsesCases.LoadingView;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
@@ -690,4 +691,34 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             return null;
         }
     }
+
+
+        private BusinessDto _selectedBusiness;
+        public BusinessDto SelectedBusiness
+        {
+            get => _selectedBusiness;
+            set
+            {
+                if (_selectedBusiness != value)
+                {
+                    _selectedBusiness = value;
+                    OnPropertyChanged(nameof(SelectedBusiness));
+                    IsBusinessSelected = _selectedBusiness != null;
+                }
+            }
+        }
+
+        private bool _isBusinessSelected;
+        public bool IsBusinessSelected
+        {
+            get => _isBusinessSelected;
+            set
+            {
+                if (_isBusinessSelected != value)
+                {
+                    _isBusinessSelected = value;
+                    OnPropertyChanged(nameof(IsBusinessSelected));
+                }
+            }
+        }
 }
