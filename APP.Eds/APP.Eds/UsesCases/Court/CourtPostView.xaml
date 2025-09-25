@@ -718,41 +718,87 @@
                             </StackLayout>
 
                             <!-- Required Buttons Grid -->
+
+                            <!-- Required Buttons Grid -->
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                                <!-- Botón NewSale -->
                                 <Button Text="{Binding NewSale}"
-                                        Style="{StaticResource CompactActionButtonStyle}"
-                                        BackgroundColor="#4CAF50"
-                                        Clicked="OpenDispenserPopUp"
-                                        Command="{Binding OpenDispenserCommand}"
-                                        AutomationId="AddSaleButton"
-                                        IsEnabled="{Binding NewSaleEnabled}"
-                                        Grid.Column="0">
+            Style="{StaticResource CompactActionButtonStyle}"
+            Clicked="OpenDispenserPopUp"
+            Command="{Binding OpenDispenserCommand}"
+            AutomationId="AddSaleButton"
+            IsEnabled="{Binding IsBusinessSelected}"
+            Grid.Column="0">
                                     <Button.Triggers>
                                         <!-- Bloquear si el corte ya fue enviado -->
                                         <DataTrigger TargetType="Button"
-                                                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
-                                                     Value="False">
+                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Button.Triggers>
+
+                                    <!-- Estados visuales -->
+                                    <Button.VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                                                    <!-- Verde -->
+                                                    <Setter Property="TextColor" Value="White"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState Name="Disabled">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
+                                                    <!-- Apagado -->
+                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </Button.VisualStateManager.VisualStateGroups>
                                 </Button>
 
+                                <!-- Botón AddCollectionType -->
                                 <Button Text="{Binding AddCollectionType}"
-                                        Style="{StaticResource CompactActionButtonStyle}"
-                                        BackgroundColor="#2196F3"
-                                        Clicked="OpenTypeOfCollectionPopUp"
-                                        AutomationId="AddCollectionTypeButton"
-                                        IsEnabled="{Binding IsEdsSelected}"
-                                        Grid.Column="1">
+            Style="{StaticResource CompactActionButtonStyle}"
+            Clicked="OpenTypeOfCollectionPopUp"
+            AutomationId="AddCollectionTypeButton"
+            IsEnabled="{Binding IsBusinessSelected}"
+            Grid.Column="1">
                                     <Button.Triggers>
                                         <DataTrigger TargetType="Button"
-                                                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
-                                                     Value="False">
+                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Button.Triggers>
+
+                                    <!-- Estados visuales -->
+                                    <Button.VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="#2196F3"/>
+                                                    <!-- Azul -->
+                                                    <Setter Property="TextColor" Value="White"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState Name="Disabled">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
+                                                    <!-- Apagado -->
+                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </Button.VisualStateManager.VisualStateGroups>
                                 </Button>
+
                             </Grid>
+
+
                         </VerticalStackLayout>
                     </Border>
 
