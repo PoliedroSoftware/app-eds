@@ -120,16 +120,77 @@ public class CapacityService : INotifyPropertyChanged
             OnPropertyChanged(nameof(GallonPlaceholder));
         }
     }
+
+
+    private bool _isUpdating = false;
+
     private double? _gallon;
+
     public double? Gallon
     {
         get => _gallon;
         set
         {
+            if (_gallon == value) return;
+
             _gallon = value;
             OnPropertyChanged(nameof(Gallon));
+
+            _isUpdating = true;
+            try
+            {
+                if (value.HasValue && value > 0)
+                {
+                    var calculatedLiters = value.Value * 3.78541;
+                    _liters = (int)Math.Round(calculatedLiters);  
+                }
+                else
+                {
+                    _liters = null;                              
+                }
+                OnPropertyChanged(nameof(Liters));                 
+            }
+            finally
+            {
+                _isUpdating = false;
+            }
         }
     }
+
+    private int? _liters;
+    public int? Liters
+    {
+        get => _liters;
+        set
+        {
+            if (_liters == value) return;
+
+            _liters = value;
+            OnPropertyChanged(nameof(Liters));
+
+            if (_isUpdating) return;
+
+            _isUpdating = true;
+            try
+            {
+                if (value.HasValue && value > 0)
+                {
+                    var calculatedGallons = value.Value / 3.78541;
+                    _gallon = Math.Round(calculatedGallons, 2);   
+                }
+                else
+                {
+                    _gallon = null;                            
+                }
+                OnPropertyChanged(nameof(Gallon));             
+            }
+            finally
+            {
+                _isUpdating = false;
+            }
+        }
+    }
+
 
     private string _litersLabel;
     public string LitersLabel
@@ -151,16 +212,7 @@ public class CapacityService : INotifyPropertyChanged
             OnPropertyChanged(nameof(LitersPlaceholder));
         }
     }
-    private int? _liters;
-    public int? Liters
-    {
-        get => _liters;
-        set
-        {
-            _liters = value;
-            OnPropertyChanged(nameof(Liters));
-        }
-    }
+
     private string _SendData;
     public string SendData
     {
@@ -367,4 +419,5 @@ public class CapacityService : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+   
 }
