@@ -9,12 +9,14 @@
     Color="Transparent"
     AutomationId="PopupAddCourtTypeOfCollection">
     
-    <!-- Modern Minimalist Container -->
+    <!-- Modern Minimalist Container with responsive width -->
     <Border BackgroundColor="White"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
-            WidthRequest="400" 
-            MaximumHeightRequest="700">
+            Margin="20,40"
+            MaximumHeightRequest="700"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Center">
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
         </Border.Shadow>
@@ -36,11 +38,11 @@
                                  Spacing="4">
                         <Label Text="{Binding AddCollectionType}" 
                                FontAttributes="Bold" 
-                               FontSize="22" 
+                               FontSize="20" 
                                TextColor="White"
                                HorizontalTextAlignment="Center"/>
                         <Label Text="Configure los métodos de pago" 
-                               FontSize="13" 
+                               FontSize="12" 
                                TextColor="#F5F5F5"
                                FontAttributes="None"
                                HorizontalTextAlignment="Center"/>
@@ -67,7 +69,7 @@
             <!-- Total Summary Card -->
             <Border Grid.Row="1"
                     BackgroundColor="#E3F2FD"
-                    Padding="20,12">
+                    Padding="16,12">
                 <StackLayout Orientation="Horizontal" 
                              HorizontalOptions="Center"
                              Spacing="12">
@@ -79,7 +81,7 @@
                                VerticalOptions="Center"/>
                     </Border>
                     <Label Text="{Binding Source={x:Reference Root}, Path=Remaining, StringFormat='Total del Día: $ {0:N0}'}"
-                           FontSize="16"
+                           FontSize="15"
                            FontAttributes="Bold"
                            TextColor="#1976D2"
                            VerticalOptions="Center"/>
@@ -89,10 +91,10 @@
             <!-- Payment Methods List -->
             <Border Grid.Row="2" 
                     BackgroundColor="#FAFCFF"
-                    Padding="20,16">
+                    Padding="16,12">
                 
                 <ScrollView>
-                    <StackLayout Spacing="16"
+                    <StackLayout Spacing="12"
                                  BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
@@ -113,9 +115,9 @@
                                         </DataTrigger>
                                     </Border.Triggers>
                                     
-                                    <Grid ColumnDefinitions="Auto,*,100"
+                                    <Grid ColumnDefinitions="Auto,*,80"
                                           RowDefinitions="Auto,Auto"
-                                          ColumnSpacing="12"
+                                          ColumnSpacing="10"
                                           RowSpacing="12">
 
                                         <!-- Modern Checkbox -->
@@ -129,7 +131,7 @@
                                                      VerticalOptions="Center"
                                                      Spacing="2">
                                             <Label Text="{Binding Type.Description}"
-                                                   FontSize="16"
+                                                   FontSize="15"
                                                    FontAttributes="Bold"
                                                    TextColor="#1976D2"/>
                                             <Label Text="Método de pago"
@@ -151,9 +153,9 @@
                                                     <Setter Property="StrokeThickness" Value="2"/>
                                                 </DataTrigger>
                                             </Border.Triggers>
-                                            <Entry Placeholder="0.00"
+                                            <Entry Placeholder="0"
                                                    Keyboard="Numeric"
-                                                   MaxLength="16"
+                                                   MaxLength="12"
                                                    HorizontalTextAlignment="Center"
                                                    IsEnabled="{Binding IsSelected}"
                                                    Text="{Binding Amount, Mode=TwoWay}"
@@ -163,7 +165,7 @@
                                                    TextColor="#1976D2"
                                                    PlaceholderColor="#9E9E9E"
                                                    BackgroundColor="Transparent"
-                                                   FontSize="14"
+                                                   FontSize="13"
                                                    FontAttributes="Bold"/>
                                         </Border>
 
@@ -202,7 +204,7 @@
             <Border Grid.Row="3"
                     BackgroundColor="White"
                     StrokeShape="RoundRectangle 0,0,20,20"
-                    Padding="20,12">
+                    Padding="16,12">
                 
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <!-- Clear Button -->
@@ -210,17 +212,17 @@
                             BackgroundColor="#F5F5F5"
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="0"
-                            HeightRequest="46">
+                            HeightRequest="44">
                         <Border.Shadow>
                             <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
                         </Border.Shadow>
                         <Button BackgroundColor="Transparent"
                                 Clicked="Clear_All"
-                                FontSize="16" 
+                                FontSize="15" 
                                 FontAttributes="Bold"
                                 Text="Borrar" 
                                 TextColor="#757575"
-                                HeightRequest="46"
+                                HeightRequest="44"
                                 AutomationId="ButtonClearTypeOfCollection"/>
                     </Border>
                     
@@ -229,17 +231,17 @@
                             BackgroundColor="#2196F3"
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="0"
-                            HeightRequest="46">
+                            HeightRequest="44">
                         <Border.Shadow>
                             <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
                         </Border.Shadow>
                         <Button BackgroundColor="Transparent"
                                 Clicked="Add_Selected"
-                                FontSize="16" 
+                                FontSize="15" 
                                 FontAttributes="Bold"
                                 Text="{Binding Add}" 
                                 TextColor="White"
-                                HeightRequest="46"
+                                HeightRequest="44"
                                 AutomationId="ButtonAddTypeCollection"/>
                     </Border>
                 </Grid>
