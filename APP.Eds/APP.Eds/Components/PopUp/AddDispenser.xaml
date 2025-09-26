@@ -17,13 +17,17 @@
     </mct:Popup.Resources>
 
     <Frame x:Name="Frame"
-           Padding="20"
+           Padding="16"
            BorderColor="#FF9800"
            CornerRadius="18"
            HasShadow="True"
            BackgroundColor="White"
-           WidthRequest="420" MaximumHeightRequest="650"
-           VerticalOptions="Center" HorizontalOptions="Center">
+           WidthRequest="360" 
+           MaximumWidthRequest="400"
+           MaximumHeightRequest="650"
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           Margin="20,40">
 
         <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
 
