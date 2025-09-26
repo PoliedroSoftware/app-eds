@@ -106,4 +106,43 @@ namespace APP.Eds.Converters
             return false;
         }
     }
+
+    // Nuevo convertidor para cambiar colores basado en valor booleano
+    public class BoolToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue && parameter is string colorPair)
+            {
+                var colors = colorPair.Split('|');
+                if (colors.Length == 2)
+                {
+                    // Si el bool es true, usa el primer color, si es false usa el segundo
+                    return Color.FromArgb(boolValue ? colors[0] : colors[1]);
+                }
+            }
+            
+            // Color por defecto
+            return Color.FromArgb("#2196F3");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Nuevo convertidor para verificar si un string no está vacío
+    public class StringToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !string.IsNullOrWhiteSpace(value?.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
