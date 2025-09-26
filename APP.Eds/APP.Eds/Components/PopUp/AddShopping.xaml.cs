@@ -9,10 +9,50 @@ public partial class AddShopping : Popup
     private readonly ShoppingService shoppingService;
 
     public AddShopping(ShoppingService shoppingService)
-	{
-		InitializeComponent();
-        this.shoppingService = shoppingService;
-        BindingContext = shoppingService;
+    {
+        try
+        {
+            InitializeComponent();
+            this.shoppingService = shoppingService;
+            BindingContext = shoppingService;
+            
+            // Ensure popup is properly sized for different screen sizes
+            ConfigurePopupForDevice();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error initializing AddShopping popup: {ex.Message}");
+            throw;
+        }
+    }
+
+    private void ConfigurePopupForDevice()
+    {
+        try
+        {
+            // Get screen dimensions
+            var mainDisplayInfo = DeviceDisplay.Current.MainDisplayInfo;
+            var screenWidth = mainDisplayInfo.Width / mainDisplayInfo.Density;
+            var screenHeight = mainDisplayInfo.Height / mainDisplayInfo.Density;
+            
+            // Adjust popup size for smaller screens
+            if (screenWidth < 400)
+            {
+                // For smaller screens, use percentage-based sizing
+                var border = this.Content as Border;
+                if (border != null)
+                {
+                    border.WidthRequest = screenWidth * 0.9; // 90% of screen width
+                    border.HeightRequest = Math.Min(650, screenHeight * 0.8); // Max 80% of screen height
+                }
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"AddShopping popup configured for screen: {screenWidth}x{screenHeight}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error configuring popup for device: {ex.Message}");
+        }
     }
 
     private void OnCloseTapped(object sender, EventArgs e)
@@ -101,10 +141,17 @@ public partial class AddShopping : Popup
             await shoppingService.AddShoppingProductFromPopup();
 
             // Clear form
-            ProductCompartimentPicker.SelectedItem = null;
-            FirstEntry.IsEnabled = false;
-            SecondEntry.IsEnabled = false;
-            ThirdEntry.IsEnabled = false;
+            if (ProductCompartimentPicker != null)
+                ProductCompartimentPicker.SelectedItem = null;
+            
+            if (FirstEntry != null)
+                FirstEntry.IsEnabled = false;
+            
+            if (SecondEntry != null)
+                SecondEntry.IsEnabled = false;
+            
+            if (ThirdEntry != null)
+                ThirdEntry.IsEnabled = false;
 
             // Show professional success feedback
             await CustomAlert.ShowSuccessAsync($"Producto agregado exitosamente a la compra\n\nCantidad: {vm.Quantity:F2} galones\nValor total: ${(vm.Quantity * vm.PurchasePrice):F2}", "Producto Agregado");
@@ -117,6 +164,11 @@ public partial class AddShopping : Popup
             {
                 System.Diagnostics.Debug.WriteLine($"AddShopping popup was disposed after operation: {ex.Message}");
             }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Add_Product: {ex.Message}");
+            await CustomAlert.ShowErrorAsync($"Error al agregar el producto: {ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -131,30 +183,49 @@ public partial class AddShopping : Popup
 
     private void ProductCompartimentPickerSelected(object sender, EventArgs e)
     {
-        if (ProductCompartimentPicker.SelectedIndex != -1)
+        try
         {
-            FirstEntry.Focus();
-            FirstEntry.CursorPosition = FirstEntry.Text?.Length ?? 0;
+            if (ProductCompartimentPicker?.SelectedIndex != -1 && FirstEntry != null)
+            {
+                FirstEntry.Focus();
+                FirstEntry.CursorPosition = FirstEntry.Text?.Length ?? 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in ProductCompartimentPickerSelected: {ex.Message}");
         }
     }
 
     private void EntryPurchasePriceCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is ShoppingService vm)
+        try
         {
-            SecondEntry.Focus();
-            SecondEntry.CursorPosition = SecondEntry.Text?.Length ?? 0;
+            if (BindingContext is ShoppingService vm && SecondEntry != null)
+            {
+                SecondEntry.Focus();
+                SecondEntry.CursorPosition = SecondEntry.Text?.Length ?? 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in EntryPurchasePriceCompleted: {ex.Message}");
         }
     }
 
     private void EntrySellPriceCompleted(object sender, EventArgs e)
     {
-        if (BindingContext is ShoppingService vm)
+        try
         {
-            ThirdEntry.Focus();
-            ThirdEntry.CursorPosition = ThirdEntry.Text?.Length ?? 0;
+            if (BindingContext is ShoppingService vm && ThirdEntry != null)
+            {
+                ThirdEntry.Focus();
+                ThirdEntry.CursorPosition = ThirdEntry.Text?.Length ?? 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in EntrySellPriceCompleted: {ex.Message}");
         }
     }
-
-    
 }
