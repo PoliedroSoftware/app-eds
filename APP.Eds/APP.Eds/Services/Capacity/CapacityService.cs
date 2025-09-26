@@ -142,7 +142,7 @@ public class CapacityService : INotifyPropertyChanged
                 if (value.HasValue && value > 0)
                 {
                     var calculatedLiters = value.Value * 3.78541;
-                    _liters = (int)Math.Round(calculatedLiters);  
+                    _liters = (int)Math.Round(calculatedLiters, 5);  
                 }
                 else
                 {
@@ -176,7 +176,7 @@ public class CapacityService : INotifyPropertyChanged
                 if (value.HasValue && value > 0)
                 {
                     var calculatedGallons = value.Value / 3.78541;
-                    _gallon = Math.Round(calculatedGallons, 2);   
+                    _gallon = Math.Round(calculatedGallons, 5);   
                 }
                 else
                 {
