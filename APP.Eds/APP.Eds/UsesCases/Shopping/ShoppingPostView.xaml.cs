@@ -15,10 +15,94 @@ public partial class ShoppingPostView : ContentPage
         BindingContext = _shoppingService;
     }
 
-    private void OpenShoppingPopUp(object sender, EventArgs e)
+    private async void OpenShoppingPopUp(object sender, EventArgs e)
     {
-        _shoppingService.ResetProductForm(); 
-        this.ShowPopup(new AddShopping(_shoppingService));
+        try
+        {
+            // Disable the button temporarily to prevent double-tap
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+            }
+
+            _shoppingService.ResetProductForm();
+            
+            // Add a small delay to ensure UI thread is ready (especially important on physical devices)
+            await Task.Delay(50);
+            
+            // Create the popup with error handling
+            var popup = new AddShopping(_shoppingService);
+            
+            // Use async ShowPopupAsync for better compatibility with physical devices
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    await this.ShowPopupAsync(popup);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"InvalidOperationException showing popup: {ex.Message}");
+                    // Try alternative approach for popup display
+                    await ShowPopupAlternative(popup);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error showing popup with ShowPopupAsync: {ex.Message}");
+                    // Fallback to synchronous method as last resort
+                    try
+                    {
+                        this.ShowPopup(popup);
+                    }
+                    catch (Exception fallbackEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Fallback popup method also failed: {fallbackEx.Message}");
+                        await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de agregar producto. Intente nuevamente.", "Error de Interfaz");
+                    }
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in OpenShoppingPopUp: {ex.Message}");
+            await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de agregar producto", "Error de Interfaz");
+        }
+        finally
+        {
+            // Re-enable the button
+            if (sender is Button button)
+            {
+                // Add small delay before re-enabling to prevent rapid successive taps
+                await Task.Delay(500);
+                button.IsEnabled = true;
+            }
+        }
+    }
+
+    private async Task ShowPopupAlternative(Popup popup)
+    {
+        try
+        {
+            // Alternative approach: ensure we're on UI thread and try with additional delay
+            await Task.Delay(100);
+            
+            if (MainThread.IsMainThread)
+            {
+                await this.ShowPopupAsync(popup);
+            }
+            else
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await this.ShowPopupAsync(popup);
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Alternative popup display method failed: {ex.Message}");
+            throw;
+        }
     }
     
     private async void Button_Clicked_1(object sender, EventArgs e)
@@ -73,7 +157,9 @@ public partial class ShoppingPostView : ContentPage
                 return;
             }
 
-            LoadingOverlay.ShowLoading();
+            if (LoadingOverlay != null)
+                LoadingOverlay.ShowLoading();
+            
             await vm.SaveShoppingDataAsync();
         }
         catch (Exception ex)
@@ -82,7 +168,8 @@ public partial class ShoppingPostView : ContentPage
         }
         finally
         {
-            LoadingOverlay.HideLoading();
+            if (LoadingOverlay != null)
+                LoadingOverlay.HideLoading();
 
             // Clear form fields after successful submission
             Invoice = string.Empty;
@@ -101,14 +188,29 @@ public partial class ShoppingPostView : ContentPage
 
     private void InvoiceEntryCompleted(object sender, EventArgs e)
     {
-        ProviderPicker.Focus();
+        try
+        {
+            if (ProviderPicker != null)
+                ProviderPicker.Focus();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in InvoiceEntryCompleted: {ex.Message}");
+        }
     }
 
     private void ProviderSelected(object sender, EventArgs e)
     {
-        if (ProviderPicker.SelectedIndex != -1)
+        try
         {
-            CategoryPicker.Focus();
+            if (ProviderPicker?.SelectedIndex != -1 && CategoryPicker != null)
+            {
+                CategoryPicker.Focus();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in ProviderSelected: {ex.Message}");
         }
     }
 
