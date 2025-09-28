@@ -87,7 +87,7 @@ public partial class CapacityPostView : ContentPage
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
                     $"Los valores de galones y litros no coinciden con la conversión estándar:\n\n" +
-                    $"• Galones ingresados: {_capacityService.Gallon:F2}\n" +
+                    $"• Galones ingresados: {_capacityService.Gallon.GetValueOrDefault():F2}\n" +
                     $"• Litros ingresados: {actualLiters:F0} L\n" +
                     $"• Litros calculados: {expectedLiters:F0} L\n" +
                     $"• Diferencia: {Math.Abs(expectedLiters - actualLiters):F0} L\n\n" +
@@ -105,8 +105,8 @@ public partial class CapacityPostView : ContentPage
             await CustomAlert.ShowSuccessAsync(
                 $"Capacidad registrada exitosamente:\n\n" +
                 $"• Código: {_capacityService.Code}\n" +
-                $"• Altura: {_capacityService.Height:F2} m\n" +
-                $"• Capacidad: {_capacityService.Gallon:F2} gal / {_capacityService.Liters:F0} L",
+                $"• Altura: {_capacityService.Height.GetValueOrDefault():F2} m\n" +
+                $"• Capacidad: {_capacityService.Gallon.GetValueOrDefault():F2} gal / {_capacityService.Liters:F0} L",
                 "Capacidad Registrada");
         }
         catch (Exception ex)

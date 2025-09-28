@@ -125,7 +125,6 @@ public class CapacityService : INotifyPropertyChanged
     private bool _isUpdating = false;
 
     private double? _gallon;
-
     public double? Gallon
     {
         get => _gallon;
@@ -136,29 +135,27 @@ public class CapacityService : INotifyPropertyChanged
             _gallon = value;
             OnPropertyChanged(nameof(Gallon));
 
+            if (_isUpdating) return;      
             _isUpdating = true;
             try
             {
-                if (value.HasValue && value > 0)
+                if (value.HasValue && value.Value > 0)
                 {
-                    var calculatedLiters = value.Value * 3.78541;
-                    _liters = (int)Math.Round(calculatedLiters, 5);  
+                    var liters = value.Value * 3.78541;
+                    _liters = Math.Round(liters, 5);   
                 }
                 else
                 {
-                    _liters = null;                              
+                    _liters = null;
                 }
-                OnPropertyChanged(nameof(Liters));                 
+                OnPropertyChanged(nameof(Liters));
             }
-            finally
-            {
-                _isUpdating = false;
-            }
+            finally { _isUpdating = false; }
         }
     }
 
-    private int? _liters;
-    public int? Liters
+    private double? _liters;
+    public double? Liters
     {
         get => _liters;
         set
@@ -381,11 +378,12 @@ public class CapacityService : INotifyPropertyChanged
         {
             Capacity = new CapacityModel
             {
-                Code = Code,
-                Height = Height,
-                Gallon = Gallon,
-                Liters = Liters
+                Code = Code ?? string.Empty,
+                Height = Height.GetValueOrDefault(),
+                Gallon = Gallon.GetValueOrDefault(),
+                Liters = (int?)Liters.GetValueOrDefault()
             };
+
 
             Request = new CapacityRequest
             {
