@@ -1,5 +1,6 @@
 ﻿using APP.Eds.Models.Eds;
 using APP.Eds.Models.Product;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -98,35 +99,36 @@ public class ProductEntity
 
     public class SafeIntConverter : JsonConverter<int>
     {
+
         public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
             {
                 case JsonTokenType.Number:
-                    if (reader.TryGetInt32(out int value))
-                        return value;
-                    if (reader.TryGetDouble(out double doubleValue))
-                        return (int)Math.Round(doubleValue);
+                    if (reader.TryGetInt32(out var i)) return i;
+                    if (reader.TryGetDouble(out var d)) return (int)Math.Round(d, MidpointRounding.AwayFromZero);
                     break;
 
                 case JsonTokenType.String:
-                    string stringValue = reader.GetString();
-                    if (int.TryParse(stringValue, out int parsedValue))
-                        return parsedValue;
-                    if (double.TryParse(stringValue, out double parsedDouble))
-                        return (int)Math.Round(parsedDouble);
+                    string? s = reader.GetString();
+                    if (string.IsNullOrWhiteSpace(s)) return 0;
+
+                    if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i2))
+                        return i2;
+
+                    if (double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var d2))
+                        return (int)Math.Round(d2, MidpointRounding.AwayFromZero);
                     break;
 
                 case JsonTokenType.Null:
-                    return 0; // Default value for null
+                    return 0;
             }
-
-            return 0; // Default fallback value
+            return 0;
         }
-
+      
         public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
         {
             writer.WriteNumberValue(value);
         }
-    }
+    }            
 }
