@@ -1,17 +1,27 @@
 using APP.Eds.Services.Capacity;
 using APP.Eds.Components.PopUp;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace APP.Eds.UsesCases.Capacity;
 
 public partial class CapacityPostView : ContentPage
 {
     private CapacityService _capacityService;
-    
     public CapacityPostView()
     {
         InitializeComponent();
         _capacityService = new CapacityService();
         BindingContext = _capacityService;
+    }
+
+    private void EntryGallon_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.NewTextValue))
+        {
+            var vm = (CapacityService)BindingContext;
+            vm.Gallon = null;  
+        }
     }
 
     private async void SendCapacityButton(object sender, EventArgs e)
@@ -77,26 +87,26 @@ public partial class CapacityPostView : ContentPage
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
                     $"Los valores de galones y litros no coinciden con la conversión estándar:\n\n" +
-                    $"• Galones ingresados: {_capacityService.Gallon:F2}\n" +
+                    $"• Galones ingresados: {_capacityService.Gallon.GetValueOrDefault():F2}\n" +
                     $"• Litros ingresados: {actualLiters:F0} L\n" +
                     $"• Litros calculados: {expectedLiters:F0} L\n" +
                     $"• Diferencia: {Math.Abs(expectedLiters - actualLiters):F0} L\n\n" +
-                    $"¿Desea continuar con estos valores?", 
-                    "Conversión Inconsistente", 
-                    "Continuar", 
+                    $"¿Desea continuar con estos valores?",
+                    "Conversión Inconsistente",
+                    "Continuar",
                     "Revisar");
-                
+
                 if (!confirm) return;
             }
 
             LoadingOverlay.ShowLoading();
             await _capacityService.SaveCapacityDataAsync();
-            
+
             await CustomAlert.ShowSuccessAsync(
                 $"Capacidad registrada exitosamente:\n\n" +
                 $"• Código: {_capacityService.Code}\n" +
-                $"• Altura: {_capacityService.Height:F2} m\n" +
-                $"• Capacidad: {_capacityService.Gallon:F2} gal / {_capacityService.Liters:F0} L",
+                $"• Altura: {_capacityService.Height.GetValueOrDefault():F2} m\n" +
+                $"• Capacidad: {_capacityService.Gallon.GetValueOrDefault():F2} gal / {_capacityService.Liters:F0} L",
                 "Capacidad Registrada");
         }
         catch (Exception ex)
@@ -108,10 +118,10 @@ public partial class CapacityPostView : ContentPage
             LoadingOverlay.HideLoading();
 
             // Clear form fields after successful submission
-            Code = null;
-            Height = null;
-            Gallon = null;
-            Liters = null;
+            _capacityService.Code = null;
+            _capacityService.Height = null;
+            _capacityService.Gallon = null;  
+            _capacityService.Liters = null;
 
             // Re-enable button
             if (sender is Button button)
@@ -121,7 +131,6 @@ public partial class CapacityPostView : ContentPage
             }
         }
     }
-
     public string? Code
     {
         get => _capacityService.Code;
@@ -131,7 +140,7 @@ public partial class CapacityPostView : ContentPage
             OnPropertyChanged();
         }
     }
-    
+
     public double? Height
     {
         get => _capacityService.Height;
@@ -141,35 +150,5 @@ public partial class CapacityPostView : ContentPage
             OnPropertyChanged();
         }
     }
-
-    public double? Gallon
-    {
-        get => _capacityService.Gallon;
-        set
-        {
-            _capacityService.Gallon = value;
-            OnPropertyChanged();
-            
-            // Auto-calculate liters when gallons change (optional helper)
-            if (value.HasValue && value > 0)
-            {
-                double calculatedLiters = value.Value * 3.78541;
-                // Only auto-fill if Liters is empty or zero
-                if ((_capacityService.Liters ?? 0) == 0)
-                {
-                    Liters = (int)Math.Round(calculatedLiters);
-                }
-            }
-        }
-    }
-
-    public int? Liters
-    {
-        get => _capacityService.Liters;
-        set
-        {
-            _capacityService.Liters = value;
-            OnPropertyChanged();
-        }
-    }
 }
+   
