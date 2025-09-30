@@ -728,7 +728,7 @@
         Clicked="OpenDispenserPopUp"
         Command="{Binding OpenDispenserCommand}"
         AutomationId="AddSaleButton"
-        IsEnabled="{Binding IsBusinessSelected}"
+        IsEnabled="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
         Grid.Column="0">
 
                                     <Button.Triggers>
@@ -766,7 +766,7 @@
         Style="{StaticResource CompactActionButtonStyle}"
         Clicked="OpenTypeOfCollectionPopUp"
         AutomationId="AddCollectionTypeButton"
-        IsEnabled="{Binding IsBusinessSelected}"
+        IsEnabled="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
         Grid.Column="1">
 
                                     <Button.Triggers>

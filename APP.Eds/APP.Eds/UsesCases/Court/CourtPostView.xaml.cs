@@ -457,6 +457,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+
     // --- Envío del corte
     private async void Button_Clicked(object sender, EventArgs e)
     {
@@ -492,6 +493,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     return;
                 }
             }
+
+
 
             // --- Totales actuales ---
             double totalAmount = vm.GetTotalAmount();                  // ventas (dinero)
@@ -566,17 +569,38 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// Rehabilita botones y secciones para un NUEVO cierre de turno,
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
+
+    public bool AccionesHabilitadas => PuedeEditar && IsBusinessSelected;
+
     private async Task ResetForNewCloseAsync()
     {
-        // Refresca el servicio/Bindings
+
+        var prevBusiness = _service.SelectedBusiness;
+        var prevEds = _service.SelectedEds;
+        var prevIslander = _service.SelectedIslander;
+
+      
         CourtService.ResetInstanceFields();
         _service = CourtService.Instance;
         BindingContext = _service;
 
-        // Estado para nuevo flujo
+       
+        if (prevBusiness != null)
+        {
+            _service.SelectedBusiness = prevBusiness;
+            IsBusinessSelected = true; 
+        }
+
+        
+        if (prevEds != null) _service.SelectedEds = prevEds;
+        if (prevIslander != null) _service.SelectedIslander = prevIslander;
+
+        
         SetEditingState(canEdit: true, showSections: true);
 
-        // Re-cargar catálogos si aplica
+        
+        OnPropertyChanged(nameof(AccionesHabilitadas));
+
         try { await _service.GetAllEdsData(); } catch { }
     }
 
@@ -593,6 +617,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     }
 
     // --- Pickers
+
     private void OnBusinessSelected(object sender, EventArgs e)
     {
         if (sender is not Picker picker) return;
@@ -606,8 +631,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _service.LoadEdsByBusiness(selectedBusiness.IdBusiness);
                     _service.IslanderSelectList.Clear();
                     _service.IsBusinessSelected = true;
+            
+                    IsBusinessSelected = true;
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
 
-                    // 👇 Mostrar secciones al elegir Negocio
                     await ShowOperationalSectionsAsync();
                 }
             }
@@ -617,7 +644,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             }
         });
     }
-
     private void OnEdsSelected(object sender, EventArgs e)
     {
         if (sender is not Picker picker) return;
@@ -721,4 +747,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 }
             }
         }
+
+  
+
+
+
 }
