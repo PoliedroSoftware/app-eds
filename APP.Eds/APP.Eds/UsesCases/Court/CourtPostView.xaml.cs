@@ -443,9 +443,43 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async void OpenTypeOfCollectionPopUp(object sender, EventArgs e)
     {
-        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
+        if (!PuedeEditar) 
+        { 
+            await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
+            return; 
+        }
+
         try
         {
+            // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
+            double totalSales = _service.GetTotalAmount();
+            
+            if (totalSales <= 0)
+            {
+                await CustomAlert.ShowWarningAsync(
+                    "📋 Sin Ventas Registradas\n\n" +
+                    "Debe agregar al menos una venta antes de configurar métodos de pago.\n\n" +
+                    "• Agregue dispensadores con ventas primero\n" +
+                    "• Luego configure los métodos de pago correspondientes\n\n" +
+                    "Esto asegura que los métodos de pago coincidan con las ventas realizadas.",
+                    "Ventas Requeridas");
+                return;
+            }
+
+            // Verificar si hay dispensadores agregados (validación adicional más específica)
+            if (_service.CourtDispensers == null || !_service.CourtDispensers.Any())
+            {
+                await CustomAlert.ShowWarningAsync(
+                    "🚫 Dispensadores Requeridos\n\n" +
+                    "No se han registrado dispensadores con ventas.\n\n" +
+                    $"• Total de ventas actual: ${totalSales:N2}\n" +
+                    "• Dispensadores registrados: 0\n\n" +
+                    "Por favor, agregue al menos un dispensador con ventas antes de configurar métodos de pago.",
+                    "Agregar Dispensadores Primero");
+                return;
+            }
+
+            // Si hay ventas, proceder normalmente con el popup
             await ShowPopupSafelyAsync<object>(new AddCourtTypeOfCollection(_service));
             // Refrescar SOLO formas de pago
             await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: true);
@@ -568,16 +602,53 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// </summary>
     private async Task ResetForNewCloseAsync()
     {
-        // Refresca el servicio/Bindings
+        // Resetear completamente el servicio
         CourtService.ResetInstanceFields();
+        
+        // Recrear el servicio para asegurar estado limpio
         _service = CourtService.Instance;
         BindingContext = _service;
 
-        // Estado para nuevo flujo
+        // Estado para nuevo flujo - rehabilitar edición y mostrar secciones
         SetEditingState(canEdit: true, showSections: true);
 
         // Re-cargar catálogos si aplica
-        try { await _service.GetAllEdsData(); } catch { }
+        try { 
+            await _service.GetAllEdsData(); 
+            
+            // Forzar actualización de la UI para mostrar valores en cero
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                // Buscar y actualizar elementos específicos de la UI si existen
+                var totalAmountLabel = this.FindByName<Label>("TotalAmountLabel");
+                if (totalAmountLabel != null)
+                {
+                    totalAmountLabel.Text = "$0";
+                }
+                
+                var totalGallonsLabel = this.FindByName<Label>("TotalGallonsLabel");
+                if (totalGallonsLabel != null)
+                {
+                    totalGallonsLabel.Text = "0 GAL";
+                }
+                
+                var totalForTheDayLabel = this.FindByName<Label>("TotalForTheDayLabel");
+                if (totalForTheDayLabel != null)
+                {
+                    totalForTheDayLabel.Text = "$0"; // Corregido: debe ser $0 después del reset
+                }
+                
+                var totalSalesLabel = this.FindByName<Label>("TotalSalesLabel");
+                if (totalSalesLabel != null)
+                {
+                    totalSalesLabel.Text = "$0";
+                }
+            });
+        } 
+        catch (Exception ex) 
+        { 
+            System.Diagnostics.Debug.WriteLine($"Error reloading EDS data after reset: {ex.Message}");
+        }
     }
 
     // Oculta secciones tras envío y bloquea edición (para evitar doble click)
