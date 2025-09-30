@@ -568,16 +568,53 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// </summary>
     private async Task ResetForNewCloseAsync()
     {
-        // Refresca el servicio/Bindings
+        // Resetear completamente el servicio
         CourtService.ResetInstanceFields();
+        
+        // Recrear el servicio para asegurar estado limpio
         _service = CourtService.Instance;
         BindingContext = _service;
 
-        // Estado para nuevo flujo
+        // Estado para nuevo flujo - rehabilitar edición y mostrar secciones
         SetEditingState(canEdit: true, showSections: true);
 
         // Re-cargar catálogos si aplica
-        try { await _service.GetAllEdsData(); } catch { }
+        try { 
+            await _service.GetAllEdsData(); 
+            
+            // Forzar actualización de la UI para mostrar valores en cero
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                // Buscar y actualizar elementos específicos de la UI si existen
+                var totalAmountLabel = this.FindByName<Label>("TotalAmountLabel");
+                if (totalAmountLabel != null)
+                {
+                    totalAmountLabel.Text = "$0";
+                }
+                
+                var totalGallonsLabel = this.FindByName<Label>("TotalGallonsLabel");
+                if (totalGallonsLabel != null)
+                {
+                    totalGallonsLabel.Text = "0 GAL";
+                }
+                
+                var totalForTheDayLabel = this.FindByName<Label>("TotalForTheDayLabel");
+                if (totalForTheDayLabel != null)
+                {
+                    totalForTheDayLabel.Text = "$0"; // Corregido: debe ser $0 después del reset
+                }
+                
+                var totalSalesLabel = this.FindByName<Label>("TotalSalesLabel");
+                if (totalSalesLabel != null)
+                {
+                    totalSalesLabel.Text = "$0";
+                }
+            });
+        } 
+        catch (Exception ex) 
+        { 
+            System.Diagnostics.Debug.WriteLine($"Error reloading EDS data after reset: {ex.Message}");
+        }
     }
 
     // Oculta secciones tras envío y bloquea edición (para evitar doble click)
