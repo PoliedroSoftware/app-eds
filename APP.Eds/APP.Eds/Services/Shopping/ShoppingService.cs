@@ -33,17 +33,10 @@ public class ShoppingService : INotifyPropertyChanged
         get => _quantity;
         set
         {
-            // Validate against available stock
-            if (value.HasValue && CurrentStock.HasValue && value > CurrentStock)
-            {
-                _quantity = CurrentStock;
-                Application.Current.MainPage.DisplayAlert("Advertencia",
-                    $"La cantidad no puede ser mayor al stock disponible ({CurrentStock})", "OK");
-            }
-            else
-            {
-                _quantity = value > 0 ? value : 0;
-            }
+           
+            
+            _quantity = value > 0 ? value : 0;
+           
             OnPropertyChanged(nameof(Quantity));
             OnPropertyChanged(nameof(CurrentTotalAmount));
         }
@@ -694,12 +687,7 @@ public class ShoppingService : INotifyPropertyChanged
             return;
         }
 
-        if (CurrentStock.HasValue && Quantity > CurrentStock)
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                $"No hay suficiente stock. Stock disponible: {CurrentStock}", "OK");
-            return;
-        }
+       
 
         var newProduct = new ShoppingProductNestedModel
         {
