@@ -26,13 +26,17 @@ public class ShoppingService : INotifyPropertyChanged
     private ShoppingRequest Request { get; set; }
 
 
+    // Update Quantity property to validate against stock
     private double? _quantity;
     public double? Quantity
     {
         get => _quantity;
         set
         {
+           
+            
             _quantity = value > 0 ? value : 0;
+           
             OnPropertyChanged(nameof(Quantity));
             OnPropertyChanged(nameof(CurrentTotalAmount));
         }
@@ -316,6 +320,23 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    // Add stock-related properties
+    private double? _currentStock;
+    public double? CurrentStock
+    {
+        get => _currentStock;
+        set
+        {
+            _currentStock = value;
+            OnPropertyChanged(nameof(CurrentStock));
+            OnPropertyChanged(nameof(IsStockAvailable));
+            OnPropertyChanged(nameof(MaxQuantityAllowed));
+        }
+    }
+
+    public bool IsStockAvailable => CurrentStock > 0;
+    public double? MaxQuantityAllowed => CurrentStock;
+
     private ProductCompartimentPairModel _selectedProductCompartimentPair;
     public ProductCompartimentPairModel SelectedProductCompartimentPair
     {
@@ -324,6 +345,16 @@ public class ShoppingService : INotifyPropertyChanged
         {
             _selectedProductCompartimentPair = value;
             OnPropertyChanged(nameof(SelectedProductCompartimentPair));
+            
+            // Update current stock when product is selected
+            if (_selectedProductCompartimentPair != null)
+            {
+                CurrentStock = _selectedProductCompartimentPair.Stock;
+            }
+            else
+            {
+                CurrentStock = null;
+            }
         }
     }
 
@@ -428,35 +459,102 @@ public class ShoppingService : INotifyPropertyChanged
         }
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/dashboard/compartiments?PageNumber=1&PageSize=100";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync(url);
-            var apiResponse = JsonSerializer.Deserialize<ProducCompartimentPairApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            var rawList = apiResponse?.Data ?? new List<ProductCompartimentPairModelRaw>();
-            var mappedList = rawList.Select(x => new ProductCompartimentPairModel
+            
+            // Get compartments data
+            string compartmentUrl = $"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100";
+            var compartmentResponse = await httpClient.GetStringAsync(compartmentUrl);
+            var compartmentApiResponse = JsonSerializer.Deserialize<ProducCompartimentPairApiResponse>(compartmentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var compartmentList = compartmentApiResponse?.Data ?? new List<ProductCompartimentPairModelRaw>();
+
+            // Get products data to map names and stock
+            string productUrl = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
+            var productResponse = await httpClient.GetStringAsync(productUrl);
+            var productApiResponse = JsonSerializer.Deserialize<ProductApiResponse>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var productList = productApiResponse?.Data ?? new List<ProductResponse>();
+
+            // Create a dictionary for fast product lookup
+            var productDictionary = productList.ToDictionary(p => p.IdProduct, p => p);
+
+            // Map combined data with real product names and stock
+            var mappedList = compartmentList.Select(x => new ProductCompartimentPairModel
             {
-                IdProduct = int.TryParse(x.idProduct, out var idProd) ? idProd : 0,
-                ProductName = x.productName,
-                IdCompartment = int.TryParse(x.idCompartment, out var idComp) ? idComp : 0,
+                IdProduct = x.idProduct,
+                ProductName = GetProductName(x.idProduct, productDictionary),
+                IdCompartment = x.idCompartiment,
                 Number = x.number,
                 Operative = x.operative,
-                Stock = x.stock,
+                Stock = GetRealProductStock(x.idProduct, productDictionary), // Use real stock from product API
             }).ToList();
+
             ProductCompartimentPairs.Clear();
             foreach (var item in mappedList)
             {
                 ProductCompartimentPairs.Add(item);
             }
-            ProductCompartimentPairs.Clear();
-            foreach (var item in mappedList)
-            {
-                ProductCompartimentPairs.Add(item);
-            }
+           
         }
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando combinaciones: {ex.Message}", "OK");
+        }
+    }
+
+   
+    private string GetProductName(int productId, Dictionary<int, ProductResponse> productDictionary)
+    {
+        if (productDictionary.TryGetValue(productId, out var product))
+        {
+            return product.Name;
+        }
+        return $"Producto {productId}"; // Fallback name in Spanish
+    }
+
+    private double GetRealProductStock(int productId, Dictionary<int, ProductResponse> productDictionary)
+    {
+        // Use real stock from the product API response
+        if (productDictionary.TryGetValue(productId, out var product))
+        {
+            // The API response includes "stock" field with the actual stock value
+            return product.Stock; // Return real stock from API
+        }
+        return 0; // No stock if product not found
+    }
+
+  
+    public async Task<double?> RefreshStockForProductCompartmentAsync(int productId, int compartmentId)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+            return null;
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            
+            // If you have a specific stock endpoint for product-compartment pairs
+            string stockUrl = $"{Configuration.BaseUrl}/api/v1/stock/product/{productId}/compartment/{compartmentId}";
+            var response = await httpClient.GetStringAsync(stockUrl);
+            
+            // Parse the response based on your API structure
+            var stockData = JsonSerializer.Deserialize<dynamic>(response);
+            
+            // Update the local collection
+            var item = ProductCompartimentPairs.FirstOrDefault(p => 
+                p.IdProduct == productId && p.IdCompartment == compartmentId);
+            if (item != null)
+            {
+                // item.Stock = stockData.CurrentStock; // Adjust based on actual API response
+                OnPropertyChanged(nameof(ProductCompartimentPairs));
+            }
+
+            return 0; // Return actual stock value from API
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error refreshing stock: {ex.Message}");
+            return null;
         }
     }
 
@@ -506,35 +604,6 @@ public class ShoppingService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
         }
     }
-
-    //public async Task GetShoppingProductAsync()
-    //{
-    //    if (string.IsNullOrEmpty(_authToken))
-    //    {
-    //        await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-    //        return;
-    //    }
-    //    try
-    //    {
-    //        using var httpClient = new HttpClient();
-    //        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-    //        var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/shopping-product?PageNumber=1&PageSize=100");
-    //        var shoppingProduct = JsonSerializer.Deserialize<ShoppingProductApiResponse>(response,
-    //            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-    //        ShoppingProductList.Clear();
-    //        foreach (var item in shoppingProduct.Data)
-    //        {
-    //            ShoppingProductList.Add(item);
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        await Application.Current.MainPage.DisplayAlert("Error", $"Error: {ex.Message}", "OK");
-    //    }
-    //}
-
-
 
     public async Task SaveShoppingDataAsync()
     {
@@ -605,6 +674,21 @@ public class ShoppingService : INotifyPropertyChanged
 
     public async Task AddShoppingProductFromPopup()
     {
+        // Validate stock availability before adding
+        if (SelectedProductCompartimentPair == null)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Seleccione un producto", "OK");
+            return;
+        }
+
+        if (!Quantity.HasValue || Quantity <= 0)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "Ingrese una cantidad válida", "OK");
+            return;
+        }
+
+       
+
         var newProduct = new ShoppingProductNestedModel
         {
             IdProduct = SelectedProductCompartimentPair.IdProduct,
@@ -613,12 +697,26 @@ public class ShoppingService : INotifyPropertyChanged
             PurchasePrice = PurchasePrice,
             SellPrice = SellPrice,
             TotalPrice = CurrentTotalAmount,
-            
         };
 
-
         ShoppingProduct.Add(newProduct);
+        
+        // Update stock after adding product (optional - depends on your business logic)
+        if (CurrentStock.HasValue)
+        {
+            CurrentStock -= Quantity;
+            // Update the stock in the ProductCompartimentPairs collection
+            var productInList = ProductCompartimentPairs.FirstOrDefault(p => 
+                p.IdProduct == SelectedProductCompartimentPair.IdProduct && 
+                p.IdCompartment == SelectedProductCompartimentPair.IdCompartment);
+            if (productInList != null)
+            {
+                productInList.Stock = CurrentStock.Value;
+            }
+        }
+        
         UpdateAccumulatedTotals();
+        ResetProductForm();
     }
 
     private void UpdateAccumulatedTotals()
@@ -657,20 +755,40 @@ public class ShoppingService : INotifyPropertyChanged
     {
         SelectedProduct = null;
         SelectedCompartiment = null;
+        SelectedProductCompartimentPair = null;
         PurchasePrice = 0;
         Quantity = 0;
         SellPrice = 0;
+        CurrentStock = null;
         OnPropertyChanged(nameof(PurchasePrice));
         OnPropertyChanged(nameof(Quantity));
         OnPropertyChanged(nameof(CurrentTotalAmount));
         OnPropertyChanged(nameof(SelectedProduct));
         OnPropertyChanged(nameof(SelectedCompartiment));
+        OnPropertyChanged(nameof(SelectedProductCompartimentPair));
     }
 
     private void DeleteProduct(ShoppingProductNestedModel product)
     {
         if (product != null && ShoppingProduct.Contains(product))
         {
+            // Restore stock when deleting a product
+            var productInList = ProductCompartimentPairs.FirstOrDefault(p => 
+                p.IdProduct == product.IdProduct && 
+                p.IdCompartment == product.IdCompartment);
+            if (productInList != null && product.Quantity.HasValue)
+            {
+                productInList.Stock += product.Quantity.Value;
+                
+                // If this is the currently selected product, update CurrentStock
+                if (SelectedProductCompartimentPair != null && 
+                    SelectedProductCompartimentPair.IdProduct == product.IdProduct &&
+                    SelectedProductCompartimentPair.IdCompartment == product.IdCompartment)
+                {
+                    CurrentStock = productInList.Stock;
+                }
+            }
+
             ShoppingProduct.Remove(product);
             UpdateAccumulatedTotals();
 
@@ -678,6 +796,44 @@ public class ShoppingService : INotifyPropertyChanged
             {
                 ResetProductForm();
             }
+        }
+    }
+
+    // Method to get detailed product information for debugging
+    public async Task<string> GetProductCompartmentDebugInfoAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+            return "No hay token de autenticación";
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            
+            // Get products data
+            string productUrl = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
+            var productResponse = await httpClient.GetStringAsync(productUrl);
+            var productApiResponse = JsonSerializer.Deserialize<ProductApiResponse>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var productList = productApiResponse?.Data ?? new List<ProductResponse>();
+
+            var debugInfo = new StringBuilder();
+            debugInfo.AppendLine("=== INFORMACIÓN DE PRODUCTOS ===");
+            
+            foreach (var product in productList)
+            {
+                debugInfo.AppendLine($"ID: {product.IdProduct}");
+                debugInfo.AppendLine($"Nombre: {product.Name}");
+                debugInfo.AppendLine($"Stock: {product.Stock:F2}");
+                debugInfo.AppendLine($"Precio Venta: ${product.SellPrice:F2}");
+                debugInfo.AppendLine($"Precio Compra: ${product.PurchasePrice:F2}");
+                debugInfo.AppendLine("---");
+            }
+
+            return debugInfo.ToString();
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
         }
     }
 }
