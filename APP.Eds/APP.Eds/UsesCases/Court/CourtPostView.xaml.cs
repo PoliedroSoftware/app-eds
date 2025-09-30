@@ -443,9 +443,43 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     private async void OpenTypeOfCollectionPopUp(object sender, EventArgs e)
     {
-        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
+        if (!PuedeEditar) 
+        { 
+            await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
+            return; 
+        }
+
         try
         {
+            // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
+            double totalSales = _service.GetTotalAmount();
+            
+            if (totalSales <= 0)
+            {
+                await CustomAlert.ShowWarningAsync(
+                    "📋 Sin Ventas Registradas\n\n" +
+                    "Debe agregar al menos una venta antes de configurar métodos de pago.\n\n" +
+                    "• Agregue dispensadores con ventas primero\n" +
+                    "• Luego configure los métodos de pago correspondientes\n\n" +
+                    "Esto asegura que los métodos de pago coincidan con las ventas realizadas.",
+                    "Ventas Requeridas");
+                return;
+            }
+
+            // Verificar si hay dispensadores agregados (validación adicional más específica)
+            if (_service.CourtDispensers == null || !_service.CourtDispensers.Any())
+            {
+                await CustomAlert.ShowWarningAsync(
+                    "🚫 Dispensadores Requeridos\n\n" +
+                    "No se han registrado dispensadores con ventas.\n\n" +
+                    $"• Total de ventas actual: ${totalSales:N2}\n" +
+                    "• Dispensadores registrados: 0\n\n" +
+                    "Por favor, agregue al menos un dispensador con ventas antes de configurar métodos de pago.",
+                    "Agregar Dispensadores Primero");
+                return;
+            }
+
+            // Si hay ventas, proceder normalmente con el popup
             await ShowPopupSafelyAsync<object>(new AddCourtTypeOfCollection(_service));
             // Refrescar SOLO formas de pago
             await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: true);
