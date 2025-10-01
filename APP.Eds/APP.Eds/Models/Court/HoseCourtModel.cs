@@ -69,7 +69,7 @@ public class HoseCourtModel
     public int EdsId => DispensersEntity?.Eds?.IdEds ?? 0;
 
     public string DisplayText =>
-     $"Dispenser: {DispensersNumber}\nHose: {Number}\nProduct: {ProductName}\n-------------------------------------------------";
+     $"Dispensador: {DispensersNumber}\nManguera: {Number}\nProducto: {ProductName}\n-------------------------------------------------";
 }
 
 // Clase para mapear la entidad del producto que viene del backend
