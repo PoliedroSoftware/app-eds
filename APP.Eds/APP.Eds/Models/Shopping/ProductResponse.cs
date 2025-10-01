@@ -16,4 +16,13 @@ public class ProductResponse
 
     [JsonPropertyName("price")]
     public double Price { get; set; }
+
+    [JsonPropertyName("sellPrice")]
+    public double SellPrice { get; set; }
+
+    [JsonPropertyName("purchasePrice")]
+    public double PurchasePrice { get; set; }
+
+    [JsonPropertyName("stock")]
+    public double Stock { get; set; }
 }
