@@ -356,7 +356,7 @@
 
                 <!-- Sales by Hoses Section -->
                 <StackLayout x:Name="AddedDispensers"
-                             IsVisible="{Binding VisibleDispenser}"
+                             IsVisible="{Binding ShouldShowDispensersSection}"
                              IsEnabled="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}">
                     <StackLayout.Triggers>
                         <!-- Ocultar después del envío -->
@@ -456,7 +456,7 @@
 
                 <!-- Collections Section (Formas de pago) -->
                 <StackLayout x:Name="TypesofAggregateCollections"
-                             IsVisible="{Binding VisibleReceipts}"
+                             IsVisible="{Binding ShouldShowPaymentMethodsSection}"
                              IsEnabled="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}">
                     <StackLayout.Triggers>
                         <DataTrigger TargetType="StackLayout"
