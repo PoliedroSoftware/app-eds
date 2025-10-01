@@ -724,22 +724,22 @@
 
                                 <!-- Botón NewSale -->
                                 <Button Text="{Binding NewSale}"
-        Style="{StaticResource CompactActionButtonStyle}"
-        Clicked="OpenDispenserPopUp"
-        Command="{Binding OpenDispenserCommand}"
-        AutomationId="AddSaleButton"
-        IsEnabled="{Binding IsBusinessSelected}"
-        Grid.Column="0">
-
+            Style="{StaticResource CompactActionButtonStyle}"
+            Clicked="OpenDispenserPopUp"
+            Command="{Binding OpenDispenserCommand}"
+            AutomationId="AddSaleButton"
+            IsEnabled="{Binding IsBusinessSelected}"
+            Grid.Column="0">
                                     <Button.Triggers>
                                         <!-- Bloquear si el corte ya fue enviado -->
                                         <DataTrigger TargetType="Button"
-                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
-                     Value="False">
+                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Button.Triggers>
 
+                                    <!-- Estados visuales -->
                                     <!-- Estados visuales -->
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup Name="CommonStates">
@@ -759,20 +759,17 @@
                                     </VisualStateManager.VisualStateGroups>
                                 </Button>
 
-
-                               
                                 <!-- Botón AddCollectionType -->
                                 <Button Text="{Binding AddCollectionType}"
-        Style="{StaticResource CompactActionButtonStyle}"
-        Clicked="OpenTypeOfCollectionPopUp"
-        AutomationId="AddCollectionTypeButton"
-        IsEnabled="{Binding IsBusinessSelected}"
-        Grid.Column="1">
-
+            Style="{StaticResource CompactActionButtonStyle}"
+            Clicked="OpenTypeOfCollectionPopUp"
+            AutomationId="AddCollectionTypeButton"
+            IsEnabled="{Binding IsBusinessSelected}"
+            Grid.Column="1">
                                     <Button.Triggers>
                                         <DataTrigger TargetType="Button"
-                     Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
-                     Value="False">
+                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Button.Triggers>
@@ -797,7 +794,6 @@
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
                                 </Button>
-
 
                             </Grid>
 
@@ -838,190 +834,178 @@
         </ScrollView>
 
         <!-- Enhanced Bottom Navigation Menu -->
-        <Border x:Name="AdditionalInfo"
-BackgroundColor="#F0F8FF"
-StrokeShape="RoundRectangle 12"
-Stroke="#87CEEB"
-Padding="0"
-Margin="9"
-IsVisible="{Binding AdditionalInfoEnabled}"
-AbsoluteLayout.LayoutBounds="0,1,1,100"
-AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
+        <Border Style="{StaticResource EnhancedBottomNavContainerStyle}"
+                AbsoluteLayout.LayoutBounds="0,1,1,95"
+                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
 
-            <Border.Shadow>
-                <Shadow Brush="#87CEEB" Offset="0,2" Radius="8" Opacity="0.2"/>
-            </Border.Shadow>
+            <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24" RowDefinitions="Auto,Auto">
+                <!-- (sin cambios, el bloqueo lo hace el code-behind) -->
 
-            <StackLayout>
-                <!-- Texto descriptivo -->
-                <Label Text="{Binding AdditionalInfoDescription, Mode=TwoWay}" 
-       TextColor="#2F4F4F"
-       FontSize="14"
-       Margin="0,0,0,8"
-       IsVisible="{Binding AdditionalInfoDescription, Converter={StaticResource StringNotEmptyConverter}}"/>
-
-                <!-- Menú de navegación inferior -->
-                <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24">
-
-                    <!-- Upload Document Button -->
-                    <Grid Grid.Column="0" x:Name="DocumentButton">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnDocumentTapped"/>
-                        </Grid.GestureRecognizers>
-                        <Ellipse Fill="#FFF3E0" Style="{StaticResource NavCircleIndicatorStyle}">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
-                                    <Setter Property="Fill" Value="#FF9800"/>
-                                    <Setter Property="Scale" Value="1.15"/>
+                <!-- Upload Document Button -->
+                <Grid Grid.Column="0" x:Name="DocumentButton">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDocumentTapped"/>
+                    </Grid.GestureRecognizers>
+                    <Ellipse Fill="#FFF3E0" 
+                             Style="{StaticResource NavCircleIndicatorStyle}"
+                             x:Name="DocumentCircle">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
+                                <Setter Property="Fill" Value="#FF9800"/>
+                                <Setter Property="Scale" Value="1.15"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📄" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Docs" 
+                               FontSize="10" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#F57C00"
+                               x:Name="DocumentLabel">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Document">
+                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="FontSize" Value="11"/>
                                 </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                        <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="📄" FontSize="22" HorizontalOptions="Center"/>
-                            <Label Text="Docs" 
-                   FontSize="10" 
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="#F57C00">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Document">
-                                        <Setter Property="TextColor" Value="White"/>
-                                        <Setter Property="FontSize" Value="11"/>
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
-                        <Ellipse Fill="#FF9800"
-                 Style="{StaticResource NavDotIndicatorStyle}"
-                 IsVisible="False">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
-                                    <Setter Property="IsVisible" Value="True"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                    </Grid>
-
-                    <!-- Add Expense Button -->
-                    <Grid Grid.Column="1" x:Name="ExpenseButton">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnExpenseTapped"/>
-                        </Grid.GestureRecognizers>
-                        <Ellipse Fill="#F3E5F5" Style="{StaticResource NavCircleIndicatorStyle}">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                    <Setter Property="Fill" Value="#9C27B0"/>
-                                    <Setter Property="Scale" Value="1.15"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                        <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="💸" FontSize="22" HorizontalOptions="Center"/>
-                            <Label Text="Gastos" 
-                   FontSize="10" 
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="#9C27B0">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                        <Setter Property="TextColor" Value="White"/>
-                                        <Setter Property="FontSize" Value="11"/>
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
-                        <Ellipse Fill="#9C27B0"
-                 Style="{StaticResource NavDotIndicatorStyle}"
-                 IsVisible="False">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                    <Setter Property="IsVisible" Value="True"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                    </Grid>
-
-                    <!-- Additional Info Button -->
-                    <Grid Grid.Column="2" x:Name="InfoButton">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnInfoTapped"/>
-                        </Grid.GestureRecognizers>
-                        <Ellipse Fill="#E8EAF6" Style="{StaticResource NavCircleIndicatorStyle}">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
-                                    <Setter Property="Fill" Value="#3F51B5"/>
-                                    <Setter Property="Scale" Value="1.15"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                        <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="💬" FontSize="22" HorizontalOptions="Center"/>
-                            <Label Text="Info" 
-                   FontSize="10" 
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="#3F51B5">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Info">
-                                        <Setter Property="TextColor" Value="White"/>
-                                        <Setter Property="FontSize" Value="11"/>
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
-                        <Ellipse Fill="#3F51B5"
-                 Style="{StaticResource NavDotIndicatorStyle}"
-                 IsVisible="False">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
-                                    <Setter Property="IsVisible" Value="True"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                    </Grid>
-
-                    <!-- History/List Button -->
-                    <Grid Grid.Column="3" x:Name="HistoryButton">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnHistoryTapped"/>
-                        </Grid.GestureRecognizers>
-                        <Ellipse Fill="#E8F5E8" Style="{StaticResource NavCircleIndicatorStyle}">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
-                                    <Setter Property="Fill" Value="#4CAF50"/>
-                                    <Setter Property="Scale" Value="1.15"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                        <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="📜" FontSize="22" HorizontalOptions="Center"/>
-                            <Label Text="Lista" 
-                   FontSize="10" 
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="#4CAF50">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="History">
-                                        <Setter Property="TextColor" Value="White"/>
-                                        <Setter Property="FontSize" Value="11"/>
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </StackLayout>
-                        <Ellipse Fill="#4CAF50"
-                 Style="{StaticResource NavDotIndicatorStyle}"
-                 IsVisible="False">
-                            <Ellipse.Triggers>
-                                <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
-                                    <Setter Property="IsVisible" Value="True"/>
-                                </DataTrigger>
-                            </Ellipse.Triggers>
-                        </Ellipse>
-                    </Grid>
-
-                   
+                            </Label.Triggers>
+                        </Label>
+                    </StackLayout>
+                    <Ellipse Fill="#FF9800"
+                             Style="{StaticResource NavDotIndicatorStyle}"
+                             x:Name="DocumentDot">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
                 </Grid>
-            </StackLayout>
+
+                <!-- Add Expense Button -->
+                <Grid Grid.Column="1" x:Name="ExpenseButton">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnExpenseTapped"/>
+                    </Grid.GestureRecognizers>
+                    <Ellipse Fill="#F3E5F5" 
+                             Style="{StaticResource NavCircleIndicatorStyle}"
+                             x:Name="ExpenseCircle">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
+                                <Setter Property="Fill" Value="#9C27B0"/>
+                                <Setter Property="Scale" Value="1.15"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="💸" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Gastos" 
+                               FontSize="10" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#9C27B0"
+                               x:Name="ExpenseLabel">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Expense">
+                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </StackLayout>
+                    <Ellipse Fill="#9C27B0"
+                             Style="{StaticResource NavDotIndicatorStyle}">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                </Grid>
+
+                <!-- Additional Info Button -->
+                <Grid Grid.Column="2" x:Name="InfoButton">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnInfoTapped"/>
+                    </Grid.GestureRecognizers>
+                    <Ellipse Fill="#E8EAF6" 
+                             Style="{StaticResource NavCircleIndicatorStyle}">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
+                                <Setter Property="Fill" Value="#3F51B5"/>
+                                <Setter Property="Scale" Value="1.15"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="💬" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Info" 
+                               FontSize="10" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#3F51B5"
+                               x:Name="InfoLabel">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Info">
+                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </StackLayout>
+                    <Ellipse Fill="#3F51B5"
+                             Style="{StaticResource NavDotIndicatorStyle}">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                </Grid>
+
+                <!-- History/List Button -->
+                <Grid Grid.Column="3" x:Name="HistoryButton">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHistoryTapped"/>
+                    </Grid.GestureRecognizers>
+                    <Ellipse Fill="#E8F5E8" 
+                             Style="{StaticResource NavCircleIndicatorStyle}">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
+                                <Setter Property="Fill" Value="#4CAF50"/>
+                                <Setter Property="Scale" Value="1.15"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                    <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📜" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Lista" 
+                               FontSize="10" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#4CAF50"
+                               x:Name="HistoryLabel">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="History">
+                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </StackLayout>
+                    <Ellipse Fill="#4CAF50"
+                             Style="{StaticResource NavDotIndicatorStyle}">
+                        <Ellipse.Triggers>
+                            <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                </Grid>
+
+
+            </Grid>
         </Border>
 
 
