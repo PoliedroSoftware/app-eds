@@ -28,7 +28,7 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicialización");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicializaciï¿½n");
         }
         finally
         {
@@ -67,38 +67,38 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
 
             if (string.IsNullOrWhiteSpace(_islanderService.Email))
             {
-                await CustomAlert.ShowErrorAsync("El correo electrónico es necesario para las comunicaciones del sistema", "Email Requerido");
+                await CustomAlert.ShowErrorAsync("El correo electrï¿½nico es necesario para las comunicaciones del sistema", "Email Requerido");
                 return;
             }
 
             // Enhanced email validation
             if (!IsValidEmail(_islanderService.Email))
             {
-                await CustomAlert.ShowErrorAsync("Por favor ingrese un correo electrónico válido (ejemplo: usuario@dominio.com)", "Email Inválido");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese un correo electrï¿½nico vï¿½lido (ejemplo: usuario@dominio.com)", "Email Invï¿½lido");
                 return;
             }
 
             if (_islanderService.SelectedEds == null)
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar la estación de servicio (EDS) donde trabajará el islero", "EDS Requerida");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la estaciï¿½n de servicio (EDS) donde trabajarï¿½ el islero", "EDS Requerida");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.SelectedRole))
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar el rol o posición que tendrá el islero en la estación", "Rol Requerido");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el rol o posiciï¿½n que tendrï¿½ el islero en la estaciï¿½n", "Rol Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_islanderService.Password))
             {
-                await CustomAlert.ShowErrorAsync("Debe establecer una contraseña de acceso al sistema", "Contraseña Requerida");
+                await CustomAlert.ShowErrorAsync("Debe establecer una contraseï¿½a de acceso al sistema", "Contraseï¿½a Requerida");
                 return;
             }
 
             if (_islanderService.Password.Length < 6)
             {
-                await CustomAlert.ShowErrorAsync("La contraseña debe tener al menos 6 caracteres para mayor seguridad", "Contraseña Muy Corta");
+                await CustomAlert.ShowErrorAsync("La contraseï¿½a debe tener al menos 6 caracteres para mayor seguridad", "Contraseï¿½a Muy Corta");
                 return;
             }
 
