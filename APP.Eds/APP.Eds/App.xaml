@@ -17,6 +17,8 @@
             <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
