@@ -82,33 +82,55 @@ namespace APP.Eds
 
                 Preferences.Set("Usernamelogin", Username);
 
-                var roles = tokenPayload
-                    .GetProperty("resource_access")
-                    .GetProperty("application-eds")
-                    .GetProperty("roles")
-                    .EnumerateArray()
-                    .Select(r => r.GetString())
-                    .ToList();
+                // Collect roles from client (resource_access) and realm (realm_access), but do not require group membership
+                var roles = new List<string>();
+
+                if (tokenPayload.TryGetProperty("resource_access", out var resourceAccess))
+                {
+                    // Use configured client id instead of hard-coded value
+                    if (resourceAccess.TryGetProperty(_clientId, out var clientAccess))
+                    {
+                        if (clientAccess.TryGetProperty("roles", out var clientRoles))
+                        {
+                            foreach (var r in clientRoles.EnumerateArray())
+                            {
+                                var role = r.GetString();
+                                if (!string.IsNullOrEmpty(role)) roles.Add(role);
+                            }
+                        }
+                    }
+                }
+
+                if (tokenPayload.TryGetProperty("realm_access", out var realmAccess))
+                {
+                    if (realmAccess.TryGetProperty("roles", out var realmRoles))
+                    {
+                        foreach (var r in realmRoles.EnumerateArray())
+                        {
+                            var role = r.GetString();
+                            if (!string.IsNullOrEmpty(role)) roles.Add(role);
+                        }
+                    }
+                }
 
                 TokenHelper.SaveToken(token, _clientId, _realm);
 
-
-                if (roles.Contains("Admin"))
+                // If you need role-based UI, keep it, but default to allowing any authenticated user.
+                if (roles.Contains("Admin", StringComparer.OrdinalIgnoreCase))
                 {
                     Preferences.Set("userRole", "Admin");
-                    Application.Current.MainPage = new NavigationPage(new Main());
                 }
-                else if (roles.Contains("User"))
+                else if (roles.Contains("User", StringComparer.OrdinalIgnoreCase))
                 {
                     Preferences.Set("userRole", "User");
-                    Application.Current.MainPage = new NavigationPage(new Main());
                 }
                 else
                 {
-                    ShowError("Rol no autorizado.");
+                    // Default role for any authenticated user in the realm
+                    Preferences.Set("userRole", "User");
                 }
 
-
+                Application.Current.MainPage = new NavigationPage(new Main());
 
             }
             catch (Exception ex)
