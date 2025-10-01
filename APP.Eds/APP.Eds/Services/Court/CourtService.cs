@@ -34,22 +34,64 @@ namespace APP.Eds.Services.Court
 
         public static void ResetInstanceFields()
         {
-            
-            _instance.SelectedBusiness = null;
-            _instance.SelectedEds = null;
-            _instance.SelectedIslander = null;
-            _instance.TotalAmount = 0;
-            _instance.TotalGallons = 0;
-            _instance.TotalExpenditure = 0;
-            _instance.TotalTypeOfCollection = 0;
-            _instance.TotalSales = 0;
-            _instance.Distintic = 0;
-            _instance.CourtDispensers = null;
-            _instance.CourtDocuments = null;
-            _instance.CourtExpenditures = null;
-            _instance.CourtTypeOfCollections = null;
-            _instance.AdditionalInfoDescription = null;
-            
+            if (_instance != null)
+            {
+                // Reset business/EDS selections
+                _instance.SelectedBusiness = null;
+                _instance.SelectedEds = null;
+                _instance.SelectedIslander = null;
+                
+                // Reset all totals and sales
+                _instance.TotalAmount = 0;
+                _instance.TotalGallons = 0;
+                _instance.TotalExpenditure = 0;
+                _instance.TotalTypeOfCollection = 0;
+                _instance.TotalSales = 0;
+                _instance.Distintic = 0;
+                
+                // Clear all collections
+                _instance.CourtDispensers?.Clear();
+                _instance.CourtDocuments?.Clear();
+                _instance.CourtExpenditures?.Clear();
+                _instance.CourtTypeOfCollections?.Clear();
+                
+                // Clear results collections
+                _instance.AmountResults?.Clear();
+                _instance.GallonResults?.Clear();
+                
+                // Reset accumulated values
+                _instance.AccumulatedAmount = 0;
+                _instance.AccumulatedGallons = 0;
+                _instance.LastAccumulatedAmount = 0;
+                _instance.LastAccumulatedGallons = 0;
+                _instance.AmountDifferenceResult = 0;
+                _instance.GallonsDifferenceResult = 0;
+                
+                // Reset additional info
+                _instance.AdditionalInfoDescription = null;
+                
+                // Notify all property changes to update UI
+                _instance.OnPropertyChanged(nameof(TotalAmount));
+                _instance.OnPropertyChanged(nameof(TotalGallons));
+                _instance.OnPropertyChanged(nameof(TotalExpenditure));
+                _instance.OnPropertyChanged(nameof(TotalTypeOfCollection));
+                _instance.OnPropertyChanged(nameof(TotalSales));
+                _instance.OnPropertyChanged(nameof(Distintic));
+                _instance.OnPropertyChanged(nameof(CourtDispensers));
+                _instance.OnPropertyChanged(nameof(CourtDocuments));
+                _instance.OnPropertyChanged(nameof(CourtExpenditures));
+                _instance.OnPropertyChanged(nameof(CourtTypeOfCollections));
+                _instance.OnPropertyChanged(nameof(AccumulatedAmount));
+                _instance.OnPropertyChanged(nameof(AccumulatedGallons));
+                _instance.OnPropertyChanged(nameof(LastAccumulatedAmount));
+                _instance.OnPropertyChanged(nameof(LastAccumulatedGallons));
+                _instance.OnPropertyChanged(nameof(AmountDifferenceResult));
+                _instance.OnPropertyChanged(nameof(GallonsDifferenceResult));
+                _instance.OnPropertyChanged(nameof(AdditionalInfoDescription));
+                _instance.OnPropertyChanged(nameof(SelectedBusiness));
+                _instance.OnPropertyChanged(nameof(SelectedEds));
+                _instance.OnPropertyChanged(nameof(SelectedIslander));
+            }
         }
         public static void DestroyInstance()
         {
@@ -3202,7 +3244,14 @@ GetAllEdsData()
             TotalExpenditure = GetTotalExpenditure();
             TotalTypeOfCollection = GetTotalTypeOfCollection();
 
-            return TotalAmount; // Fixed: Return total sales without subtracting expenses
+            // Notificar cambios en las propiedades para que la UI se actualice
+            OnPropertyChanged(nameof(TotalAmount));
+            OnPropertyChanged(nameof(TotalGallons));
+            OnPropertyChanged(nameof(TotalExpenditure));
+            OnPropertyChanged(nameof(TotalTypeOfCollection));
+            OnPropertyChanged(nameof(TotalSales));
+
+            return TotalAmount; // Return total sales amount
         }
 
         public void LoadEdsByBusiness(int businessId)
