@@ -18,18 +18,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
     private async Task ShowOperationalSectionsAsync()
     {
+        // 🔥 MÉTODO SIMPLIFICADO: Ya no se necesita manipular manualmente la visibilidad
+        // porque ahora está controlada por las propiedades ShouldShowDispensersSection y ShouldShowPaymentMethodsSection
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            // 1) Activa flags que controlan IsVisible en XAML
-            //    (XAML: AddedDispensers -> VisibleDispenser, TypesofAggregateCollections -> VisibleReceipts)
-            _service.VisibleDispenser = true;
-            _service.VisibleReceipts = true;
-
-            // 2) Fallback directo por si alguna binding no dispara
-            this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, true);
-            this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, true);
-
-            // 3) Opcional: refresca las CollectionView por si ya hay datos cargados
+            // Solo refrescar las secciones si es necesario
             await RefreshSectionsAsync(refreshDispensers: true, refreshPayments: true);
         });
     }
@@ -600,67 +593,43 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// Rehabilita botones y secciones para un NUEVO cierre de turno,
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
+    /// 
+    public bool AccionesHabilitadas => PuedeEditar && IsBusinessSelected;
+
     private async Task ResetForNewCloseAsync()
     {
-        // Resetear completamente el servicio
+        var prevBusiness = _service.SelectedBusiness;
+        var prevEds = _service.SelectedEds;
+        var prevIslander = _service.SelectedIslander;
+
         CourtService.ResetInstanceFields();
-        
-        // Recrear el servicio para asegurar estado limpio
         _service = CourtService.Instance;
         BindingContext = _service;
 
-        // Estado para nuevo flujo - rehabilitar edición y mostrar secciones
+        if (prevBusiness != null)
+        {
+            _service.SelectedBusiness = prevBusiness;
+            IsBusinessSelected = true; 
+        }
+
+        if (prevEds != null) _service.SelectedEds = prevEds;
+        if (prevIslander != null) _service.SelectedIslander = prevIslander;
+
         SetEditingState(canEdit: true, showSections: true);
 
-        // Re-cargar catálogos si aplica
-        try { 
-            await _service.GetAllEdsData(); 
-            
-            // Forzar actualización de la UI para mostrar valores en cero
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                // Buscar y actualizar elementos específicos de la UI si existen
-                var totalAmountLabel = this.FindByName<Label>("TotalAmountLabel");
-                if (totalAmountLabel != null)
-                {
-                    totalAmountLabel.Text = "$0";
-                }
-                
-                var totalGallonsLabel = this.FindByName<Label>("TotalGallonsLabel");
-                if (totalGallonsLabel != null)
-                {
-                    totalGallonsLabel.Text = "0 GAL";
-                }
-                
-                var totalForTheDayLabel = this.FindByName<Label>("TotalForTheDayLabel");
-                if (totalForTheDayLabel != null)
-                {
-                    totalForTheDayLabel.Text = "$0"; // Corregido: debe ser $0 después del reset
-                }
-                
-                var totalSalesLabel = this.FindByName<Label>("TotalSalesLabel");
-                if (totalSalesLabel != null)
-                {
-                    totalSalesLabel.Text = "$0";
-                }
-            });
-        } 
-        catch (Exception ex) 
-        { 
-            System.Diagnostics.Debug.WriteLine($"Error reloading EDS data after reset: {ex.Message}");
-        }
+        OnPropertyChanged(nameof(AccionesHabilitadas));
+
+        try { await _service.GetAllEdsData(); } catch { }
     }
+
 
     // Oculta secciones tras envío y bloquea edición (para evitar doble click)
     private void OcultarSeccionesCierre()
     {
         SetEditingState(canEdit: false, showSections: false);
 
-        // Fallback directo sobre contenedores XAML (por si alguna binding no alcanza)
-        this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("AddedExpenses")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("AddedDocuments")?.SetValue(VisualElement.IsVisibleProperty, false);
+        // 🔥 YA NO ES NECESARIO: La visibilidad ahora se controla automáticamente por las propiedades del servicio
+        // Las secciones se ocultarán automáticamente cuando las colecciones estén vacías después del reset
     }
 
     // --- Pickers
@@ -678,7 +647,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _service.IslanderSelectList.Clear();
                     _service.IsBusinessSelected = true;
 
-                    // 👇 Mostrar secciones al elegir Negocio
+                    IsBusinessSelected = true;
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
+
                     await ShowOperationalSectionsAsync();
                 }
             }
@@ -688,6 +659,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             }
         });
     }
+
 
     private void OnEdsSelected(object sender, EventArgs e)
     {
