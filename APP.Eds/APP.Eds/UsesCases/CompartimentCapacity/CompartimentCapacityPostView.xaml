@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
-    Title="Gestión Capacidad Compartimento"
+    Title="Gestión de Capacidad del Compartimento"
     BackgroundColor="#F8F9FA">
 
     <AbsoluteLayout>
@@ -14,7 +14,7 @@
                 <!-- Header Card with Purple Gradient -->
                 <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
                     <StackLayout Spacing="8">
-                        <Label Text="⚡ Gestión Capacidad Compartimento" 
+                        <Label Text="⚡ Gestión Capacidad del Compartimento" 
                                FontSize="28" 
                                FontAttributes="Bold" 
                                TextColor="White" 
