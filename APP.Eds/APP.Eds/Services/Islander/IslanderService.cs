@@ -31,6 +31,8 @@ public class EnhancedIslanderItem
 
 public class IslanderService : INotifyPropertyChanged
 {
+    public bool ActivateClearForm { get; private set; }
+    
     public event PropertyChangedEventHandler? PropertyChanged;
     
     // Collections
@@ -320,7 +322,7 @@ public class IslanderService : INotifyPropertyChanged
                 {
                     Id = islander.IdIslander, // Fixed: Use correct property name
                     Name = islander.Name,
-                    Email = GenerateEmailFromName(islander.Name), // Generate email from name
+                    Email = islander.Email, // Generate email from name
                     Firstname = ExtractFirstName(islander.Name), // Extract from full name
                     Lastname = ExtractLastName(islander.Name), // Extract from full name
                     IdEds = islander.IdEds,
@@ -539,6 +541,7 @@ public class IslanderService : INotifyPropertyChanged
     {
         try
         {
+            ActivateClearForm = false;
             if (string.IsNullOrEmpty(_authToken))
             {
                 await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
@@ -551,6 +554,19 @@ public class IslanderService : INotifyPropertyChanged
                 return;
             }
 
+            bool userError = IslanderList.Any(i => i.Name.Equals(Name, StringComparison.OrdinalIgnoreCase));
+            bool emailError = IslanderList.Any(i => i.Email.Equals(Email, StringComparison.OrdinalIgnoreCase));
+
+            if (emailError)
+            {
+                await CustomAlert.ShowErrorAsync($"El correo electrónico {Email} ya está registrado. Por favor, use otro correo.", "Email Duplicado");
+                return;
+            }
+            if (userError)
+            {
+                await CustomAlert.ShowErrorAsync($"El usuario {Name} ya está registrado. Por favor, use otro nombre.", "Usuario Duplicado");
+                return;
+            }
             Islander = new IslanderModel
             {
                 Name = Name,
@@ -604,6 +620,7 @@ public class IslanderService : INotifyPropertyChanged
                     HireDate = DateTime.Now,
                     LastAccess = DateTime.Now
                 };
+                ActivateClearForm = true;
                 
                 EnhancedIslanderList.Insert(0, newIslander);
                 UpdateStatistics();
@@ -614,11 +631,13 @@ public class IslanderService : INotifyPropertyChanged
             {
                 var error = await response.Content.ReadAsStringAsync();
                 await CustomAlert.ShowErrorAsync($"No se pudo registrar el islero: {response.StatusCode}\n{error}", "Error del Servidor");
+                
             }
         }
         catch (Exception ex)
         {
             await CustomAlert.ShowErrorAsync($"Error al registrar el islero: {ex.Message}", "Error del Sistema");
+            
         }
     }
 

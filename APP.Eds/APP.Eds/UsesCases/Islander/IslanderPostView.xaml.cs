@@ -124,8 +124,11 @@ public partial class IslanderPostView : ContentPage, INotifyPropertyChanged
             LoadingOverlay?.ShowLoading();
             await _islanderService.SaveIslanderDataAsync();
 
-            // Clear form after successful save
-            ClearForm();
+            if(_islanderService.ActivateClearForm)
+            {
+                ClearForm();
+            }
+
         }
         catch (Exception ex)
         {
