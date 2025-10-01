@@ -18,18 +18,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
     private async Task ShowOperationalSectionsAsync()
     {
+        // 🔥 MÉTODO SIMPLIFICADO: Ya no se necesita manipular manualmente la visibilidad
+        // porque ahora está controlada por las propiedades ShouldShowDispensersSection y ShouldShowPaymentMethodsSection
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            // 1) Activa flags que controlan IsVisible en XAML
-            //    (XAML: AddedDispensers -> VisibleDispenser, TypesofAggregateCollections -> VisibleReceipts)
-            _service.VisibleDispenser = true;
-            _service.VisibleReceipts = true;
-
-            // 2) Fallback directo por si alguna binding no dispara
-            this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, true);
-            this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, true);
-
-            // 3) Opcional: refresca las CollectionView por si ya hay datos cargados
+            // Solo refrescar las secciones si es necesario
             await RefreshSectionsAsync(refreshDispensers: true, refreshPayments: true);
         });
     }
@@ -656,11 +649,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         SetEditingState(canEdit: false, showSections: false);
 
-        // Fallback directo sobre contenedores XAML (por si alguna binding no alcanza)
-        this.FindByName<VisualElement>("AddedDispensers")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("TypesofAggregateCollections")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("AddedExpenses")?.SetValue(VisualElement.IsVisibleProperty, false);
-        this.FindByName<VisualElement>("AddedDocuments")?.SetValue(VisualElement.IsVisibleProperty, false);
+        // 🔥 YA NO ES NECESARIO: La visibilidad ahora se controla automáticamente por las propiedades del servicio
+        // Las secciones se ocultarán automáticamente cuando las colecciones estén vacías después del reset
     }
 
     // --- Pickers

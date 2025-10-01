@@ -91,6 +91,10 @@ namespace APP.Eds.Services.Court
                 _instance.OnPropertyChanged(nameof(SelectedBusiness));
                 _instance.OnPropertyChanged(nameof(SelectedEds));
                 _instance.OnPropertyChanged(nameof(SelectedIslander));
+                
+                // Notify visibility properties after clearing collections
+                _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
+                _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             }
         }
         public static void DestroyInstance()
@@ -118,6 +122,17 @@ namespace APP.Eds.Services.Court
         public bool AreAvailableHoses => IsUserRole || HoseList != null && HoseList.Count > 0;
         public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
         public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
+
+        // 🔥 NUEVAS PROPIEDADES PARA CONTROLAR LA VISIBILIDAD DE LAS SECCIONES
+        /// <summary>
+        /// Determina si se debe mostrar la sección "Ventas por mangueras" basándose en si hay dispensers agregados
+        /// </summary>
+        public bool ShouldShowDispensersSection => CourtDispensers != null && CourtDispensers.Any();
+
+        /// <summary>
+        /// Determina si se debe mostrar la sección "Formas de pago" basándose en si hay métodos de pago agregados
+        /// </summary>
+        public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
@@ -2137,6 +2152,8 @@ namespace APP.Eds.Services.Court
             {
                 _courtDispensers = value;
                 OnPropertyChanged(nameof(CourtDispensers));
+                // 🔥 Notificar cambio en la visibilidad cuando cambie la colección
+                OnPropertyChanged(nameof(ShouldShowDispensersSection));
             }
         }
 
@@ -2170,6 +2187,8 @@ namespace APP.Eds.Services.Court
             {
                 _courtTypeOfCollections = value;
                 OnPropertyChanged(nameof(CourtTypeOfCollections));
+                // 🔥 Notificar cambio en la visibilidad cuando cambie la colección
+                OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             }
         }
 
@@ -2314,7 +2333,7 @@ namespace APP.Eds.Services.Court
             VisibleReceipts = false;
             VisibleAdditionalInfo = false;
            
- 
+
             _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             
 
@@ -2905,6 +2924,8 @@ GetAllEdsData()
                 CourtTypeOfCollections.Remove(collection);
                 TotalSales = GetTotalSales();
                 OnPropertyChanged(nameof(CourtTypeOfCollections));
+                // 🔥 Notificar cambio en la visibilidad después de eliminar el método de pago
+                OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             }
         }
 
@@ -3123,6 +3144,9 @@ GetAllEdsData()
             AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
 
             TotalSales = GetTotalSales();
+            
+            // 🔥 Notificar cambio en la visibilidad después de agregar el dispensador
+            OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
 
         public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
@@ -3203,6 +3227,9 @@ GetAllEdsData()
             TotalSales = GetTotalSales();
             CourtTypeOfCollectionAmount = 0;
             CourtTypeOfCollectionDescription = "";
+            
+            // 🔥 Notificar cambio en la visibilidad después de agregar el método de pago
+            OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
 
         public double GetTotalAmount()
@@ -3376,6 +3403,8 @@ GetAllEdsData()
                 OnPropertyChanged(nameof(TotalAmount));
                 OnPropertyChanged(nameof(TotalGallons));
                 OnPropertyChanged(nameof(TotalSales));
+                // 🔥 Notificar cambio en la visibilidad después de eliminar el dispensador
+                OnPropertyChanged(nameof(ShouldShowDispensersSection));
             }
         }
 
