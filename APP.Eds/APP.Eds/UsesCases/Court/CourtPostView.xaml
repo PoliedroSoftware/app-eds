@@ -733,7 +733,7 @@
                                     <Button.Triggers>
                                         <!-- Bloquear si el corte ya fue enviado -->
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
                          Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
@@ -768,7 +768,7 @@
             Grid.Column="1">
                                     <Button.Triggers>
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=PuedeEditar}"
+                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
                          Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
