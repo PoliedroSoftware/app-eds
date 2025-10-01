@@ -197,81 +197,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Purchase Summary Card -->
-                <Border Style="{StaticResource ModernCardStyle}">
-                    <VerticalStackLayout Spacing="16">
-                        <!-- Summary Header -->
-                        <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E8F5E8" 
-                                    StrokeShape="RoundRectangle 20"
-                                    WidthRequest="40" HeightRequest="40"
-                                    VerticalOptions="Center">
-                                <Label Text="📊" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
-                                       VerticalOptions="Center"/>
-                            </Border>
-                            
-                            <StackLayout VerticalOptions="Center">
-                                <Label Text="Compras Totales" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#2D3436"
-                                       AutomationId="LabelTotalPurchases"/>
-                                <Label Text="Resumen de la compra actual" 
-                                       FontSize="12" 
-                                       TextColor="#636E72"/>
-                            </StackLayout>
-                        </StackLayout>
-
-                        <!-- Summary Grid -->
-                        <Grid ColumnDefinitions="*,*" RowSpacing="12" ColumnSpacing="12">
-                            <!-- Total Gallons -->
-                            <Border BackgroundColor="#E3F2FD" 
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
-                                    Padding="16"
-                                    Grid.Column="0">
-                                <StackLayout Spacing="8">
-                                    <Label Text="Total Galones" 
-                                           FontAttributes="Bold" 
-                                           FontSize="12"
-                                           TextColor="#1976D2"
-                                           HorizontalOptions="Center"
-                                           AutomationId="LabelTotalQuantity"/>
-                                    <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0:N2}'}" 
-                                           FontSize="18"
-                                           FontAttributes="Bold"
-                                           TextColor="#0D47A1"
-                                           HorizontalOptions="Center"
-                                           AutomationId="LabelTotalAccumulatedQuantity"/>
-                                </StackLayout>
-                            </Border>
-
-                            <!-- Total Amount -->
-                            <Border BackgroundColor="#E8F5E8" 
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#4CAF50"
-                                    Padding="16"
-                                    Grid.Column="1">
-                                <StackLayout Spacing="8">
-                                    <Label Text="Monto Total" 
-                                           FontAttributes="Bold" 
-                                           FontSize="12"
-                                           TextColor="#2E7D32"
-                                           HorizontalOptions="Center"
-                                           AutomationId="LabelTotalAmount"/>
-                                    <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N2}'}" 
-                                           FontSize="18"
-                                           FontAttributes="Bold"
-                                           TextColor="#1B5E20"
-                                           HorizontalOptions="Center"
-                                           AutomationId="LabelTotalAccumulatedAmount"/>
-                                </StackLayout>
-                            </Border>
-                        </Grid>
-                    </VerticalStackLayout>
-                </Border>
+                
 
                 <!-- Products Section -->
                 <Border Style="{StaticResource ModernCardStyle}">
@@ -290,7 +216,7 @@
                                 </Border>
                                 
                                 <StackLayout VerticalOptions="Center">
-                                    <Label Text="Productos Comprados" 
+                                    <Label Text="Productos Agregados" 
                                            FontSize="18" 
                                            FontAttributes="Bold" 
                                            TextColor="#2D3436"
@@ -420,6 +346,83 @@
                     </VerticalStackLayout>
                 </Border>
 
+
+                <!-- Purchase Summary Card -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- Summary Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                    StrokeShape="RoundRectangle 20"
+                    WidthRequest="40" HeightRequest="40"
+                    VerticalOptions="Center">
+                                <Label Text="📊" 
+                       FontSize="20" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center"/>
+                            </Border>
+
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Total a pagar" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="#2D3436"
+                       AutomationId="LabelTotalPurchases"/>
+                                <Label Text="Resumen de la compra actual" 
+                       FontSize="12" 
+                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Summary Grid -->
+                        <Grid ColumnDefinitions="*,*" RowSpacing="12" ColumnSpacing="12">
+                            <!-- Total Gallons -->
+                            <Border BackgroundColor="#E3F2FD" 
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#2196F3"
+                    Padding="16"
+                    Grid.Column="0">
+                                <StackLayout Spacing="8">
+                                    <Label Text="Total Galones" 
+                           FontAttributes="Bold" 
+                           FontSize="12"
+                           TextColor="#1976D2"
+                           HorizontalOptions="Center"
+                           AutomationId="LabelTotalQuantity"/>
+                                    <Label Text="{Binding TotalAccumulatedQuantity, StringFormat='{0:N2}'}" 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#0D47A1"
+                           HorizontalOptions="Center"
+                           AutomationId="LabelTotalAccumulatedQuantity"/>
+                                </StackLayout>
+                            </Border>
+
+                            <!-- Total Amount -->
+                            <Border BackgroundColor="#E8F5E8" 
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="#4CAF50"
+                    Padding="16"
+                    Grid.Column="1">
+                                <StackLayout Spacing="8">
+                                    <Label Text="Monto Total" 
+                           FontAttributes="Bold" 
+                           FontSize="12"
+                           TextColor="#2E7D32"
+                           HorizontalOptions="Center"
+                           AutomationId="LabelTotalAmount"/>
+                                    <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N2}'}" 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#1B5E20"
+                           HorizontalOptions="Center"
+                           AutomationId="LabelTotalAccumulatedAmount"/>
+                                </StackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- Action Buttons Section -->
                 <VerticalStackLayout Spacing="16">
                     
@@ -455,7 +458,7 @@
                                         Radius="8" 
                                         Opacity="0.3"/>
                             </Border.Shadow>
-                            <Button Text="📦 Comprar Producto"
+                            <Button Text="📦 Agregar" 
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="OpenShoppingPopUp"
@@ -468,7 +471,7 @@
 
                         <!-- Register Purchase Button -->
                         <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="1">
-                            <Button Text="✅ Registrar Compra"
+                            <Button Text="✅ Comprar"
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
