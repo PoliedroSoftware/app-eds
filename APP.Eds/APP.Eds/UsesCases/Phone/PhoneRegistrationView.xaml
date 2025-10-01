@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Phone.PhoneRegistrationView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    xmlns:converters="clr-namespace:APP.Eds.Converters.Wizard"
+    Title="Registrar Telefonos"
+    BackgroundColor="#F8F9FA">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            
+            <!-- Header -->
+            <Border BackgroundColor="#2196F3" 
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20"
+                    StrokeThickness="0">
+                <StackLayout>
+                    <Label Text="Registro de Telefonos" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           TextColor="White" 
+                           HorizontalOptions="Center"/>
+                    <Label Text="Registra numeros telefonicos con propietario e indicativo +57 automaticamente" 
+                           FontSize="14" 
+                           TextColor="#BBDEFB" 
+                           HorizontalOptions="Center"
+                           Margin="0,5,0,0"/>
+                </StackLayout>
+            </Border>
+
+            <!-- Statistics -->
+            <Border BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    Padding="20">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Estadisticas de Registro" 
+                           FontAttributes="Bold" 
+                           FontSize="18" 
+                           TextColor="#2D3436"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border BackgroundColor="#E3F2FD" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3"
+                                Padding="12"
+                                Grid.Column="0">
+                            <StackLayout Spacing="6">
+                                <Label Text="Total Registrados" 
+                                       FontAttributes="Bold" 
+                                       FontSize="12"
+                                       TextColor="#1976D2"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding TotalPhones}" 
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#0D47A1"
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+
+                        <Border BackgroundColor="#E8F5E8" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#4CAF50"
+                                Padding="12"
+                                Grid.Column="1">
+                            <StackLayout Spacing="6">
+                                <Label Text="Registrados Hoy" 
+                                       FontAttributes="Bold" 
+                                       FontSize="12"
+                                       TextColor="#388E3C"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding PhonesToday}" 
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#2E7D32"
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Registration Form -->
+            <Border BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    Padding="24">
+                <VerticalStackLayout Spacing="24">
+                    
+                    <Label Text="Registrar Nuevo Telefono" 
+                           FontAttributes="Bold" 
+                           FontSize="20" 
+                           TextColor="#2D3436"/>
+
+                    <!-- Owner Name Input -->
+                    <StackLayout Spacing="12">
+                        <Label Text="Nombre del Propietario" 
+                               FontAttributes="Bold" 
+                               TextColor="#636E72" 
+                               FontSize="16"/>
+                        
+                        <Border BackgroundColor="#F8F9FA" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3" 
+                                Padding="12">
+                            <Entry Keyboard="Text"
+                                   Placeholder="Ej: Juan Pérez"
+                                   Text="{Binding OwnerName, Mode=TwoWay}"
+                                   BackgroundColor="Transparent"
+                                   PlaceholderColor="#9CA3AF"
+                                   FontSize="16"
+                                   MaxLength="50"/>
+                        </Border>
+                        
+                        <!-- Name Error message -->
+                        <Border BackgroundColor="#FEF2F2" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#F87171" 
+                                Padding="8"
+                                IsVisible="{Binding ShowNameError}">
+                            <Label Text="El nombre es obligatorio" 
+                                   FontSize="12" 
+                                   TextColor="#DC2626"/>
+                        </Border>
+                    </StackLayout>
+
+                    <!-- Phone Number Input -->
+                    <StackLayout Spacing="12">
+                        <Label Text="Numero de Telefono" 
+                               FontAttributes="Bold" 
+                               TextColor="#636E72" 
+                               FontSize="16"/>
+                        
+                        <!-- Preview of full number -->
+                        <Border BackgroundColor="#E3F2FD" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3"
+                                Padding="12">
+                            <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                                <Label Text="Vista previa:" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#1976D2" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding FullPhoneNumber}" 
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#0D47A1"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+                        
+                        <!-- Phone input with +57 prefix -->
+                        <Border BackgroundColor="#F8F9FA" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#2196F3" 
+                                Padding="4">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Border BackgroundColor="#2196F3" 
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="12,8"
+                                        Grid.Column="0">
+                                    <Label Text="+57" 
+                                           TextColor="White"
+                                           FontAttributes="Bold"
+                                           FontSize="16"/>
+                                </Border>
+                                <Entry Keyboard="Telephone"
+                                       Placeholder="Ej: 3001234567"
+                                       Text="{Binding PhoneNumber, Mode=TwoWay}"
+                                       BackgroundColor="Transparent"
+                                       PlaceholderColor="#9CA3AF"
+                                       FontSize="16"
+                                       Grid.Column="1"
+                                       MaxLength="12"/>
+                            </Grid>
+                        </Border>
+                        
+                        <!-- Phone Error message -->
+                        <Border BackgroundColor="#FEF2F2" 
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#F87171" 
+                                Padding="8"
+                                IsVisible="{Binding ShowPhoneError}">
+                            <Label Text="El numero de telefono es obligatorio" 
+                                   FontSize="12" 
+                                   TextColor="#DC2626"/>
+                        </Border>
+                    </StackLayout>
+
+                    <!-- Action Buttons -->
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="12">
+                        <!-- Add to List Button -->
+                        <Border BackgroundColor="#4CAF50" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Grid.Column="0">
+                            <Button BackgroundColor="Transparent"
+                                    Command="{Binding SavePhoneCommand}"
+                                    Text="Agregar a Lista"
+                                    TextColor="White"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    HeightRequest="45"/>
+                        </Border>
+
+                        <!-- Clear Button -->
+                        <Border BackgroundColor="#FF9800" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Grid.Column="1">
+                            <Button BackgroundColor="Transparent"
+                                    Command="{Binding ClearFormCommand}"
+                                    Text="Limpiar"
+                                    TextColor="White"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    WidthRequest="80"
+                                    HeightRequest="45"/>
+                        </Border>
+
+                        <!-- Send to Server Button -->
+                        <Border BackgroundColor="#2196F3" 
+                                StrokeShape="RoundRectangle 12"
+                                Padding="4"
+                                Grid.Column="2">
+                            <Button BackgroundColor="Transparent"
+                                    Command="{Binding SendPhonesCommand}"
+                                    Text="Guardar"
+                                    TextColor="White"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    HeightRequest="45"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Phone List -->
+            <Border BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    Padding="20">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Lista de Telefonos a Enviar" 
+                           FontAttributes="Bold" 
+                           FontSize="18" 
+                           TextColor="#2D3436"/>
+
+                    <CollectionView ItemsSource="{Binding PhonesList}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="#FEFEFE" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#E5E7EB"
+                                        Margin="0,4"
+                                        Padding="16">
+
+                                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="6">
+
+                                        <!-- Phone Icon -->
+                                        <Border BackgroundColor="#2196F3" 
+                                                StrokeShape="RoundRectangle 25"
+                                                WidthRequest="50" 
+                                                HeightRequest="50"
+                                                Grid.RowSpan="2" 
+                                                Grid.Column="0"
+                                                VerticalOptions="Center">
+                                            <Label Text="TEL" 
+                                                   FontSize="14" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <!-- Owner Name -->
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding Name}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#111827"/>
+
+                                        <!-- Phone Number -->
+                                        <Label Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding Number}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#2196F3"/>
+
+                                        <!-- Delete Button -->
+                                        <Border BackgroundColor="#FFEBEE" 
+                                                StrokeShape="RoundRectangle 15"
+                                                Stroke="#F44336"
+                                                WidthRequest="35" 
+                                                HeightRequest="35"
+                                                Grid.Column="2" 
+                                                Grid.RowSpan="2"
+                                                VerticalOptions="Center">
+                                            <Button Text="X" 
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="#F44336"
+                                                    FontSize="14"
+                                                    FontAttributes="Bold"
+                                                    WidthRequest="35" 
+                                                    HeightRequest="35"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePhoneCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16" Margin="0,40">
+                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF" FontAttributes="Bold"/>
+                                <Label Text="No hay telefonos en la lista" 
+                                       FontSize="18" 
+                                       TextColor="#6B7280" 
+                                       HorizontalOptions="Center"
+                                       FontAttributes="Bold"/>
+                                <Label Text="Agrega numeros con propietarios usando el formulario superior" 
+                                       FontSize="14" 
+                                       TextColor="#9CA3AF" 
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Database Phones List -->
+            <Border BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    Padding="20">
+                <VerticalStackLayout Spacing="16">
+                    
+                    <!-- Header with refresh button -->
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="Telefonos Guardados" 
+                               FontAttributes="Bold" 
+                               FontSize="18" 
+                               TextColor="#2D3436"
+                               VerticalOptions="Center"/>
+                        
+                        <Border Grid.Column="1"
+                                BackgroundColor="#4CAF50" 
+                                StrokeShape="RoundRectangle 8"
+                                Padding="4">
+                            <Button BackgroundColor="Transparent"
+                                    Command="{Binding RefreshDatabasePhonesCommand}"
+                                    Text="Actualizar"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    WidthRequest="80"
+                                    HeightRequest="35"
+                                    IsEnabled="{Binding IsLoadingDatabasePhones, Converter={StaticResource InvertedBoolConverter}}"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Statistics -->
+                    <Border BackgroundColor="#E8F5E8" 
+                            StrokeShape="RoundRectangle 8"
+                            Stroke="#4CAF50"
+                            Padding="12">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="8">
+                            <Label Text="Total Guardados:" 
+                                   FontAttributes="Bold" 
+                                   FontSize="14"
+                                   TextColor="#388E3C"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding DatabasePhonesCount}" 
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#2E7D32"
+                                   VerticalOptions="Center"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Loading Indicator -->
+                    <StackLayout IsVisible="{Binding IsLoadingDatabasePhones}" 
+                                 HorizontalOptions="Center" 
+                                 VerticalOptions="Center" 
+                                 Spacing="16" 
+                                 Margin="0,20">
+                        <ActivityIndicator IsRunning="{Binding IsLoadingDatabasePhones}" 
+                                           Color="#2196F3" 
+                                           WidthRequest="40" 
+                                           HeightRequest="40"/>
+                        <Label Text="Cargando telefonos guardados..." 
+                               FontSize="14" 
+                               TextColor="#6B7280" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+
+                    <!-- Database Phones Collection -->
+                    <CollectionView ItemsSource="{Binding DatabasePhonesList}" 
+                                    IsVisible="{Binding IsLoadingDatabasePhones, Converter={StaticResource InvertedBoolConverter}}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="#FEFEFE" 
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#E5E7EB"
+                                        Margin="0,4"
+                                        Padding="16">
+
+                                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="6">
+
+                                        <!-- Phone Icon -->
+                                        <Border BackgroundColor="#4CAF50" 
+                                                StrokeShape="RoundRectangle 25"
+                                                WidthRequest="50" 
+                                                HeightRequest="50"
+                                                Grid.RowSpan="2" 
+                                                Grid.Column="0"
+                                                VerticalOptions="Center">
+                                            <Label Text="TEL" 
+                                                   FontSize="14" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <!-- Owner Name -->
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding Name}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#111827"/>
+
+                                        <!-- Phone Number -->
+                                        <Label Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding Number}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold" 
+                                               TextColor="#4CAF50"/>
+
+                                        <!-- Status Indicator -->
+                                        <Border BackgroundColor="#E8F5E8" 
+                                                StrokeShape="RoundRectangle 15"
+                                                Stroke="#4CAF50"
+                                                WidthRequest="35" 
+                                                HeightRequest="35"
+                                                Grid.Column="2" 
+                                                Grid.RowSpan="2"
+                                                VerticalOptions="Center">
+                                            <Label Text="✓" 
+                                                   BackgroundColor="Transparent"
+                                                   TextColor="#4CAF50"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16" Margin="0,40"
+                                         IsVisible="{Binding IsLoadingDatabasePhones, Converter={StaticResource InvertedBoolConverter}}">
+                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF" FontAttributes="Bold"/>
+                                <Label Text="No hay telefonos guardados" 
+                                       FontSize="18" 
+                                       TextColor="#6B7280" 
+                                       HorizontalOptions="Center"
+                                       FontAttributes="Bold"/>
+                                <Label Text="Los telefonos aparecerán aquí una vez que los guardes usando el boton 'Guardar'" 
+                                       FontSize="14" 
+                                       TextColor="#9CA3AF" 
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <BoxView HeightRequest="20" Color="Transparent"/>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
