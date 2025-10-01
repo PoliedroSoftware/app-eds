@@ -58,7 +58,7 @@
                             
                             <!-- Name -->
                             <StackLayout Grid.Row="0" Grid.Column="0">
-                                <Label Text="Nombre Completo" 
+                                <Label Text="Usuario" 
                                        FontAttributes="Bold" 
                                        TextColor="#636E72" 
                                        FontSize="14"/>
@@ -67,7 +67,7 @@
                                         Stroke="#DDD6FE" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
-                                           Placeholder="Nombre completo del islero"
+                                           Placeholder="Usuario del islero"
                                            Text="{Binding Name, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryName"
@@ -123,7 +123,7 @@
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#DDD6FE" 
                                         Padding="4">
-                                    <Entry Keyboard="Email"
+                                    <Entry Keyboard="Text"
                                            Placeholder="correo@ejemplo.com"
                                            Text="{Binding Email, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
