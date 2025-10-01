@@ -13,6 +13,7 @@
         <ResourceDictionary>
             <converters:DecimalFormatConverter x:Key="DecimalFormat" />
             <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -551,7 +552,8 @@
                             StrokeShape="RoundRectangle 8"
                             Stroke="#FF9800"
                             Padding="16"
-                            Margin="0,0,0,8">
+                            Margin="0,0,0,8"
+                            IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
                             <Label Text="📄" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Comprobantes" 
@@ -624,7 +626,8 @@
                             StrokeShape="RoundRectangle 8"
                             Stroke="#F44336"
                             Padding="16"
-                            Margin="0,0,0,8">
+                            Margin="0,0,0,8"
+                            IsVisible="{Binding CourtExpenditures, Converter={StaticResource CountToBoolConverter}}">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
                             <Label Text="💸" FontSize="18" VerticalOptions="Center"/>
                             <Label Text="Gastos" 
@@ -834,7 +837,8 @@
         </ScrollView>
 
         <!-- Enhanced Bottom Navigation Menu -->
-        <Border Style="{StaticResource EnhancedBottomNavContainerStyle}"
+        <Border x:Name="BottomNavContainer"
+                Style="{StaticResource EnhancedBottomNavContainerStyle}"
                 AbsoluteLayout.LayoutBounds="0,1,1,95"
                 AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
 
