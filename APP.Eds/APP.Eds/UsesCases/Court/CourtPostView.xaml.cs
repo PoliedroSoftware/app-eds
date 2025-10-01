@@ -215,8 +215,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            var slidingBackground = this.FindByName<Border>("SlidingBackground");
-            var bottomNavBorder = slidingBackground?.Parent?.Parent as Border;
+            var bottomNavBorder = this.FindByName<Border>("BottomNavContainer");
 
             if (bottomNavBorder != null)
             {
@@ -226,14 +225,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     bottomNavBorder.TranslateTo(0, 0, 700, Easing.SpringOut),
                     bottomNavBorder.FadeTo(1, 400, Easing.CubicOut)
                 );
-            }
-
-            if (slidingBackground != null)
-            {
-                await Task.Delay(200);
-                slidingBackground.Opacity = 0;
-                await slidingBackground.FadeTo(0.15, 300, Easing.CubicOut);
-                await AnimateToActiveItem(ActiveNavItem);
             }
         }
         catch (Exception ex)
@@ -246,27 +237,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            var slidingBackground = this.FindByName<Border>("SlidingBackground");
-            if (slidingBackground == null) return;
-
-            double targetX = activeItem switch
-            {
-                "Document" => 0,
-                "Expense" => 1,
-                "Info" => 2,
-                "History" => 3,
-                _ => 0
-            };
-
-            var screenWidth = Application.Current?.MainPage?.Width ?? 400;
-            var itemWidth = screenWidth / 4;
-            var indicatorPosition = (targetX * itemWidth) + (itemWidth / 2) - 28;
-
-            await Task.WhenAll(
-                slidingBackground.TranslateTo(indicatorPosition, 0, 350, Easing.CubicOut),
-                slidingBackground.ScaleTo(1.1, 200, Easing.SpringOut)
-            );
-            await slidingBackground.ScaleTo(1.0, 150, Easing.SpringIn);
+            Debug.WriteLine($"Animating to active item: {activeItem}");
         }
         catch (Exception ex)
         {
@@ -338,7 +309,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     cvDisp.ItemsSource = null;
                     cvDisp.IsVisible = false;
                     await Task.Yield();            // cede un frame al UI thread
-                    cvDisp.ItemsSource = _service.CourtDispensers; // ideal: ObservableCollection<>
+                    cvDisp.ItemsSource = _service.CourtDispensers; // ideal: ObservableCollection<> 
                     cvDisp.IsVisible = wasVisible || true;
                 }
             }
@@ -354,7 +325,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     cvPays.ItemsSource = null;
                     cvPays.IsVisible = false;
                     await Task.Yield();
-                    cvPays.ItemsSource = _service.CourtTypeOfCollections; // ideal: ObservableCollection<>
+                    cvPays.ItemsSource = _service.CourtTypeOfCollections; // ideal: ObservableCollection<> 
                     cvPays.IsVisible = wasVisible || true;
                 }
             }
