@@ -687,7 +687,12 @@ public class ShoppingService : INotifyPropertyChanged
             return;
         }
 
-       
+        // 🔧 GUARDAR LOS DATOS DEL PRODUCTO ANTES DE AGREGARLO (para evitar que se pierdan al limpiar)
+        var savedQuantity = Quantity.Value;
+        var savedPurchasePrice = PurchasePrice ?? 0;
+        var savedSellPrice = SellPrice ?? 0;
+        var savedTotalPrice = CurrentTotalAmount ?? 0;
+        var savedProductName = SelectedProductCompartimentPair?.ProductName ?? "Producto";
 
         var newProduct = new ShoppingProductNestedModel
         {
@@ -716,7 +721,9 @@ public class ShoppingService : INotifyPropertyChanged
         }
         
         UpdateAccumulatedTotals();
-        ResetProductForm();
+        
+        // 🔧 NOTA: NO LLAMAR ResetProductForm() AQUÍ - Se llamará desde el popup después de mostrar el mensaje
+        // ResetProductForm();
     }
 
     private void UpdateAccumulatedTotals()
@@ -753,6 +760,7 @@ public class ShoppingService : INotifyPropertyChanged
 
     public void ResetProductForm()
     {
+        // ✅ IMPORTANTE: Solo limpiar los campos del formulario, no afectar los datos ya agregados
         SelectedProduct = null;
         SelectedCompartiment = null;
         SelectedProductCompartimentPair = null;
@@ -760,12 +768,18 @@ public class ShoppingService : INotifyPropertyChanged
         Quantity = 0;
         SellPrice = 0;
         CurrentStock = null;
+        
+        // Notificar cambios en las propiedades para actualizar la UI
         OnPropertyChanged(nameof(PurchasePrice));
         OnPropertyChanged(nameof(Quantity));
+        OnPropertyChanged(nameof(SellPrice));
         OnPropertyChanged(nameof(CurrentTotalAmount));
         OnPropertyChanged(nameof(SelectedProduct));
         OnPropertyChanged(nameof(SelectedCompartiment));
         OnPropertyChanged(nameof(SelectedProductCompartimentPair));
+        OnPropertyChanged(nameof(CurrentStock));
+        OnPropertyChanged(nameof(IsStockAvailable));
+        OnPropertyChanged(nameof(MaxQuantityAllowed));
     }
 
     private void DeleteProduct(ShoppingProductNestedModel product)

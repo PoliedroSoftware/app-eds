@@ -9,5 +9,5 @@ public class ProductCompartimentPairModel
     public double Operative { get; set; }
     public double Stock { get; set; }
 
-    public string Display => $"{ProductName} - Compartimento {Number}\nCapacidad: {Operative} | Stock: {Stock}\n";
+    public string Display => $"{ProductName} - Compartimento {Number}\nCapacidad: {Operative:N0} | Stock: {Stock:N0}";
 }

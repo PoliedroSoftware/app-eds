@@ -133,8 +133,8 @@ public partial class CustomAlert : Popup
             case AlertType.Success:
                 HeaderBorder.BackgroundColor = Color.FromArgb("#B8E6B8");
                 ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#90D690");
-                IconLabel.Text = "?";
-                IconLabel.FontSize = 28;
+                IconLabel.Text = "OK";  // Usando texto simple "OK" para máxima compatibilidad
+                IconLabel.FontSize = 20;
                 IconLabel.FontAttributes = FontAttributes.Bold;
                 IconLabel.TextColor = Color.FromArgb("#006400");
                 break;
