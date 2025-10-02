@@ -55,7 +55,7 @@ public partial class CourtDetailPage : ContentPage
         System.Diagnostics.Debug.WriteLine($"CourtDetailPage - Total from Collections: ${totalFromCollections:C}");
         System.Diagnostics.Debug.WriteLine($"CourtDetailPage - TotalAccumulatedAmount: ${court.TotalAccumulatedAmount:C}");
         
-        if (difference > 0.01) // Permitir pequeñas diferencias de redondeo
+        if (difference > 0.01) // Permitir pequeï¿½as diferencias de redondeo
         {
             System.Diagnostics.Debug.WriteLine($"?? WARNING: Payment methods total (${totalFromCollections:C}) doesn't match accumulated amount (${court.TotalAccumulatedAmount:C})");
             System.Diagnostics.Debug.WriteLine($"   Difference: ${difference:C}");

@@ -795,6 +795,8 @@ namespace APP.Eds.Services.Court
             {
                 _isBusinessSelected = value;
                 OnPropertyChanged(nameof(IsBusinessSelected));
+                OnPropertyChanged(nameof(NewSaleEnabled));
+
             }
         }
 
@@ -807,6 +809,19 @@ namespace APP.Eds.Services.Court
                 _isEdsSelected = value;
                 OnPropertyChanged(nameof(IsEdsSelected));
                 OnPropertyChanged(nameof(NewSaleEnabled));
+            }
+        }
+
+        private bool _isIslanderSelected;
+        public bool IsIslanderSelected
+        {
+            get => _isIslanderSelected;
+            set
+            {
+                _isIslanderSelected = value;
+                OnPropertyChanged(nameof(IsIslanderSelected));
+                OnPropertyChanged(nameof(NewSaleEnabled));
+
             }
         }
 

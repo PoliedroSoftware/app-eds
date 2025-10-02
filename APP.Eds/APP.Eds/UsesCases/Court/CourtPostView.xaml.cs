@@ -565,7 +565,16 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
     /// 
-    public bool AccionesHabilitadas => PuedeEditar && IsBusinessSelected;
+    public bool AccionesHabilitadas
+    {
+        get
+        {
+            return PuedeEditar
+                && _service.IsBusinessSelected != null
+                && _service.IsEdsSelected != null
+                && _service.IsIslanderSelected != null;
+        }
+    }
 
     private async Task ResetForNewCloseAsync()
     {
@@ -644,6 +653,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 {
                     _service.LoadIslandersByEds(selectedEds.IdEds);
                     _service.IsEdsSelected = true;
+                    _service.IslanderSelectList.Clear();
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
 
                     // 👇 Mostrar secciones al elegir EDS
                     await ShowOperationalSectionsAsync();
@@ -666,7 +677,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             {
                 if (picker.SelectedItem is IslanderResponse selectedIslander)
                 {
-                    // (si necesitas cargar algo extra, hazlo aquí)
+                    _service.LoadIslandersByEds(selectedIslander.IdIslander);
+                    _service.IslanderSelectList.Clear();
+                    _service.IsIslanderSelected = true;
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
 
                     // 👇 Mostrar secciones al elegir Islero
                     await ShowOperationalSectionsAsync();
