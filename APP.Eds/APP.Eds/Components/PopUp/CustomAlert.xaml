@@ -35,7 +35,7 @@
                             HorizontalOptions="Center"
                             Opacity="0.9">
                         <Label x:Name="IconLabel"
-                               Text="!" 
+                               Text="i" 
                                FontSize="32"
                                FontAttributes="Bold"
                                TextColor="#8B0000"
