@@ -101,7 +101,7 @@ public partial class AddShopping : Popup
             }
 
             // Validate quantity
-            if (vm.Quantity <= 0)
+            if (!vm.Quantity.HasValue || vm.Quantity <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar una cantidad válida de galones (mayor que 0)", "Cantidad Inválida");
                 return;
@@ -114,14 +114,14 @@ public partial class AddShopping : Popup
             }
 
             // Validate purchase price
-            if (vm.PurchasePrice <= 0)
+            if (!vm.PurchasePrice.HasValue || vm.PurchasePrice <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar un precio de compra válido (mayor que 0)", "Precio de Compra Inválido");
                 return;
             }
 
             // Validate sell price
-            if (vm.SellPrice <= 0)
+            if (!vm.SellPrice.HasValue || vm.SellPrice <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar un precio de venta válido (mayor que 0)", "Precio de Venta Inválido");
                 return;
@@ -138,23 +138,59 @@ public partial class AddShopping : Popup
                 if (!confirm) return;
             }
 
+            // ?? GUARDAR LOS VALORES ANTES DE LLAMAR AL MÉTODO PARA EVITAR QUE SE LIMPIEN
+            double quantityValue = vm.Quantity.Value;
+            double purchasePriceValue = vm.PurchasePrice.Value;
+            double sellPriceValue = vm.SellPrice.Value;
+            double totalValue = quantityValue * purchasePriceValue;
+            string productName = vm.SelectedProductCompartimentPair?.ProductName ?? "Producto seleccionado";
+            
+            // ?? GUARDAR EL STOCK ANTERIOR ANTES DE QUE SE ACTUALICE
+            double stockAnterior = vm.CurrentStock ?? 0;
+
+            // Mostrar información de debug para verificar los valores
+            System.Diagnostics.Debug.WriteLine($"Adding product - Quantity: {quantityValue}, PurchasePrice: {purchasePriceValue}, Total: {totalValue}, Stock anterior: {stockAnterior}");
+
+            // Agregar el producto al carrito
             await shoppingService.AddShoppingProductFromPopup();
 
-            // Clear form
+            // ?? CALCULAR EL STOCK ACTUALIZADO DESPUÉS DE LA COMPRA
+            double stockActualizado = stockAnterior + quantityValue;
+
+            // ? MOSTRAR EL MENSAJE DE CONFIRMACIÓN CON EL FORMATO SOLICITADO
+            await CustomAlert.ShowSuccessAsync(
+                $"Producto agregado exitosamente a la compra\n\n" +
+                $"Producto: {productName}\n" +
+                $"Stock anterior: {stockAnterior:N3} gal\n" +
+                $"Cantidad comprada: {quantityValue:N3} gal\n" +
+                $"Stock actualizado: {stockActualizado:N3} gal\n" +
+                $"Valor total: ${totalValue:N0}",
+                "Producto Agregado");
+
+            // ?? AHORA SÍ LIMPIAR EL FORMULARIO DESPUÉS DE MOSTRAR EL MENSAJE
+            vm.ResetProductForm();
+
+            // Clear form UI elements
             if (ProductCompartimentPicker != null)
                 ProductCompartimentPicker.SelectedItem = null;
             
             if (FirstEntry != null)
-                FirstEntry.IsEnabled = false;
+            {
+                FirstEntry.Text = string.Empty;
+                FirstEntry.IsEnabled = true; // Re-enable for next entry
+            }
             
             if (SecondEntry != null)
-                SecondEntry.IsEnabled = false;
+            {
+                SecondEntry.Text = string.Empty;
+                SecondEntry.IsEnabled = true; // Re-enable for next entry
+            }
             
             if (ThirdEntry != null)
-                ThirdEntry.IsEnabled = false;
-
-            // Show professional success feedback
-            await CustomAlert.ShowSuccessAsync($"Producto agregado exitosamente a la compra\n\nCantidad: {vm.Quantity:F2} galones\nValor total: ${(vm.Quantity * vm.PurchasePrice):F2}", "Producto Agregado");
+            {
+                ThirdEntry.Text = string.Empty;
+                ThirdEntry.IsEnabled = true; // Re-enable for next entry
+            }
 
             try
             {
@@ -176,7 +212,7 @@ public partial class AddShopping : Popup
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "?? Agregar a la Compra";
+                button.Text = "? Agregar a la Compra";
             }
         }
     }

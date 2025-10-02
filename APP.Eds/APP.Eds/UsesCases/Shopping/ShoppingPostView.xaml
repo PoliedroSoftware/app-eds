@@ -375,7 +375,7 @@
                                                 <!-- Purchase Price -->
                                                 <StackLayout Grid.Row="1" Grid.Column="0">
                                                     <Label Text="Precio Compra" FontSize="11" TextColor="#666" FontAttributes="Bold" AutomationId="LabelProductPrice"/>
-                                                    <Label Text="{Binding Price, StringFormat='$ {0:N2}'}" 
+                                                    <Label Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#4CAF50" FontAttributes="Bold" AutomationId="LabelProductPriceValue"/>
                                                 </StackLayout>
 
