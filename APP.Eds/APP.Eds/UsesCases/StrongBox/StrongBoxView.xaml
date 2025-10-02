@@ -42,11 +42,113 @@
                 <!-- Contenido principal -->
                 <VerticalStackLayout Padding="20,24,20,20" Spacing="20">
                     
-                    <!-- Tarjeta de saldo actual -->
+                    <!-- Selector de EDS -->
                     <Border BackgroundColor="White"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0"
                             Padding="24,20">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/>
+                        </Border.Shadow>
+                        
+                        <VerticalStackLayout Spacing="16">
+                            <!-- Header de selección EDS -->
+                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                <Border BackgroundColor="#E3F2FD"
+                                        StrokeShape="RoundRectangle 12"
+                                        WidthRequest="40" HeightRequest="40"
+                                        VerticalOptions="Center">
+                                    <Label Text="🏪" FontSize="20" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+                                <Label Text="Seleccionar Estación (EDS):" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#374151"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                            
+                            <!-- Picker de EDS -->
+                            <Border BackgroundColor="#F9FAFB"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#D1D5DB"
+                                    StrokeThickness="1"
+                                    Padding="16,8">
+                                <Picker ItemsSource="{Binding EdsList}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                        Title="Seleccione una EDS..."
+                                        FontSize="16"
+                                        TextColor="#111827"
+                                        TitleColor="#9CA3AF"
+                                        BackgroundColor="Transparent"/>
+                            </Border>
+
+                            <!-- Estado de carga de EDS -->
+                            <StackLayout IsVisible="{Binding IsLoadingEdsData}"
+                                         Orientation="Horizontal" 
+                                         Spacing="12">
+                                <ActivityIndicator IsRunning="{Binding IsLoadingEdsData}"
+                                                   Color="#6A1B9A"
+                                                   WidthRequest="20"
+                                                   HeightRequest="20"
+                                                   VerticalOptions="Center"/>
+                                <Label Text="{Binding EdsStatusMessage}" 
+                                       FontSize="12" 
+                                       TextColor="#6A1B9A"
+                                       FontAttributes="Italic"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+
+                            <!-- Mensaje de estado (cuando no está cargando) -->
+                            <StackLayout IsVisible="{Binding IsLoadingEdsData, Converter={StaticResource InverseBoolConverter}}"
+                                         Orientation="Horizontal" 
+                                         Spacing="8">
+                                <Label Text="✅" 
+                                       FontSize="12" 
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding EdsStatusMessage, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                <Label Text="{Binding EdsStatusMessage}" 
+                                       FontSize="12" 
+                                       TextColor="#059669"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="FillAndExpand"
+                                       IsVisible="{Binding EdsStatusMessage, Converter={StaticResource StringNotEmptyConverter}}"/>
+                                
+                                <!-- Botón de actualización manual -->
+                                <Button Text="🔄"
+                                        Command="{Binding RefreshDataCommand}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="#6A1B9A"
+                                        FontSize="16"
+                                        WidthRequest="40"
+                                        HeightRequest="30"
+                                        Padding="0"
+                                        VerticalOptions="Center"
+                                        IsVisible="{Binding SelectedEds, Converter={StaticResource IsNotNullConverter}}"
+                                        ToolTipProperties.Text="Actualizar datos manualmente"/>
+                            </StackLayout>
+
+                            <!-- Información de EDS seleccionada -->
+                            <StackLayout IsVisible="{Binding SelectedEds, Converter={StaticResource IsNotNullConverter}}"
+                                         Orientation="Horizontal" 
+                                         Spacing="8">
+                                <Label Text="📍" FontSize="14" VerticalOptions="Center"/>
+                                <Label Text="{Binding SelectedEds.Address, StringFormat='Dirección: {0}'}" 
+                                       FontSize="12" 
+                                       TextColor="#6B7280"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Tarjeta de saldo actual -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0"
+                            Padding="24,20"
+                            IsVisible="{Binding HasSelectedEds}">
                         <Border.Shadow>
                             <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/>
                         </Border.Shadow>
@@ -62,23 +164,74 @@
                                            HorizontalOptions="Center" 
                                            VerticalOptions="Center"/>
                                 </Border>
-                                <Label Text="Saldo actual:" 
-                                       FontSize="16" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#374151"
-                                       VerticalOptions="Center"/>
+                                <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                    <Label Text="Saldo actual:" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#374151"/>
+                                    <Label Text="{Binding SelectedEds.Name, StringFormat='EDS: {0}'}" 
+                                           FontSize="12" 
+                                           TextColor="#6B7280"/>
+                                </StackLayout>
+                                
+                                <!-- Indicador de carga sutil -->
+                                <ActivityIndicator IsRunning="{Binding IsLoadingEdsData}"
+                                                   Color="#059669"
+                                                   WidthRequest="16"
+                                                   HeightRequest="16"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding IsLoadingEdsData}"/>
                             </StackLayout>
                             
-                            <!-- Monto del saldo -->
-                            <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
-                                   FontSize="36"
-                                   FontAttributes="Bold"
-                                   TextColor="#059669"
-                                   HorizontalOptions="Center"
-                                   Margin="0,8,0,16"/>
+                            <!-- Monto del saldo - Solo visible cuando hay datos y balance -->
+                            <StackLayout IsVisible="{Binding CurrentBalance, Converter={StaticResource IsNotNullConverter}}">
+                                <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
+                                       FontSize="36"
+                                       FontAttributes="Bold"
+                                       TextColor="#059669"
+                                       HorizontalOptions="Center"
+                                       Margin="0,8,0,16"/>
+                            </StackLayout>
+
+                            <!-- Mensaje cuando no hay balance pero hay EDS seleccionada y datos cargados -->
+                            <StackLayout IsVisible="{Binding CurrentBalance, Converter={StaticResource IsNullConverter}}"
+                                         Spacing="16">
+                                <Label Text="$0.00"
+                                       FontSize="36"
+                                       FontAttributes="Bold"
+                                       TextColor="#9CA3AF"
+                                       HorizontalOptions="Center"
+                                       Margin="0,8,0,16"
+                                       IsVisible="{Binding DataLoaded}"/>
+                                
+                                <Border BackgroundColor="#FEF3C7"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="16,12"
+                                        IsVisible="{Binding DataLoaded}">
+                                    <StackLayout Orientation="Horizontal" Spacing="12">
+                                        <Label Text="ℹ️" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="Esta EDS no tiene registros de caja fuerte"
+                                               FontSize="14"
+                                               TextColor="#92400E"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="WordWrap"/>
+                                    </StackLayout>
+                                </Border>
+                            </StackLayout>
                             
-                            <!-- Campo de retiro -->
-                            <VerticalStackLayout Spacing="12">
+                            <!-- Placeholder cuando está cargando -->
+                            <StackLayout IsVisible="{Binding IsLoadingEdsData}" Spacing="16">
+                                <Label Text="Cargando saldo..."
+                                       FontSize="20"
+                                       FontAttributes="Italic"
+                                       TextColor="#9CA3AF"
+                                       HorizontalOptions="Center"
+                                       Margin="0,8,0,16"/>
+                            </StackLayout>
+                            
+                            <!-- Campo de retiro - Solo visible cuando hay balance -->
+                            <VerticalStackLayout Spacing="12" IsVisible="{Binding CurrentBalance, Converter={StaticResource IsNotNullConverter}}">
                                 <Label Text="Monto a retirar" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
@@ -107,8 +260,8 @@
                                 </Border>
                             </VerticalStackLayout>
                             
-                            <!-- Botones de retiro -->
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <!-- Botones de retiro - Solo visible cuando hay balance -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" IsVisible="{Binding CurrentBalance, Converter={StaticResource IsNotNullConverter}}">
                                 <!-- Boton retiro normal -->
                                 <Border Grid.Column="0"
                                         BackgroundColor="#6A1B9A"
@@ -162,8 +315,35 @@
                         </VerticalStackLayout>
                     </Border>
 
+                    <!-- Mensaje cuando no hay EDS seleccionada -->
+                    <Border BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            StrokeThickness="0"
+                            Padding="32,24"
+                            IsVisible="{Binding HasNoSelectedEds}">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/>
+                        </Border.Shadow>
+                        
+                        <StackLayout Spacing="16" HorizontalOptions="Center">
+                            <Label Text="🏪" FontSize="48" 
+                                   HorizontalOptions="Center" 
+                                   TextColor="#9CA3AF"/>
+                            <Label Text="Seleccione una EDS" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold"
+                                   TextColor="#6B7280" 
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Para ver el saldo y realizar operaciones de caja fuerte, primero debe seleccionar una estación de servicio" 
+                                   FontSize="14" 
+                                   TextColor="#9CA3AF" 
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    </Border>
+
                     <!-- Seccion de movimientos recientes -->
-                    <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="16" IsVisible="{Binding HasSelectedEds}">
                         <StackLayout Orientation="Horizontal" Spacing="12">
                             <Border BackgroundColor="#FEF3C7"
                                     StrokeShape="RoundRectangle 12"
@@ -173,16 +353,29 @@
                                        HorizontalOptions="Center" 
                                        VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Movimientos recientes" 
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#374151"
-                                   VerticalOptions="Center"/>
+                            <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                <Label Text="Movimientos recientes" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#374151"/>
+                                <Label Text="{Binding SelectedEds.Name, StringFormat='EDS: {0}'}" 
+                                       FontSize="12" 
+                                       TextColor="#6B7280"/>
+                            </StackLayout>
+                            
+                            <!-- Indicador de carga para movimientos -->
+                            <ActivityIndicator IsRunning="{Binding IsLoadingEdsData}"
+                                               Color="#F59E0B"
+                                               WidthRequest="16"
+                                               HeightRequest="16"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding IsLoadingEdsData}"/>
                         </StackLayout>
 
-                        <!-- Lista de movimientos -->
+                        <!-- Lista de movimientos - Solo visible cuando hay datos -->
                         <CollectionView ItemsSource="{Binding Movements}"
-                                        MaximumHeightRequest="400">
+                                        MaximumHeightRequest="400"
+                                        IsVisible="{Binding HasData}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border BackgroundColor="White"
@@ -320,40 +513,63 @@
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
-                            
-                            <!-- Estado vacio -->
-                            <CollectionView.EmptyView>
-                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" 
-                                             Spacing="16" Padding="32">
-                                    <Border BackgroundColor="White"
-                                            StrokeShape="RoundRectangle 16"
-                                            Stroke="#E5E7EB"
-                                            Padding="32,24">
-                                        <StackLayout Spacing="16" HorizontalOptions="Center">
-                                            <Label Text="📋" FontSize="48" 
-                                                   HorizontalOptions="Center" 
-                                                   TextColor="#9CA3AF"/>
-                                            <Label Text="No hay movimientos registrados" 
-                                                   FontSize="16" 
-                                                   FontAttributes="Bold"
-                                                   TextColor="#6B7280" 
-                                                   HorizontalOptions="Center"/>
-                                            <Label Text="Los movimientos de efectivo apareceran aqui" 
-                                                   FontSize="14" 
-                                                   TextColor="#9CA3AF" 
-                                                   HorizontalOptions="Center"
-                                                   HorizontalTextAlignment="Center"/>
-                                        </StackLayout>
-                                    </Border>
-                                </StackLayout>
-                            </CollectionView.EmptyView>
                         </CollectionView>
 
-                        <!-- Boton cargar mas -->
+                        <!-- Estado cuando no hay datos pero ya se cargó -->
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                Stroke="#E5E7EB"
+                                Padding="32,24"
+                                IsVisible="{Binding HasNoData}">
+                            <StackLayout Spacing="16" HorizontalOptions="Center">
+                                <Label Text="📋" FontSize="48" 
+                                       HorizontalOptions="Center" 
+                                       TextColor="#9CA3AF"/>
+                                <Label Text="Sin registros de caja fuerte" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="#6B7280" 
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding NoDataMessage}" 
+                                       FontSize="14" 
+                                       TextColor="#9CA3AF" 
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       LineBreakMode="WordWrap"/>
+                                <Label Text="Los movimientos de efectivo aparecerán aquí cuando se realicen operaciones" 
+                                       FontSize="12" 
+                                       TextColor="#9CA3AF" 
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       LineBreakMode="WordWrap"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Estado cargando -->
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 16"
+                                Stroke="#E5E7EB"
+                                Padding="32,24"
+                                IsVisible="{Binding IsLoadingEdsData}">
+                            <StackLayout Spacing="16" HorizontalOptions="Center">
+                                <ActivityIndicator IsRunning="{Binding IsLoadingEdsData}"
+                                                   Color="#6A1B9A"
+                                                   WidthRequest="32"
+                                                   HeightRequest="32"/>
+                                <Label Text="Cargando movimientos..." 
+                                       FontSize="16" 
+                                       FontAttributes="Italic"
+                                       TextColor="#6B7280" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Boton cargar mas - Solo visible cuando hay datos -->
                         <Border BackgroundColor="#F3F4F6"
                                 StrokeShape="RoundRectangle 12"
                                 Stroke="#D1D5DB"
-                                Padding="4">
+                                Padding="4"
+                                IsVisible="{Binding HasData}">
                             <Button Text="📄 Cargar mas" 
                                     Command="{Binding LoadMoreMovementsCommand}"
                                     BackgroundColor="Transparent"

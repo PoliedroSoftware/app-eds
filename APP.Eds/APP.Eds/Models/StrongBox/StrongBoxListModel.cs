@@ -12,6 +12,8 @@ namespace APP.Eds.Models.StrongBox
 
         public long? IdCorte { get; set; }
 
+        public int? IdEds { get; set; }
+
         public string Type { get; set; }
 
         public double Ammount { get; set; }
