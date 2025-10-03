@@ -731,7 +731,7 @@
             Clicked="OpenDispenserPopUp"
             Command="{Binding OpenDispenserCommand}"
             AutomationId="AddSaleButton"
-            IsEnabled="{Binding IsBusinessSelected}"
+            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
             Grid.Column="0">
                                     <Button.Triggers>
                                         <!-- Bloquear si el corte ya fue enviado -->
@@ -767,7 +767,7 @@
             Style="{StaticResource CompactActionButtonStyle}"
             Clicked="OpenTypeOfCollectionPopUp"
             AutomationId="AddCollectionTypeButton"
-            IsEnabled="{Binding IsBusinessSelected}"
+            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
             Grid.Column="1">
                                     <Button.Triggers>
                                         <DataTrigger TargetType="Button"

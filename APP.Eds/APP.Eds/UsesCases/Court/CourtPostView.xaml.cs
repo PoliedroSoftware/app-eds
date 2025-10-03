@@ -565,7 +565,26 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
     /// 
-    public bool AccionesHabilitadas => PuedeEditar && IsBusinessSelected;
+    // ✅ CORREGIDO: Lógica diferente para Admin vs Usuario normal
+    public bool AccionesHabilitadas => PuedeEditar && CanAccessFunctionality;
+
+    // ✅ NUEVA PROPIEDAD: Determina si el usuario puede acceder a la funcionalidad
+    public bool CanAccessFunctionality
+    {
+        get
+        {
+            if (UserRole == "Admin")
+            {
+                // Administradores necesitan seleccionar negocio
+                return IsBusinessSelected;
+            }
+            else
+            {
+                // Usuarios normales pueden acceder siempre (se asume que ya tienen asignada su EDS)
+                return true;
+            }
+        }
+    }
 
     private async Task ResetForNewCloseAsync()
     {
@@ -589,6 +608,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         SetEditingState(canEdit: true, showSections: true);
 
         OnPropertyChanged(nameof(AccionesHabilitadas));
+        OnPropertyChanged(nameof(CanAccessFunctionality));
 
         try { await _service.GetAllEdsData(); } catch { }
     }
@@ -620,6 +640,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
                     IsBusinessSelected = true;
                     OnPropertyChanged(nameof(AccionesHabilitadas));
+                    OnPropertyChanged(nameof(CanAccessFunctionality));
 
                     await ShowOperationalSectionsAsync();
                 }
@@ -732,6 +753,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 {
                     _isBusinessSelected = value;
                     OnPropertyChanged(nameof(IsBusinessSelected));
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
+                    OnPropertyChanged(nameof(CanAccessFunctionality));
                 }
             }
         }
