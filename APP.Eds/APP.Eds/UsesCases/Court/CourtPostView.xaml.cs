@@ -291,7 +291,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    // ====== REFRESCO FINO DE SECCIONES (sin recargar toda la página) ======
+    
     // ====== REFRESCO FINO DE SECCIONES (sin recargar toda la página) ======
     private async Task RefreshSectionsAsync(bool refreshDispensers, bool refreshPayments)
     {

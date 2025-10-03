@@ -56,7 +56,7 @@ public class StrongBoxService : INotifyPropertyChanged
                 OnPropertyChanged(nameof(HasSelectedEds));
                 OnPropertyChanged(nameof(HasNoSelectedEds));
                 
-                System.Diagnostics.Debug.WriteLine($"SelectedEds changed from {previousEds?.Name ?? "null"} to {_selectedEds?.Name ?? "null"}");
+                System.Diagnostics.Debug.WriteLine($"SelectedEds changed from {previousEds?.Name ?? "null"} (ID: {previousEds?.IdEds ?? 0}) to {_selectedEds?.Name ?? "null"} (ID: {_selectedEds?.IdEds ?? 0})");
                 
                 // Limpiar datos inmediatamente para feedback instantáneo
                 ClearCurrentData();
@@ -78,16 +78,20 @@ public class StrongBoxService : INotifyPropertyChanged
                     {
                         try
                         {
-                            await LoadDataAsync();
+                            System.Diagnostics.Debug.WriteLine($"Starting to load data for EDS ID: {_selectedEds.IdEds} - {_selectedEds.Name}");
+                            await LoadDataForSelectedEdsAsync();
+                            
                             await MainThread.InvokeOnMainThreadAsync(() =>
                             {
                                 if (HasData)
                                 {
                                     EdsStatusMessage = $"Datos de {_selectedEds.Name} cargados correctamente";
+                                    System.Diagnostics.Debug.WriteLine($"Data loaded successfully for EDS {_selectedEds.Name}. Balance: {CurrentBalance?.Saldo ?? 0}, Movements: {Movements.Count}");
                                 }
                                 else
                                 {
                                     EdsStatusMessage = $"No hay registros para {_selectedEds.Name}";
+                                    System.Diagnostics.Debug.WriteLine($"No data found for EDS {_selectedEds.Name}");
                                 }
                             });
                         }
@@ -120,6 +124,7 @@ public class StrongBoxService : INotifyPropertyChanged
                 {
                     EdsStatusMessage = "";
                     IsLoadingEdsData = false;
+                    System.Diagnostics.Debug.WriteLine("No EDS selected, cleared data");
                 }
             }
         }
@@ -134,6 +139,7 @@ public class StrongBoxService : INotifyPropertyChanged
         HasData = false;
         DataLoaded = false;
         NoDataMessage = "";
+        System.Diagnostics.Debug.WriteLine("Cleared current data");
     }
 
     private double _withdrawAmount;
@@ -265,7 +271,7 @@ public class StrongBoxService : INotifyPropertyChanged
     {
         if (SelectedEds == null) return;
 
-        System.Diagnostics.Debug.WriteLine($"RefreshDataAsync: Manual refresh requested for EDS {SelectedEds.Name}");
+        System.Diagnostics.Debug.WriteLine($"RefreshDataAsync: Manual refresh requested for EDS {SelectedEds.Name} (ID: {SelectedEds.IdEds})");
         
         IsLoadingEdsData = true;
         EdsStatusMessage = $"Actualizando datos de {SelectedEds.Name}...";
@@ -274,7 +280,7 @@ public class StrongBoxService : INotifyPropertyChanged
         {
             // Forzar limpieza y recarga completa
             ClearCurrentData();
-            await LoadDataAsync();
+            await LoadDataForSelectedEdsAsync();
             
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
@@ -321,7 +327,9 @@ public class StrongBoxService : INotifyPropertyChanged
             string url = $"{Configuration.BaseUrl}/api/v1/eds";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.Timeout = TimeSpan.FromSeconds(15);
 
+            System.Diagnostics.Debug.WriteLine($"Loading EDS list from: {url}");
             var response = await httpClient.GetStringAsync(url);
 
             var result = JsonSerializer.Deserialize<EdsApiResponse>(
@@ -338,16 +346,24 @@ public class StrongBoxService : INotifyPropertyChanged
                     {
                         EdsList.Add(eds);
                     }
+                    System.Diagnostics.Debug.WriteLine($"Loaded {EdsList.Count} EDS stations");
                 }
             });
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"Error loading EDS list: {ex.Message}");
             await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar la lista de EDS: {ex.Message}", "OK");
         }
     }
 
     public async Task LoadDataAsync()
+    {
+        // Este método ahora delega al método específico para la EDS seleccionada
+        await LoadDataForSelectedEdsAsync();
+    }
+
+    private async Task LoadDataForSelectedEdsAsync()
     {
         if (SelectedEds == null)
         {
@@ -358,6 +374,8 @@ public class StrongBoxService : INotifyPropertyChanged
             });
             return;
         }
+
+        System.Diagnostics.Debug.WriteLine($"LoadDataForSelectedEdsAsync: Starting for EDS ID {SelectedEds.IdEds} - {SelectedEds.Name}");
 
         // Marcar que se está cargando y limpiar estado previo
         await MainThread.InvokeOnMainThreadAsync(() =>
@@ -396,7 +414,7 @@ public class StrongBoxService : INotifyPropertyChanged
                 }
 
                 // Debug info
-                System.Diagnostics.Debug.WriteLine($"LoadDataAsync completed - EDS: {SelectedEds.Name}, HasBalance: {hasBalance}, HasMovements: {hasMovements}, MovementsCount: {Movements.Count}");
+                System.Diagnostics.Debug.WriteLine($"LoadDataForSelectedEdsAsync completed - EDS: {SelectedEds.Name} (ID: {SelectedEds.IdEds}), HasBalance: {hasBalance}, Balance: {CurrentBalance?.Saldo ?? 0}, HasMovements: {hasMovements}, MovementsCount: {Movements.Count}");
             });
         }
         catch (Exception ex)
@@ -407,6 +425,7 @@ public class StrongBoxService : INotifyPropertyChanged
                 DataLoaded = true;
                 NoDataMessage = $"Error al cargar los datos de {SelectedEds?.Name}: {ex.Message}";
                 
+                System.Diagnostics.Debug.WriteLine($"Error in LoadDataForSelectedEdsAsync: {ex.Message}");
                 await Application.Current.MainPage.DisplayAlert("Error", 
                     $"Error al cargar los datos de la EDS {SelectedEds?.Name}: {ex.Message}", "OK");
             });
@@ -450,7 +469,7 @@ public class StrongBoxService : INotifyPropertyChanged
             if (ok)
             {
                 WithdrawAmount = 0;
-                await LoadDataAsync(); // Esto no muestra loading porque LoadDataAsync ya no tiene loading
+                await LoadDataForSelectedEdsAsync(); // Usar el método específico para la EDS seleccionada
             }
         }
         finally
@@ -490,7 +509,7 @@ public class StrongBoxService : INotifyPropertyChanged
             if (ok)
             {
                 WithdrawAmount = 0;
-                await LoadDataAsync();
+                await LoadDataForSelectedEdsAsync();
                 
                 await Application.Current.MainPage.DisplayAlert(
                     "Retiro Exitoso", 
@@ -863,12 +882,13 @@ public class StrongBoxService : INotifyPropertyChanged
 
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/strongbox/balance?idEds={SelectedEds.IdEds}";
+            // CAMBIO: Usar endpoint más específico para obtener balance filtrado por EDS
+            string url = $"{Configuration.BaseUrl}/api/v1/strongbox/balance/eds/{SelectedEds.IdEds}";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             httpClient.Timeout = TimeSpan.FromSeconds(10);
 
-            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Fetching balance for EDS {SelectedEds.IdEds} - {SelectedEds.Name}");
+            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Fetching balance for EDS {SelectedEds.IdEds} - {SelectedEds.Name} from URL: {url}");
 
             var response = await httpClient.GetAsync(url);
             
@@ -884,8 +904,140 @@ public class StrongBoxService : INotifyPropertyChanged
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    CurrentBalance = result?.Data;
-                    System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Set CurrentBalance - Balance: {CurrentBalance?.Saldo ?? 0}");
+                    // CAMBIO: Verificación adicional para asegurar que el balance pertenece a la EDS correcta
+                    if (result?.Data != null && (result.Data.IdEds == null || result.Data.IdEds == SelectedEds.IdEds))
+                    {
+                        CurrentBalance = result.Data;
+                        System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Set CurrentBalance - Balance: {CurrentBalance.Saldo} for EDS {SelectedEds.Name} (ID: {SelectedEds.IdEds})");
+                    }
+                    else
+                    {
+                        CurrentBalance = null;
+                        System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Balance does not match selected EDS. Expected EDS ID: {SelectedEds.IdEds}, Got: {result?.Data?.IdEds}");
+                    }
+                });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // FALLBACK: Si el endpoint específico no existe, usar el método anterior con validación adicional
+                await GetCurrentBalanceFallbackAsync();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: HTTP Error {response.StatusCode}: {error}");
+                
+                // FALLBACK: En caso de error, intentar con el método anterior
+                await GetCurrentBalanceFallbackAsync();
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: HTTP Request Exception: {ex.Message}");
+            // FALLBACK: En caso de error de conectividad, intentar con el método anterior
+            await GetCurrentBalanceFallbackAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Exception: {ex.Message}");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                CurrentBalance = null;
+            });
+        }
+    }
+
+    // NUEVO: Método de fallback que usa el endpoint original pero con filtrado del lado del cliente
+    private async Task GetCurrentBalanceFallbackAsync()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Using fallback method for EDS {SelectedEds.IdEds} - {SelectedEds.Name}");
+            
+            string url = $"{Configuration.BaseUrl}/api/v1/strongbox/balance?idEds={SelectedEds.IdEds}";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+            var response = await httpClient.GetAsync(url);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Received response: {json}");
+                
+                // Intentar deserializar como objeto único primero
+                try
+                {
+                    var singleResult = JsonSerializer.Deserialize<StrongBoxBalanceResponse>(
+                        json,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+
+                    if (singleResult?.Data != null)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            // Verificar que el balance pertenece a la EDS correcta
+                            if (singleResult.Data.IdEds == null || singleResult.Data.IdEds == SelectedEds.IdEds)
+                            {
+                                CurrentBalance = singleResult.Data;
+                                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Single object - Set CurrentBalance: {CurrentBalance.Saldo} for EDS {SelectedEds.Name}");
+                            }
+                            else
+                            {
+                                CurrentBalance = null;
+                                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Single object - EDS ID mismatch. Expected: {SelectedEds.IdEds}, Got: {singleResult.Data.IdEds}");
+                            }
+                        });
+                        return;
+                    }
+                }
+                catch (JsonException)
+                {
+                    System.Diagnostics.Debug.WriteLine("GetCurrentBalanceFallbackAsync: Failed to deserialize as single object, trying as array");
+                }
+
+                // Si falla como objeto único, intentar como lista y filtrar
+                try
+                {
+                    var listResult = JsonSerializer.Deserialize<List<StrongBoxGetLastBalanceModel>>(
+                        json,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+
+                    if (listResult?.Any() == true)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            // Filtrar por EDS específica del lado del cliente
+                            var filteredBalance = listResult.FirstOrDefault(b => 
+                                b.IdEds == null || b.IdEds == SelectedEds.IdEds);
+                            
+                            if (filteredBalance != null)
+                            {
+                                CurrentBalance = filteredBalance;
+                                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Array - Set CurrentBalance: {CurrentBalance.Saldo} for EDS {SelectedEds.Name} (filtered from {listResult.Count} balances)");
+                            }
+                            else
+                            {
+                                CurrentBalance = null;
+                                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Array - No balance found for EDS {SelectedEds.IdEds} in {listResult.Count} balances");
+                            }
+                        });
+                        return;
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Failed to deserialize as array: {ex.Message}");
+                }
+
+                // Si ningún método de deserialización funciona
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    CurrentBalance = null;
+                    System.Diagnostics.Debug.WriteLine("GetCurrentBalanceFallbackAsync: Could not deserialize response as single object or array");
                 });
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -894,13 +1046,13 @@ public class StrongBoxService : INotifyPropertyChanged
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     CurrentBalance = null;
-                    System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: No balance found for EDS {SelectedEds.IdEds}");
+                    System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: No balance found for EDS {SelectedEds.IdEds} - {SelectedEds.Name}");
                 });
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: HTTP Error {response.StatusCode}: {error}");
+                System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: HTTP Error {response.StatusCode}: {error}");
                 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
@@ -908,18 +1060,9 @@ public class StrongBoxService : INotifyPropertyChanged
                 });
             }
         }
-        catch (HttpRequestException ex)
-        {
-            // Error de conectividad - silencioso para evitar spam de alertas
-            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: HTTP Request Exception: {ex.Message}");
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                CurrentBalance = null;
-            });
-        }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceAsync: Exception: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"GetCurrentBalanceFallbackAsync: Exception: {ex.Message}");
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 CurrentBalance = null;
@@ -941,19 +1084,20 @@ public class StrongBoxService : INotifyPropertyChanged
 
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/strongbox?PageNumber={pageNumber}&PageSize={pageSize}&idEds={SelectedEds.IdEds}";
+            // Usar el endpoint específico para obtener movimientos filtrados por EDS
+            string url = $"{Configuration.BaseUrl}/api/v1/strongbox/eds/{SelectedEds.IdEds}";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             httpClient.Timeout = TimeSpan.FromSeconds(10);
 
-            System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Fetching movements for EDS {SelectedEds.IdEds} - {SelectedEds.Name}, Page: {pageNumber}");
+            System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Fetching movements for EDS {SelectedEds.IdEds} - {SelectedEds.Name}, Page: {pageNumber} from URL: {url}");
 
             var response = await httpClient.GetAsync(url);
             
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Received response length: {json?.Length ?? 0}");
+                System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Received response length: {json?.Length ?? 0} chars");
                 
                 var result = JsonSerializer.Deserialize<StrongBoxMovementsResponse>(
                     json,
@@ -966,14 +1110,27 @@ public class StrongBoxService : INotifyPropertyChanged
                     
                     if (result?.Data != null)
                     {
+                        int addedCount = 0;
                         foreach (var item in result.Data)
-                            Movements.Add(item);
+                        {
+                            // Verificación adicional: solo agregar movimientos que pertenecen a la EDS seleccionada
+                            if (item.IdEds == SelectedEds.IdEds || item.IdEds == null)
+                            {
+                                Movements.Add(item);
+                                addedCount++;
+                                System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Added movement - ID: {item.Id}, Type: {item.Type}, Amount: {item.Ammount}, IdEds: {item.IdEds}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Filtered out movement - ID: {item.Id}, Type: {item.Type}, Amount: {item.Ammount}, IdEds: {item.IdEds} (Expected: {SelectedEds.IdEds})");
+                            }
+                        }
                         
-                        System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Added {result.Data.Count} movements, Total: {Movements.Count}");
+                        System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: Added {addedCount} movements for EDS {SelectedEds.Name}, Total in collection: {Movements.Count}");
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: No movements data in response");
+                        System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: No movements data in response for EDS {SelectedEds.Name}");
                     }
                 });
             }
@@ -983,7 +1140,7 @@ public class StrongBoxService : INotifyPropertyChanged
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     if (pageNumber == 1) Movements.Clear();
-                    System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: No movements found for EDS {SelectedEds.IdEds}");
+                    System.Diagnostics.Debug.WriteLine($"GetMovementsAsync: No movements found for EDS {SelectedEds.IdEds} - {SelectedEds.Name}");
                 });
             }
             else
@@ -1061,23 +1218,28 @@ public class StrongBoxService : INotifyPropertyChanged
             var request = new StrongBoxRequest { Request = strongBoxModel };
             var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
+            System.Diagnostics.Debug.WriteLine($"SendWithdrawAsync: Sending withdraw request for EDS {SelectedEds.IdEds} - {SelectedEds.Name}, Amount: {ammount}");
+
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
             {
+                System.Diagnostics.Debug.WriteLine($"SendWithdrawAsync: Withdraw successful for EDS {SelectedEds.Name}");
                 await GetCurrentBalanceAsync();
                 return true;
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"SendWithdrawAsync: Error {response.StatusCode} - {error}");
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo realizar el retiro: {response.StatusCode}\n{error}", "OK");
                 return false;
             }
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"SendWithdrawAsync: Exception - {ex.Message}");
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al realizar el retiro: {ex.Message}", "OK");
             return false;
         }

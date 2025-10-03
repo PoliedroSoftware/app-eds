@@ -2365,7 +2365,7 @@ namespace APP.Eds.Services.Court
             {
                 VisibleReceipts = !VisibleReceipts;
             });
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
             GetAllEdsData();
             DateStarttime = DateTime.Now;
             DateEndtime = DateTime.Now;
@@ -2378,9 +2378,7 @@ namespace APP.Eds.Services.Court
             
         }
 
-        public async 
-        Task
-GetAllEdsData()
+        public async Task GetAllEdsData()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
