@@ -213,7 +213,8 @@
                         BackgroundColor="White"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
-                        Padding="20">
+                        Padding="20"
+                        IsVisible="{Binding ShouldShowCashCountSection}">
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
