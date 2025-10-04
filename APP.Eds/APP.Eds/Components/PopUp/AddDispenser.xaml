@@ -14,6 +14,7 @@
             <converters:DecimalFormatConverter x:Key="DecimalFormat" />
             <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
         </ResourceDictionary>
     </mct:Popup.Resources>
 
@@ -97,7 +98,7 @@
                                    TextColor="#2D3436" VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,15,*" RowSpacing="4">
+                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="4">
                             <Label Text="Producto" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding SelectedHose.ProductEntity.Name}" 
@@ -113,6 +114,17 @@
                                        TextColor="#6A1B9A"/>
                                 <Label Text="G" VerticalOptions="Center" FontSize="9" 
                                        TextColor="#6A1B9A" FontAttributes="Bold"/>
+                            </StackLayout>
+
+                            <Label Text="Stock futuro" VerticalOptions="Center"
+                                   HorizontalOptions="End" FontSize="11" FontAttributes="Bold"
+                                   Grid.Row="2" Grid.Column="0"/>
+                            <StackLayout Orientation="Horizontal" Spacing="2" Grid.Row="2" Grid.Column="2">
+                                <Label Text="{Binding FutureStock, StringFormat='{0:N0}'}" 
+                                       VerticalOptions="Center" FontSize="11" FontAttributes="Bold"
+                                       TextColor="#4CAF50"/>
+                                <Label Text="G" VerticalOptions="Center" FontSize="9" 
+                                       TextColor="#4CAF50" FontAttributes="Bold"/>
                             </StackLayout>
                         </Grid>
                     </StackLayout>
@@ -211,7 +223,7 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
+                        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
                             <Label Text="Último monto acumulado" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}"
@@ -238,6 +250,13 @@
                                    VerticalOptions="Center" HorizontalOptions="Start"
                                    FontAttributes="Bold" FontSize="11" TextColor="#FF9800"
                                    Grid.Row="2" Grid.Column="2"/>
+
+                            <Label Text="Monto en letras" HorizontalOptions="End" VerticalOptions="Center"
+                                   FontSize="10" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource NumberToWordsConverter}}"
+                                   VerticalOptions="Center" HorizontalOptions="Start"
+                                   FontAttributes="Italic" FontSize="9" TextColor="#666666"
+                                   Grid.Row="3" Grid.Column="2" LineBreakMode="WordWrap"/>
                         </Grid>
                     </StackLayout>
                 </Frame>
