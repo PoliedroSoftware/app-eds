@@ -95,6 +95,8 @@ namespace APP.Eds.Services.Court
                 // Notify visibility properties after clearing collections
                 _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
                 _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
+                // 🔥 Notificar cambio en la visibilidad de la sección de Arqueo De Caja después del reset
+                _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
             }
         }
         public static void DestroyInstance()
@@ -133,6 +135,17 @@ namespace APP.Eds.Services.Court
         /// Determina si se debe mostrar la sección "Formas de pago" basándose en si hay métodos de pago agregados
         /// </summary>
         public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
+
+        /// <summary>
+        /// Determina si se debe mostrar la sección "Arqueo De Caja" basándose en si hay al menos un valor diferente de cero
+        /// </summary>
+        public bool ShouldShowCashCountSection => 
+            TotalAmount > 0 || 
+            TotalGallons > 0 || 
+            TotalExpenditure > 0 || 
+            TotalTypeOfCollection > 0 || 
+            TotalSales > 0 || 
+            Distintic > 0;
 
         private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
 
@@ -712,6 +725,8 @@ namespace APP.Eds.Services.Court
             {
                 _distintic = value;
                 OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
+                // 🔥 Notificar cambio en la visibilidad de la sección de Arqueo De Caja cuando cambia el distintivo
+                OnPropertyChanged(nameof(ShouldShowCashCountSection));
             }
         }        
 
@@ -3277,6 +3292,8 @@ GetAllEdsData()
             OnPropertyChanged(nameof(TotalExpenditure));
             OnPropertyChanged(nameof(TotalTypeOfCollection));
             OnPropertyChanged(nameof(TotalSales));
+            // 🔥 Notificar cambio en la visibilidad de la sección de Arqueo De Caja
+            OnPropertyChanged(nameof(ShouldShowCashCountSection));
 
             return TotalAmount; // Return total sales amount
         }
