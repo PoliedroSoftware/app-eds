@@ -158,12 +158,17 @@
                                            FontSize="16" 
                                            TextColor="#4CAF50" 
                                            VerticalOptions="Center"/>
-                                    <Label Text="Precio Compra" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold"
-                                           TextColor="#2D3436"
-                                           VerticalOptions="Center"
-                                           AutomationId="LabelPrice"/>
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label Text="Precio Compra" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="#2D3436"
+                                               AutomationId="LabelPrice"/>
+                                        <Label Text="Incluye transporte" 
+                                               FontSize="11" 
+                                               TextColor="#6B7280"
+                                               Margin="0,-2,0,0"/>
+                                    </StackLayout>
                                 </StackLayout>
                                 
                                 <!-- Entry Container -->
