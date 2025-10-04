@@ -4,10 +4,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     CanBeDismissedByTappingOutsideOfPopup="False"
     x:Name="Root"
     Color="Transparent"
     AutomationId="PopupAddCourtTypeOfCollection">
+    
+    <mct:Popup.Resources>
+        <ResourceDictionary>
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
+        </ResourceDictionary>
+    </mct:Popup.Resources>
     
     <!-- Modern Minimalist Container with responsive width -->
     <Border BackgroundColor="White"
@@ -139,33 +146,72 @@
                                         </Grid>
 
                                         <!-- Amount Entry - Full Width -->
-                                        <Border BackgroundColor="White"
-                                                StrokeShape="RoundRectangle 8"
-                                                Stroke="#E0E9F7"
-                                                StrokeThickness="1"
-                                                Padding="12,8">
-                                            <Border.Triggers>
-                                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="BackgroundColor" Value="#F0F7FF"/>
-                                                    <Setter Property="Stroke" Value="#90CAF9"/>
-                                                    <Setter Property="StrokeThickness" Value="2"/>
-                                                </DataTrigger>
-                                            </Border.Triggers>
-                                            <Entry Placeholder="0"
-                                                   Keyboard="Numeric"
-                                                   MaxLength="12"
-                                                   HorizontalTextAlignment="Center"
-                                                   IsEnabled="{Binding IsSelected}"
-                                                   Text="{Binding Amount, Mode=TwoWay}"
-                                                   TextChanged="Amount_TextChanged"
-                                                   Focused="Amount_Focused"
-                                                   Unfocused="Amount_Unfocused"
-                                                   TextColor="#1976D2"
-                                                   PlaceholderColor="#9E9E9E"
-                                                   BackgroundColor="Transparent"
-                                                   FontSize="13"
-                                                   FontAttributes="Bold"/>
-                                        </Border>
+                                        <StackLayout Spacing="4">
+                                            <Border BackgroundColor="White"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    Stroke="#E0E9F7"
+                                                    StrokeThickness="1"
+                                                    Padding="12,8">
+                                                <Border.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BackgroundColor" Value="#F0F7FF"/>
+                                                        <Setter Property="Stroke" Value="#90CAF9"/>
+                                                        <Setter Property="StrokeThickness" Value="2"/>
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                                <Entry Placeholder="0"
+                                                       Keyboard="Numeric"
+                                                       MaxLength="12"
+                                                       HorizontalTextAlignment="Center"
+                                                       IsEnabled="{Binding IsSelected}"
+                                                       Text="{Binding Amount, Mode=TwoWay}"
+                                                       TextChanged="Amount_TextChanged"
+                                                       Focused="Amount_Focused"
+                                                       Unfocused="Amount_Unfocused"
+                                                       TextColor="#1976D2"
+                                                       PlaceholderColor="#9E9E9E"
+                                                       BackgroundColor="Transparent"
+                                                       FontSize="13"
+                                                       FontAttributes="Bold"/>
+                                            </Border>
+                                            
+                                            <!-- Amount Display - Both Currency Format and Words -->
+                                            <StackLayout Orientation="Horizontal" 
+                                                         HorizontalOptions="Center"
+                                                         Spacing="8"
+                                                         IsVisible="{Binding IsSelected}">
+                                                <StackLayout.Triggers>
+                                                    <!-- Only show when there's text and item is selected -->
+                                                    <DataTrigger TargetType="StackLayout" 
+                                                                 Binding="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
+                                                                 Value="">
+                                                        <Setter Property="IsVisible" Value="False"/>
+                                                    </DataTrigger>
+                                                </StackLayout.Triggers>
+                                                
+                                                <!-- Currency Format -->
+                                                <Label Text="{Binding Amount, StringFormat='$ {0:N2}'}"
+                                                       FontSize="11"
+                                                       TextColor="#2196F3"
+                                                       FontAttributes="Bold"
+                                                       VerticalOptions="Center"/>
+                                                
+                                                <!-- Separator -->
+                                                <Label Text="•"
+                                                       FontSize="10"
+                                                       TextColor="#999999"
+                                                       VerticalOptions="Center"/>
+                                                
+                                                <!-- Amount in Words -->
+                                                <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
+                                                       FontSize="10"
+                                                       TextColor="#666666"
+                                                       FontAttributes="Italic"
+                                                       VerticalOptions="Center"
+                                                       LineBreakMode="TailTruncation"
+                                                       HorizontalOptions="FillAndExpand"/>
+                                            </StackLayout>
+                                        </StackLayout>
 
                                         <!-- Description Entry - Full Width -->
                                         <Border BackgroundColor="White"
