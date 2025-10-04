@@ -14,6 +14,7 @@
             <converters:DecimalFormatConverter x:Key="DecimalFormat" />
             <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
         </ResourceDictionary>
     </mct:Popup.Resources>
 
@@ -211,7 +212,7 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
+                        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
                             <Label Text="Último monto acumulado" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}"
@@ -238,6 +239,13 @@
                                    VerticalOptions="Center" HorizontalOptions="Start"
                                    FontAttributes="Bold" FontSize="11" TextColor="#FF9800"
                                    Grid.Row="2" Grid.Column="2"/>
+
+                            <Label Text="Monto en letras" HorizontalOptions="End" VerticalOptions="Center"
+                                   FontSize="10" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource NumberToWordsConverter}}"
+                                   VerticalOptions="Center" HorizontalOptions="Start"
+                                   FontAttributes="Italic" FontSize="9" TextColor="#666666"
+                                   Grid.Row="3" Grid.Column="2" LineBreakMode="WordWrap"/>
                         </Grid>
                     </StackLayout>
                 </Frame>
