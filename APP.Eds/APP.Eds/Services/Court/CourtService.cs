@@ -2463,7 +2463,7 @@ GetAllEdsData()
                 {
                     var username = Preferences.Get("Usernamelogin", "");
 
-                    var islander = IslanderList.FirstOrDefault(i => i.Name == username);
+                    var islander = IslanderList.FirstOrDefault(i => i.Name.ToLower() == username.ToLower());
                     if (islander != null)
                     {
                         Preferences.Set("islanderId", islander.IdIslander.ToString());
