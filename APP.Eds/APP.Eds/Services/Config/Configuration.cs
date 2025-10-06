@@ -6,4 +6,10 @@ public static class Configuration
     public static string KeycloakUrl => "https://keycloak-0yrtq1-u44828.vm.elestio.app/realms"; 
     public static string KeycloakCliendId => "application-eds";
     public static string KeycloakRealms => "AppEDS";
+    
+    // RabbitMQ Configuration
+    public static string RabbitMQHostName => "3.15.38.64";
+    public static string RabbitMQUserName => "guest";
+    public static string RabbitMQPassword => "guest";
+    public static string RabbitMQQueue => "documents";
 }

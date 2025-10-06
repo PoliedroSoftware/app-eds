@@ -16,6 +16,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using System;
+using System.IO;
 
 
 namespace APP.Eds.Services.Court
@@ -3033,7 +3035,10 @@ GetAllEdsData()
                 Court.Endtime = Endtime.ToString(@"hh\:mm\:ss");
                 Court.Descripcion = AdditionalInfoDescription;
                 Court.Distintic = Distintic;
-                Court.CourtDocuments = CourtDocuments?.ToList();
+
+                // 🔥 SEPARACIÓN: Ya no incluimos documentos en el Court principal
+                // Court.CourtDocuments = CourtDocuments?.ToList();
+                Court.CourtDocuments = null; // Enviar sin documentos
 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
@@ -3046,47 +3051,33 @@ GetAllEdsData()
                 {
                     LastSendWasSuccessful = true;
 
+                    // 🔥 NUEVA LÓGICA: Enviar documentos a RabbitMQ si existen
+                    bool documentsPublished = true;
                     if (CourtDocuments?.Any() == true)
                     {
-                        string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
-
-                        using var client = new HttpClient();
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                        foreach (var doc in CourtDocuments)
-                        {
-                            try
-                            {
-                                byte[] fileBytes = Convert.FromBase64String(doc.Descripcion);
-                                using var fileStream = new MemoryStream(fileBytes);
-                                using var contentFile = new MultipartFormDataContent();
-                                var fileContent = new StreamContent(fileStream);
-                                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
-                                contentFile.Add(fileContent, "files", doc.DocumentName);
-
-                                HttpResponseMessage fileResponse = await client.PostAsync(apiUrl, contentFile);
-                                if (!fileResponse.IsSuccessStatusCode)
-                                {
-                                    Console.WriteLine($"Error al subir archivo: {doc.DocumentName} - {fileResponse.StatusCode}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                LastSendWasSuccessful = false;
-
-                                Console.WriteLine($"Error subiendo {doc.DocumentName}: {ex.Message}");
-                            }
-                        }
+                        documentsPublished = await PublishDocumentsToRabbitMQAsync();
                     }
 
+                    // Mensaje de éxito diferenciado según el estado de los documentos
+                    string successMessage = documentsPublished
+                        ? $"✅ Corte Enviado Exitosamente\n\n" +
+                          $"El corte se ha enviado correctamente:\n\n" +
+                          $"• Total de ventas: ${totalVentas:N2}\n" +
+                          $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
+                          $"• Gastos: ${GetTotalExpenditure():N2}\n" +
+                          $"• Documentos enviados a cola: {CourtDocuments?.Count ?? 0}\n\n" +
+                          $"Los documentos se procesarán de forma asíncrona."
+                        : $"⚠️ Corte Enviado con Advertencias\n\n" +
+                          $"El corte principal se envió correctamente, pero hubo problemas con los documentos:\n\n" +
+                          $"• Total de ventas: ${totalVentas:N2}\n" +
+                          $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
+                          $"• Gastos: ${GetTotalExpenditure():N2}\n" +
+                          $"• Documentos pendientes: {CourtDocuments?.Count ?? 0}\n\n" +
+                          $"Los documentos se reintentarán automáticamente.";
+
                     await Application.Current.MainPage.DisplayAlert(
-                        "✅ Corte Enviado Exitosamente", 
-                        $"El corte se ha enviado correctamente:\n\n" +
-                        $"• Total de ventas: ${totalVentas:N2}\n" +
-                        $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
-                        $"• Gastos: ${GetTotalExpenditure():N2}\n" +
-                        $"• Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
-                        $"La validación de pagos fue exitosa.", 
+                        documentsPublished ? "Corte Enviado" : "Corte Enviado con Advertencias", 
+                        successMessage, 
                         "Completado");
                 }
                 else
@@ -3124,323 +3115,84 @@ GetAllEdsData()
             }
         }
 
-        // Resto de métodos necesarios
-        public async Task AddDispenserFromPopup()
-        { 
-            if (Court == null)
+        /// <summary>
+        /// Nuevo método para publicar documentos en RabbitMQ de forma separada
+        /// </summary>
+        private async Task<bool> PublishDocumentsToRabbitMQAsync()
+        {
+            try
             {
-                Court = new CourtModel();
-            }
+                using var rabbitMQService = new Services.RabbitMQ.RabbitMQService();
+                
+                var documentMessages = CourtDocuments.Select(doc => new Models.RabbitMQ.DocumentMessage
+                {
+                    CourtId = IdCourt > 0 ? IdCourt : 0, // Si no tenemos ID del court creado, usar 0
+                    DocumentName = doc.DocumentName ?? "documento_sin_nombre",
+                    DocumentBase64 = doc.Descripcion ?? string.Empty,
+                    ContentType = GetContentTypeFromFileName(doc.DocumentName),
+                    FileSize = GetFileSizeFromBase64(doc.Descripcion),
+                    UserId = IdIslander.ToString(),
+                    BusinessId = IdBusiness.ToString(),
+                    EdsId = IdEds.ToString(),
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
 
-            if (CourtDispensers == null)
-            {
-                CourtDispensers = new ObservableCollection<CourtDispenser>();
-            }
+                bool allPublished = await rabbitMQService.PublishDocumentsAsync(documentMessages);
 
-            var newDispenser = new CourtDispenser
+                System.Diagnostics.Debug.WriteLine($"📄 RabbitMQ: {documentMessages.Count} documentos enviados. Éxito: {allPublished}");
+
+                return allPublished;
+            }
+            catch (Exception ex)
             {
-               
-                DispenserNumber = SelectedHose.IdDispensers,
-                NumberName = SelectedHose.Number,
-                AccumulatedAmount = AccumulatedAmount,
-                AccumulatedGallons = AccumulatedGallons,
-                LastAccumulatedAmount = LastAccumulatedAmount,
-                LastAccumulatedGallons = LastAccumulatedGallons,
-                AmountDifferenceResult = AmountDifferenceResult,
-                GallonsDifferenceResult = GallonsDifferenceResult,
-                IdHose = IdHose
+                System.Diagnostics.Debug.WriteLine($"❌ Error publicando documentos en RabbitMQ: {ex.Message}");
+                
+                // Log detallado del error pero no fallar el envío del corte principal
+                Console.WriteLine($"Error detallado RabbitMQ: {ex}");
+                
+                return false; // No fallar el corte principal por problemas de RabbitMQ
+            }
+        }
+
+        /// <summary>
+        /// Determina el tipo de contenido basado en la extensión del archivo
+        /// </summary>
+        private string GetContentTypeFromFileName(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return "application/octet-stream";
+
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".pdf" => "application/pdf",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".doc" => "application/msword",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".xls" => "application/vnd.ms-excel",
+                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ".txt" => "text/plain",
+                _ => "application/octet-stream"
             };
-
-            CourtDispensers.Add(newDispenser);
-            Court.CourtDispensers = CourtDispensers.ToList();
-            VisibleDispenser = true;
-
-            AddAmountDifferenceResult(AccumulatedAmount, LastAccumulatedAmount);
-            AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
-
-            TotalSales = GetTotalSales();
-            
-            // 🔥 Notificar cambio en la visibilidad después de agregar el dispensador
-            OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
 
-        public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
+        /// <summary>
+        /// Calcula el tamaño del archivo desde la cadena Base64
+        /// </summary>
+        private long GetFileSizeFromBase64(string base64String)
         {
-            if (Court == null)
-                Court = new CourtModel();
+            if (string.IsNullOrEmpty(base64String)) return 0;
 
-            if (CourtDocuments == null)
-                CourtDocuments = new ObservableCollection<CourtDocument>();
-
-            for (int i = 0; i < filesBase64.Count; i++)
+            try
             {
-                var newDocument = new CourtDocument
-                {
-                    Descripcion = filesBase64[i], 
-                    DocumentName = nombresDocumentos[i],
-                };
-
-                CourtDocuments.Add(newDocument);
+                // Tamaño aproximado: (longitud_base64 * 3) / 4 - padding
+                var padding = base64String.EndsWith("==") ? 2 : base64String.EndsWith("=") ? 1 : 0;
+                return (base64String.Length * 3) / 4 - padding;
             }
-
-            Court.CourtDocuments = CourtDocuments.ToList();
-            VisibleDocuments = true;
-        }
-
-        public async Task AddCourtExpenditureFromPopup()
-        {
-            if (Court == null)
+            catch
             {
-                Court = new CourtModel();
-            }
-
-            if (CourtExpenditures == null)
-            {
-                CourtExpenditures = new ObservableCollection<CourtExpenditure>();
-            }
-
-            var newCourtExpenditure = new CourtExpenditure
-            {
-                ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
-                Amount = CourtExpenditureAmount,
-                Description = ExpenditureDescription,
-                IdExpenditure =SelectedExpenditure.IdExpenditure,
-            };
-
-            CourtExpenditures.Add(newCourtExpenditure);
-            Court.CourtExpenditures = CourtExpenditures.ToList();
-            VisibleExpenses = true;
-
-            TotalSales = GetTotalSales();
-            CourtExpenditureAmount = 0;
-            ExpenditureDescription = "";
-        }
-
-        public async Task AddCourtTypeOfCollectionFromPopup()
-        {
-            if (Court == null)
-            {
-                Court = new CourtModel();
-            }
-
-            if (CourtTypeOfCollections == null)
-            {
-                CourtTypeOfCollections = new ObservableCollection<CourtTypeOfCollection>();
-            }
-            var newCourtTypeOfCollection = new CourtTypeOfCollection
-            {
-                TypeOfCollectionName = SelectedTypeOfCollection.Description ?? string.Empty,
-                Amount = CourtTypeOfCollectionAmount,
-                Description = CourtTypeOfCollectionDescription,
-                IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
-            };
-
-            CourtTypeOfCollections.Add(newCourtTypeOfCollection);
-            Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
-            VisibleReceipts = true;
-
-            TotalSales = GetTotalSales();
-            CourtTypeOfCollectionAmount = 0;
-            CourtTypeOfCollectionDescription = "";
-            
-            // 🔥 Notificar cambio en la visibilidad después de agregar el método de pago
-            OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-        }
-
-        public double GetTotalAmount()
-        {
-            if (AmountResults == null || !AmountResults.Any())
                 return 0;
-
-            return AmountResults.Sum();
-        }
-
-        public double GetTotalGallons()
-        {
-            if (GallonResults == null || !GallonResults.Any())
-                return 0;
-
-            return GallonResults.Sum();
-        }
-
-        public double GetTotalExpenditure()
-        {
-            if (CourtExpenditures == null || !CourtExpenditures.Any())
-                return 0;
-
-            return CourtExpenditures.Sum(item => item.Amount);
-        }      
-
-        public double GetTotalTypeOfCollection()
-        {
-            if (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any())
-                return 0;
-
-            return CourtTypeOfCollections.Sum(item => item.Amount);
-        }
-
-        public double GetTotalSales()
-        {
-            TotalAmount = GetTotalAmount();
-            TotalGallons = GetTotalGallons();
-            TotalExpenditure = GetTotalExpenditure();
-            TotalTypeOfCollection = GetTotalTypeOfCollection();
-
-            // Notificar cambios en las propiedades para que la UI se actualice
-            OnPropertyChanged(nameof(TotalAmount));
-            OnPropertyChanged(nameof(TotalGallons));
-            OnPropertyChanged(nameof(TotalExpenditure));
-            OnPropertyChanged(nameof(TotalTypeOfCollection));
-            OnPropertyChanged(nameof(TotalSales));
-            // 🔥 Notificar cambio en la visibilidad de la sección de Arqueo De Caja
-            OnPropertyChanged(nameof(ShouldShowCashCountSection));
-
-            return TotalAmount; // Return total sales amount
-        }
-
-        public void LoadEdsByBusiness(int businessId)
-        {
-          
-            var filteredEds = EdsList.Where(x => x.IdBusiness == businessId).ToList();
-            EdsSelectList.Clear();
-            foreach (var eds in filteredEds)
-            {
-                EdsSelectList.Add(eds);
-            }
-            OnPropertyChanged(nameof(EdsSelectList));
-        }
-
-        public void LoadIslandersByEds(int edsId)
-        {            
-            var filteredIslanders = IslanderList.Where(x => x.IdEds == edsId).ToList();
-            IslanderSelectList.Clear();
-            foreach (var islander in filteredIslanders)
-            {
-                IslanderSelectList.Add(islander);
-            }
-            OnPropertyChanged(nameof(IslanderSelectList));
-        }
-
-        public void LoadHoseByEds(int edsId)
-        {
-            var filteredIsHoseByEds = HoseList
-                .Where(x => x.EdsEntity.IdEds == edsId)
-                .OrderBy(x => x.IdDispensers)
-                .ThenBy(x => x.Number) 
-                .ToList();
-
-            HoseList.Clear();
-            foreach (var hose in filteredIsHoseByEds)
-            {
-                HoseList.Add(hose);
-            }
-            OnPropertyChanged(nameof(HoseList));
-            OnPropertyChanged(nameof(AreAvailableHoses));
-            OnPropertyChanged(nameof(NewSaleEnabled));
-        }
-
-        public void AddSelectedHose(HoseCourtModel hose)
-        {
-            if (hose != null && !selectedHoses.Contains(hose))
-            {
-                selectedHoses.Add(hose);
-                UpdateAvailableHoses();
-            }
-        }
-        private void UpdateAvailableHoses()
-        {
-            var filteredHoses = HoseList.Where(h => !selectedHoses.Contains(h)).ToList();
-            HoseList.Clear();
-            foreach (var hose in filteredHoses)
-            {
-                HoseList.Add(hose);
-            }
-            OnPropertyChanged(nameof(HoseList));
-            OnPropertyChanged(nameof(AreAvailableHoses));
-            OnPropertyChanged(nameof(NewSaleEnabled));
-        }
-
-        private void DeleteDispenser(CourtDispenser dispenser)
-        {
-            if (dispenser != null && CourtDispensers?.Contains(dispenser) == true)
-            {
-                // Remover el dispensador de la lista
-                CourtDispensers.Remove(dispenser);
-
-                // Buscar la manguera en la lista de mangueras seleccionadas
-                var selectedHose = selectedHoses.FirstOrDefault(h => h.IdHose == dispenser.IdHose);
-                
-                if (selectedHose != null)
-                {
-                    // Remover de la lista de mangueras seleccionadas
-                    selectedHoses.Remove(selectedHose);
-                    
-                    // Agregar de vuelta a la lista de mangueras disponibles
-                    HoseList.Add(selectedHose);
-                    
-                    // Ordenar la lista para mantener el orden
-                    var sortedHoses = HoseList
-                        .OrderBy(x => x.IdDispensers)
-                        .ThenBy(x => x.Number)
-                        .ToList();
-                    
-                    HoseList.Clear();
-                    foreach (var hose in sortedHoses)
-                    {
-                        HoseList.Add(hose);
-                    }
-                    
-                    // Notificar cambios en las propiedades relacionadas con mangueras disponibles
-                    OnPropertyChanged(nameof(HoseList));
-                    OnPropertyChanged(nameof(AreAvailableHoses));
-                    OnPropertyChanged(nameof(NewSaleEnabled));
-                }
-
-                // Actualizar los resultados de diferencias - remover los valores del dispensador eliminado
-                var amountToRemove = dispenser.AmountDifferenceResult;
-                var gallonsToRemove = dispenser.GallonsDifferenceResult;
-                
-                if (AmountResults.Contains(amountToRemove))
-                {
-                    AmountResults.Remove(amountToRemove);
-                }
-                
-                if (GallonResults.Contains(gallonsToRemove))
-                {
-                    GallonResults.Remove(gallonsToRemove);
-                }
-
-                // Recalcular totales después de remover los valores
-                TotalAmount = GetTotalAmount();
-                TotalGallons = GetTotalGallons();
-                TotalSales = GetTotalSales();
-                
-                // Notificar cambios en las propiedades
-                OnPropertyChanged(nameof(CourtDispensers));
-                OnPropertyChanged(nameof(TotalAmount));
-                OnPropertyChanged(nameof(TotalGallons));
-                OnPropertyChanged(nameof(TotalSales));
-                // 🔥 Notificar cambio en la visibilidad después de eliminar el dispensador
-                OnPropertyChanged(nameof(ShouldShowDispensersSection));
-            }
-        }
-
-        private void DeleteDocument(CourtDocument document)
-        {
-            if (document != null && CourtDocuments.Contains(document))
-            {
-                CourtDocuments.Remove(document);
-                OnPropertyChanged(nameof(CourtDocuments));
-            }
-        }
-
-        private void DeleteExpense(CourtExpenditure expense)
-        {
-            if (expense != null && CourtExpenditures.Contains(expense))
-            {
-                CourtExpenditures.Remove(expense);
-                TotalSales = GetTotalSales();
-                OnPropertyChanged(nameof(CourtExpenditures));
             }
         }
     }
