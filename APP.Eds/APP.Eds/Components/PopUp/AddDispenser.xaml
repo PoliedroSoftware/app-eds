@@ -94,7 +94,7 @@
                                    Padding="0" WidthRequest="16" HeightRequest="16" VerticalOptions="Center">
                                 <Label Text="📦" FontSize="8" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <Label Text="Stock del Producto" FontSize="13" FontAttributes="Bold"
+                            <Label Text="Inventario del Producto" FontSize="13" FontAttributes="Bold"
                                    TextColor="#2D3436" VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -105,7 +105,7 @@
                                    VerticalOptions="Center" FontSize="11" FontAttributes="Bold"
                                    TextColor="#6A1B9A" Grid.Row="0" Grid.Column="2"/>
 
-                            <Label Text="Stock disponible" VerticalOptions="Center"
+                            <Label Text="Inventario anterior" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" FontAttributes="Bold"
                                    Grid.Row="1" Grid.Column="0"/>
                             <StackLayout Orientation="Horizontal" Spacing="2" Grid.Row="1" Grid.Column="2">
@@ -116,7 +116,7 @@
                                        TextColor="#6A1B9A" FontAttributes="Bold"/>
                             </StackLayout>
 
-                            <Label Text="Stock futuro" VerticalOptions="Center"
+                            <Label Text="Inventario actual" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" FontAttributes="Bold"
                                    Grid.Row="2" Grid.Column="0"/>
                             <StackLayout Orientation="Horizontal" Spacing="2" Grid.Row="2" Grid.Column="2">
@@ -127,6 +127,19 @@
                                        TextColor="#4CAF50" FontAttributes="Bold"/>
                             </StackLayout>
                         </Grid>
+
+                        <!-- Warning for negative stock -->
+                        <Frame BackgroundColor="#FFEBEE" CornerRadius="6" HasShadow="False"
+                               BorderColor="#F44336" Padding="8,4" Margin="0,4,0,0"
+                               IsVisible="{Binding IsStockNegative}">
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <Label Text="⚠️" FontSize="10" VerticalOptions="Center"/>
+                                <Label Text="Falta agregar la compra de este producto" 
+                                       FontSize="10" FontAttributes="Italic"
+                                       TextColor="#D32F2F" VerticalOptions="Center"
+                                       HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                        </Frame>
                     </StackLayout>
                 </Frame>
 

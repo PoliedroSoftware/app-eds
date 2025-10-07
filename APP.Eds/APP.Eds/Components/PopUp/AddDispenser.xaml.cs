@@ -79,6 +79,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             courtService.SelectedHose = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(FutureStock));
+            OnPropertyChanged(nameof(IsStockNegative));
         }
     }
 
@@ -97,6 +98,18 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             var gallonsSold = (decimal)GallonsDifferenceResult;
             
             return Math.Max(0, currentStock - gallonsSold);
+        }
+    }
+
+    // Propiedad para verificar si el stock anterior está en negativo
+    public bool IsStockNegative
+    {
+        get
+        {
+            if (SelectedHose?.ProductEntity?.Stock == null)
+                return false;
+            
+            return SelectedHose.ProductEntity.Stock < 0;
         }
     }
 
