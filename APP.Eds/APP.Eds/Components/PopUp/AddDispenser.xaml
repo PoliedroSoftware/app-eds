@@ -14,6 +14,7 @@
             <converters:DecimalFormatConverter x:Key="DecimalFormat" />
             <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
         </ResourceDictionary>
     </mct:Popup.Resources>
 
@@ -93,18 +94,18 @@
                                    Padding="0" WidthRequest="16" HeightRequest="16" VerticalOptions="Center">
                                 <Label Text="📦" FontSize="8" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <Label Text="Stock del Producto" FontSize="13" FontAttributes="Bold"
+                            <Label Text="Inventario del Producto" FontSize="13" FontAttributes="Bold"
                                    TextColor="#2D3436" VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Grid RowDefinitions="*,*" ColumnDefinitions="*,15,*" RowSpacing="4">
+                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="4">
                             <Label Text="Producto" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding SelectedHose.ProductEntity.Name}" 
                                    VerticalOptions="Center" FontSize="11" FontAttributes="Bold"
                                    TextColor="#6A1B9A" Grid.Row="0" Grid.Column="2"/>
 
-                            <Label Text="Stock disponible" VerticalOptions="Center"
+                            <Label Text="Inventario anterior" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" FontAttributes="Bold"
                                    Grid.Row="1" Grid.Column="0"/>
                             <StackLayout Orientation="Horizontal" Spacing="2" Grid.Row="1" Grid.Column="2">
@@ -114,7 +115,31 @@
                                 <Label Text="G" VerticalOptions="Center" FontSize="9" 
                                        TextColor="#6A1B9A" FontAttributes="Bold"/>
                             </StackLayout>
+
+                            <Label Text="Inventario actual" VerticalOptions="Center"
+                                   HorizontalOptions="End" FontSize="11" FontAttributes="Bold"
+                                   Grid.Row="2" Grid.Column="0"/>
+                            <StackLayout Orientation="Horizontal" Spacing="2" Grid.Row="2" Grid.Column="2">
+                                <Label Text="{Binding FutureStock, StringFormat='{0:N0}'}" 
+                                       VerticalOptions="Center" FontSize="11" FontAttributes="Bold"
+                                       TextColor="#4CAF50"/>
+                                <Label Text="G" VerticalOptions="Center" FontSize="9" 
+                                       TextColor="#4CAF50" FontAttributes="Bold"/>
+                            </StackLayout>
                         </Grid>
+
+                        <!-- Warning for negative stock -->
+                        <Frame BackgroundColor="#FFEBEE" CornerRadius="6" HasShadow="False"
+                               BorderColor="#F44336" Padding="8,4" Margin="0,4,0,0"
+                               IsVisible="{Binding IsStockNegative}">
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <Label Text="⚠️" FontSize="10" VerticalOptions="Center"/>
+                                <Label Text="Falta agregar la compra de este producto" 
+                                       FontSize="10" FontAttributes="Italic"
+                                       TextColor="#D32F2F" VerticalOptions="Center"
+                                       HorizontalOptions="FillAndExpand"/>
+                            </StackLayout>
+                        </Frame>
                     </StackLayout>
                 </Frame>
 
@@ -211,7 +236,7 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
+                        <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
                             <Label Text="Último monto acumulado" VerticalOptions="Center"
                                    HorizontalOptions="End" FontSize="11" Grid.Row="0" Grid.Column="0"/>
                             <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}"
@@ -238,6 +263,13 @@
                                    VerticalOptions="Center" HorizontalOptions="Start"
                                    FontAttributes="Bold" FontSize="11" TextColor="#FF9800"
                                    Grid.Row="2" Grid.Column="2"/>
+
+                            <Label Text="Monto en letras" HorizontalOptions="End" VerticalOptions="Center"
+                                   FontSize="10" Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource NumberToWordsConverter}}"
+                                   VerticalOptions="Center" HorizontalOptions="Start"
+                                   FontAttributes="Italic" FontSize="9" TextColor="#666666"
+                                   Grid.Row="3" Grid.Column="2" LineBreakMode="WordWrap"/>
                         </Grid>
                     </StackLayout>
                 </Frame>
