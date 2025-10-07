@@ -31,6 +31,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             courtService.AccumulatedAmount = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(AmountDifferenceResult));
+            OnPropertyChanged(nameof(FutureStock));
         }
     }
 
@@ -42,6 +43,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             courtService.AccumulatedGallons = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(GallonsDifferenceResult));
+            OnPropertyChanged(nameof(FutureStock));
         }
     }
 
@@ -53,6 +55,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             courtService.LastAccumulatedAmount = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(AmountDifferenceResult));
+            OnPropertyChanged(nameof(FutureStock));
         }
     }
 
@@ -64,6 +67,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
             courtService.LastAccumulatedGallons = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(GallonsDifferenceResult));
+            OnPropertyChanged(nameof(FutureStock));
         }
     }
 
@@ -74,11 +78,27 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             courtService.SelectedHose = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(FutureStock));
         }
     }
 
     public double AmountDifferenceResult => courtService.AmountDifferenceResult;
     public double GallonsDifferenceResult => courtService.GallonsDifferenceResult;
+
+    // Propiedad para calcular el stock futuro
+    public decimal FutureStock
+    {
+        get
+        {
+            if (SelectedHose?.ProductEntity?.Stock == null)
+                return 0;
+
+            var currentStock = SelectedHose.ProductEntity.Stock;
+            var gallonsSold = (decimal)GallonsDifferenceResult;
+            
+            return Math.Max(0, currentStock - gallonsSold);
+        }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -229,6 +249,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                     }
                 }
                 UpdateAccumulatedColors();
+                OnPropertyChanged(nameof(FutureStock));
             }
         });
     }
@@ -365,6 +386,8 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                     AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                     UpdateAccumulatedColors();
                 }
+                
+                OnPropertyChanged(nameof(FutureStock));
             }
             else
             {
@@ -404,6 +427,8 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                         AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                         UpdateAccumulatedColors();
                     }
+                    
+                    OnPropertyChanged(nameof(FutureStock));
                 }
                 else
                 {

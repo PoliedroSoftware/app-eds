@@ -225,6 +225,54 @@ public class ProductService : INotifyPropertyChanged
             OnPropertyChanged(nameof(SellPrice));
         }
     }
+    // Fuerza el IdProductType y el Name según lo seleccionado / escrito.
+    // Devuelve true si pudo fijar un tipo válido.
+    private bool ForceProductTypeIfConsistent()
+    {
+        // 1) Atajos por selección explícita
+        if (SelectedProductOption?.Id == 2) // ACPM
+        {
+            IdProductType = 2;
+            if (string.IsNullOrWhiteSpace(Name)) Name = "ACPM";
+            return true;
+        }
+
+        if (SelectedProductOption?.Id == 1) // Gasolina
+        {
+            var term = (SelectedSpecificProductType?.Description ?? "").Trim().ToLowerInvariant();
+
+            if (term == "extra")
+            {
+                IdProductType = 9;
+                if (string.IsNullOrWhiteSpace(Name)) Name = "Gasolina Extra";
+                return true;
+            }
+
+            if (term == "corriente")
+            {
+                IdProductType = 1;
+                if (string.IsNullOrWhiteSpace(Name)) Name = "Gasolina Corriente";
+                return true;
+            }
+        }
+
+        // 2) Inferencia por nombre escrito
+        var n = (Name ?? "").Trim().ToLowerInvariant();
+        if (n.Contains("acpm"))
+        {
+            IdProductType = 2; return true;
+        }
+        if (n.Contains("extra"))
+        {
+            IdProductType = 9; return true;
+        }
+        if (n.Contains("corriente"))
+        {
+            IdProductType = 1; return true;
+        }
+
+        return false;
+    }
 
     private double _purchasePrice;
     public double PurchasePrice
@@ -281,6 +329,15 @@ public class ProductService : INotifyPropertyChanged
 
         OnPropertyChanged(nameof(ProductOptions));
         OnPropertyChanged(nameof(AvailableProductTypes));
+    }
+    // Mapea de forma robusta en base a la selección actual.
+    private void UpdateProductTypeFromSelectionCore()
+    {
+        // Intenta fijar con reglas duras (opción + subtipo + nombre)
+        if (ForceProductTypeIfConsistent()) return;
+
+        // Si no se pudo inferir nada, invalida para que no se guarde mal.
+        IdProductType = 0;
     }
 
     private void OnProductOptionChanged()
@@ -357,68 +414,64 @@ public class ProductService : INotifyPropertyChanged
     }
 
     // Validación del formulario antes del envío
+    // Validación del formulario antes del envío (ahora autocorrige el tipo)
     private async Task<bool> ValidateFormAsync()
     {
         var errors = new List<string>();
 
-        // Validar campos obligatorios
+        // Auto-corrección fuerte del tipo ANTES de validar
+        ForceProductTypeIfConsistent();
+
+        // Nombre: obligatorio (si falta, lo intentamos generar a partir de la selección)
         if (string.IsNullOrWhiteSpace(Name))
         {
-            errors.Add("• El nombre del producto es obligatorio");
+            // último intento de generación de nombre
+            if (SelectedProductOption?.Id == 2) Name = "ACPM";
+            else if (SelectedProductOption?.Id == 1 && SelectedSpecificProductType != null)
+                Name = $"Gasolina {SelectedSpecificProductType.Description}".Trim();
+
+            if (string.IsNullOrWhiteSpace(Name))
+                errors.Add("• El nombre del producto es obligatorio");
         }
 
+        // Si aún no logramos un tipo, como último recurso:
         if (IdProductType <= 0)
         {
-            errors.Add("• Debe seleccionar un tipo de producto válido");
+            // Sólo si escogió Gasolina sin subtipo, asumimos Corriente
+            if (SelectedProductOption?.Id == 1 && SelectedSpecificProductType == null)
+            {
+                IdProductType = 1; // Corriente por defecto
+                if (string.IsNullOrWhiteSpace(Name)) Name = "Gasolina Corriente";
+            }
         }
 
-        // Validaciones adicionales de formato
-        if (PurchasePrice < 0)
-        {
-            errors.Add("• El precio de compra no puede ser negativo");
-        }
+        // Validaciones numéricas
+        if (PurchasePrice < 0) errors.Add("• El precio de compra no puede ser negativo");
+        if (SellPrice < 0) errors.Add("• El precio de venta no puede ser negativo");
+        if (Stock < 0) errors.Add("• El stock no puede ser negativo");
 
-        if (SellPrice < 0)
-        {
-            errors.Add("• El precio de venta no puede ser negativo");
-        }
-
-        if (Stock < 0)
-        {
-            errors.Add("• El stock no puede ser negativo");
-        }
-
-        // Validación adicional para stock muy alto (advertencia)
+        // Advertencia de stock alto
         if (Stock > 50000)
         {
-            bool confirmStock = await CustomAlert.ShowConfirmAsync(
-                $"⚠️ Stock Muy Alto\n\n" +
-                $"Ha ingresado {Stock:N0} galones como stock inicial.\n\n" +
-                $"¿Está seguro de que este valor es correcto?",
-                "Confirmar Stock Alto",
-                "Continuar",
-                "Revisar");
-
-            if (!confirmStock) return false;
+            bool confirm = await CustomAlert.ShowConfirmAsync(
+                $"⚠️ Stock Muy Alto\n\nHa ingresado {Stock:N0} galones.\n\n¿Está seguro?",
+                "Confirmar Stock Alto", "Continuar", "Revisar");
+            if (!confirm) return false;
         }
 
-        // Si hay errores, mostrarlos
         if (errors.Any())
         {
-            var errorMessage = "⚠️ Errores de Validación\n\n" +
-                              "Por favor, corrija los siguientes errores antes de continuar:\n\n" +
-                              string.Join("\n", errors) + "\n\n" +
-                              "📋 Recordatorio:\n" +
-                              "• Solo el nombre y tipo de producto son obligatorios\n" +
-                              "• Los precios y stock son opcionales\n" +
-                              "• El stock debe especificarse en galones (G)";
-
-            await CustomAlert.ShowErrorAsync(errorMessage, "Formulario Incompleto");
+            var msg = "⚠️ Errores de Validación\n\n" + string.Join("\n", errors);
+            await CustomAlert.ShowErrorAsync(msg, "Formulario Incompleto");
             return false;
         }
 
+        // A esta altura garantizamos que Name no es vacío.
+        // El IdProductType puede haber quedado fijado por autocorrección
+        // (1 Corriente / 9 Extra / 2 ACPM).
         return true;
     }
+
 
     private async void GetAllProductTypeData()
     {
@@ -550,121 +603,76 @@ public class ProductService : INotifyPropertyChanged
 
     public async Task SaveProductDataAsync()
     {
-        // Verificar autenticación
+        // Refuerzo de mapeo antes de cualquier cosa
+        ForceProductTypeIfConsistent();
+
         if (string.IsNullOrEmpty(_authToken))
         {
             await CustomAlert.ShowErrorAsync("No se encontró el token de autenticación", "Error de Autenticación");
             return;
         }
 
-        // Validar formulario antes de enviar
-        if (!await ValidateFormAsync())
-        {
-            return;
-        }
+        // Valida (con autocorrección integrada)
+        if (!await ValidateFormAsync()) return;
 
         try
         {
-            // Crear el modelo de producto con los datos validados
             ProductModel = new ProductModel
             {
-                Name = Name.Trim(), // Limpiar espacios en blanco
+                Name = Name.Trim(),
                 IdProductType = IdProductType,
                 SellPrice = SellPrice,
                 PurchasePrice = PurchasePrice,
                 Stock = Stock
             };
 
-            Request = new ProductRequest
-            {
-                Request = ProductModel
-            };
+            Request = new ProductRequest { Request = ProductModel };
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            // Configurar opciones de serialización para coincidir con el formato esperado por la API
-            var jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = false
-            };
-
+            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = false };
             var json = JsonSerializer.Serialize(Request, jsonOptions);
-            System.Diagnostics.Debug.WriteLine($"JSON enviado: {json}"); // Para depuración
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/product", content);
 
             if (response.IsSuccessStatusCode)
             {
-                // Construir mensaje de éxito dinámico
-                var successMessage = $"✅ Producto Registrado\n\n" +
-                                   $"El producto '{Name}' ha sido registrado exitosamente";
-
+                var successMessage = $"✅ Producto Registrado\n\nEl producto '{Name}' ha sido registrado exitosamente";
                 var details = new List<string>();
-
-                if (PurchasePrice > 0)
-                    details.Add($"• Precio de compra: ${PurchasePrice:F2}");
-
-                if (SellPrice > 0)
-                    details.Add($"• Precio de venta: ${SellPrice:F2}");
-
-                if (Stock > 0)
-                    details.Add($"• Stock inicial: {Stock:N0} galones");
-
+                if (PurchasePrice > 0) details.Add($"• Precio de compra: ${PurchasePrice:F2}");
+                if (SellPrice > 0) details.Add($"• Precio de venta: ${SellPrice:F2}");
+                if (Stock > 0) details.Add($"• Stock inicial: {Stock:N0} galones");
                 if (details.Any())
-                {
                     successMessage += ":\n\n" + string.Join("\n", details);
-                }
                 else
-                {
-                    successMessage += "\n\n📋 Configuración:\n• Sin precios definidos\n• Sin stock inicial\n\n" +
-                                    "Puede actualizar precios y agregar stock (en galones) posteriormente.";
-                }
+                    successMessage += "\n\n📋 Configuración:\n• Sin precios definidos\n• Sin stock inicial\n\nPuede actualizar precios y agregar stock (en galones) posteriormente.";
 
                 await CustomAlert.ShowSuccessAsync(successMessage, "¡Éxito!");
-
-                // Limpiar formulario después de guardar exitosamente
                 ClearForm();
             }
             else
             {
                 var serverError = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine($"Error del servidor: {serverError}"); // Para depuración
-
                 var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
-
                 await CustomAlert.ShowErrorAsync(userFriendlyError, "Error al Registrar Producto");
             }
         }
-        catch (HttpRequestException httpEx)
+        catch (HttpRequestException)
         {
-            await CustomAlert.ShowErrorAsync(
-                "🌐 Error de Conexión\n\n" +
-                "No se pudo conectar con el servidor. Verifique:\n\n" +
-                "• Su conexión a internet\n" +
-                "• Que el servidor esté disponible\n" +
-                "• Intente nuevamente en unos momentos",
-                "Error de Conexión");
+            await CustomAlert.ShowErrorAsync("🌐 Error de Conexión\n\nNo se pudo conectar con el servidor.", "Error de Conexión");
         }
-        catch (JsonException jsonEx)
+        catch (JsonException)
         {
-            await CustomAlert.ShowErrorAsync(
-                "📝 Error de Formato\n\n" +
-                "Error al procesar la respuesta del servidor.\n\n" +
-                "Si el problema persiste, contacte al soporte técnico.",
-                "Error de Datos");
+            await CustomAlert.ShowErrorAsync("📝 Error de Formato\n\nError al procesar la respuesta del servidor.", "Error de Datos");
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync(
-                $"❗ Error Inesperado\n\n" +
-                $"Se produjo un error inesperado al registrar el producto:\n\n{ex.Message}\n\n" +
-                $"Si el problema persiste, contacte al soporte técnico.",
-                "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"❗ Error Inesperado\n\n{ex.Message}", "Error del Sistema");
         }
     }
+
 
     private string TranslateServerError(string serverError, string productName, string productType, string productSubtype)
     {
