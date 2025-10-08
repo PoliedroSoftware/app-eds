@@ -7,6 +7,7 @@
         public double AccumulatedAmount { get; set; }
         public double AccumulatedGallons { get; set; }
         public int IdProductType { get; set; } 
+        public int IdCompartiment { get; set; }
         public double Price { get; set; }
     }
 }

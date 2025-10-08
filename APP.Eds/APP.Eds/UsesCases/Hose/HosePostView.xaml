@@ -225,6 +225,38 @@
                                     </StackLayout>
                                 </Border>
                             </VerticalStackLayout>
+                            <!-- Compartiment Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Compartimiento" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"
+                                       Margin="4,0,0,0"/>
+
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🔧" 
+                                               FontSize="18" 
+                                               TextColor="#FF9800" 
+                                               VerticalOptions="Center"/>
+
+                                        <Picker Title="Seleccione un Compartimiento"
+                                                ItemsSource="{Binding CompartimentsList}"
+                                                ItemDisplayBinding="{Binding IdCompartment}"
+                                                SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
+                                                AutomationId="PickerCompartiments"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
 
                         <!-- Action Buttons Section -->
