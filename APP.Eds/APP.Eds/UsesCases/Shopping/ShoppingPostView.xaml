@@ -458,7 +458,7 @@
                                         Radius="8" 
                                         Opacity="0.3"/>
                             </Border.Shadow>
-                            <Button Text="📦 Agregar" 
+                            <Button Text="📦 Agregar Producto" 
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="OpenShoppingPopUp"
@@ -471,7 +471,7 @@
 
                         <!-- Register Purchase Button -->
                         <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="1">
-                            <Button Text="✅ Comprar"
+                            <Button Text="✅ Finalizar Compra"
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
