@@ -246,7 +246,7 @@
 
                                         <Picker Title="Seleccione un Compartimiento"
                                                 ItemsSource="{Binding CompartimentsList}"
-                                                ItemDisplayBinding="{Binding IdCompartment}"
+                                                ItemDisplayBinding="{Binding DisplayCompartiment}"
                                                 SelectedItem="{Binding SelectCompartiment, Mode=TwoWay}"
                                                 AutomationId="PickerCompartiments"
                                                 BackgroundColor="Transparent"
