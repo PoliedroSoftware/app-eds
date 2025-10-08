@@ -127,15 +127,20 @@ public class HoseService : INotifyPropertyChanged
     public HoseService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        GetAllDispensersData();
-        GetAllProductTypeData();
-        GetHoseAsync();
+        InitializeService();
         GetByIdHoseDataCommand = new Command<int>(async (hoseId) => await GetByIdHoseDataAsync(hoseId));
         SaveHoseDataCommand = new Command(async () => await SaveHoseDataAsync());
         
     }
 
-    private async void GetAllDispensersData()
+    private async Task InitializeService()
+    {
+        await GetHoseAsync();
+        await GetAllDispensersData();
+        await GetAllProductTypeData();
+    }
+
+    private async Task GetAllDispensersData()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -287,7 +292,7 @@ public class HoseService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose");
             var hoses = JsonSerializer.Deserialize<HoseApiResponse>(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -315,7 +320,7 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
-    private async void GetAllProductTypeData()
+    private async Task GetAllProductTypeData()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
