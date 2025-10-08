@@ -284,7 +284,7 @@
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
                                         AutomationId="ButtonCompartiment"
-                                        FontSize="16"
+                                        FontSize="14"
                                         FontAttributes="Bold"
                                         HeightRequest="50"
                                         CornerRadius="16"
