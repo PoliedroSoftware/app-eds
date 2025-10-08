@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Helpers;
+using APP.Eds.Models.Compartiment;
 using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
@@ -9,7 +10,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
-using System.Linq;
 
 namespace APP.Eds.Services.Hose;
 
@@ -19,6 +19,7 @@ public class HoseService : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<DispenserModelResponse> DispensersList { get; set; } = [];
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
+    public ObservableCollection<CompartimentResponse> CompartimentsList { get; set; } = [];
     public ObservableCollection<HoseResponse> HoseList { get; set; } = [];
 
     private HoseRequest Request { get; set; }
@@ -83,7 +84,17 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
-
+    private int _idIdCompartment;
+    public int IdIdCompartment
+    {
+        get => _idIdCompartment;
+        set
+        {
+            _idIdCompartment = value;
+            OnPropertyChanged(nameof(IdIdCompartment));
+        }
+    }
+    
     private double _accumulatedAmount;
     public double AccumulatedAmount
     {
@@ -121,6 +132,21 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
+    private CompartimentResponse _selectCompartiment;
+    public CompartimentResponse SelectCompartiment
+    {
+        get => _selectCompartiment;
+        set
+        {
+            _selectCompartiment = value;
+            OnPropertyChanged(nameof(SelectCompartiment));
+            if (_selectCompartiment != null)
+            {
+                IdIdCompartment = _selectCompartiment.IdCompartment;
+            }
+        }
+    }
+    
     public ICommand GetByIdHoseDataCommand { get; }
     public ICommand SaveHoseDataCommand { get; }
 
@@ -138,6 +164,7 @@ public class HoseService : INotifyPropertyChanged
         await GetHoseAsync();
         await GetAllDispensersData();
         await GetAllProductTypeData();
+        await GetAllCompartimentData();
     }
 
     private async Task GetAllDispensersData()
@@ -230,7 +257,8 @@ public class HoseService : INotifyPropertyChanged
                 AccumulatedAmount = AccumulatedAmount,
                 AccumulatedGallons = AccumulatedGallons,
                 IdDispensers = SelectedDispensers.IdDispensers,
-                IdProductType = SelectProductType.IdProductType
+                IdProductType = SelectProductType.IdProductType,
+                IdCompartiment = SelectCompartiment.IdCompartment
             };
 
             Request = new HoseRequest
@@ -279,6 +307,15 @@ public class HoseService : INotifyPropertyChanged
             ProductTypeList.Add(eds);
         }
         EnrichHoseListWithNames();
+    }
+
+    private void UpdateCompartimentsList(IEnumerable<CompartimentResponse> Data)
+    {
+        CompartimentsList.Clear();
+        foreach (var eds in Data)
+        {
+            CompartimentsList.Add(eds);
+        }
     }
 
     public async Task GetHoseAsync()
@@ -343,7 +380,28 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
+    private async Task GetAllCompartimentData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/compartiment";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var compartimentList = JsonSerializer.Deserialize<CompartimentApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
+            UpdateCompartimentsList(compartimentList.Data);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+        }
+    }
 
     protected void OnPropertyChanged(string propertyName)
     {
