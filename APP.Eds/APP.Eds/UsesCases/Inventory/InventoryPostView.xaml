@@ -346,14 +346,14 @@
                                                                                                                    TextColor="White" VerticalOptions="Center" />
                                                                                                         </Frame>
                                                                                                         <StackLayout>
-                                                                                                            <Label Text="{Binding Product, Converter={StaticResource NullToEmptyStringConverter}}" 
+                                                                                                            <Label Text="{Binding ProductWithType, Converter={StaticResource NullToEmptyStringConverter}}" 
                                                                                                                    FontAttributes="Bold" 
                                                                                                                    FontSize="13"
                                                                                                                    TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}"
                                                                                                                    AutomationId="LabelProduct"/>
                                                                                                             <StackLayout Orientation="Horizontal" Spacing="4" 
                                                                                                                        IsVisible="{Binding ProductType, Converter={StaticResource NullToVisibilityConverter}}">
-                                                                                                                <Label Text="{Binding ProductType, Converter={StaticResource NullToEmptyStringConverter}}" 
+                                                                                                                <Label Text="{Binding ProductTypeDisplay, Converter={StaticResource NullToEmptyStringConverter}}" 
                                                                                                                        FontSize="9"
                                                                                                                        TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
                                                                                                                        AutomationId="LabelProductType"/>
