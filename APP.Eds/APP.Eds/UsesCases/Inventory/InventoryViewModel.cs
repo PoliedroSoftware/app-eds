@@ -405,7 +405,7 @@ namespace APP.Eds.UsesCases.Inventory
         /// <summary>
         /// Mejora los datos de productos para diferenciación de tipos de combustible
         /// </summary>
-        private void EnhanceProductData(Models.Inventory.Compartment compartment)
+       private void EnhanceProductData(Models.Inventory.Compartment compartment)
         {
             try
             {

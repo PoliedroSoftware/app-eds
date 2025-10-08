@@ -1,11 +1,27 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace APP.Eds.Models.Inventory
 {
     public class Compartment : INotifyPropertyChanged
     {
+
+        [JsonPropertyName("idProductType")] 
+        public int? IdProductType
+        {
+            get => _idProductType;
+            set
+            {
+                _idProductType = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProductWithType));
+                OnPropertyChanged(nameof(FuelTypeShort));
+            }
+        }
+        private int? _idProductType;
+
         private bool isExpanded;
 
         public bool IsExpanded
@@ -61,95 +77,103 @@ namespace APP.Eds.Models.Inventory
         [JsonPropertyName("stock")]
         public double Stock { get; set; }
 
-        /// <summary>
-        /// Nombre del producto con especificación del tipo de combustible
-        /// Para gasolina: muestra "Gasolina Corriente", "Gasolina Extra", etc.
-        /// Para ACPM: muestra solo "ACPM"
-        /// </summary>
+        private static readonly Dictionary<int, (int TypeId, string TypeDesc, string Family)> ProductCatalog =
+            new()
+            {
+        { 21, (1, "Corriente", "Gasolina") },
+        { 23, (9, "Extra",     "Gasolina") },
+        { 22, (2, "Diésel",    "ACPM")     },
+            };
+
         [JsonIgnore]
         public string ProductWithType
         {
             get
             {
-                try
+                var family = GetFamilyName(Product, IdProductType);
+
+                if (IdProductType.HasValue)
                 {
-                    // Debug: Log para ver los datos que llegan
-                    System.Diagnostics.Debug.WriteLine($"ProductWithType - Product: '{Product}', ProductType: '{ProductType}'");
-
-                    // Si el producto está vacío, retornar valor por defecto
-                    if (string.IsNullOrWhiteSpace(Product))
-                        return "Sin producto";
-
-                    // Normalizar nombres para comparación
-                    var product = Product.Trim();
-                    var productType = ProductType?.Trim() ?? "";
-
-                    // Combinar ambos campos para análisis más completo
-                    var combinedText = $"{product} {productType}".ToLowerInvariant();
-
-                    // Si es ACPM, mostrar solo ACPM
-                    if (combinedText.Contains("acpm") || combinedText.Contains("diésel") || combinedText.Contains("diesel"))
-                    {
-                        return "ACPM";
-                    }
-
-                    // Si es gasolina, determinar el tipo específico
-                    if (combinedText.Contains("gasolina") || combinedText.Contains("gas") || combinedText.Contains("nafta"))
-                    {
-                        // Detectar tipo específico de gasolina
-                        if (combinedText.Contains("corriente") || combinedText.Contains("regular") || combinedText.Contains("común"))
-                        {
-                            return "Gasolina Corriente";
-                        }
-                        else if (combinedText.Contains("extra") || combinedText.Contains("premium") || combinedText.Contains("plus"))
-                        {
-                            return "Gasolina Extra";
-                        }
-                        else if (combinedText.Contains("super") || combinedText.Contains("suprema") || combinedText.Contains("supreme"))
-                        {
-                            return "Gasolina Super";
-                        }
-                        else if (combinedText.Contains("95") || combinedText.Contains("octanos 95"))
-                        {
-                            return "Gasolina 95";
-                        }
-                        else if (combinedText.Contains("91") || combinedText.Contains("octanos 91"))
-                        {
-                            return "Gasolina 91";
-                        }
-                        
-                        // Si el producto ya incluye información de tipo en el nombre
-                        if (product.ToLowerInvariant() != "gasolina" && product.ToLowerInvariant().Contains("gasolina"))
-                        {
-                            return product; // Usar el nombre completo que viene del servidor
-                        }
-                        
-                        // Si ProductType tiene información adicional útil
-                        if (!string.IsNullOrWhiteSpace(productType) && 
-                            !productType.ToLowerInvariant().Contains("combustible") &&
-                            !productType.ToLowerInvariant().Contains("liquid"))
-                        {
-                            return $"Gasolina {productType}";
-                        }
-                        
-                        // Por defecto, si solo dice "Gasolina", marcar como tipo desconocido
-                        return "Gasolina";
-                    }
-
-                    // Para otros productos, mostrar el nombre tal como viene
-                    return product;
+                    var desc = GetFuelTypeDescription(IdProductType.Value, ProductType);
+                    return string.IsNullOrWhiteSpace(desc)
+                        ? family
+                        : $"{family} {desc}";
                 }
-                catch (Exception ex)
+
+                if (ProductCatalog.TryGetValue(IdProduct, out var info))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Error en ProductWithType: {ex.Message}");
-                    return Product ?? "Sin producto";
+                    return $"{info.Family} {info.TypeDesc}";
                 }
+
+                var pt = ProductType?.Trim() ?? string.Empty;
+                var combined = $"{family} {pt}".ToLowerInvariant();
+
+                if (combined.Contains("acpm") || combined.Contains("diésel") || combined.Contains("diesel")) return "ACPM";
+                if (combined.Contains("corriente") || combined.Contains("regular") || combined.Contains("común")) return "Gasolina Corriente";
+                if (combined.Contains("extra") || combined.Contains("premium") || combined.Contains("plus")) return "Gasolina Extra";
+                if (combined.Contains("super")) return "Gasolina Super";
+                if (combined.Contains("gasolina")) return "Gasolina";
+
+                return family;
             }
         }
 
-        /// <summary>
-        /// Descripción corta del tipo de combustible para mostrar en UI compacta
-        /// </summary>
+        private static string GetFamilyName(string? product, int? idProductType)
+        {
+            if (idProductType is 1 or 9) return "Gasolina"; 
+            if (idProductType is 2) return "ACPM";          
+            var p = product?.ToLowerInvariant() ?? "";
+            if (p.Contains("acpm") || p.Contains("diésel") || p.Contains("diesel")) return "ACPM";
+            if (p.Contains("gas")) return "Gasolina";
+            return string.IsNullOrWhiteSpace(product) ? "Sin producto" : product!.Trim();
+        }
+
+        private static string GetFuelTypeDescription(int id, string? productTypeFromApi)
+        {
+            return id switch
+            {
+                1 => "Corriente",
+                9 => "Extra",
+                2 => "Diésel", 
+                _ => string.IsNullOrWhiteSpace(productTypeFromApi) ? "" : productTypeFromApi.Trim()
+            };
+        }
+
+
+        [JsonIgnore]
+        public string ProductTypeDisplay
+        {
+            get
+            {
+                if (IdProductType.HasValue)
+                {
+                    var family = GetFamilyName(Product, IdProductType);
+                    var desc = GetFuelTypeDescription(IdProductType.Value, ProductType);
+
+                    if (string.Equals(family, "Gasolina", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(desc))
+                        return $"Combustible {desc}";
+
+                    if (string.Equals(family, "ACPM", StringComparison.OrdinalIgnoreCase))
+                        return "Diésel"; 
+
+                    return desc ?? string.Empty;
+                }
+
+                if (ProductCatalog.TryGetValue(IdProduct, out var info))
+                {
+                    if (string.Equals(info.Family, "Gasolina", StringComparison.OrdinalIgnoreCase))
+                        return $"Combustible {info.TypeDesc}";
+
+                    if (string.Equals(info.Family, "ACPM", StringComparison.OrdinalIgnoreCase))
+                        return "Diésel";
+
+                    return info.TypeDesc;
+                }
+
+                return string.IsNullOrWhiteSpace(ProductType) ? string.Empty : ProductType.Trim();
+            }
+        }
+
         [JsonIgnore]
         public string FuelTypeShort
         {
