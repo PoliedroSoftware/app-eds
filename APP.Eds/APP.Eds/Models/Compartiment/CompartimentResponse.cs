@@ -5,7 +5,7 @@ namespace APP.Eds.Models.Compartiment;
 
 public class CompartimentResponse
 {
-    [JsonPropertyName("idCompartment")]
+    [JsonPropertyName("idCompartiment")]
     public int IdCompartment { get; set; }
 
     [JsonPropertyName("number")]
