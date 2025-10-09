@@ -35,6 +35,17 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
+    private int _idHose;
+    public int IdHose
+    {
+        get => _idHose;
+        set
+        {
+            _idHose = value;
+            OnPropertyChanged(nameof(IdHose));
+        }
+    }
+
     private int _number;
     public int Number
     {
@@ -149,14 +160,16 @@ public class HoseService : INotifyPropertyChanged
     
     public ICommand GetByIdHoseDataCommand { get; }
     public ICommand SaveHoseDataCommand { get; }
+    public ICommand EditHoseDataCommand { get; private set; }
 
     public HoseService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        IdHose = 0;
         InitializeService();
         GetByIdHoseDataCommand = new Command<int>(async (hoseId) => await GetByIdHoseDataAsync(hoseId));
         SaveHoseDataCommand = new Command(async () => await SaveHoseDataAsync());
-        
+        EditHoseDataCommand = new Command<HoseResponse>(async (dispenser) => await EditDispenserAsync(dispenser));
     }
 
     private async Task InitializeService()
@@ -251,41 +264,85 @@ public class HoseService : INotifyPropertyChanged
                 return;
             }
 
-            Hose = new HoseModel
+            if(IdHose > 0)
             {
-                Number = Number,
-                AccumulatedAmount = AccumulatedAmount,
-                AccumulatedGallons = AccumulatedGallons,
-                IdDispensers = SelectedDispensers.IdDispensers,
-                IdProductType = SelectProductType.IdProductType,
-                IdCompartiment = SelectCompartiment.IdCompartment
-            };
-
-            Request = new HoseRequest
-            {
-                Request = Hose
-            };
-
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-                await GetHoseAsync();
+                await UpdateAsync();
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                await CreateAsync();
             }
         }
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+        }
+    }
+
+    private async Task UpdateAsync()
+    {
+        Hose = new HoseModel
+        {
+            IdHose = IdHose,
+            Number = Number,
+            AccumulatedAmount = AccumulatedAmount,
+            AccumulatedGallons = AccumulatedGallons,
+            IdDispensers = SelectedDispensers.IdDispensers,
+            IdProductType = SelectProductType.IdProductType,
+            IdCompartiment = SelectCompartiment.IdCompartment
+        };
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+        var json = JsonSerializer.Serialize(Hose, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+            await GetHoseAsync();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+        }
+        IdHose = 0;
+    }
+
+    private async Task CreateAsync()
+    {
+        Hose = new HoseModel
+        {
+            Number = Number,
+            AccumulatedAmount = AccumulatedAmount,
+            AccumulatedGallons = AccumulatedGallons,
+            IdDispensers = SelectedDispensers.IdDispensers,
+            IdProductType = SelectProductType.IdProductType,
+            IdCompartiment = SelectCompartiment.IdCompartment
+        };
+
+        Request = new HoseRequest
+        {
+            Request = Hose
+        };
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+        var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
+            await GetHoseAsync();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
         }
     }
 
@@ -400,6 +457,29 @@ public class HoseService : INotifyPropertyChanged
         catch (Exception ex)
         {
             Console.WriteLine($"Error cargando los datos: {ex.Message}");
+        }
+    }
+
+    private async Task EditDispenserAsync(HoseResponse hose)
+    {
+        try
+        {
+            IdHose = hose.IdHose;
+            Number = hose.Number;
+            AccumulatedAmount = (double)hose.AccumulatedAmount;
+            AccumulatedGallons = (double)hose.AccumulatedGallons;
+            IdDispensers = hose.IdDispensers;
+
+            // Find and select the corresponding items in the dropdowns
+            SelectedDispensers = DispensersList.FirstOrDefault(x => x.IdDispensers == hose.IdDispensers);
+            SelectProductType = ProductTypeList.FirstOrDefault(x => x.IdProductType == hose.IdProductType);
+            SelectCompartiment = CompartimentsList.FirstOrDefault(x => x.IdCompartment == hose.IdCompartiment);
+
+            await Application.Current.MainPage.DisplayAlert("Modo Edicion", $"Datos de la manguera '{hose.DispenserName}' cargados para edicion", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error editando dispensador: {ex.Message}", "OK");
         }
     }
 

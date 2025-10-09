@@ -405,6 +405,24 @@
                                                 <Label Text="Galones:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#FFF3E0" 
+                                                        StrokeShape="RoundRectangle 15"
+                                                        Stroke="#FF9800"
+                                                        WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                            BackgroundColor="Transparent"
+                                                            TextColor="#FF9800"
+                                                            FontSize="12"
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            CornerRadius="15"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditHoseDataCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
