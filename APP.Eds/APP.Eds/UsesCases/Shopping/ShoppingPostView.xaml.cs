@@ -7,7 +7,7 @@ namespace APP.Eds.UsesCases.Shopping;
 public partial class ShoppingPostView : ContentPage
 {
     private ShoppingService _shoppingService;
-    
+
     public ShoppingPostView()
     {
         InitializeComponent();
@@ -26,13 +26,13 @@ public partial class ShoppingPostView : ContentPage
             }
 
             _shoppingService.ResetProductForm();
-            
+
             // Add a small delay to ensure UI thread is ready (especially important on physical devices)
             await Task.Delay(50);
-            
+
             // Create the popup with error handling
             var popup = new AddShopping(_shoppingService);
-            
+
             // Use async ShowPopupAsync for better compatibility with physical devices
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
@@ -85,7 +85,7 @@ public partial class ShoppingPostView : ContentPage
         {
             // Alternative approach: ensure we're on UI thread and try with additional delay
             await Task.Delay(100);
-            
+
             if (MainThread.IsMainThread)
             {
                 await this.ShowPopupAsync(popup);
@@ -104,12 +104,12 @@ public partial class ShoppingPostView : ContentPage
             throw;
         }
     }
-    
+
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         if (BindingContext is not ShoppingService vm)
-            return; 
-            
+            return;
+
         try
         {
             // Disable button to prevent multiple submissions
@@ -128,6 +128,25 @@ public partial class ShoppingPostView : ContentPage
             if (vm.Invoice.Length < 3)
             {
                 await CustomAlert.ShowErrorAsync("El número de factura debe tener al menos 3 caracteres", "Factura Inválida");
+                return;
+            }
+
+            // STRICT validation: Check if invoice exists BEFORE proceeding
+            bool invoiceExists = await vm.CheckInvoiceExistsAsync(vm.Invoice);
+            if (invoiceExists)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"❌ No se puede proceder con el guardado.\n\n" +
+                    $"El número de factura '{vm.Invoice}' ya existe en la base de datos.\n\n" +
+                    $"Debe modificar el número de factura para continuar.",
+                    "Factura Duplicada - Operación Bloqueada");
+
+                // Focus back to invoice field
+                if (FirstEntry != null)
+                {
+                    await Task.Delay(100);
+                    FirstEntry.Focus();
+                }
                 return;
             }
 
@@ -159,7 +178,7 @@ public partial class ShoppingPostView : ContentPage
 
             if (LoadingOverlay != null)
                 LoadingOverlay.ShowLoading();
-            
+
             await vm.SaveShoppingDataAsync();
         }
         catch (Exception ex)
@@ -183,6 +202,29 @@ public partial class ShoppingPostView : ContentPage
             {
                 button.IsEnabled = true;
             }
+        }
+    }
+
+    private async void InvoiceEntryUnfocused(object sender, FocusEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry && !string.IsNullOrWhiteSpace(entry.Text))
+            {
+                // Validate invoice when user finishes entering it
+                bool isInvoiceValid = await _shoppingService.ValidateInvoiceAsync(entry.Text);
+                if (!isInvoiceValid)
+                {
+                    // If validation failed (including duplicate invoice), focus back on the entry
+                    await Task.Delay(200); // Small delay to ensure alert is dismissed
+                    entry.Focus();
+                    entry.CursorPosition = entry.Text.Length; // Position cursor at end
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in InvoiceEntryUnfocused: {ex.Message}");
         }
     }
 
