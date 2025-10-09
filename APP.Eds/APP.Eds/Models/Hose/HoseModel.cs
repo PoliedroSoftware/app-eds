@@ -2,6 +2,7 @@
 {
     public class HoseModel
     {
+        public int IdHose {  get; set; }
         public int IdDispensers { get; set; }
         public int Number { get; set; }
         public double AccumulatedAmount { get; set; }
