@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 using System.Xml.Linq;
+using APP.Eds.Components.PopUp;
 using APP.Eds.Helpers;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
@@ -33,10 +34,10 @@ public class ShoppingService : INotifyPropertyChanged
         get => _quantity;
         set
         {
-           
-            
+
+
             _quantity = value > 0 ? value : 0;
-           
+
             OnPropertyChanged(nameof(Quantity));
             OnPropertyChanged(nameof(CurrentTotalAmount));
         }
@@ -345,7 +346,7 @@ public class ShoppingService : INotifyPropertyChanged
         {
             _selectedProductCompartimentPair = value;
             OnPropertyChanged(nameof(SelectedProductCompartimentPair));
-            
+
             // Update current stock when product is selected
             if (_selectedProductCompartimentPair != null)
             {
@@ -461,7 +462,7 @@ public class ShoppingService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
+
             // Get compartments data
             string compartmentUrl = $"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100";
             var compartmentResponse = await httpClient.GetStringAsync(compartmentUrl);
@@ -493,7 +494,7 @@ public class ShoppingService : INotifyPropertyChanged
             {
                 ProductCompartimentPairs.Add(item);
             }
-           
+
         }
         catch (Exception ex)
         {
@@ -501,7 +502,7 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-   
+
     private string GetProductName(int productId, Dictionary<int, ProductResponse> productDictionary)
     {
         if (productDictionary.TryGetValue(productId, out var product))
@@ -522,7 +523,7 @@ public class ShoppingService : INotifyPropertyChanged
         return 0; // No stock if product not found
     }
 
-  
+
     public async Task<double?> RefreshStockForProductCompartmentAsync(int productId, int compartmentId)
     {
         if (string.IsNullOrEmpty(_authToken))
@@ -532,16 +533,16 @@ public class ShoppingService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
+
             // If you have a specific stock endpoint for product-compartment pairs
             string stockUrl = $"{Configuration.BaseUrl}/api/v1/stock/product/{productId}/compartment/{compartmentId}";
             var response = await httpClient.GetStringAsync(stockUrl);
-            
+
             // Parse the response based on your API structure
             var stockData = JsonSerializer.Deserialize<dynamic>(response);
-            
+
             // Update the local collection
-            var item = ProductCompartimentPairs.FirstOrDefault(p => 
+            var item = ProductCompartimentPairs.FirstOrDefault(p =>
                 p.IdProduct == productId && p.IdCompartment == compartmentId);
             if (item != null)
             {
@@ -614,6 +615,25 @@ public class ShoppingService : INotifyPropertyChanged
         }
         try
         {
+            // Double validation: Check invoice exists before attempting to save
+            bool invoiceExists = await CheckInvoiceExistsAsync(Invoice);
+            if (invoiceExists)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"❌ No se puede guardar la compra.\n\n" +
+                    $"El número de factura '{Invoice}' ya existe en la base de datos.\n\n" +
+                    $"Debe modificar el número de factura antes de continuar.",
+                    "Factura Duplicada - Guardado Bloqueado");
+                return; // Block saving completely
+            }
+
+            // Validate invoice format
+            bool isInvoiceValid = await ValidateInvoiceAsync(Invoice);
+            if (!isInvoiceValid)
+            {
+                return; // Stop if invoice is invalid or user wants to modify it
+            }
+
             if (SelectedProvider is null || SelectedCategory is null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Complete todos los campos", "OK");
@@ -705,23 +725,23 @@ public class ShoppingService : INotifyPropertyChanged
         };
 
         ShoppingProduct.Add(newProduct);
-        
+
         // Update stock after adding product (optional - depends on your business logic)
         if (CurrentStock.HasValue)
         {
             CurrentStock -= Quantity;
             // Update the stock in the ProductCompartimentPairs collection
-            var productInList = ProductCompartimentPairs.FirstOrDefault(p => 
-                p.IdProduct == SelectedProductCompartimentPair.IdProduct && 
+            var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
+                p.IdProduct == SelectedProductCompartimentPair.IdProduct &&
                 p.IdCompartment == SelectedProductCompartimentPair.IdCompartment);
             if (productInList != null)
             {
                 productInList.Stock = CurrentStock.Value;
             }
         }
-        
+
         UpdateAccumulatedTotals();
-        
+
         // 🔧 NOTA: NO LLAMAR ResetProductForm() AQUÍ - Se llamará desde el popup después de mostrar el mensaje
         // ResetProductForm();
     }
@@ -768,7 +788,7 @@ public class ShoppingService : INotifyPropertyChanged
         Quantity = 0;
         SellPrice = 0;
         CurrentStock = null;
-        
+
         // Notificar cambios en las propiedades para actualizar la UI
         OnPropertyChanged(nameof(PurchasePrice));
         OnPropertyChanged(nameof(Quantity));
@@ -787,15 +807,15 @@ public class ShoppingService : INotifyPropertyChanged
         if (product != null && ShoppingProduct.Contains(product))
         {
             // Restore stock when deleting a product
-            var productInList = ProductCompartimentPairs.FirstOrDefault(p => 
-                p.IdProduct == product.IdProduct && 
+            var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
+                p.IdProduct == product.IdProduct &&
                 p.IdCompartment == product.IdCompartment);
             if (productInList != null && product.Quantity.HasValue)
             {
                 productInList.Stock += product.Quantity.Value;
-                
+
                 // If this is the currently selected product, update CurrentStock
-                if (SelectedProductCompartimentPair != null && 
+                if (SelectedProductCompartimentPair != null &&
                     SelectedProductCompartimentPair.IdProduct == product.IdProduct &&
                     SelectedProductCompartimentPair.IdCompartment == product.IdCompartment)
                 {
@@ -823,7 +843,7 @@ public class ShoppingService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
+
             // Get products data
             string productUrl = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
             var productResponse = await httpClient.GetStringAsync(productUrl);
@@ -832,7 +852,7 @@ public class ShoppingService : INotifyPropertyChanged
 
             var debugInfo = new StringBuilder();
             debugInfo.AppendLine("=== INFORMACIÓN DE PRODUCTOS ===");
-            
+
             foreach (var product in productList)
             {
                 debugInfo.AppendLine($"ID: {product.IdProduct}");
@@ -849,5 +869,143 @@ public class ShoppingService : INotifyPropertyChanged
         {
             return $"Error: {ex.Message}";
         }
+    }
+
+    public async Task<bool> CheckInvoiceExistsAsync(string invoiceNumber)
+    {
+        if (string.IsNullOrEmpty(_authToken) || string.IsNullOrWhiteSpace(invoiceNumber))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            // Get all shopping records to check for duplicate invoice
+            string url = $"{Configuration.BaseUrl}/api/v1/shopping?PageNumber=1&PageSize=1000";
+            var response = await httpClient.GetStringAsync(url);
+            var shoppingList = JsonSerializer.Deserialize<ShoppingApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (shoppingList?.Data != null)
+            {
+                // Check if any shopping record has the same invoice number
+                return shoppingList.Data.Any(shopping =>
+                    string.Equals(shopping.Invoice?.Trim(), invoiceNumber.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error verificando factura existente: {ex.Message}");
+            return false; // If there's an error, assume invoice doesn't exist to avoid blocking
+        }
+    }
+
+    public async Task<bool> ValidateInvoiceAsync(string invoiceNumber)
+    {
+        // Use the enhanced validation with suggestions
+        return await ValidateInvoiceWithSuggestionsAsync(invoiceNumber);
+    }
+
+    public async Task<List<string>> GenerateInvoiceSuggestionsAsync(string baseInvoice)
+    {
+        var suggestions = new List<string>();
+
+        try
+        {
+            // Generate different invoice number suggestions
+            for (int i = 1; i <= 5; i++)
+            {
+                string suggestion = $"{baseInvoice}-{i:D2}";
+                bool exists = await CheckInvoiceExistsAsync(suggestion);
+                if (!exists)
+                {
+                    suggestions.Add(suggestion);
+                }
+            }
+
+            // Try with different suffixes
+            var suffixes = new[] { "A", "B", "C", "BIS", "REV" };
+            foreach (var suffix in suffixes)
+            {
+                if (suggestions.Count >= 5) break;
+
+                string suggestion = $"{baseInvoice}-{suffix}";
+                bool exists = await CheckInvoiceExistsAsync(suggestion);
+                if (!exists)
+                {
+                    suggestions.Add(suggestion);
+                }
+            }
+
+            // Try with current date suffix if still need more
+            if (suggestions.Count < 3)
+            {
+                var today = DateTime.Now.ToString("ddMM");
+                string dateSuggestion = $"{baseInvoice}-{today}";
+                bool exists = await CheckInvoiceExistsAsync(dateSuggestion);
+                if (!exists)
+                {
+                    suggestions.Add(dateSuggestion);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generando sugerencias de factura: {ex.Message}");
+        }
+
+        return suggestions.Take(3).ToList(); // Return max 3 suggestions
+    }
+
+    public async Task<bool> ValidateInvoiceWithSuggestionsAsync(string invoiceNumber)
+    {
+        if (string.IsNullOrWhiteSpace(invoiceNumber))
+        {
+            await CustomAlert.ShowErrorAsync("El número de factura es obligatorio para registrar la compra", "Factura Requerida");
+            return false;
+        }
+
+        if (invoiceNumber.Length < 3)
+        {
+            await CustomAlert.ShowErrorAsync("El número de factura debe tener al menos 3 caracteres para ser válido", "Factura Muy Corta");
+            return false;
+        }
+
+        // Check if invoice already exists
+        bool invoiceExists = await CheckInvoiceExistsAsync(invoiceNumber);
+
+        if (invoiceExists)
+        {
+            // Generate suggestions for alternative invoice numbers
+            var suggestions = await GenerateInvoiceSuggestionsAsync(invoiceNumber);
+
+            string suggestionsText = "";
+            if (suggestions.Any())
+            {
+                suggestionsText = $"\n\nSugerencias de números disponibles:\n• {string.Join("\n• ", suggestions)}";
+            }
+
+            await CustomAlert.ShowErrorAsync(
+                $"❌ El número de factura '{invoiceNumber}' ya existe en la base de datos.\n\n" +
+                $"No es posible continuar con un número de factura duplicado.\n\n" +
+                $"Por favor, modifique el número de factura para poder proceder con el registro de la compra." +
+                suggestionsText,
+                "Factura Duplicada");
+
+            return false; // Always return false if invoice exists - forces user to modify
+        }
+        else
+        {
+            // Show success message for valid invoice
+            await CustomAlert.ShowSuccessAsync(
+                $"✅ El número de factura '{invoiceNumber}' está disponible y es válido",
+                "Factura Válida");
+        }
+
+        return true; // Invoice is valid and doesn't exist
     }
 }
