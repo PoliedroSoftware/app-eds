@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace APP.Eds.Models.ShoppingProduct;
+namespace APP.Eds.Models.Shopping;
 
 
 public class ShoppingProductResponse

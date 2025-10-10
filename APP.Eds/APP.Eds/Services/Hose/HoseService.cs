@@ -1,6 +1,5 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Compartiment;
-using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
 using APP.Eds.Services.Config;

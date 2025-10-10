@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace APP.Eds
+namespace APP.Eds.Platforms.iOS
 {
     public class Program
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
-namespace APP.Eds.Models.Dispenser;
+namespace APP.Eds.Models.Hose;
 public class DispenserModelResponse
 {
     [JsonPropertyName("id")]
