@@ -10,8 +10,8 @@ using System.Net.Http.Headers;
 using APP.Eds.Models.Translations;
 using System.Linq;
 using APP.Eds.Components.PopUp;
-using APP.Eds.Models.Product;
 using static APP.Eds.Components.PopUp.CustomAlert;
+using APP.Eds.Models.ProductCompartiment;
 
 namespace APP.Eds.Services.Compartiment
 {

@@ -1,6 +1,4 @@
 ﻿using APP.Eds.Helpers;
-using APP.Eds.Models.Capacity;
-using APP.Eds.Models.Compartiment;
 using APP.Eds.Models.CompartimentCapacity;
 using APP.Eds.Models.EdsTank;
 using APP.Eds.Models.Islander;

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace APP.Eds.Models.Capacity;
+namespace APP.Eds.Models.CompartimentCapacity;
 
 public class CapacityModelResponse
 {
@@ -8,5 +8,5 @@ public class CapacityModelResponse
     public int IdCapacity { get; set; }
 
     [JsonProperty("code")]
-    public String Code { get; set; }
+    public string Code { get; set; }
 }
