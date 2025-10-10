@@ -1,5 +1,4 @@
 ﻿using APP.Eds.Helpers;
-using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Hose;
 using APP.Eds.Models.HoseHistory;
 using APP.Eds.Services.Config;

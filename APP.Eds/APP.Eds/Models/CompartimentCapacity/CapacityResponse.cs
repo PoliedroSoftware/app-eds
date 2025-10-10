@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace APP.Eds.Models.Capacity;
+namespace APP.Eds.Models.CompartimentCapacity;
 
 public class CapacityResponse
 {

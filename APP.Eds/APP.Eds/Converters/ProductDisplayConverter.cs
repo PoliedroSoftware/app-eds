@@ -1,4 +1,4 @@
-using APP.Eds.Models.Product;
+using APP.Eds.Models.ProductCompartiment;
 using System.Globalization;
 
 namespace APP.Eds.Converters
