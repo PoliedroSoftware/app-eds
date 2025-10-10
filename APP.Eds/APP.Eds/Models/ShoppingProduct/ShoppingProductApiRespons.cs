@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using APP.Eds.Models.Shopping;
+using System.Text.Json.Serialization;
 
 namespace APP.Eds.Models.ShoppingProduct;
 

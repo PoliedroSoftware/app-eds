@@ -1,5 +1,4 @@
-﻿using APP.Eds.Models.Compartiment;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace APP.Eds.Models.ProductCompartiment;
 

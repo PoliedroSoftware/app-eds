@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace APP.Eds.Models.Product;
+namespace APP.Eds.Models.ProductCompartiment;
 
 public class ProductResponse
 {

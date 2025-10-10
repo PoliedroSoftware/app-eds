@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows.Input;
 using APP.Eds.Models.Dispensers;
 using System.Collections.ObjectModel;
-using APP.Eds.Models.Dispenser;
 using APP.Eds.Models.Hose;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;

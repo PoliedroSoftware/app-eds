@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace APP.Eds.Models.Product;
+namespace APP.Eds.Models.ProductCompartiment;
 
 public class ProductModelResponse
 {
@@ -8,5 +8,5 @@ public class ProductModelResponse
     public int IdProduct { get; set; }
 
     [JsonProperty("name")]
-    public String Name { get; set; }
+    public string Name { get; set; }
 }
