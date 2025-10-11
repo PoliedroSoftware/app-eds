@@ -16,6 +16,15 @@ public partial class HosePostView : ContentPage
         BindingContext = _hoseService;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Llamada correcta al método GetHoseAsync del servicio
+        await _hoseService.GetHoseAsync();
+        
+    }
+
     private async void OnCompartimentButtonClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new CompartimentPostView());
@@ -127,8 +136,8 @@ public partial class HosePostView : ContentPage
                 Number = 0;
                 AccumulatedAmount = 0;
                 AccumulatedGallons = 0;
-                _hoseService.SelectedDispensers = null;
-                _hoseService.SelectProductType = null;
+                _hoseService.SelectedDispensers = default!;
+                _hoseService.SelectProductType = default!;
 
                 // Re-enable button
                 if (sender is HoverButton hoverButton)
