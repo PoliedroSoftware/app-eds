@@ -2,6 +2,7 @@
 
 public class ProductModel
 {
+    public int IdProduct { get; set; }
     public string Name { get; set; }
     public int IdProductType { get; set; }
     public double SellPrice { get; set; }
