@@ -1,14 +1,17 @@
-﻿using APP.Eds.Helpers;
+﻿using APP.Eds.Components.PopUp;
+using APP.Eds.Helpers;
+using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
+using APP.Eds.Models.Shopping;
+using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
-using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
-using System.Linq;
 
 namespace APP.Eds.Services.Product;
 
@@ -105,6 +108,7 @@ public class ProductService : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
+    public ObservableCollection<ProductResponse> ProductList { get; set; } = [];
 
     // Nuevas colecciones para el sistema de productos específicos
     public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
@@ -146,6 +150,17 @@ public class ProductService : INotifyPropertyChanged
             _idProductType = value;
             OnPropertyChanged(nameof(IdProductType));
             OnPropertyChanged(nameof(IsFormValid)); // Notificar cambio en validez del formulario
+        }
+    }
+
+    private int _idProduct;
+    public int IdProduct
+    {
+        get => _idProduct;
+        set
+        {
+            _idProduct = value;
+            OnPropertyChanged(nameof(IdProduct));
         }
     }
 
@@ -307,11 +322,13 @@ public class ProductService : INotifyPropertyChanged
     public ProductService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-
+        IdProduct = 0;
+        GetProducstAsync();
         InitializeProductOptions();
         GetAllProductTypeData();
         GetByIdProductDataCommand = new Command<int>(async (productId) => await GetByIdProductDataAsync(productId));
         SaveProductDataCommand = new Command(async () => await SaveProductDataAsync(), () => IsFormValid);
+        EditProductDataCommand = new Command<ProductResponse>(async (dispenser) => await EditProductAsync(dispenser));
     }
 
     private void InitializeProductOptions()
@@ -329,15 +346,6 @@ public class ProductService : INotifyPropertyChanged
 
         OnPropertyChanged(nameof(ProductOptions));
         OnPropertyChanged(nameof(AvailableProductTypes));
-    }
-    // Mapea de forma robusta en base a la selección actual.
-    private void UpdateProductTypeFromSelectionCore()
-    {
-        // Intenta fijar con reglas duras (opción + subtipo + nombre)
-        if (ForceProductTypeIfConsistent()) return;
-
-        // Si no se pudo inferir nada, invalida para que no se guarde mal.
-        IdProductType = 0;
     }
 
     private void OnProductOptionChanged()
@@ -617,47 +625,15 @@ public class ProductService : INotifyPropertyChanged
 
         try
         {
-            ProductModel = new ProductModel
+            if (IdProduct > 0)
             {
-                Name = Name.Trim(),
-                IdProductType = IdProductType,
-                SellPrice = SellPrice,
-                PurchasePrice = PurchasePrice,
-                Stock = Stock
-            };
-
-            Request = new ProductRequest { Request = ProductModel };
-
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-
-            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = false };
-            var json = JsonSerializer.Serialize(Request, jsonOptions);
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/product", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var successMessage = $"✅ Producto Registrado\n\nEl producto '{Name}' ha sido registrado exitosamente";
-                var details = new List<string>();
-                if (PurchasePrice > 0) details.Add($"• Precio de compra: ${PurchasePrice:F2}");
-                if (SellPrice > 0) details.Add($"• Precio de venta: ${SellPrice:F2}");
-                if (Stock > 0) details.Add($"• Stock inicial: {Stock:N0} galones");
-                if (details.Any())
-                    successMessage += ":\n\n" + string.Join("\n", details);
-                else
-                    successMessage += "\n\n📋 Configuración:\n• Sin precios definidos\n• Sin stock inicial\n\nPuede actualizar precios y agregar stock (en galones) posteriormente.";
-
-                await CustomAlert.ShowSuccessAsync(successMessage, "¡Éxito!");
-                ClearForm();
+                await UpdateAsync();
             }
             else
             {
-                var serverError = await response.Content.ReadAsStringAsync();
-                var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
-                await CustomAlert.ShowErrorAsync(userFriendlyError, "Error al Registrar Producto");
+                await CreateAsync();
             }
+           
         }
         catch (HttpRequestException)
         {
@@ -673,6 +649,81 @@ public class ProductService : INotifyPropertyChanged
         }
     }
 
+    private async Task SaveProductAsync(bool isUpdate)
+    {
+        var product = new ProductModel
+        {
+            Name = Name.Trim(),
+            IdProductType = IdProductType,
+            SellPrice = SellPrice,
+            PurchasePrice = PurchasePrice,
+            Stock = Stock
+        };
+        if(isUpdate)
+            product.IdProduct = IdProduct;
+
+        object payload = isUpdate
+            ? product
+            : new ProductRequest { Request = product };
+
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _authToken);
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        var json = JsonSerializer.Serialize(payload, jsonOptions);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var url = $"{Configuration.BaseUrl}/api/v1/product";
+        HttpResponseMessage response = isUpdate
+            ? await httpClient.PutAsync(url, content)
+            : await httpClient.PostAsync(url, content);
+
+        if (response.IsSuccessStatusCode)
+            await HandleSuccessAsync(isUpdate);
+        else
+            await HandleErrorAsync(response);
+    }
+
+    private async Task HandleSuccessAsync(bool isUpdate)
+    {
+        var action = isUpdate ? "Actualizado" : "Registrado";
+        var successMessage = $"✅ Producto {action}\n\nEl producto '{Name}' ha sido {action.ToLower()} exitosamente";
+
+        var details = new List<string>();
+        if (PurchasePrice > 0) details.Add($"• Precio de compra: ${PurchasePrice:F2}");
+        if (SellPrice > 0) details.Add($"• Precio de venta: ${SellPrice:F2}");
+        if (Stock > 0) details.Add($"• Stock inicial: {Stock:N0} galones");
+
+        if (details.Any())
+            successMessage += ":\n\n" + string.Join("\n", details);
+        else
+            successMessage += "\n\n📋 Configuración:\n• Sin precios definidos\n• Sin stock inicial\n\nPuede actualizar precios y agregar stock (en galones) posteriormente.";
+
+        await CustomAlert.ShowSuccessAsync(successMessage, "¡Éxito!");
+        ClearForm();
+        await GetProducstAsync();
+        IdProduct = 0;
+    }
+
+    private async Task HandleErrorAsync(HttpResponseMessage response)
+    {
+        var serverError = await response.Content.ReadAsStringAsync();
+        var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+
+        var title = response.RequestMessage?.Method == HttpMethod.Post
+            ? "Error al Registrar Producto"
+            : "Error al Actualizar Producto";
+
+        await CustomAlert.ShowErrorAsync(userFriendlyError, title);
+    }
+
+    private Task CreateAsync() => SaveProductAsync(false);
+    private Task UpdateAsync() => SaveProductAsync(true);
 
     private string TranslateServerError(string serverError, string productName, string productType, string productSubtype)
     {
@@ -1028,6 +1079,68 @@ public class ProductService : INotifyPropertyChanged
 
     public ICommand GetByIdProductDataCommand { get; }
     public ICommand SaveProductDataCommand { get; }
+    public ICommand EditProductDataCommand { get; private set; }
+
+    private async Task EditProductAsync(ProductResponse product)
+    {
+        try
+        {
+            Name = product.Name;
+            IdProductType = product.IdProductType;
+            SellPrice = product.SellPrice;
+            PurchasePrice = product.PurchasePrice;
+            Stock = (int)product.Stock;
+            IdProduct = product.IdProduct;
+
+            // Find and select the corresponding items in the dropdowns
+            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == product.IdProductType);
+            
+            await Application.Current.MainPage.DisplayAlert("Modo Edicion", $"Datos del producto '{product.Name}' cargados para edicion", "OK");
+            await ValidateFormAsync();
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error editando producto: {ex.Message}", "OK");
+        }
+    }
+
+    public async Task GetProducstAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product");
+            var products = JsonSerializer.Deserialize<ProductApiResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            ProductList.Clear();
+            foreach (var product in products.Data)
+            {
+                ProductList.Add(product);
+            }
+            EnrichProductListWithNames();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private void EnrichProductListWithNames()
+    {
+        foreach (var product in ProductList)
+        {
+            product.ProductTypeName = ProductOptions.FirstOrDefault(p => p.Id == product.IdProductType)?.Name ?? string.Empty;
+        }
+    }
 
     protected void OnPropertyChanged(string propertyName)
     {
