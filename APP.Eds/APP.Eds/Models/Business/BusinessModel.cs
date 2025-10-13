@@ -7,4 +7,5 @@ public class BusinessModel
 
     // Campo añadido solución error context
     public string Context { get; set; } = "AppEDS";
+    public string KeycloakId { get; set; } = string.Empty;
 }
