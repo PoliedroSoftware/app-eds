@@ -1093,16 +1093,45 @@ public class ProductService : INotifyPropertyChanged
             IdProduct = product.IdProduct;
 
             // Find and select the corresponding items in the dropdowns
-            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == product.IdProductType);
-            
+            ValidateProduct();
+
             await Application.Current.MainPage.DisplayAlert("Modo Edicion", $"Datos del producto '{product.Name}' cargados para edicion", "OK");
-            await ValidateFormAsync();
         }
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error editando producto: {ex.Message}", "OK");
         }
     }
+
+    private void ValidateProduct()
+    {
+        if (Name.Equals("ACPM", StringComparison.OrdinalIgnoreCase))
+        {
+            IdProductType = 2;
+            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == 2);
+            SelectedSpecificProductType = AvailableProductTypes
+                .FirstOrDefault(x => x.Description.Contains("ACPM", StringComparison.OrdinalIgnoreCase));
+        }
+        else if (Name.Equals("Gasolina Extra", StringComparison.OrdinalIgnoreCase))
+        {
+            IdProductType = 9;
+            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == 1);
+            SelectedSpecificProductType = AvailableProductTypes
+                .FirstOrDefault(x => x.Description.Contains("Extra", StringComparison.OrdinalIgnoreCase));
+        }
+        else if (Name.Equals("Gasolina Corriente", StringComparison.OrdinalIgnoreCase))
+        {
+            IdProductType = 1;
+            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == 1);
+            SelectedSpecificProductType = AvailableProductTypes
+                .FirstOrDefault(x => x.Description.Contains("Corriente", StringComparison.OrdinalIgnoreCase));
+        }
+        else
+        {
+            SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == IdProductType);
+        }
+    }
+
 
     public async Task GetProducstAsync()
     {
@@ -1139,6 +1168,11 @@ public class ProductService : INotifyPropertyChanged
         foreach (var product in ProductList)
         {
             product.ProductTypeName = ProductOptions.FirstOrDefault(p => p.Id == product.IdProductType)?.Name ?? string.Empty;
+
+            if(product.IdProductType == 9)
+            {
+                product.ProductTypeName = ProductOptions.FirstOrDefault(p => p.Id == 1)?.Name ?? string.Empty;
+            }
         }
     }
 
