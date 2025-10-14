@@ -607,12 +607,12 @@ public class IslanderService : INotifyPropertyChanged
                 LastName = LastName,
                 IdEds = SelectedEds.IdEds,
                 Password = Password,
-                NameCleinToken = keycloakId ?? string.Empty
             };
 
             Request = new IslanderRequest
             {
-                Request = Islander
+                Request = Islander,
+                NameClaimToken = keycloakId ?? string.Empty
             };
 
             using var httpClient = new HttpClient();
