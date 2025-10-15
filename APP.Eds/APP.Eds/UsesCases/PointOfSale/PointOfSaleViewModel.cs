@@ -93,6 +93,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             {
                 Products.Add(product);
             }
+            UpdateProductCartStatus();
         }
         catch (Exception ex)
         {
@@ -136,6 +137,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(Total));
             OnPropertyChanged(nameof(CanCompleteTransaction));
         }
+        
+        UpdateProductCartStatus();
     }
 
     private void RemoveFromCart(SaleItemModel item)
@@ -145,6 +148,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
         OnPropertyChanged(nameof(CanCompleteTransaction));
+        UpdateProductCartStatus();
     }
 
     private void IncreaseQuantity(SaleItemModel item)
@@ -173,6 +177,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         {
             RemoveFromCart(item);
         }
+        UpdateProductCartStatus();
     }
 
     private void SelectPaymentMethod(string method)
@@ -238,6 +243,15 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
         OnPropertyChanged(nameof(CanCompleteTransaction));
+        UpdateProductCartStatus();
+    }
+
+    private void UpdateProductCartStatus()
+    {
+        foreach (var product in Products)
+        {
+            product.IsInCart = CartItems.Any(item => item.ProductName == product.Name);
+        }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
