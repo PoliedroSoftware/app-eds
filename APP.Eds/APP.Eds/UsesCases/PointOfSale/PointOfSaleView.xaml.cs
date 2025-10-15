@@ -60,10 +60,10 @@ public partial class PointOfSaleView : ContentPage
         
         var header = new Label
         {
-            Text = "Productos Disponibles",
+            Text = "Productos",
             FontSize = 24,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1E293B"),
+            TextColor = Color.FromArgb("#374151"),
             HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(header);
@@ -85,12 +85,12 @@ public partial class PointOfSaleView : ContentPage
         {
             var productFrame = new Frame
             {
-                BackgroundColor = Color.FromArgb("#10B981"),
+                BackgroundColor = Color.FromArgb("#3B82F6"),
                 CornerRadius = 16,
                 HasShadow = true,
-                Padding = new Thickness(14), // Reducido de 16 a 14
-                HeightRequest = 90, // Reducido de 120 a 90
-                BorderColor = Color.FromArgb("#059669")
+                Padding = new Thickness(14),
+                HeightRequest = 90,
+                BorderColor = Color.FromArgb("#2563EB")
             };
             
             var tapGesture = new TapGestureRecognizer();
@@ -98,19 +98,45 @@ public partial class PointOfSaleView : ContentPage
             tapGesture.SetBinding(TapGestureRecognizer.CommandParameterProperty, ".");
             productFrame.GestureRecognizers.Add(tapGesture);
             
-            var stackLayout = new StackLayout
+            // Main container grid
+            var containerGrid = new Grid
             {
-                Spacing = 2, // Reducido de 4 a 2
+                RowDefinitions = new RowDefinitionCollection
+                {
+                    new RowDefinition { Height = GridLength.Auto }, // For cart indicator
+                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) } // For content
+                }
+            };
+            
+            // Cart indicator badge - positioned at the top
+            var cartIndicatorFrame = new Frame
+            {
+                BackgroundColor = Color.FromArgb("#FFD700"), // Gold background
+                CornerRadius = 8, // Smaller circle
+                HasShadow = true,
+                Padding = new Thickness(0),
+                WidthRequest = 16,
+                HeightRequest = 16,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start,
+                Margin = new Thickness(0, -8, -8, 0) // Negative margin to position outside
+            };
+            cartIndicatorFrame.SetBinding(VisualElement.IsVisibleProperty, "IsInCart");
+            
+            // Content stack
+            var contentStackLayout = new StackLayout
+            {
+                Spacing = 2,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
             
             var nameLabel = new Label
             {
-                FontSize = 14, // Reducido de 16 a 14
+                FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Center,
-                MaxLines = 1, // Cambiado de 2 a 1 línea
+                MaxLines = 1,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Center
             };
@@ -118,7 +144,7 @@ public partial class PointOfSaleView : ContentPage
             
             var priceLabel = new Label
             {
-                FontSize = 18, // Reducido de 20 a 18
+                FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Center,
@@ -128,7 +154,7 @@ public partial class PointOfSaleView : ContentPage
             
             var stockLabel = new Label
             {
-                FontSize = 10, // Reducido de 12 a 10
+                FontSize = 10,
                 TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Center,
                 Opacity = 0.9,
@@ -136,12 +162,39 @@ public partial class PointOfSaleView : ContentPage
             };
             stockLabel.SetBinding(Label.TextProperty, new Binding("Stock", stringFormat: "Stock: {0}"));
             
-            stackLayout.Add(nameLabel);
-            stackLayout.Add(priceLabel);
-            stackLayout.Add(stockLabel);
+            contentStackLayout.Add(nameLabel);
+            contentStackLayout.Add(priceLabel);
+            contentStackLayout.Add(stockLabel);
             
-            productFrame.Content = stackLayout;
-            return productFrame;
+            // Add content to row 1
+            containerGrid.SetRow(contentStackLayout, 1);
+            containerGrid.Add(contentStackLayout);
+            
+            // Add cart indicator to row 0
+            containerGrid.SetRow(cartIndicatorFrame, 0);
+            containerGrid.Add(cartIndicatorFrame);
+            
+            productFrame.Content = containerGrid;
+            
+            // Create outer container for border effect
+            var outerContainer = new Grid();
+            
+            // Add border effect when in cart
+            var borderFrame = new Frame
+            {
+                BorderColor = Color.FromArgb("#FFD700"), // Gold border
+                BackgroundColor = Colors.Transparent,
+                HasShadow = false,
+                CornerRadius = 16,
+                Padding = new Thickness(0),
+                Margin = new Thickness(-2) // Slightly larger than inner frame
+            };
+            borderFrame.SetBinding(VisualElement.IsVisibleProperty, "IsInCart");
+            
+            outerContainer.Add(borderFrame);
+            outerContainer.Add(productFrame);
+            
+            return outerContainer;
         });
         
         collectionView.ItemTemplate = productTemplate;
@@ -173,7 +226,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Carrito de Compras",
             FontSize = 22,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1E293B"),
+            TextColor = Color.FromArgb("#374151"),
             HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(header);
@@ -215,7 +268,7 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#1E293B"),
+                TextColor = Color.FromArgb("#374151"),
                 VerticalOptions = LayoutOptions.Center,
                 MaxLines = 1,
                 LineBreakMode = LineBreakMode.TailTruncation
@@ -226,12 +279,12 @@ public partial class PointOfSaleView : ContentPage
             
             var decreaseButton = new Button
             {
-                Text = "?",
+                Text = "-",
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
                 WidthRequest = 35,
                 HeightRequest = 35,
-                BackgroundColor = Color.FromArgb("#3B82F6"),
+                BackgroundColor = Color.FromArgb("#9CA3AF"),
                 TextColor = Colors.White,
                 CornerRadius = 8,
                 Padding = new Thickness(0)
@@ -245,7 +298,7 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#1E293B"),
+                TextColor = Color.FromArgb("#374151"),
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 WidthRequest = 30
@@ -261,7 +314,7 @@ public partial class PointOfSaleView : ContentPage
                 FontAttributes = FontAttributes.Bold,
                 WidthRequest = 35,
                 HeightRequest = 35,
-                BackgroundColor = Color.FromArgb("#3B82F6"),
+                BackgroundColor = Color.FromArgb("#9CA3AF"),
                 TextColor = Colors.White,
                 CornerRadius = 8,
                 Padding = new Thickness(0)
@@ -273,8 +326,8 @@ public partial class PointOfSaleView : ContentPage
             
             var removeButton = new Button
             {
-                Text = "×",
-                FontSize = 14,
+                Text = "X",
+                FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
                 WidthRequest = 30,
                 HeightRequest = 30,
@@ -311,11 +364,11 @@ public partial class PointOfSaleView : ContentPage
     {
         var frame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#3B82F6"),
+            BackgroundColor = Color.FromArgb("#10B981"),
             CornerRadius = 16,
             HasShadow = true,
             Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#2563EB")
+            BorderColor = Color.FromArgb("#059669")
         };
         
         var stackLayout = new StackLayout { Spacing = 8 };
@@ -345,42 +398,11 @@ public partial class PointOfSaleView : ContentPage
             FontAttributes = FontAttributes.Bold,
             TextColor = Colors.White
         };
-        subtotalValue.SetBinding(Label.TextProperty, new Binding("SubTotal", stringFormat: "${0:F2}"));
+        subtotalValue.SetBinding(Label.TextProperty, new Binding("SubTotal", stringFormat: "${0:N0}"));
         subtotalGrid.SetColumn(subtotalValue, 1);
         subtotalGrid.Add(subtotalValue);
         
         stackLayout.Add(subtotalGrid);
-        
-        // Tax
-        var taxGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = GridLength.Auto }
-            }
-        };
-        
-        var taxLabel = new Label
-        {
-            Text = "Impuestos:",
-            FontSize = 16,
-            TextColor = Colors.White
-        };
-        taxGrid.SetColumn(taxLabel, 0);
-        taxGrid.Add(taxLabel);
-        
-        var taxValue = new Label
-        {
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.White
-        };
-        taxValue.SetBinding(Label.TextProperty, new Binding("Tax", stringFormat: "${0:F2}"));
-        taxGrid.SetColumn(taxValue, 1);
-        taxGrid.Add(taxValue);
-        
-        stackLayout.Add(taxGrid);
         
         // Separator
         var separator = new BoxView
@@ -418,7 +440,7 @@ public partial class PointOfSaleView : ContentPage
             FontAttributes = FontAttributes.Bold,
             TextColor = Colors.White
         };
-        totalValue.SetBinding(Label.TextProperty, new Binding("Total", stringFormat: "${0:F2}"));
+        totalValue.SetBinding(Label.TextProperty, new Binding("Total", stringFormat: "${0:N0}"));
         totalGrid.SetColumn(totalValue, 1);
         totalGrid.Add(totalValue);
         
@@ -445,7 +467,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Limpiar",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#F97316"),
+            BackgroundColor = Color.FromArgb("#D97706"),
             TextColor = Colors.White,
             CornerRadius = 12,
             HeightRequest = 50
@@ -459,7 +481,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Procesar Pago",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#10B981"),
+            BackgroundColor = Color.FromArgb("#059669"),
             TextColor = Colors.White,
             CornerRadius = 12,
             HeightRequest = 50
@@ -491,7 +513,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Método de Pago",
             FontSize = 20,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1E293B"),
+            TextColor = Color.FromArgb("#374151"),
             HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(paymentHeader);
@@ -509,10 +531,10 @@ public partial class PointOfSaleView : ContentPage
         
         var cashButton = new Button
         {
-            Text = "?? Efectivo",
+            Text = "Efectivo",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#10B981"),
+            BackgroundColor = Color.FromArgb("#059669"),
             TextColor = Colors.White,
             CornerRadius = 12,
             HeightRequest = 50
@@ -524,10 +546,10 @@ public partial class PointOfSaleView : ContentPage
         
         var cardButton = new Button
         {
-            Text = "?? Tarjeta",
+            Text = "Tarjeta",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#3B82F6"),
+            BackgroundColor = Color.FromArgb("#6B7280"),
             TextColor = Colors.White,
             CornerRadius = 12,
             HeightRequest = 50
@@ -567,8 +589,8 @@ public partial class PointOfSaleView : ContentPage
             Keyboard = Keyboard.Numeric,
             FontSize = 16,
             BackgroundColor = Color.FromArgb("#F1F5F9"),
-            TextColor = Color.FromArgb("#1E293B"),
-            Placeholder = "$0.00",
+            TextColor = Color.FromArgb("#374151"),
+            Placeholder = "$0",
             PlaceholderColor = Color.FromArgb("#9CA3AF"),
             HeightRequest = 45
         };
@@ -584,7 +606,7 @@ public partial class PointOfSaleView : ContentPage
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.End
         };
-        changeLabel.SetBinding(Label.TextProperty, new Binding("Change", stringFormat: "Cambio: ${0:F2}"));
+        changeLabel.SetBinding(Label.TextProperty, new Binding("Change", stringFormat: "Cambio: ${0:N0}"));
         cashGrid.SetColumn(changeLabel, 2);
         cashGrid.Add(changeLabel);
         
