@@ -20,6 +20,7 @@ using APP.Eds.UsesCases.Tank;
 using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.UsesCases.Wizard;
+using APP.Eds.UsesCases.PointOfSale;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
@@ -67,11 +68,21 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
+            // Comando directo para Punto de Venta
+            var NavigateToPointOfSaleCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new PointOfSaleView());
+                }
+            });
+
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
                     new("Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
+                    new("Punto de Venta", "💳", NavigateToPointOfSaleCommand, isDirectNavigation: true),
                     new("Administración", "⚙️", new List<MenuItemModel>
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
