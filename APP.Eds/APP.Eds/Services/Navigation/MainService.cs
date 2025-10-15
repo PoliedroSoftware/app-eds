@@ -21,6 +21,7 @@ using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.UsesCases.Wizard;
 using APP.Eds.UsesCases.PointOfSale;
+using APP.Eds.UsesCases.PowerBI;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
@@ -77,12 +78,22 @@ namespace APP.Eds.Services.Navigation
                 }
             });
 
+            // Comando directo para Power BI Dashboard
+            var NavigateToPowerBICommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new PowerBIView());
+                }
+            });
+
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
                     new("Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
                     new("Punto de Venta", "💳", NavigateToPointOfSaleCommand, isDirectNavigation: true),
+                    new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
                     new("Administración", "⚙️", new List<MenuItemModel>
                     {
                         new("Corte", typeof(CourtPostView), "💰"),
