@@ -48,13 +48,13 @@ jobs:
         run: dotnet workload install maui --ignore-failed-sources
 
       - name: Restore Dependencies
-        run: dotnet restore APP.Eds/APP.Eds/APP.Eds.csproj --runtime win-x64
+        run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj --runtime win-x64
 
       - name: Build
-        run: dotnet build APP.Eds/APP.Eds/APP.Eds.csproj --no-restore -c Release -f net8.0-windows10.0.19041.0 -r win-x64
+        run: dotnet build APP.Eds/APP.Eds/Poliedro.csproj --no-restore -c Release -f net8.0-windows10.0.19041.0 -r win-x64
 
       - name: Run Unit Tests
-        run: dotnet test APP.Eds/APP.Eds.sln --no-build --verbosity normal
+        run: dotnet test APP.Eds/Poliedro.sln --no-build --verbosity normal
 
   sonar:
     needs: build-and-test
