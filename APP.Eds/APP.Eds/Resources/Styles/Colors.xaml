@@ -28,6 +28,22 @@
     <Color x:Key="Error">#F44336</Color>
     <Color x:Key="Info">#2196F3</Color>
 
+    <!-- Point of Sale Colors -->
+    <Color x:Key="POSProductGreen">#10B981</Color>
+    <Color x:Key="POSProductGreenDark">#059669</Color>
+    <Color x:Key="POSBlue">#3B82F6</Color>
+    <Color x:Key="POSBlueDark">#2563EB</Color>
+    <Color x:Key="POSOrange">#F97316</Color>
+    <Color x:Key="POSOrangeDark">#EA580C</Color>
+    <Color x:Key="POSRed">#EF4444</Color>
+    <Color x:Key="POSRedDark">#DC2626</Color>
+    <Color x:Key="POSBackground">#F8FAFC</Color>
+    <Color x:Key="POSCardBackground">#F1F5F9</Color>
+    <Color x:Key="POSBorder">#E2E8F0</Color>
+    <Color x:Key="POSTextPrimary">#1E293B</Color>
+    <Color x:Key="POSTextSecondary">#374151</Color>
+    <Color x:Key="POSTextMuted">#9CA3AF</Color>
+
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
@@ -53,6 +69,13 @@
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+
+    <!-- Point of Sale Brushes -->
+    <SolidColorBrush x:Key="POSProductGreenBrush" Color="{StaticResource POSProductGreen}"/>
+    <SolidColorBrush x:Key="POSBlueBrush" Color="{StaticResource POSBlue}"/>
+    <SolidColorBrush x:Key="POSOrangeBrush" Color="{StaticResource POSOrange}"/>
+    <SolidColorBrush x:Key="POSRedBrush" Color="{StaticResource POSRed}"/>
+    <SolidColorBrush x:Key="POSBackgroundBrush" Color="{StaticResource POSBackground}"/>
 
     <SolidColorBrush x:Key="Gray50Brush" Color="{StaticResource Gray50}"/>
     <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
