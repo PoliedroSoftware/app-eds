@@ -1,7 +1,7 @@
-﻿namespace APP.Eds.Models.Islander
+﻿namespace APP.Eds.Models.Islander;
+
+public class IslanderRequest
 {
-    public class IslanderRequest
-    {
-        public IslanderModel Request { get; set; }
-    }
+    public IslanderModel Request { get; set; }
+    public string NameClaimToken { get; set; }
 }
