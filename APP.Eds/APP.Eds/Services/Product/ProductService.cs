@@ -118,6 +118,7 @@ public class ProductService : INotifyPropertyChanged
     private ProductRequest Request { get; set; }
     private ProductModel _product;
     private string? _authToken;
+    private ProductResponse OriginalProduct {  get; set; }
 
     public ProductModel ProductModel
     {
@@ -323,6 +324,7 @@ public class ProductService : INotifyPropertyChanged
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         IdProduct = 0;
+        OriginalProduct = new ProductResponse();
         GetProducstAsync();
         InitializeProductOptions();
         GetAllProductTypeData();
@@ -459,7 +461,7 @@ public class ProductService : INotifyPropertyChanged
         if (Stock < 0) errors.Add("• El stock no puede ser negativo");
 
         // Advertencia de stock alto
-        if (Stock > 50000)
+        if (Stock > 50000 && OriginalProduct.Stock != Stock)
         {
             bool confirm = await CustomAlert.ShowConfirmAsync(
                 $"⚠️ Stock Muy Alto\n\nHa ingresado {Stock:N0} galones.\n\n¿Está seguro?",
@@ -708,6 +710,7 @@ public class ProductService : INotifyPropertyChanged
         ClearForm();
         await GetProducstAsync();
         IdProduct = 0;
+        OriginalProduct = new ProductResponse();
     }
 
     private async Task HandleErrorAsync(HttpResponseMessage response)
@@ -1085,6 +1088,8 @@ public class ProductService : INotifyPropertyChanged
     {
         try
         {
+            OriginalProduct = product;
+            OriginalProduct.Stock = (int)product.Stock;
             Name = product.Name;
             IdProductType = product.IdProductType;
             SellPrice = product.SellPrice;
@@ -1094,6 +1099,7 @@ public class ProductService : INotifyPropertyChanged
 
             // Find and select the corresponding items in the dropdowns
             ValidateProduct();
+            Name = product.Name;
 
             await Application.Current.MainPage.DisplayAlert("Modo Edicion", $"Datos del producto '{product.Name}' cargados para edicion", "OK");
         }
@@ -1119,7 +1125,7 @@ public class ProductService : INotifyPropertyChanged
             SelectedSpecificProductType = AvailableProductTypes
                 .FirstOrDefault(x => x.Description.Contains("Extra", StringComparison.OrdinalIgnoreCase));
         }
-        else if (Name.Equals("Gasolina Corriente", StringComparison.OrdinalIgnoreCase))
+        else if (Name.Equals("Gasolina Corriente", StringComparison.OrdinalIgnoreCase) || Name.Equals("Gasolina", StringComparison.OrdinalIgnoreCase))
         {
             IdProductType = 1;
             SelectedProductOption = ProductOptions.FirstOrDefault(x => x.Id == 1);
