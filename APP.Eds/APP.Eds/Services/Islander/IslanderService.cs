@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using APP.Eds.Models.Business;
 
 namespace APP.Eds.Services.Islander;
 
@@ -537,6 +538,33 @@ public class IslanderService : INotifyPropertyChanged
         }
     }
 
+    private async Task<string?> GetBusinessKeycloakIdAsync(int idBusiness)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            return null;
+        }
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business/{idBusiness}");
+
+            var business = JsonSerializer.Deserialize<APP.Eds.Models.Business.BusinessModel>(response, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return business?.KeycloakId;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error obteniendo KeycloakId del negocio {idBusiness}: {ex.Message}");
+            return null;
+        }
+    }
+
     public async Task SaveIslanderDataAsync()
     {
         try
@@ -567,6 +595,10 @@ public class IslanderService : INotifyPropertyChanged
                 await CustomAlert.ShowErrorAsync($"El usuario {Name} ya está registrado. Por favor, use otro nombre.", "Usuario Duplicado");
                 return;
             }
+
+            // Obtener KeycloakId del negocio asociado al EDS seleccionado
+            string? keycloakId = await GetBusinessKeycloakIdAsync(SelectedEds.IdBusiness);
+
             Islander = new IslanderModel
             {
                 Name = Name,
@@ -579,7 +611,8 @@ public class IslanderService : INotifyPropertyChanged
 
             Request = new IslanderRequest
             {
-                Request = Islander
+                Request = Islander,
+                NameClaimToken = keycloakId ?? string.Empty
             };
 
             using var httpClient = new HttpClient();
