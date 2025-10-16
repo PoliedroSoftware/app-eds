@@ -26,6 +26,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
         DecreaseQuantityCommand = new Command<SaleItemModel>(DecreaseQuantity);
+        UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
         ProcessPaymentCommand = new Command(async () => await ProcessPayment(), CanProcessPayment);
         ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
@@ -78,6 +79,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public ICommand RemoveFromCartCommand { get; }
     public ICommand IncreaseQuantityCommand { get; }
     public ICommand DecreaseQuantityCommand { get; }
+    public ICommand UpdateTotalAmountCommand { get; }
     public ICommand ProcessPaymentCommand { get; }
     public ICommand ClearCartCommand { get; }
     public ICommand SelectPaymentMethodCommand { get; }
@@ -117,6 +119,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             if (existingItem.Quantity < product.Stock)
             {
                 existingItem.Quantity++;
+                existingItem.TotalAmount = existingItem.TotalPrice; // Update total amount to reflect quantity change
+                existingItem.TotalAmountText = existingItem.TotalAmount.ToString("F0"); // Update text representation
                 OnPropertyChanged(nameof(SubTotal));
                 OnPropertyChanged(nameof(Tax));
                 OnPropertyChanged(nameof(Total));
@@ -125,13 +129,16 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         }
         else
         {
-            CartItems.Add(new SaleItemModel
+            var newItem = new SaleItemModel
             {
                 ProductName = product.Name,
                 UnitPrice = product.SellPrice,
                 Quantity = 1,
                 Stock = product.Stock
-            });
+            };
+            newItem.TotalAmount = product.SellPrice; // Initialize with unit price
+            newItem.TotalAmountText = product.SellPrice.ToString("F0"); // Initialize text representation
+            CartItems.Add(newItem);
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -156,6 +163,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (item.Quantity < item.Stock)
         {
             item.Quantity++;
+            item.TotalAmount = item.TotalPrice; // Update total amount
+            item.TotalAmountText = item.TotalAmount.ToString("F0"); // Update text representation
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -168,6 +177,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (item.Quantity > 1)
         {
             item.Quantity--;
+            item.TotalAmount = item.TotalPrice; // Update total amount
+            item.TotalAmountText = item.TotalAmount.ToString("F0"); // Update text representation
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -178,6 +189,16 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             RemoveFromCart(item);
         }
         UpdateProductCartStatus();
+    }
+
+    private void UpdateTotalAmount(SaleItemModel item)
+    {
+        // This method is called when the total amount entry changes
+        // The calculation is handled in the SaleItemModel.TotalAmount setter
+        OnPropertyChanged(nameof(SubTotal));
+        OnPropertyChanged(nameof(Tax));
+        OnPropertyChanged(nameof(Total));
+        OnPropertyChanged(nameof(CanCompleteTransaction));
     }
 
     private void SelectPaymentMethod(string method)
