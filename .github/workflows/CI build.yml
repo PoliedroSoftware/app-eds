@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
@@ -48,7 +48,7 @@ jobs:
         run: dotnet workload install maui --ignore-failed-sources
 
       - name: Restore Dependencies
-        run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj --runtime win-x64
+        run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj
 
       - name: Build
         run: dotnet build APP.Eds/APP.Eds/Poliedro.csproj --no-restore -c Release -f net9.0-windows10.0.19041.0 -r win-x64
@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
           
@@ -166,7 +166,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
@@ -190,7 +190,7 @@ jobs:
         run: dotnet workload install maui --ignore-failed-sources
 
       - name: Restore Dependencies
-        run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj --runtime win-x64
+        run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj
 
       - name: Build MAUI Windows
         run: dotnet publish APP.Eds/APP.Eds/Poliedro.csproj -c Release -f net9.0-windows10.0.19041.0 --no-restore
