@@ -1,4 +1,6 @@
 using APP.Eds.Services.PointOfSale;
+using APP.Eds.Models.PointOfSale;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace APP.Eds.UsesCases.PointOfSale;
 
@@ -235,7 +237,7 @@ public partial class PointOfSaleView : ContentPage
         var cartCollectionView = new CollectionView
         {
             SelectionMode = SelectionMode.None,
-            HeightRequest = 200
+            HeightRequest = 320 // Increased to accommodate the improved layout
         };
         cartCollectionView.SetBinding(ItemsView.ItemsSourceProperty, "CartItems");
         
@@ -246,102 +248,231 @@ public partial class PointOfSaleView : ContentPage
                 BackgroundColor = Color.FromArgb("#F1F5F9"),
                 CornerRadius = 12,
                 HasShadow = false,
-                Padding = new Thickness(16),
-                Margin = new Thickness(0, 0, 0, 8),
+                Padding = new Thickness(16, 14),
+                Margin = new Thickness(0, 0, 0, 12),
                 BorderColor = Color.FromArgb("#E2E8F0")
             };
             
-            var mainGrid = new Grid
+            // Main container with vertical layout
+            var mainStack = new StackLayout
+            {
+                Spacing = 8
+            };
+            
+            // Top row: Input and controls
+            var topGrid = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
                 {
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = new GridLength(90, GridUnitType.Absolute) },
                     new ColumnDefinition { Width = GridLength.Auto }
                 },
-                ColumnSpacing = 8
+                ColumnSpacing = 12
+            };
+            
+            // Total amount entry (now takes full width in first column)
+            var totalAmountEntry = new Entry
+            {
+                Keyboard = Keyboard.Numeric,
+                FontSize = 20,
+                BackgroundColor = Colors.White,
+                TextColor = Color.FromArgb("#1F2937"),
+                Placeholder = "Monto",
+                PlaceholderColor = Color.FromArgb("#9CA3AF"),
+                HeightRequest = 50,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ReturnType = ReturnType.Done,
+                FontAttributes = FontAttributes.Bold,
+                HorizontalTextAlignment = TextAlignment.Start,
+                VerticalTextAlignment = TextAlignment.Center,
+                ClearButtonVisibility = ClearButtonVisibility.WhileEditing
+            };
+            
+            // Use TotalAmountText property to avoid formatting issues
+            totalAmountEntry.SetBinding(Entry.TextProperty, "TotalAmountText");
+            
+            totalAmountEntry.TextChanged += (sender, e) =>
+            {
+                try
+                {
+                    if (sender is Entry entry && entry.BindingContext is SaleItemModel item)
+                    {
+                        // Update the TotalAmountText which will trigger calculation
+                        item.TotalAmountText = e.NewTextValue ?? "";
+                        
+                        // Trigger the update command
+                        if (this.BindingContext is PointOfSaleViewModel viewModel)
+                        {
+                            viewModel.UpdateTotalAmountCommand.Execute(item);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't crash
+                    System.Diagnostics.Debug.WriteLine($"Error in totalAmountEntry.TextChanged: {ex.Message}");
+                }
+            };
+            
+            // Wrap the entry in a border for better visibility
+            var entryBorder = new Border
+            {
+                BackgroundColor = Colors.White,
+                StrokeThickness = 2,
+                Stroke = Color.FromArgb("#E5E7EB"),
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                Padding = new Thickness(12, 0),
+                Content = totalAmountEntry,
+                Shadow = new Shadow
+                {
+                    Brush = Colors.LightGray,
+                    Offset = new Point(0, 1),
+                    Radius = 2,
+                    Opacity = 0.3f
+                }
+            };
+            
+            topGrid.SetColumn(entryBorder, 0);
+            topGrid.Add(entryBorder);
+            
+            // Gallons display (calculated)
+            var gallonsLabel = new Label
+            {
+                FontSize = 16,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#059669"),
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                BackgroundColor = Color.FromArgb("#DCFCE7"),
+                Padding = new Thickness(12, 8),
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            gallonsLabel.SetBinding(Label.TextProperty, "GallonsDisplay");
+            
+            // Wrap gallons label in a border for better appearance
+            var gallonsBorder = new Border
+            {
+                BackgroundColor = Color.FromArgb("#DCFCE7"),
+                StrokeThickness = 1,
+                Stroke = Color.FromArgb("#16A34A"),
+                StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(0),
+                Content = gallonsLabel
+            };
+            
+            topGrid.SetColumn(gallonsBorder, 1);
+            topGrid.Add(gallonsBorder);
+            
+            var removeButton = new Button
+            {
+                Text = "×",
+                FontSize = 24,
+                FontAttributes = FontAttributes.Bold,
+                WidthRequest = 45,
+                HeightRequest = 45,
+                BackgroundColor = Color.FromArgb("#EF4444"),
+                TextColor = Colors.White,
+                CornerRadius = 22,
+                Padding = new Thickness(0),
+                BorderWidth = 0,
+                FontFamily = "Arial"
+            };
+            removeButton.SetBinding(Button.CommandProperty, new Binding("BindingContext.RemoveFromCartCommand", source: this));
+            removeButton.SetBinding(Button.CommandParameterProperty, ".");
+            topGrid.SetColumn(removeButton, 2);
+            topGrid.Add(removeButton);
+            
+            // Add top grid to main stack
+            mainStack.Add(topGrid);
+            
+            // Separator line
+            var separator = new BoxView
+            {
+                Color = Color.FromArgb("#E2E8F0"),
+                HeightRequest = 1,
+                HorizontalOptions = LayoutOptions.Fill,
+                Margin = new Thickness(0, 4, 0, 4)
+            };
+            mainStack.Add(separator);
+            
+            // Bottom row: Product name with price info
+            var productInfoStack = new StackLayout
+            {
+                Spacing = 4
             };
             
             var nameLabel = new Label
             {
-                FontSize = 14,
+                FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Color.FromArgb("#374151"),
-                VerticalOptions = LayoutOptions.Center,
-                MaxLines = 1,
-                LineBreakMode = LineBreakMode.TailTruncation
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                LineBreakMode = LineBreakMode.WordWrap,
+                MaxLines = 2
             };
             nameLabel.SetBinding(Label.TextProperty, "ProductName");
-            mainGrid.SetColumn(nameLabel, 0);
-            mainGrid.Add(nameLabel);
+            productInfoStack.Add(nameLabel);
             
-            var decreaseButton = new Button
+            // Price per unit info
+            var priceLabel = new Label
             {
-                Text = "-",
-                FontSize = 18,
-                FontAttributes = FontAttributes.Bold,
-                WidthRequest = 35,
-                HeightRequest = 35,
-                BackgroundColor = Color.FromArgb("#9CA3AF"),
-                TextColor = Colors.White,
+                FontSize = 12,
+                TextColor = Color.FromArgb("#6B7280"),
+                HorizontalOptions = LayoutOptions.Start
+            };
+            priceLabel.SetBinding(Label.TextProperty, new Binding("UnitPrice", stringFormat: "Precio: ${0:N0} por galón"));
+            productInfoStack.Add(priceLabel);
+            
+            // Add product info to main stack
+            mainStack.Add(productInfoStack);
+            
+            // Money section (Currency and Words)
+            var moneyFrame = new Frame
+            {
+                BackgroundColor = Color.FromArgb("#FEF3C7"),
                 CornerRadius = 8,
-                Padding = new Thickness(0)
+                HasShadow = false,
+                Padding = new Thickness(12, 8),
+                Margin = new Thickness(0, 4, 0, 0),
+                BorderColor = Color.FromArgb("#F59E0B")
             };
-            decreaseButton.SetBinding(Button.CommandProperty, new Binding("BindingContext.DecreaseQuantityCommand", source: this));
-            decreaseButton.SetBinding(Button.CommandParameterProperty, ".");
-            mainGrid.SetColumn(decreaseButton, 1);
-            mainGrid.Add(decreaseButton);
             
-            var quantityLabel = new Label
+            var moneyStack = new StackLayout
             {
-                FontSize = 16,
-                FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#374151"),
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-                WidthRequest = 30
+                Spacing = 4
             };
-            quantityLabel.SetBinding(Label.TextProperty, "Quantity");
-            mainGrid.SetColumn(quantityLabel, 2);
-            mainGrid.Add(quantityLabel);
             
-            var increaseButton = new Button
+            // Currency format
+            var currencyLabel = new Label
             {
-                Text = "+",
-                FontSize = 16,
+                FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                WidthRequest = 35,
-                HeightRequest = 35,
-                BackgroundColor = Color.FromArgb("#9CA3AF"),
-                TextColor = Colors.White,
-                CornerRadius = 8,
-                Padding = new Thickness(0)
+                TextColor = Color.FromArgb("#92400E"),
+                HorizontalOptions = LayoutOptions.Start
             };
-            increaseButton.SetBinding(Button.CommandProperty, new Binding("BindingContext.IncreaseQuantityCommand", source: this));
-            increaseButton.SetBinding(Button.CommandParameterProperty, ".");
-            mainGrid.SetColumn(increaseButton, 3);
-            mainGrid.Add(increaseButton);
+            currencyLabel.SetBinding(Label.TextProperty, "TotalAmountCurrency");
+            moneyStack.Add(currencyLabel);
             
-            var removeButton = new Button
+            // Amount in words
+            var wordsLabel = new Label
             {
-                Text = "X",
-                FontSize = 16,
-                FontAttributes = FontAttributes.Bold,
-                WidthRequest = 30,
-                HeightRequest = 30,
-                BackgroundColor = Color.FromArgb("#EF4444"),
-                TextColor = Colors.White,
-                CornerRadius = 15,
-                Padding = new Thickness(0)
+                FontSize = 11,
+                TextColor = Color.FromArgb("#92400E"),
+                HorizontalOptions = LayoutOptions.Start,
+                LineBreakMode = LineBreakMode.WordWrap,
+                FontAttributes = FontAttributes.Italic
             };
-            removeButton.SetBinding(Button.CommandProperty, new Binding("BindingContext.RemoveFromCartCommand", source: this));
-            removeButton.SetBinding(Button.CommandParameterProperty, ".");
-            mainGrid.SetColumn(removeButton, 4);
-            mainGrid.Add(removeButton);
+            wordsLabel.SetBinding(Label.TextProperty, "TotalAmountInWords");
+            moneyStack.Add(wordsLabel);
             
-            cartFrame.Content = mainGrid;
+            moneyFrame.Content = moneyStack;
+            mainStack.Add(moneyFrame);
+            
+            cartFrame.Content = mainStack;
             return cartFrame;
         });
         
