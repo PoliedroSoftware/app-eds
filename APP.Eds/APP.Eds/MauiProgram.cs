@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using APP.Eds.Services.PointOfSale;
 
 namespace APP.Eds
 {
@@ -17,6 +18,10 @@ namespace APP.Eds
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             }).UseMauiCommunityToolkit();
+
+            // Register Point of Sale Service
+            builder.Services.AddSingleton<IPointOfSaleService, PointOfSaleService>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

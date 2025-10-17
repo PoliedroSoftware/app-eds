@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:APP.Eds"
              xmlns:converters="clr-namespace:APP.Eds.Converters"
+             xmlns:posConverters="clr-namespace:APP.Eds.Converters.PointOfSale"
              x:Class="APP.Eds.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -19,6 +20,11 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            
+            <!-- Point of Sale Converters -->
+            <posConverters:PaymentMethodColorConverter x:Key="PaymentMethodColorConverter" />
+            <posConverters:PaymentMethodVisibilityConverter x:Key="PaymentMethodVisibilityConverter" />
+            <posConverters:ChangeColorConverter x:Key="ChangeColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
