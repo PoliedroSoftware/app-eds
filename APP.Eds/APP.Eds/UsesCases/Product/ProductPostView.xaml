@@ -297,7 +297,7 @@
 
                         <!-- Action Button Section -->
                         <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                            
+
                             <!-- Info Card -->
                             <Border BackgroundColor="#E3F2FD" 
                                     StrokeShape="RoundRectangle 12"
@@ -332,6 +332,108 @@
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
+                <!-- Hoses List Section -->
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <VerticalStackLayout Spacing="16">
+                        <!-- List Header -->
+                        <StackLayout Orientation="Horizontal" Spacing="12">
+                            <Border BackgroundColor="#E8F5E8" 
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center">
+                                <Label Text="📋" 
+                                       FontSize="20" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center"/>   
+                            </Border>
+
+                            <StackLayout VerticalOptions="Center">
+                                <Label Text="Lista de Productos" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2D3436"/>
+                                        <Label Text="Productos registrados en el sistema" 
+                                       FontSize="12" 
+                                       TextColor="#636E72"/>
+                            </StackLayout>
+                        </StackLayout>
+                        <!-- Product List -->
+                        <CollectionView ItemsSource="{Binding ProductList}" HeightRequest="400">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                             StrokeShape="RoundRectangle 12"
+                             Stroke="#E0E0E0"
+                             Margin="0,4"
+                             Padding="16">
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
+                                        </Border.Shadow>
+
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                            <!-- Product Icon -->
+                                            <Border BackgroundColor="#E3F2FD" 
+                                                     StrokeShape="RoundRectangle 16"
+                                                     WidthRequest="40" HeightRequest="40"
+                                                     Grid.RowSpan="5" Grid.Column="0"
+                                                     VerticalOptions="Start">
+                                                <Label Text="📦" 
+                                                        FontSize="18" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Product Info -->
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
+                                                <Label Text="Tipo de Combustible:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding ProductTypeName}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
+                                                <Label Text="Nombre:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Name}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
+                                                <Label Text="Precio de Compra:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#9C27B0" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
+                                                <Label Text="Precio de Venta:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding SellPrice, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
+                                                <Label Text="Stock Inicial:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Stock, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <!-- Action Buttons -->
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                                <!-- Edit Button -->
+                                                <Border BackgroundColor="#FFF3E0" 
+                                                         StrokeShape="RoundRectangle 15"
+                                                         Stroke="#FF9800"
+                                                         WidthRequest="30" HeightRequest="30">
+                                                    <Button Text="✏️" 
+                                                             BackgroundColor="Transparent"
+                                                             TextColor="#FF9800"
+                                                             FontSize="12"
+                                                             WidthRequest="30" HeightRequest="30"
+                                                             CornerRadius="15"
+                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductDataCommand}"
+                                                             CommandParameter="{Binding .}"/>
+                                                </Border>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
 
                 <!-- Bottom Spacer -->
                 <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
