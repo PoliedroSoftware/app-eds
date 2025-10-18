@@ -8,7 +8,7 @@ namespace APP.Eds.UsesCases.PowerBI
 {
     public class PowerBIView : ContentPage
     {
-        private const string POWERBI_URL = "https://playground.powerbi.com/sampleReportEmbed";
+        private const string POWERBI_URL = "https://app.powerbi.com/view?r=eyJrIjoiYzkzOTY0ZTctMDY3NS00MjEzLTk0MDAtMDdkNjk3NGEwNWNhIiwidCI6ImY5MGY3OWRkLTczMDgtNDc4ZS05YTY4LTNjZDAwODljOGM4ZiIsImMiOjR9&embedImagePlaceholder=true";
         private bool _isLoading = true;
         private Grid _loadingOverlay;
         private ScrollView _mainContent;
