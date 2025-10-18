@@ -24,7 +24,6 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         BindingContext = _productService;
         
         // These commands are kept for future use when ProductList is implemented
-        EditProductCommand = new Command<object>(OnEditProduct);
         DeleteProductCommand = new Command<object>(OnDeleteProduct);
     }
 
@@ -203,17 +202,6 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         {
             System.Diagnostics.Debug.WriteLine($"Error refreshing product types: {ex.Message}");
             // Don't show error to user as this is not critical
-        }
-    }
-
-    private async void OnEditProduct(object obj)
-    {
-        // This method is kept for future use when ProductList with ProductModelResponse is implemented
-        if (obj is ProductModelResponse product)
-        {
-            Name = product.Name;
-            // Note: ProductModelResponse doesn't have Price, so this would need to be fetched
-            await CustomAlert.ShowInfoAsync($"La función de edición será implementada próximamente para el producto: {product.Name}", "Función en Desarrollo");
         }
     }
 
