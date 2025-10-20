@@ -692,19 +692,19 @@ public class ShoppingService : INotifyPropertyChanged
     }
 
 
-    public async Task AddShoppingProductFromPopup()
+    public async Task<bool> AddShoppingProductFromPopup()
     {
         // Validate stock availability before adding
         if (SelectedProductCompartimentPair == null)
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Seleccione un producto", "OK");
-            return;
+            return false;
         }
 
         if (!Quantity.HasValue || Quantity <= 0)
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Ingrese una cantidad válida", "OK");
-            return;
+            return false;
         }
 
         // 🔧 GUARDAR LOS DATOS DEL PRODUCTO ANTES DE AGREGARLO (para evitar que se pierdan al limpiar)
@@ -713,34 +713,105 @@ public class ShoppingService : INotifyPropertyChanged
         var savedSellPrice = SellPrice ?? 0;
         var savedTotalPrice = CurrentTotalAmount ?? 0;
         var savedProductName = SelectedProductCompartimentPair?.ProductName ?? "Producto";
+        var savedCompartmentNumber = SelectedProductCompartimentPair?.Number ?? 0;
+        var savedCompartmentCapacity = SelectedProductCompartimentPair?.Operative ?? 0;
+        var savedCurrentStock = SelectedProductCompartimentPair?.Stock ?? 0;
 
-        var newProduct = new ShoppingProductNestedModel
+        // ✅ VALIDACIÓN PREVENTIVA: Verificar capacidad del compartimento ANTES de agregar
+        var totalStockAfterPurchase = savedCurrentStock + savedQuantity;
+        if (totalStockAfterPurchase > savedCompartmentCapacity)
         {
-            IdProduct = SelectedProductCompartimentPair.IdProduct,
-            IdCompartment = SelectedProductCompartimentPair.IdCompartment,
-            Quantity = Quantity,
-            PurchasePrice = PurchasePrice,
-            SellPrice = SellPrice,
-            TotalPrice = CurrentTotalAmount,
-        };
+            var espacioDisponible = Math.Max(0, savedCompartmentCapacity - savedCurrentStock);
 
-        ShoppingProduct.Add(newProduct);
+            var errorMessage = $"⚠️ Capacidad de almacenamiento excedida\n\n" +
+                              $"La cantidad ingresada supera la capacidad máxima ({savedCompartmentCapacity:N0} galones) " +
+                              $"del compartimento asignado al producto {savedProductName}.\n\n" +
+                              $"📊 Detalles del compartimento:\n" +
+                              $"• Compartimento: #{savedCompartmentNumber}\n" +
+                              $"• Producto: {savedProductName}\n" +
+                              $"• Capacidad máxima: {savedCompartmentCapacity:N0} gal\n" +
+                              $"• Stock actual: {savedCurrentStock:N3} gal\n" +
+                              $"• Espacio disponible: {espacioDisponible:N3} gal\n\n" +
+                              $"❌ Cantidad solicitada: {savedQuantity:N3} gal\n" +
+                              $"✅ Cantidad máxima permitida: {espacioDisponible:N3} gal\n\n" +
+                              $"💡 Para continuar:\n" +
+                              $"• Ajuste la cantidad a máximo {espacioDisponible:N3} galones, o\n" +
+                              $"• Seleccione otro compartimento con mayor capacidad disponible.";
 
-        // Update stock after adding product (optional - depends on your business logic)
-        if (CurrentStock.HasValue)
-        {
-            CurrentStock -= Quantity;
-            // Update the stock in the ProductCompartimentPairs collection
-            var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
-                p.IdProduct == SelectedProductCompartimentPair.IdProduct &&
-                p.IdCompartment == SelectedProductCompartimentPair.IdCompartment);
-            if (productInList != null)
-            {
-                productInList.Stock = CurrentStock.Value;
-            }
+            await CustomAlert.ShowErrorAsync(errorMessage, "⚠️ Capacidad Excedida");
+            return false; // ✅ No agregar el producto y retornar false
         }
 
-        UpdateAccumulatedTotals();
+        try
+        {
+            var newProduct = new ShoppingProductNestedModel
+            {
+                IdProduct = SelectedProductCompartimentPair.IdProduct,
+                IdCompartment = SelectedProductCompartimentPair.IdCompartment,
+                Quantity = Quantity,
+                PurchasePrice = PurchasePrice,
+                SellPrice = SellPrice,
+                TotalPrice = CurrentTotalAmount,
+            };
+
+            ShoppingProduct.Add(newProduct);
+
+            // Update stock after adding product (optional - depends on your business logic)
+            if (CurrentStock.HasValue)
+            {
+                CurrentStock -= Quantity;
+                // Update the stock in the ProductCompartimentPairs collection
+                var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
+                    p.IdProduct == SelectedProductCompartimentPair.IdProduct &&
+                    p.IdCompartment == SelectedProductCompartimentPair.IdCompartment);
+                if (productInList != null)
+                {
+                    productInList.Stock = CurrentStock.Value;
+                }
+            }
+
+            UpdateAccumulatedTotals();
+            return true; // ✅ Producto agregado exitosamente
+        }
+        catch (HttpRequestException httpEx)
+        {
+            // Manejar errores HTTP del backend (como respaldo adicional)
+            var errorMessage = await ParseBackendErrorAsync(httpEx, savedProductName, savedQuantity, savedCompartmentCapacity);
+            await CustomAlert.ShowErrorAsync(errorMessage, "Error al Agregar Producto");
+
+            // Revertir el producto agregado si hubo un error
+            if (ShoppingProduct.Any())
+            {
+                var lastProduct = ShoppingProduct.LastOrDefault();
+                if (lastProduct != null)
+                {
+                    ShoppingProduct.Remove(lastProduct);
+                    UpdateAccumulatedTotals();
+                }
+            }
+            return false; // ✅ Error al agregar
+        }
+        catch (Exception ex)
+        {
+            // Manejar cualquier otro tipo de error
+            var errorMessage = $"⚠️ Error Inesperado\n\n" +
+                              $"Ocurrió un error al agregar el producto:\n\n" +
+                              $"{ex.Message}\n\n" +
+                              $"Por favor, intente nuevamente.";
+            await CustomAlert.ShowErrorAsync(errorMessage, "Error del Sistema");
+
+            // Revertir el producto agregado si hubo un error
+            if (ShoppingProduct.Any())
+            {
+                var lastProduct = ShoppingProduct.LastOrDefault();
+                if (lastProduct != null)
+                {
+                    ShoppingProduct.Remove(lastProduct);
+                    UpdateAccumulatedTotals();
+                }
+            }
+            return false; // ✅ Error al agregar
+        }
 
         // 🔧 NOTA: NO LLAMAR ResetProductForm() AQUÍ - Se llamará desde el popup después de mostrar el mensaje
         // ResetProductForm();
@@ -773,101 +844,63 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    protected void OnPropertyChanged(string propertyName)
+    /// <summary>
+    /// Parsea el error del backend para generar un mensaje amigable al usuario
+    /// </summary>
+    private async Task<string> ParseBackendErrorAsync(HttpRequestException httpEx, string productName, double quantity, double compartmentCapacity)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public void ResetProductForm()
-    {
-        // ✅ IMPORTANTE: Solo limpiar los campos del formulario, no afectar los datos ya agregados
-        SelectedProduct = null;
-        SelectedCompartiment = null;
-        SelectedProductCompartimentPair = null;
-        PurchasePrice = 0;
-        Quantity = 0;
-        SellPrice = 0;
-        CurrentStock = null;
-
-        // Notificar cambios en las propiedades para actualizar la UI
-        OnPropertyChanged(nameof(PurchasePrice));
-        OnPropertyChanged(nameof(Quantity));
-        OnPropertyChanged(nameof(SellPrice));
-        OnPropertyChanged(nameof(CurrentTotalAmount));
-        OnPropertyChanged(nameof(SelectedProduct));
-        OnPropertyChanged(nameof(SelectedCompartiment));
-        OnPropertyChanged(nameof(SelectedProductCompartimentPair));
-        OnPropertyChanged(nameof(CurrentStock));
-        OnPropertyChanged(nameof(IsStockAvailable));
-        OnPropertyChanged(nameof(MaxQuantityAllowed));
-    }
-
-    private void DeleteProduct(ShoppingProductNestedModel product)
-    {
-        if (product != null && ShoppingProduct.Contains(product))
-        {
-            // Restore stock when deleting a product
-            var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
-                p.IdProduct == product.IdProduct &&
-                p.IdCompartment == product.IdCompartment);
-            if (productInList != null && product.Quantity.HasValue)
-            {
-                productInList.Stock += product.Quantity.Value;
-
-                // If this is the currently selected product, update CurrentStock
-                if (SelectedProductCompartimentPair != null &&
-                    SelectedProductCompartimentPair.IdProduct == product.IdProduct &&
-                    SelectedProductCompartimentPair.IdCompartment == product.IdCompartment)
-                {
-                    CurrentStock = productInList.Stock;
-                }
-            }
-
-            ShoppingProduct.Remove(product);
-            UpdateAccumulatedTotals();
-
-            if (ShoppingProduct.Count == 0)
-            {
-                ResetProductForm();
-            }
-        }
-    }
-
-    // Method to get detailed product information for debugging
-    public async Task<string> GetProductCompartmentDebugInfoAsync()
-    {
-        if (string.IsNullOrEmpty(_authToken))
-            return "No hay token de autenticación";
-
         try
         {
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var errorContent = httpEx.Message;
 
-            // Get products data
-            string productUrl = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
-            var productResponse = await httpClient.GetStringAsync(productUrl);
-            var productApiResponse = JsonSerializer.Deserialize<ProductApiResponse>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            var productList = productApiResponse?.Data ?? new List<ProductResponse>();
-
-            var debugInfo = new StringBuilder();
-            debugInfo.AppendLine("=== INFORMACIÓN DE PRODUCTOS ===");
-
-            foreach (var product in productList)
+            // Detectar error de capacidad de compartimento excedida
+            if (errorContent.Contains("CompartimentCapacityExceeded", StringComparison.OrdinalIgnoreCase) ||
+                errorContent.Contains("supera la capacidad", StringComparison.OrdinalIgnoreCase) ||
+                errorContent.Contains("exceeds the capacity", StringComparison.OrdinalIgnoreCase))
             {
-                debugInfo.AppendLine($"ID: {product.IdProduct}");
-                debugInfo.AppendLine($"Nombre: {product.Name}");
-                debugInfo.AppendLine($"Stock: {product.Stock:F2}");
-                debugInfo.AppendLine($"Precio Venta: ${product.SellPrice:F2}");
-                debugInfo.AppendLine($"Precio Compra: ${product.PurchasePrice:F2}");
-                debugInfo.AppendLine("---");
+                // Extraer información del error si es posible
+                double currentStock = 0;
+                double maxCapacity = compartmentCapacity;
+
+                // Intentar extraer el stock actual y la capacidad del mensaje de error
+                var match = System.Text.RegularExpressions.Regex.Match(errorContent, @"(\d+(?:\.\d+)?)\s*gls?\)?\s*supera\s*la\s*capacidad\s*operativa\s*\((\d+(?:\.\d+)?)\s*gls?",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+                if (match.Success && match.Groups.Count >= 3)
+                {
+                    double.TryParse(match.Groups[1].Value, out currentStock);
+                    double.TryParse(match.Groups[2].Value, out maxCapacity);
+                }
+
+                // Generar mensaje amigable similar al ejemplo proporcionado
+                var userFriendlyMessage = $"⚠️ Capacidad de almacenamiento excedida\n\n" +
+                                         $"La cantidad ingresada supera la capacidad máxima ({maxCapacity:N0} galones) " +
+                                         $"del compartimento asignado al producto {productName}.\n\n" +
+                                         $"• Cantidad solicitada: {quantity:N3} gal\n" +
+                                         $"• Capacidad máxima: {maxCapacity:N0} gal\n" +
+                                         (currentStock > 0 ? $"• Stock actual: {currentStock:N0} gal\n" : "") +
+                                         (currentStock > 0 ? $"• Espacio disponible: {Math.Max(0, maxCapacity - currentStock):N0} gal\n\n" : "\n") +
+                                         $"Por favor, ajuste la cantidad o seleccione otro compartimento disponible.";
+
+                return userFriendlyMessage;
             }
 
-            return debugInfo.ToString();
+            // Si no es un error de capacidad excedida, devolver el error general
+            return $"⚠️ Error al Procesar la Compra\n\n" +
+                   $"No se pudo agregar el producto al carrito:\n\n" +
+                   $"{errorContent}\n\n" +
+                   $"Por favor, verifique los datos e intente nuevamente.";
         }
-        catch (Exception ex)
+        catch (Exception parseEx)
         {
-            return $"Error: {ex.Message}";
+            // Si falla el parseo, devolver un mensaje genérico pero informativo
+            System.Diagnostics.Debug.WriteLine($"Error parsing backend error: {parseEx.Message}");
+            return $"⚠️ Error al Procesar la Compra\n\n" +
+                   $"La cantidad ingresada puede exceder la capacidad del compartimento.\n\n" +
+                   $"• Producto: {productName}\n" +
+                   $"• Cantidad solicitada: {quantity:N3} gal\n" +
+                   $"• Capacidad del compartimento: {compartmentCapacity:N0} gal\n\n" +
+                   $"Por favor, ajuste la cantidad o seleccione otro compartimento.";
         }
     }
 
@@ -1007,5 +1040,103 @@ public class ShoppingService : INotifyPropertyChanged
         }
 
         return true; // Invoice is valid and doesn't exist
+    }
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void ResetProductForm()
+    {
+        // ✅ IMPORTANTE: Solo limpiar los campos del formulario, no afectar los datos ya agregados
+        SelectedProduct = null;
+        SelectedCompartiment = null;
+        SelectedProductCompartimentPair = null;
+        PurchasePrice = 0;
+        Quantity = 0;
+        SellPrice = 0;
+        CurrentStock = null;
+
+        // Notificar cambios en las propiedades para actualizar la UI
+        OnPropertyChanged(nameof(PurchasePrice));
+        OnPropertyChanged(nameof(Quantity));
+        OnPropertyChanged(nameof(SellPrice));
+        OnPropertyChanged(nameof(CurrentTotalAmount));
+        OnPropertyChanged(nameof(SelectedProduct));
+        OnPropertyChanged(nameof(SelectedCompartiment));
+        OnPropertyChanged(nameof(SelectedProductCompartimentPair));
+        OnPropertyChanged(nameof(CurrentStock));
+        OnPropertyChanged(nameof(IsStockAvailable));
+        OnPropertyChanged(nameof(MaxQuantityAllowed));
+    }
+
+    private void DeleteProduct(ShoppingProductNestedModel product)
+    {
+        if (product != null && ShoppingProduct.Contains(product))
+        {
+            // Restore stock when deleting a product
+            var productInList = ProductCompartimentPairs.FirstOrDefault(p =>
+                p.IdProduct == product.IdProduct &&
+                p.IdCompartment == product.IdCompartment);
+            if (productInList != null && product.Quantity.HasValue)
+            {
+                productInList.Stock += product.Quantity.Value;
+
+                // If this is the currently selected product, update CurrentStock
+                if (SelectedProductCompartimentPair != null &&
+                    SelectedProductCompartimentPair.IdProduct == product.IdProduct &&
+                    SelectedProductCompartimentPair.IdCompartment == product.IdCompartment)
+                {
+                    CurrentStock = productInList.Stock;
+                }
+            }
+
+            ShoppingProduct.Remove(product);
+            UpdateAccumulatedTotals();
+
+            if (ShoppingProduct.Count == 0)
+            {
+                ResetProductForm();
+            }
+        }
+    }
+
+    // Method to get detailed product information for debugging
+    public async Task<string> GetProductCompartmentDebugInfoAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+            return "No hay token de autenticación";
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            // Get products data
+            string productUrl = $"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100";
+            var productResponse = await httpClient.GetStringAsync(productUrl);
+            var productApiResponse = JsonSerializer.Deserialize<ProductApiResponse>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var productList = productApiResponse?.Data ?? new List<ProductResponse>();
+
+            var debugInfo = new StringBuilder();
+            debugInfo.AppendLine("=== INFORMACIÓN DE PRODUCTOS ===");
+
+            foreach (var product in productList)
+            {
+                debugInfo.AppendLine($"ID: {product.IdProduct}");
+                debugInfo.AppendLine($"Nombre: {product.Name}");
+                debugInfo.AppendLine($"Stock: {product.Stock:F2}");
+                debugInfo.AppendLine($"Precio Venta: ${product.SellPrice:F2}");
+                debugInfo.AppendLine($"Precio Compra: ${product.PurchasePrice:F2}");
+                debugInfo.AppendLine("---");
+            }
+
+            return debugInfo.ToString();
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
 }
