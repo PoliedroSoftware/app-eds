@@ -7,6 +7,7 @@ public class ProductModel : INotifyPropertyChanged
 {
     private bool _isInCart;
 
+    public int IdProduct { get; set; }
     public string Name { get; set; }
     public int IdProductType { get; set; }
     public double SellPrice { get; set; }

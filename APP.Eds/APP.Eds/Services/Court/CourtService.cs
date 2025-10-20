@@ -3198,6 +3198,60 @@ GetAllEdsData()
                 CourtExpenditures = new ObservableCollection<CourtExpenditure>();
             }
 
+            //  Verificar que hay suficiente efectivo para cubrir el gasto
+            double montoGasto = CourtExpenditureAmount;
+
+            // Calcular el efectivo disponible en los métodos de pago
+            double efectivoDisponible = 0;
+            if (CourtTypeOfCollections != null && CourtTypeOfCollections.Any())
+            {
+                // Buscar métodos de pago que sean efectivo (case-insensitive)
+                var metodosEfectivo = CourtTypeOfCollections.Where(m =>
+                    m.TypeOfCollectionName != null &&
+                    m.TypeOfCollectionName.Contains("Efectivo", StringComparison.OrdinalIgnoreCase));
+
+                efectivoDisponible = metodosEfectivo.Sum(m => m.Amount);
+            }
+
+            // Calcular el total de gastos YA registrados
+            double gastosYaRegistrados = CourtExpenditures?.Sum(g => g.Amount) ?? 0;
+
+            // Calcular el efectivo disponible después de restar los gastos ya registrados
+            double efectivoRestante = efectivoDisponible - gastosYaRegistrados;
+
+            // Validar que el nuevo gasto no exceda el efectivo disponible
+            if (montoGasto > efectivoRestante)
+            {
+                string mensaje = $"⚠️ Gasto Excede Efectivo Disponible\n\n" +
+                                $"El monto del gasto que intenta registrar excede el efectivo disponible:\n\n" +
+                                $"• Efectivo en métodos de pago: ${efectivoDisponible:N2}\n" +
+                                $"• Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
+                                $"• Efectivo disponible: ${efectivoRestante:N2}\n" +
+                                $"• Monto del gasto: ${montoGasto:N2}\n" +
+                                $"• Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
+
+                if (efectivoDisponible == 0)
+                {
+                    mensaje += "No hay métodos de pago en efectivo registrados.\n" +
+                              "Por favor, agregue un método de pago en efectivo antes de registrar gastos.";
+                }
+                else if (efectivoRestante <= 0)
+                {
+                    mensaje += "Ya se han registrado gastos por el total del efectivo disponible.\n" +
+                              "No es posible registrar más gastos sin agregar más efectivo.";
+                }
+                else
+                {
+                    mensaje += $"El monto máximo que puede registrar como gasto es: ${efectivoRestante:N2}";
+                }
+
+                await Application.Current.MainPage.DisplayAlert(
+                    "Gasto No Permitido",
+                    mensaje,
+                    "Entendido");
+                return;
+            }
+
             var newCourtExpenditure = new CourtExpenditure
             {
                 ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
