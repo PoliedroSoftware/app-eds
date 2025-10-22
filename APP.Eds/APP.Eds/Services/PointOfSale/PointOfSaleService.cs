@@ -1,5 +1,7 @@
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
+using APP.Eds.Models.Client;
+using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
 using System.Collections.ObjectModel;
@@ -13,129 +15,139 @@ public interface IPointOfSaleService
     Task<List<ProductModel>> GetAvailableProductsAsync();
     Task<bool> ProcessSaleAsync(SaleModel sale);
     Task<List<SaleModel>> GetSalesHistoryAsync();
+    Task<List<ClientLegalModel>> GetClientsAsync();
 }
 
 public class PointOfSaleService : IPointOfSaleService
 {
-    private readonly string? _authToken;
+ private readonly string? _authToken;
     private readonly List<SaleModel> _salesHistory = new();
 
-    public PointOfSaleService()
+  public PointOfSaleService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
     }
 
     public async Task<List<ProductModel>> GetAvailableProductsAsync()
     {
-        if (string.IsNullOrEmpty(_authToken))
+ if (string.IsNullOrEmpty(_authToken))
         {
-            // Fallback con productos mínimos si no hay token
-            return GetSampleProducts();
-        }
+ System.Diagnostics.Debug.WriteLine("No hay token de autenticación para obtener productos");
+    return new List<ProductModel>();
+     }
 
-        try
+ try
         {
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            
-            string url = $"{Configuration.BaseUrl}/api/v1/product?includeProductType=true&PageNumber=1&PageSize=100";
-            var response = await httpClient.GetStringAsync(url);
-            
-            var productResponse = JsonSerializer.Deserialize<ProductResponse>(response, new JsonSerializerOptions 
-            { 
-                PropertyNameCaseInsensitive = true 
-            });
+   using var httpClient = new HttpClient();
+httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+ 
+          string url = $"{Configuration.BaseUrl}/api/v1/product";
+     var response = await httpClient.GetStringAsync(url);
+    
+ var productResponse = JsonSerializer.Deserialize<ProductApiResponse>(response, new JsonSerializerOptions 
+    { 
+         PropertyNameCaseInsensitive = true 
+      });
 
-            if (productResponse?.Data != null && productResponse.Data.Any())
-            {
-                // Convertir productos de la API al modelo del punto de venta
-                return productResponse.Data
-                    .Where(p => p.Stock > 0) // Solo productos con stock
-                    .Select(p => new ProductModel
-                    {
-                        Name = p.Name,
-                        IdProductType = p.IdProductType,
-                        SellPrice = p.SellPrice,
-                        PurchasePrice = p.PurchasePrice,
-                        Stock = p.Stock
-                    })
-                    .ToList();
-            }
-            else
-            {
-                return GetSampleProducts();
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error obteniendo productos reales: {ex.Message}");
-            return GetSampleProducts();
-        }
+ // Convertir de ProductResponse (del API) a ProductModel
+   if (productResponse?.Data != null)
+    {
+   return productResponse.Data.Select(p => new ProductModel
+     {
+  IdProduct = p.IdProduct,
+     Name = p.Name,
+  IdProductType = p.IdProductType,
+     SellPrice = p.SellPrice,
+     PurchasePrice = p.PurchasePrice,
+      Stock = (int)p.Stock
+    }).ToList();
     }
 
-    private List<ProductModel> GetSampleProducts()
-    {
-        // Solo productos básicos como respaldo
-        return
-        [
-            new ProductModel { Name = "Gasolina Corriente", SellPrice = 3250.00, Stock = 5000 },
-            new ProductModel { Name = "Gasolina Extra", SellPrice = 3420.00, Stock = 3500 },
-            new ProductModel { Name = "ACPM", SellPrice = 3150.00, Stock = 8000 }
-        ];
+     return new List<ProductModel>();
+  }
+      catch (Exception ex)
+     {
+    System.Diagnostics.Debug.WriteLine($"Error obteniendo productos: {ex.Message}");
+    return new List<ProductModel>();
+        }
     }
 
     public async Task<bool> ProcessSaleAsync(SaleModel sale)
     {
-        try
-        {
-            await Task.Delay(500); // Simular procesamiento
-            
-            // Obtener productos actuales para verificar stock
-            var products = await GetAvailableProductsAsync();
-            
-            // Verificar stock disponible
-            foreach (var item in sale.Items)
-            {
-                var product = products.FirstOrDefault(p => p.Name == item.ProductName);
-                if (product == null || product.Stock < item.Quantity)
-                {
-                    return false;
-                }
-            }
-            
-            // En una implementación real, aquí se actualizaría el stock en la base de datos
-            // Por ahora, solo marcamos la venta como completada
-            sale.Status = SaleStatus.Completed;
-            sale.Date = DateTime.Now;
-            _salesHistory.Add(sale);
-            
-            return true;
+      try
+   {
+  // Aquí implementarías la lógica para procesar la venta
+    _salesHistory.Add(sale);
+ return true;
         }
-        catch
-        {
-            return false;
-        }
+        catch (Exception ex)
+{
+         System.Diagnostics.Debug.WriteLine($"Error procesando venta: {ex.Message}");
+       return false;
+    }
     }
 
     public async Task<List<SaleModel>> GetSalesHistoryAsync()
     {
-        await Task.Delay(100);
-        return _salesHistory.OrderByDescending(s => s.Date).ToList();
+        return await Task.FromResult(_salesHistory);
     }
-}
 
-// Modelos para la respuesta de la API
-public class ProductResponse
-{
-    public List<ProductModelResponse> Data { get; set; } = new();
-}
+    public async Task<List<ClientLegalModel>> GetClientsAsync()
+    {
+      if (string.IsNullOrEmpty(_authToken))
+        {
+      System.Diagnostics.Debug.WriteLine("No hay token de autenticación para obtener clientes");
+return new List<ClientLegalModel>();
+     }
 
-public class ProductModelResponse
-{
-    public int IdProduct { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public int IdProductType { get; set; }
-    public double SellPrice { get; set; }
-    public double PurchasePrice { get; set; }
-    public int Stock { get; set; }
+     try
+  {
+          using var httpClient = new HttpClient();
+   httpClient.DefaultRequestHeaders.Clear();
+     httpClient.DefaultRequestHeaders.Add("X-Environment", "clients");
+ httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+ 
+  string url = $"{Configuration.BaseUrl}/api/v1/client/legal";
+   System.Diagnostics.Debug.WriteLine($"Llamando a URL de clientes: {url}");
+    
+    var response = await httpClient.GetStringAsync(url);
+        System.Diagnostics.Debug.WriteLine($"Respuesta completa de clientes: {response}");
+    
+  var clientResponse = JsonSerializer.Deserialize<ClientLegalResponse>(response, new JsonSerializerOptions 
+    { 
+   PropertyNameCaseInsensitive = true 
+      });
+
+  if (clientResponse?.Data != null && clientResponse.Data.Any())
+       {
+     System.Diagnostics.Debug.WriteLine($"? Se cargaron {clientResponse.Data.Count} clientes correctamente");
+  
+            // Log detallado de los primeros 3 clientes
+ for (int i = 0; i < Math.Min(3, clientResponse.Data.Count); i++)
+  {
+   var client = clientResponse.Data[i];
+        System.Diagnostics.Debug.WriteLine($"Cliente {i + 1}:");
+ System.Diagnostics.Debug.WriteLine($"  - ID: {client.Id}");
+   System.Diagnostics.Debug.WriteLine($"  - Nombre: '{client.Name}'");
+          System.Diagnostics.Debug.WriteLine($"  - DocTypeId: {client.DocumentTypeId} ({client.DocumentType})");
+ System.Diagnostics.Debug.WriteLine($"  - DocNumber: '{client.DocumentNumber}'");
+     System.Diagnostics.Debug.WriteLine($"  - VerificationDigit: {client.VerificationDigit}");
+ System.Diagnostics.Debug.WriteLine($"  - DisplayText: '{client.DisplayText}'");
+   }
+           
+         return clientResponse.Data;
+    }
+          else
+    {
+  System.Diagnostics.Debug.WriteLine("?? No se encontraron clientes en la respuesta");
+      return new List<ClientLegalModel>();
+}
+     }
+     catch (Exception ex)
+   {
+     System.Diagnostics.Debug.WriteLine($"? Error obteniendo clientes: {ex.Message}");
+       System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            return new List<ClientLegalModel>();
+   }
+    }
 }
