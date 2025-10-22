@@ -194,6 +194,8 @@ public class ProductService : INotifyPropertyChanged
     }
 
     private SpecificProductType _selectedSpecificProductType;
+
+
     public SpecificProductType SelectedSpecificProductType
     {
         get => _selectedSpecificProductType;
@@ -202,22 +204,26 @@ public class ProductService : INotifyPropertyChanged
             _selectedSpecificProductType = value;
             OnPropertyChanged(nameof(SelectedSpecificProductType));
 
-            if (_selectedSpecificProductType != null && SelectedProductOption != null)
-            {
-                // Lógica especial para evitar duplicación en ACPM
-                if (SelectedProductOption.Id == 2) // ACPM
-                {
-                    // Para ACPM, solo mostrar "ACPM" sin duplicar
-                    Name = "ACPM";
-                }
-                else
-                {
-                    // Para otros productos (como Gasolina), construir el nombre completo
-                    var productName = $"{SelectedProductOption.Name} {_selectedSpecificProductType.Description}".Trim();
-                    Name = productName;
-                }
+            if (SelectedProductOption == null) return;
 
-                // Establecer el tipo de producto correcto
+            if (SelectedProductOption.Id == 2) // ACPM
+            {
+                Name = "ACPM";
+                UpdateProductTypeFromSelection();
+                return;
+            }
+
+            if (SelectedProductOption.Id == 3) // Urea
+            {
+                Name = "Urea";
+                UpdateProductTypeFromSelection();
+                return;
+            }
+
+            // Gasolina con subtipo
+            if (_selectedSpecificProductType != null)
+            {
+                Name = $"Gasolina {_selectedSpecificProductType.Description}".Trim();
                 UpdateProductTypeFromSelection();
             }
         }
@@ -243,52 +249,72 @@ public class ProductService : INotifyPropertyChanged
     }
     // Fuerza el IdProductType y el Name según lo seleccionado / escrito.
     // Devuelve true si pudo fijar un tipo válido.
+
     private bool ForceProductTypeIfConsistent()
     {
-        // 1) Atajos por selección explícita
+        // 1) Por selección explícita
         if (SelectedProductOption?.Id == 2) // ACPM
         {
-            IdProductType = 2;
-            if (string.IsNullOrWhiteSpace(Name)) Name = "ACPM";
-            return true;
+            var id = GetBackendTypeIdForAcpm();
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                if (string.IsNullOrWhiteSpace(Name)) Name = "ACPM";
+                return true;
+            }
+        }
+
+        if (SelectedProductOption?.Id == 3) // Urea
+        {
+            var id = GetBackendTypeIdForUrea();
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                if (string.IsNullOrWhiteSpace(Name)) Name = "Urea";
+                return true;
+            }
         }
 
         if (SelectedProductOption?.Id == 1) // Gasolina
         {
             var term = (SelectedSpecificProductType?.Description ?? "").Trim().ToLowerInvariant();
-
-            if (term == "extra")
+            if (!string.IsNullOrEmpty(term))
             {
-                IdProductType = 9;
-                if (string.IsNullOrWhiteSpace(Name)) Name = "Gasolina Extra";
-                return true;
-            }
-
-            if (term == "corriente")
-            {
-                IdProductType = 1;
-                if (string.IsNullOrWhiteSpace(Name)) Name = "Gasolina Corriente";
-                return true;
+                var id = GetBackendTypeIdForGasoline(term);
+                if (id.HasValue)
+                {
+                    IdProductType = id.Value;
+                    if (string.IsNullOrWhiteSpace(Name)) Name = $"Gasolina {SelectedSpecificProductType.Description}";
+                    return true;
+                }
             }
         }
 
         // 2) Inferencia por nombre escrito
         var n = (Name ?? "").Trim().ToLowerInvariant();
-        if (n.Contains("acpm"))
+        if (n.Contains("acpm") || n.Contains("diesel"))
         {
-            IdProductType = 2; return true;
+            var id = GetBackendTypeIdForAcpm();
+            if (id.HasValue) { IdProductType = id.Value; return true; }
+        }
+        if (n.Contains("urea"))
+        {
+            var id = GetBackendTypeIdForUrea();
+            if (id.HasValue) { IdProductType = id.Value; return true; }
         }
         if (n.Contains("extra"))
         {
-            IdProductType = 9; return true;
+            var id = GetBackendTypeIdForGasoline("extra");
+            if (id.HasValue) { IdProductType = id.Value; return true; }
         }
         if (n.Contains("corriente"))
         {
-            IdProductType = 1; return true;
+            var id = GetBackendTypeIdForGasoline("corriente");
+            if (id.HasValue) { IdProductType = id.Value; return true; }
         }
 
         return false;
-    }
+    }   
 
     private double _purchasePrice;
     public double PurchasePrice
@@ -339,6 +365,7 @@ public class ProductService : INotifyPropertyChanged
         ProductOptions.Clear();
         ProductOptions.Add(new ProductOption(1, "Gasolina", "⛽"));
         ProductOptions.Add(new ProductOption(2, "ACPM", "🚛"));
+        ProductOptions.Add(new ProductOption(3, "Urea", "🧪"));
 
         // Inicializar los tipos específicos
         AvailableProductTypes.Clear();
@@ -356,6 +383,7 @@ public class ProductService : INotifyPropertyChanged
         {
             FilteredProductTypes.Clear();
             SelectedSpecificProductType = null;
+            Name = string.Empty;
         }
         else
         {
@@ -371,11 +399,20 @@ public class ProductService : INotifyPropertyChanged
             // Si es ACPM, seleccionar automáticamente
             if (SelectedProductOption.Id == 2) // ACPM
             {
-                SelectedSpecificProductType = FilteredProductTypes.FirstOrDefault();
+                SelectedSpecificProductType = null;
+                Name = "ACPM";
+                UpdateProductTypeFromSelection();
+            }
+            else if (SelectedProductOption.Id == 3)
+            {
+                SelectedSpecificProductType = null;
+                Name = "Urea";
+                UpdateProductTypeFromSelection();
             }
             else
             {
                 SelectedSpecificProductType = null;
+                Name = string.Empty;
             }
         }
 
@@ -385,43 +422,73 @@ public class ProductService : INotifyPropertyChanged
         OnPropertyChanged(nameof(IsAcpmSelected));
     }
 
-    // Método para actualizar el tipo de producto basado en la selección
+    // Método para actualizar el tipo de producto basado en la selección   
+    private int? GetBackendTypeIdByPredicate(Func<string, bool> predicate)
+    {
+        var match = EnhancedProductTypeList.FirstOrDefault(pt =>
+            predicate((pt.Description ?? string.Empty).ToLowerInvariant()));
+        return match?.IdProductType;
+    }
+
+    private int? GetBackendTypeIdForGasoline(string subtype) // "corriente" o "extra"
+    {
+        var sub = (subtype ?? "").Trim().ToLowerInvariant();
+        return GetBackendTypeIdByPredicate(desc =>
+            desc.Contains("gasolina") && desc.Contains(sub));
+    }
+
+    private int? GetBackendTypeIdForAcpm()
+    {
+        return GetBackendTypeIdByPredicate(desc => desc.Contains("acpm") || desc.Contains("diesel"));
+    }
+
+    private int? GetBackendTypeIdForUrea()
+    {
+        return GetBackendTypeIdByPredicate(desc => desc.Contains("urea"));
+    }
+
+
+
     private void UpdateProductTypeFromSelection()
     {
-        if (SelectedSpecificProductType == null || SelectedProductOption == null)
-            return;
+        if (SelectedProductOption == null) return;
 
-        // Buscar en la lista de tipos de producto existentes
-        var searchTerm = SelectedSpecificProductType.Description.ToLowerInvariant();
-        var matchingType = EnhancedProductTypeList.FirstOrDefault(pt =>
+        // Gasolina con subtipo
+        if (SelectedProductOption.Id == 1 && SelectedSpecificProductType != null)
         {
-            var ptDesc = pt.Description.ToLowerInvariant();
-
-            // Para gasolina, buscar coincidencia exacta con el tipo (corriente/extra)
-            if (SelectedProductOption.Id == 1) // Gasolina
+            var id = GetBackendTypeIdForGasoline(SelectedSpecificProductType.Description);
+            if (id.HasValue)
             {
-                return ptDesc.Contains("gasolina") && ptDesc.Contains(searchTerm);
+                IdProductType = id.Value;
+                return;
             }
-            // Para ACPM, buscar cualquier tipo que contenga ACPM
-            else if (SelectedProductOption.Id == 2) // ACPM
+        }
+
+        // ACPM sin subtipo
+        if (SelectedProductOption.Id == 2)
+        {
+            var id = GetBackendTypeIdForAcpm();
+            if (id.HasValue)
             {
-                return ptDesc.Contains("acpm");
+                IdProductType = id.Value;
+                return;
             }
-
-            return false;
-        });
-
-        if (matchingType != null)
-        {
-            IdProductType = matchingType.IdProductType;
-            SelectProductType = matchingType;
         }
-        else
+
+        // Urea sin subtipo
+        if (SelectedProductOption.Id == 3)
         {
-            // Fallback: usar el primer tipo disponible como respaldo
-            IdProductType = EnhancedProductTypeList.FirstOrDefault()?.IdProductType ?? 1;
+            var id = GetBackendTypeIdForUrea();
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                return;
+            }
         }
+
+        // Fallback: no tocar IdProductType si no hay match
     }
+
 
     // Validación del formulario antes del envío
     // Validación del formulario antes del envío (ahora autocorrige el tipo)
@@ -537,6 +604,7 @@ public class ProductService : INotifyPropertyChanged
                 new ProductTypeModelResponse { IdProductType = 1, Description = "Gasolina Corriente" },
                 new ProductTypeModelResponse { IdProductType = 2, Description = "Gasolina Extra" },
                 new ProductTypeModelResponse { IdProductType = 3, Description = "ACPM" },
+                new ProductTypeModelResponse { IdProductType = 5, Description = "Urea" },
                 new ProductTypeModelResponse { IdProductType = 4, Description = "Lubricantes" }
             };
             UpdateProductTypeList(sampleTypes);
@@ -1173,15 +1241,32 @@ public class ProductService : INotifyPropertyChanged
     {
         foreach (var product in ProductList)
         {
-            product.ProductTypeName = ProductOptions.FirstOrDefault(p => p.Id == product.IdProductType)?.Name ?? string.Empty;
+            // Busca la descripción del tipo real (desde la API o sample)
+            var typeDesc = EnhancedProductTypeList
+                .FirstOrDefault(pt => pt.IdProductType == product.IdProductType)
+                ?.Description?.ToLowerInvariant() ?? string.Empty;
 
-            if(product.IdProductType == 9)
+            if (typeDesc.Contains("acpm") || typeDesc.Contains("diesel"))
             {
-                product.ProductTypeName = ProductOptions.FirstOrDefault(p => p.Id == 1)?.Name ?? string.Empty;
+                product.ProductTypeName = "ACPM";
+            }
+            else if (typeDesc.Contains("gasolina"))
+            {
+                product.ProductTypeName = "Gasolina";
+            }
+            else if (typeDesc.Contains("urea"))
+            {
+                product.ProductTypeName = "Urea";
+            }
+            else
+            {
+                // Fallback: muestra la descripción de la categoría detectada
+                product.ProductTypeName = EnhancedProductTypeList
+                    .FirstOrDefault(pt => pt.IdProductType == product.IdProductType)
+                    ?.CategoryDescription ?? "Categoría general";
             }
         }
     }
-
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
