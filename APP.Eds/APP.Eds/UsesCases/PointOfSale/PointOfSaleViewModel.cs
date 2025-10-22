@@ -1,5 +1,6 @@
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
+using APP.Eds.Models.Client;
 using APP.Eds.Services.PointOfSale;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,13 +16,16 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     private double _cashReceived;
     private double _change;
     private PaymentMethod _selectedPaymentMethod = PaymentMethod.Cash;
+    private ClientLegalModel _selectedClient;
+    private bool _isClientSelectorVisible;
 
     public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService)
     {
         _pointOfSaleService = pointOfSaleService;
         Products = new ObservableCollection<ProductModel>();
         CartItems = new ObservableCollection<SaleItemModel>();
-        
+        Clients = new ObservableCollection<ClientLegalModel>();
+  
         AddToCartCommand = new Command<ProductModel>(AddToCart);
         RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
@@ -30,18 +34,44 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         ProcessPaymentCommand = new Command(async () => await ProcessPayment(), CanProcessPayment);
         ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
-        
+        ToggleClientSelectorCommand = new Command(ToggleClientSelector);
+      
         LoadProducts();
+        LoadClients();
     }
 
     public ObservableCollection<ProductModel> Products { get; }
     public ObservableCollection<SaleItemModel> CartItems { get; }
+    public ObservableCollection<ClientLegalModel> Clients { get; }
 
     public bool IsLoading
     {
         get => _isLoading;
         set => SetProperty(ref _isLoading, value);
     }
+
+    public ClientLegalModel SelectedClient
+    {
+        get => _selectedClient;
+        set
+        {
+            if (SetProperty(ref _selectedClient, value))
+            {
+                OnPropertyChanged(nameof(ClientButtonText));
+                System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
+            }
+        }
+    }
+
+    public bool IsClientSelectorVisible
+    {
+        get => _isClientSelectorVisible;
+        set => SetProperty(ref _isClientSelectorVisible, value);
+    }
+
+    public string ClientButtonText => SelectedClient != null && SelectedClient.Id > 0 
+        ? $"? {SelectedClient.Name}" 
+        : "Sin Cliente Seleccionado";
 
     public double SubTotal => CartItems.Sum(item => item.TotalPrice);
     public double Tax => SubTotal * 0.16; // 16% tax
@@ -83,6 +113,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public ICommand ProcessPaymentCommand { get; }
     public ICommand ClearCartCommand { get; }
     public ICommand SelectPaymentMethodCommand { get; }
+    public ICommand ToggleClientSelectorCommand { get; }
 
     private async void LoadProducts()
     {
@@ -107,6 +138,42 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         {
             IsLoading = false;
         }
+    }
+
+    private async void LoadClients()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("Iniciando carga de clientes...");
+            var clients = await _pointOfSaleService.GetClientsAsync();
+
+            Clients.Clear();
+            // Agregar opción "Sin Cliente" al inicio
+            Clients.Add(new ClientLegalModel 
+            { 
+                Id = 0, 
+                Name = "Sin Cliente / Consumidor Final",
+                DocumentNumber = "N/A"
+            });
+  
+            foreach (var client in clients)
+            {
+                Clients.Add(client);
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Clientes cargados en ObservableCollection: {Clients.Count}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error cargando clientes: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Advertencia", 
+                "No se pudieron cargar los clientes. Puede continuar sin seleccionar cliente.", "OK");
+        }
+    }
+
+    private void ToggleClientSelector()
+    {
+        IsClientSelectorVisible = !IsClientSelectorVisible;
     }
 
     private void AddToCart(ProductModel product)
@@ -212,7 +279,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
 
     private async Task ProcessPayment()
     {
-        if (!CanCompleteTransaction) return;
+        if (!CanProcessPayment()) return;
 
         IsLoading = true;
         try
@@ -229,8 +296,12 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             
             if (success)
             {
+                string clientInfo = SelectedClient != null && SelectedClient.Id > 0 
+                    ? $"\nCliente: {SelectedClient.Name}" 
+                    : "";
+     
                 await Application.Current.MainPage.DisplayAlert("Éxito", 
-                    $"Venta procesada correctamente\nTotal: ${Total:F2}\nCambio: ${Change:F2}", "OK");
+                    $"Venta procesada correctamente{clientInfo}\nTotal: ${Total:F2}\nCambio: ${Change:F2}", "OK");
                 ClearCart();
                 LoadProducts(); // Recargar para actualizar stock
             }
@@ -260,10 +331,13 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     {
         CartItems.Clear();
         CashReceived = 0;
+        SelectedClient = null;
+        IsClientSelectorVisible = false;
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
         OnPropertyChanged(nameof(CanCompleteTransaction));
+        OnPropertyChanged(nameof(ClientButtonText));
         UpdateProductCartStatus();
     }
 
@@ -285,10 +359,10 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "")
     {
         if (EqualityComparer<T>.Default.Equals(backingStore, value))
-            return false;
+       return false;
 
         backingStore = value;
         OnPropertyChanged(propertyName);
-        return true;
+ return true;
     }
 }
