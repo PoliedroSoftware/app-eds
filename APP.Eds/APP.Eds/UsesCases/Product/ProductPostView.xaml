@@ -58,7 +58,7 @@
                             
                             <!-- Product Category Selection -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Tipo de Combustible" 
+                                <Label Text="Tipo de Producto" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
                                        TextColor="#2D3436"
@@ -74,8 +74,8 @@
                                                FontSize="18" 
                                                TextColor="#6A1B9A" 
                                                VerticalOptions="Center"/>
-                                        
-                                        <Picker Title="Seleccione el tipo de combustible"
+
+                                        <Picker Title="Seleccione el tipo de producto"
                                                 ItemsSource="{Binding ProductOptions}"
                                                 ItemDisplayBinding="{Binding Name}"
                                                 SelectedItem="{Binding SelectedProductOption, Mode=TwoWay}"
@@ -309,7 +309,7 @@
                                            FontSize="16" 
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
-                                    <Label Text="Seleccione el tipo de combustible para generar automáticamente el nombre del producto. Los precios y stock son opcionales y pueden configurarse posteriormente."
+                                    <Label Text="Seleccione el tipo de producto para generar automáticamente el nombre del producto. Los precios y stock son opcionales y pueden configurarse posteriormente."
                                            FontSize="12"
                                            TextColor="#1565C0"
                                            VerticalOptions="Center"
@@ -385,7 +385,7 @@
 
                                             <!-- Product Info -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
-                                                <Label Text="Tipo de Combustible:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Tipo de Producto:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding ProductTypeName}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 
