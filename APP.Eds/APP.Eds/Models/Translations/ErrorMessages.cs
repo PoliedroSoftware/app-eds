@@ -5,12 +5,12 @@ public static class ErrorMessages
     public static Dictionary<string, (string Message, string Icon, string BackgroundColor, string TextColor)> Mappings = new()
     {
         { "invalid_grant", ("Usuario o contraseña incorrectos. Verifique sus datos e intente de nuevo.", "⚠️", "#FFEBEE", "#C62828") },
-        { "user_not_found", ("El usuario ingresado no se encuentra registrado.", "⚠️", "#FFEBEE", "#C62828") },
-        { "server_unavailable", ("No se pudo conectar con el servidor. Revise su conexión a internet.", "⚠️", "#FFEBEE", "#C62828") },
-        { "invalid_input", ("Por favor, ingresa tu usuario y contraseña.", "⚠️", "#FFEBEE", "#C62828") },
-        { "token_missing", ("Fallo de autenticación. No se recibió token de acceso.", "⚠️", "#FFEBEE", "#C62828") },
+        { "user_not_found", ("El usuario no se encuentra registrado.", "⚠️", "#FFEBEE", "#C62828") },
+        { "server_unavailable", ("Revise su conexión a internet.", "⚠️", "#FFEBEE", "#C62828") },
+        { "invalid_input", ("ingresa tu usuario y contraseña.", "⚠️", "#FFEBEE", "#C62828") },
+        { "token_missing", ("Fallo de autenticación.", "⚠️", "#FFEBEE", "#C62828") },
         { "token_invalid", ("Token inválido.", "⚠️", "#FFEBEE", "#C62828") },
-        { "default", ("Ocurrió un error inesperado. Intente nuevamente o contacte al administrador.", "⚠️", "#FFEBEE", "#C62828") }
+        { "default", ("Intente nuevamente o contacte al administrador.", "⚠️", "#FFEBEE", "#C62828") }
     };
 
     public static (string Message, string Icon, string BackgroundColor, string TextColor) GetFriendlyErrorMessage(string technicalError)
