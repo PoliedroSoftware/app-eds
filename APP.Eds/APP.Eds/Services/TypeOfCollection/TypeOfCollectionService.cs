@@ -814,14 +814,17 @@ namespace APP.Eds.Services.TypeOfCollection
                         $"• Proveedor: {PaymentProvider}\n" +
                         $"• Estado: {SelectedStatus}", 
                         "Método de Pago Registrado");
-            
+
                     // Reload payment methods from API to get the latest data
                     await LoadPaymentMethodsAsync();
                     UpdateStatistics();
                     
                     // ✨ VALIDACIÓN AUTOMÁTICA después de guardar
                     await ValidatePaymentCompletionAsync();
-                    
+
+                    // ⬇️⬇️ Resetea el “Total del Día” a cero
+                    TotalSalesAmount = 0m;
+
                     // Clear form fields
                     PaymentName = string.Empty;
                     SelectedPaymentType = string.Empty;
