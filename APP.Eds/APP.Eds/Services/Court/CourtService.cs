@@ -1,13 +1,11 @@
-Ôªøusing APP.Eds.Helpers;
+using APP.Eds.Helpers;
 using APP.Eds.Models.Court;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Hose;
-using APP.Eds.Models.Inventory;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
-using APP.Eds.UsesCases.Court;
-using Microsoft.VisualBasic;
+using APP.Eds.Services.Files;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -17,3484 +15,3248 @@ using System.Text.Json;
 using System.Windows.Input;
 
 
-namespace APP.Eds.Services.Court
+namespace APP.Eds.Services.Court;
+
+public class CourtService : INotifyPropertyChanged
+
 {
-    public class CourtService : INotifyPropertyChanged
+    public bool LastSendWasSuccessful { get; private set; }
+    public string UserRole { get; set; } = string.Empty;
+    public bool IsUserRole => Preferences.Get("userRole", "") == "User";
 
+    private static CourtService _instance;
+    public static CourtService Instance => _instance ??= new CourtService();
+
+    private string? _authToken;
+
+    public static void ResetInstanceFields()
     {
-        public bool LastSendWasSuccessful { get; private set; }
-        public string UserRole { get; set; } = string.Empty;
-        public bool IsUserRole => Preferences.Get("userRole", "") == "User";
-
-        private static CourtService _instance;
-        public static CourtService Instance => _instance ??= new CourtService();
-
-        private string? _authToken;
-
-        public static void ResetInstanceFields()
+        if (_instance != null)
         {
-            if (_instance != null)
+            // Reset business/EDS selections
+            _instance.SelectedBusiness = null;
+            _instance.SelectedEds = null;
+            _instance.SelectedIslander = null;
+
+            // Reset all totals and sales
+            _instance.TotalAmount = 0;
+            _instance.TotalGallons = 0;
+            _instance.TotalExpenditure = 0;
+            _instance.TotalTypeOfCollection = 0;
+            _instance.TotalSales = 0;
+            _instance.Distintic = 0;
+
+            // Clear all collections
+            _instance.CourtDispensers?.Clear();
+            _instance.CourtDocuments?.Clear();
+            _instance.CourtExpenditures?.Clear();
+            _instance.CourtTypeOfCollections?.Clear();
+
+            // Clear results collections
+            _instance.AmountResults?.Clear();
+            _instance.GallonResults?.Clear();
+
+            // Reset accumulated values
+            _instance.AccumulatedAmount = 0;
+            _instance.AccumulatedGallons = 0;
+            _instance.LastAccumulatedAmount = 0;
+            _instance.LastAccumulatedGallons = 0;
+            _instance.AmountDifferenceResult = 0;
+            _instance.GallonsDifferenceResult = 0;
+
+            // Reset additional info
+            _instance.AdditionalInfoDescription = null;
+
+            // Notify all property changes to update UI
+            _instance.OnPropertyChanged(nameof(TotalAmount));
+            _instance.OnPropertyChanged(nameof(TotalGallons));
+            _instance.OnPropertyChanged(nameof(TotalExpenditure));
+            _instance.OnPropertyChanged(nameof(TotalTypeOfCollection));
+            _instance.OnPropertyChanged(nameof(TotalSales));
+            _instance.OnPropertyChanged(nameof(Distintic));
+            _instance.OnPropertyChanged(nameof(CourtDispensers));
+            _instance.OnPropertyChanged(nameof(CourtDocuments));
+            _instance.OnPropertyChanged(nameof(CourtExpenditures));
+            _instance.OnPropertyChanged(nameof(CourtTypeOfCollections));
+            _instance.OnPropertyChanged(nameof(AccumulatedAmount));
+            _instance.OnPropertyChanged(nameof(AccumulatedGallons));
+            _instance.OnPropertyChanged(nameof(LastAccumulatedAmount));
+            _instance.OnPropertyChanged(nameof(LastAccumulatedGallons));
+            _instance.OnPropertyChanged(nameof(AmountDifferenceResult));
+            _instance.OnPropertyChanged(nameof(GallonsDifferenceResult));
+            _instance.OnPropertyChanged(nameof(AdditionalInfoDescription));
+            _instance.OnPropertyChanged(nameof(SelectedBusiness));
+            _instance.OnPropertyChanged(nameof(SelectedEds));
+            _instance.OnPropertyChanged(nameof(SelectedIslander));
+
+            // Notify visibility properties after clearing collections
+            _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
+            _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
+            // ?? Notificar cambio en la visibilidad de la secciÛn de Arqueo De Caja despuÈs del reset
+            _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
+        }
+    }
+    public static void DestroyInstance()
+    {
+        _instance = null;
+    }
+
+
+
+    public ObservableCollection<EdsCourtModel> EdsList { get; set; } = [];
+    public ObservableCollection<EdsCourtModel> EdsSelectList { get; set; } = [];
+    public ObservableCollection<ProductCourtModel> ProductList { get; set; } = [];
+    public ObservableCollection<CompartimentCourtModel> CompartimentList { get; set; } = [];
+    public ObservableCollection<HoseCourtModel> HoseList { get; set; } = [];
+    public ObservableCollection<HoseCourtModel> HoseDispenserList { get; set; } = [];
+    public ObservableCollection<ExpendituresCourtModel> ExpenditureList { get; set; } = [];
+    public ObservableCollection<TypeOfCollectionCourtModel> TypeOfCollectionList { get; set; } = [];
+    public ObservableCollection<IslanderResponse> IslanderList { get; set; } = [];
+    public ObservableCollection<IslanderResponse> IslanderSelectList { get; set; } = [];
+    public ObservableCollection<BusinessModel> BusinessList { get; set; } = [];
+    public ObservableCollection<DispenserModelResponse> DispensersList { get; set; } = [];
+    public ObservableCollection<double> AmountResults { get; set; } = new ObservableCollection<double>();
+    public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
+    public bool AreAvailableHoses => IsUserRole || HoseList != null && HoseList.Count > 0;
+    public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
+    public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
+
+    // ?? NUEVAS PROPIEDADES PARA CONTROLAR LA VISIBILIDAD DE LAS SECCIONES
+    /// <summary>
+    /// Determina si se debe mostrar la secciÛn "Ventas por mangueras" bas·ndose en si hay dispensers agregados
+    /// </summary>
+    public bool ShouldShowDispensersSection => CourtDispensers != null && CourtDispensers.Any();
+
+    /// <summary>
+    /// Determina si se debe mostrar la secciÛn "Formas de pago" bas·ndose en si hay mÈtodos de pago agregados
+    /// </summary>
+    public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
+
+    /// <summary>
+    /// Determina si se debe mostrar la secciÛn "Arqueo De Caja" bas·ndose en si hay al menos un valor diferente de cero
+    /// </summary>
+    public bool ShouldShowCashCountSection =>
+        TotalAmount > 0 ||
+        TotalGallons > 0 ||
+        TotalExpenditure > 0 ||
+        TotalTypeOfCollection > 0 ||
+        TotalSales > 0 ||
+        Distintic > 0;
+
+    private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
+
+
+    private CourtModel _court;
+    public CourtModel Court
+    {
+        get => _court;
+        set
+        {
+            _court = value;
+            OnPropertyChanged(nameof(Court));
+        }
+    }
+
+
+    private int _idCourt;
+    public int IdCourt
+    {
+        get => _idCourt;
+        set
+        {
+            _idCourt = value;
+            OnPropertyChanged(nameof(IdCourt));
+        }
+    }
+
+    private bool _isIslanderLogin;
+    public bool IsIslanderLogin
+    {
+        get => _isIslanderLogin;
+        set
+        {
+            if (_isIslanderLogin != value)
             {
-                // Reset business/EDS selections
-                _instance.SelectedBusiness = null;
-                _instance.SelectedEds = null;
-                _instance.SelectedIslander = null;
-                
-                // Reset all totals and sales
-                _instance.TotalAmount = 0;
-                _instance.TotalGallons = 0;
-                _instance.TotalExpenditure = 0;
-                _instance.TotalTypeOfCollection = 0;
-                _instance.TotalSales = 0;
-                _instance.Distintic = 0;
-                
-                // Clear all collections
-                _instance.CourtDispensers?.Clear();
-                _instance.CourtDocuments?.Clear();
-                _instance.CourtExpenditures?.Clear();
-                _instance.CourtTypeOfCollections?.Clear();
-                
-                // Clear results collections
-                _instance.AmountResults?.Clear();
-                _instance.GallonResults?.Clear();
-                
-                // Reset accumulated values
-                _instance.AccumulatedAmount = 0;
-                _instance.AccumulatedGallons = 0;
-                _instance.LastAccumulatedAmount = 0;
-                _instance.LastAccumulatedGallons = 0;
-                _instance.AmountDifferenceResult = 0;
-                _instance.GallonsDifferenceResult = 0;
-                
-                // Reset additional info
-                _instance.AdditionalInfoDescription = null;
-                
-                // Notify all property changes to update UI
-                _instance.OnPropertyChanged(nameof(TotalAmount));
-                _instance.OnPropertyChanged(nameof(TotalGallons));
-                _instance.OnPropertyChanged(nameof(TotalExpenditure));
-                _instance.OnPropertyChanged(nameof(TotalTypeOfCollection));
-                _instance.OnPropertyChanged(nameof(TotalSales));
-                _instance.OnPropertyChanged(nameof(Distintic));
-                _instance.OnPropertyChanged(nameof(CourtDispensers));
-                _instance.OnPropertyChanged(nameof(CourtDocuments));
-                _instance.OnPropertyChanged(nameof(CourtExpenditures));
-                _instance.OnPropertyChanged(nameof(CourtTypeOfCollections));
-                _instance.OnPropertyChanged(nameof(AccumulatedAmount));
-                _instance.OnPropertyChanged(nameof(AccumulatedGallons));
-                _instance.OnPropertyChanged(nameof(LastAccumulatedAmount));
-                _instance.OnPropertyChanged(nameof(LastAccumulatedGallons));
-                _instance.OnPropertyChanged(nameof(AmountDifferenceResult));
-                _instance.OnPropertyChanged(nameof(GallonsDifferenceResult));
-                _instance.OnPropertyChanged(nameof(AdditionalInfoDescription));
-                _instance.OnPropertyChanged(nameof(SelectedBusiness));
-                _instance.OnPropertyChanged(nameof(SelectedEds));
-                _instance.OnPropertyChanged(nameof(SelectedIslander));
-                
-                // Notify visibility properties after clearing collections
-                _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
-                _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-                // üî• Notificar cambio en la visibilidad de la secci√≥n de Arqueo De Caja despu√©s del reset
-                _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
+                _isIslanderLogin = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsNotIslanderLogin));
             }
         }
-        public static void DestroyInstance()
+    }
+
+    public bool IsNotIslanderLogin => !IsIslanderLogin;
+
+
+    private int _idIslander;
+    public int IdIslander
+    {
+        get => _idIslander;
+        set
         {
-            _instance = null;
+            _idIslander = value;
+            OnPropertyChanged(nameof(IdIslander));
         }
+    }
 
 
-
-        public ObservableCollection<EdsCourtModel> EdsList { get; set; } = [];
-        public ObservableCollection<EdsCourtModel> EdsSelectList { get; set; } = [];
-        public ObservableCollection<ProductCourtModel> ProductList { get; set; } = [];
-        public ObservableCollection<CompartimentCourtModel> CompartimentList { get; set; } = [];
-        public ObservableCollection<HoseCourtModel> HoseList { get; set; } = [];
-        public ObservableCollection<HoseCourtModel> HoseDispenserList { get; set; } = [];
-        public ObservableCollection<ExpendituresCourtModel> ExpenditureList { get; set; } = [];
-        public ObservableCollection<TypeOfCollectionCourtModel> TypeOfCollectionList { get; set; } = [];
-        public ObservableCollection<IslanderResponse> IslanderList { get; set; } = [];
-        public ObservableCollection<IslanderResponse> IslanderSelectList { get; set; } = [];
-        public ObservableCollection<BusinessModel> BusinessList { get; set; } = [];
-        public ObservableCollection<DispenserModelResponse> DispensersList { get; set; } = [];
-        public ObservableCollection<double> AmountResults { get; set; } = new ObservableCollection<double>();
-        public ObservableCollection<double> GallonResults { get; set; } = new ObservableCollection<double>();
-        public ObservableCollection<CourtListItemModel> CourtList { get; set; } = new();
-        public bool AreAvailableHoses => IsUserRole || HoseList != null && HoseList.Count > 0;
-        public bool NewSaleEnabled => IsUserRole || (IsEdsSelected && AreAvailableHoses);
-        public bool AdditionalInfoEnabled => IsUserRole || !string.IsNullOrEmpty(AdditionalInfoDescription);
-
-        // üî• NUEVAS PROPIEDADES PARA CONTROLAR LA VISIBILIDAD DE LAS SECCIONES
-        /// <summary>
-        /// Determina si se debe mostrar la secci√≥n "Ventas por mangueras" bas√°ndose en si hay dispensers agregados
-        /// </summary>
-        public bool ShouldShowDispensersSection => CourtDispensers != null && CourtDispensers.Any();
-
-        /// <summary>
-        /// Determina si se debe mostrar la secci√≥n "Formas de pago" bas√°ndose en si hay m√©todos de pago agregados
-        /// </summary>
-        public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
-
-        /// <summary>
-        /// Determina si se debe mostrar la secci√≥n "Arqueo De Caja" bas√°ndose en si hay al menos un valor diferente de cero
-        /// </summary>
-        public bool ShouldShowCashCountSection => 
-            TotalAmount > 0 || 
-            TotalGallons > 0 || 
-            TotalExpenditure > 0 || 
-            TotalTypeOfCollection > 0 || 
-            TotalSales > 0 || 
-            Distintic > 0;
-
-        private List<HoseCourtModel> selectedHoses = new List<HoseCourtModel>();
-
-
-        private CourtModel _court;
-        public CourtModel Court
+    private DateTime _dateStarttime;
+    public DateTime DateStarttime
+    {
+        get => _dateStarttime;
+        set
         {
-            get => _court;
-            set
+            if (_dateStarttime != value)
             {
-                _court = value;
-                OnPropertyChanged(nameof(Court));
-            }
-        }
-
-
-        private int _idCourt;
-        public int IdCourt
-        {
-            get => _idCourt;
-            set
-            {
-                _idCourt = value;
-                OnPropertyChanged(nameof(IdCourt));
-            }
-        }
-
-        private bool _isIslanderLogin;
-        public bool IsIslanderLogin
-        {
-            get => _isIslanderLogin;
-            set
-            {
-                if (_isIslanderLogin != value)
-                {
-                    _isIslanderLogin = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsNotIslanderLogin));
-                }
-            }
-        }
-
-        public bool IsNotIslanderLogin => !IsIslanderLogin;
-
-
-        private int _idIslander;
-        public int IdIslander
-        {
-            get => _idIslander;
-            set
-            {
-                _idIslander = value;
-                OnPropertyChanged(nameof(IdIslander));
-            }
-        }
-
-
-        private DateTime _dateStarttime;
-        public DateTime DateStarttime
-        {
-            get => _dateStarttime;
-            set
-            {
-                if (_dateStarttime != value)
-                {
-                    _dateStarttime = value;
-                    OnPropertyChanged(nameof(DateStarttime));
-                    UpdateDateEndtime();
-                }
-            }
-        }
-
-        private DateTime _dateEndtime;
-        public DateTime DateEndtime
-        {
-            get => _dateEndtime;
-            set
-            {
-                if (_dateEndtime != value)
-                {
-                    _dateEndtime = value;
-                    OnPropertyChanged(nameof(DateEndtime));
-                }
-            }
-        }
-
-
-        private TimeSpan _startTime;
-        public TimeSpan Starttime
-        {
-            get => _startTime;
-            set
-            {
-                _startTime = value;
-                OnPropertyChanged(nameof(Starttime));
+                _dateStarttime = value;
+                OnPropertyChanged(nameof(DateStarttime));
                 UpdateDateEndtime();
             }
         }
+    }
 
-        private TimeSpan _endTime;
-        public TimeSpan Endtime
+    private DateTime _dateEndtime;
+    public DateTime DateEndtime
+    {
+        get => _dateEndtime;
+        set
         {
-            get => _endTime;
-            set
+            if (_dateEndtime != value)
             {
-                _endTime = value;
-                OnPropertyChanged(nameof(Endtime));
-                UpdateDateEndtime();
+                _dateEndtime = value;
+                OnPropertyChanged(nameof(DateEndtime));
             }
         }
+    }
 
-        private string _AdditionalInfoDescription;
-        public string AdditionalInfoDescription
+
+    private TimeSpan _startTime;
+    public TimeSpan Starttime
+    {
+        get => _startTime;
+        set
         {
-            get => _AdditionalInfoDescription;
-            set
+            _startTime = value;
+            OnPropertyChanged(nameof(Starttime));
+            UpdateDateEndtime();
+        }
+    }
+
+    private TimeSpan _endTime;
+    public TimeSpan Endtime
+    {
+        get => _endTime;
+        set
+        {
+            _endTime = value;
+            OnPropertyChanged(nameof(Endtime));
+            UpdateDateEndtime();
+        }
+    }
+
+    private string _AdditionalInfoDescription;
+    public string AdditionalInfoDescription
+    {
+        get => _AdditionalInfoDescription;
+        set
+        {
+            _AdditionalInfoDescription = value;
+            OnPropertyChanged(nameof(AdditionalInfoDescription));
+            OnPropertyChanged(nameof(AdditionalInfoEnabled));
+        }
+    }
+
+    private int _consecutive;
+    public int Consecutive
+    {
+        get => _consecutive;
+        set
+        {
+            _consecutive = value;
+            OnPropertyChanged(nameof(Consecutive));
+        }
+    }
+
+    private int _idEds;
+    public int IdEds
+    {
+        get => _idEds;
+        set
+        {
+            _idEds = value;
+            OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
+
+    private int _idCourtDispenser;
+    public int IdCourtDispenser
+    {
+        get => _idCourtDispenser;
+        set
+        {
+            _idCourtDispenser = value;
+            OnPropertyChanged(nameof(IdCourtDispenser));
+        }
+    }
+
+    private int _idDocument;
+    public int IdDocument
+    {
+        get => _idDocument;
+        set
+        {
+            _idDocument = value;
+            OnPropertyChanged(nameof(IdDocument));
+        }
+    }
+
+    private string _documentDescription;
+    public string DocumentDescription
+    {
+        get => _documentDescription;
+        set
+        {
+            _documentDescription = value;
+            OnPropertyChanged(nameof(DocumentDescription));
+        }
+    }
+
+    private int _idExpenditure;
+    public int IdExpenditure
+    {
+        get => _idExpenditure;
+        set
+        {
+            _idExpenditure = value;
+            OnPropertyChanged(nameof(IdExpenditure));
+        }
+    }
+
+    private decimal _amount;
+    public decimal Amount
+    {
+        get => _amount;
+        set
+        {
+            _amount = value;
+            OnPropertyChanged(nameof(Amount));
+        }
+    }
+
+    private string _expenditureDescription;
+    public string ExpenditureDescription
+    {
+        get => _expenditureDescription;
+        set
+        {
+            _expenditureDescription = value;
+            OnPropertyChanged(nameof(ExpenditureDescription));
+        }
+    }
+
+    private int _idType;
+    public int IdType
+    {
+        get => _idType;
+        set
+        {
+            _idType = value;
+            OnPropertyChanged(nameof(IdType));
+        }
+    }
+
+    private string _typeName;
+    public string TypeName
+    {
+        get => _typeName;
+        set
+        {
+            _typeName = value;
+            OnPropertyChanged(nameof(TypeName));
+        }
+    }
+
+
+
+    private int _idCourtTypeOfCollection;
+
+    public int IdCourtTypeOfCollection
+    {
+        get => _idCourtTypeOfCollection;
+        set
+        {
+            _idCourtTypeOfCollection = value;
+            OnPropertyChanged(nameof(IdCourtTypeOfCollection));
+        }
+    }
+
+    private int _courtTypeOfCollectionIdCourt;
+
+    public int CourtTypeOfCollectionIdCourt
+    {
+        get => _courtTypeOfCollectionIdCourt;
+        set
+        {
+            _courtTypeOfCollectionIdCourt = value;
+            OnPropertyChanged(nameof(CourtTypeOfCollectionIdCourt));
+        }
+    }
+
+    private string _courtTypeOfCollectionDescription;
+
+    public string CourtTypeOfCollectionDescription
+    {
+        get => _courtTypeOfCollectionDescription;
+        set
+        {
+            _courtTypeOfCollectionDescription = value;
+            OnPropertyChanged(nameof(CourtTypeOfCollectionDescription));
+        }
+    }
+
+
+    private int _idTypeOfCollection;
+
+    public int IdTypeOfCollection
+    {
+        get => _idTypeOfCollection;
+        set
+        {
+            _idTypeOfCollection = value;
+            OnPropertyChanged(nameof(IdTypeOfCollection));
+        }
+    }
+
+    private int _idBusiness;
+
+    public int IdBusiness
+    {
+        get => _idBusiness;
+        set
+        {
+            _idBusiness = value;
+            OnPropertyChanged(nameof(IdBusiness));
+        }
+    }
+
+    private int _idDispensers;
+
+    public int IdDispensers
+    {
+        get => _idDispensers;
+        set
+        {
+            _idDispensers = value;
+            OnPropertyChanged(nameof(IdDispensers));
+        }
+    }
+
+    private double _courtTypeOfCollectionAmount;
+
+    public double CourtTypeOfCollectionAmount
+    {
+        get => _courtTypeOfCollectionAmount;
+        set
+        {
+            _courtTypeOfCollectionAmount = value;
+            OnPropertyChanged(nameof(CourtTypeOfCollectionAmount));
+        }
+    }
+    private int _idCourtExpenditure;
+
+    public int IdCourtExpenditure
+    {
+        get => _idCourtExpenditure;
+        set
+        {
+            _idCourtExpenditure = value;
+            OnPropertyChanged(nameof(IdCourtExpenditure));
+        }
+    }
+
+    private int _courtExpenditureIdCourt;
+
+    public int CourtExpenditureIdCourt
+    {
+        get => _courtExpenditureIdCourt;
+        set
+        {
+            _courtExpenditureIdCourt = value;
+            OnPropertyChanged(nameof(CourtExpenditureIdCourt));
+        }
+    }
+
+    private int _idExpenditures;
+    public int IdExpenditures
+    {
+        get => _idExpenditures;
+        set
+        {
+            _idExpenditures = value;
+            OnPropertyChanged(nameof(IdExpenditures));
+        }
+    }
+    private double _courtExpenditureAmount;
+
+    public double CourtExpenditureAmount
+    {
+        get => _courtExpenditureAmount;
+        set
+        {
+            _courtExpenditureAmount = value;
+            OnPropertyChanged(nameof(CourtExpenditureAmount));
+        }
+    }
+    private int _courtDocumentIdCourt;
+
+    public int CourtDocumentIdCourt
+    {
+        get => _courtDocumentIdCourt;
+        set
+        {
+            _courtDocumentIdCourt = value;
+            OnPropertyChanged(nameof(CourtDocumentIdCourt));
+        }
+    }
+    private int _courtDispenserIdCourt;
+
+    public int CourtDispenserIdCourt
+    {
+        get => _courtDispenserIdCourt;
+        set
+        {
+            _courtDispenserIdCourt = value;
+            OnPropertyChanged(nameof(CourtDispenserIdCourt));
+        }
+    }
+    private double _accumulatedAmount;
+
+    public double AccumulatedAmount
+    {
+        get => _accumulatedAmount;
+        set
+        {
+            _accumulatedAmount = value;
+            OnPropertyChanged(nameof(AccumulatedAmount));
+            UpdateAmountDifferenceResult();
+        }
+    }
+
+    private double _accumulatedGallons;
+
+    public double AccumulatedGallons
+    {
+        get => _accumulatedGallons;
+        set
+        {
+            _accumulatedGallons = value;
+            OnPropertyChanged(nameof(AccumulatedGallons));
+            UpdateGallonsDifferenceResult();
+        }
+    }
+
+    private double _lastAccumulatedAmount;
+    public double LastAccumulatedAmount
+    {
+        get => _lastAccumulatedAmount;
+        set
+        {
+            _lastAccumulatedAmount = value;
+            OnPropertyChanged(nameof(LastAccumulatedAmount));
+            UpdateAmountDifferenceResult();
+        }
+    }
+
+    private double _lastAccumulatedGallons;
+    public double LastAccumulatedGallons
+    {
+        get => _lastAccumulatedGallons;
+        set
+        {
+            _lastAccumulatedGallons = value;
+            OnPropertyChanged(nameof(LastAccumulatedGallons));
+            UpdateGallonsDifferenceResult();
+        }
+    }
+
+    private double _amountDifferenceResult;
+    public double AmountDifferenceResult
+    {
+        get => _amountDifferenceResult;
+        set
+        {
+            _amountDifferenceResult = value;
+            OnPropertyChanged(nameof(AmountDifferenceResult));
+        }
+    }
+
+    private double _gallonsDifferenceResult;
+    public double GallonsDifferenceResult
+    {
+        get => _gallonsDifferenceResult;
+        set
+        {
+            _gallonsDifferenceResult = value;
+            OnPropertyChanged(nameof(GallonsDifferenceResult));
+        }
+    }
+
+    private double _totalAmount;
+    public double TotalAmount
+    {
+        get => _totalAmount;
+        set
+        {
+            _totalAmount = value;
+            OnPropertyChanged(nameof(TotalAmount));
+        }
+    }
+
+    private double _totalGallons;
+    public double TotalGallons
+    {
+        get => _totalGallons;
+        set
+        {
+            _totalGallons = value;
+            OnPropertyChanged(nameof(TotalGallons));
+        }
+    }
+
+    private double _totalExpenditure;
+    public double TotalExpenditure
+    {
+        get => _totalExpenditure;
+        set
+        {
+            _totalExpenditure = value;
+            OnPropertyChanged(nameof(TotalExpenditure));
+        }
+    }
+
+    private double _totalTypeOfCollection;
+    public double TotalTypeOfCollection
+    {
+        get => _totalTypeOfCollection;
+        set
+        {
+            _totalTypeOfCollection = value;
+            OnPropertyChanged(nameof(TotalTypeOfCollection));
+        }
+    }
+
+    private double _totalSales;
+    public double TotalSales
+    {
+        get => _totalSales;
+        set
+        {
+            _totalSales = value;
+            OnPropertyChanged(nameof(TotalSales));
+            OnPropertyChanged(nameof(IsTotalSalesValid));
+        }
+    }
+
+    public bool IsTotalSalesValid => TotalSales >= 0;
+
+    private int _dispenserNumber;
+    public int DispenserNumber
+    {
+        get => _dispenserNumber;
+        set
+        {
+            _dispenserNumber = value;
+            OnPropertyChanged(nameof(DispenserNumber));
+        }
+    }
+
+    private int _number;
+    public int Number
+    {
+        get => _number;
+        set
+        {
+            _number = value;
+            OnPropertyChanged(nameof(Number));
+        }
+    }
+
+    private int _idProduct;
+    public int IdProduct
+    {
+        get => _idProduct;
+        set
+        {
+            _idProduct = value;
+            OnPropertyChanged(nameof(IdProduct));
+        }
+    }
+    private int _idCompartiment;
+    public int IdCompartiment
+    {
+        get => _idCompartiment;
+        set
+        {
+            _idCompartiment = value;
+            OnPropertyChanged(nameof(IdCompartiment));
+        }
+    }
+    private int _idHose;
+    public int IdHose
+    {
+        get => _idHose;
+        set
+        {
+            _idHose = value;
+            OnPropertyChanged(nameof(IdHose));
+        }
+    }
+
+    private int _distintic;
+    public int Distintic
+    {
+        get => _distintic;
+        set
+        {
+            _distintic = value;
+            OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
+            // ?? Notificar cambio en la visibilidad de la secciÛn de Arqueo De Caja cuando cambia el distintivo
+            OnPropertyChanged(nameof(ShouldShowCashCountSection));
+        }
+    }
+
+    //Vista
+
+    private bool _visibleLists = true;
+    public bool VisibleLists
+    {
+        get => _visibleLists;
+        set
+        {
+            _visibleLists = value;
+            OnPropertyChanged(nameof(VisibleLists));
+        }
+    }
+
+    private bool _visibleDispenser = false;
+    public bool VisibleDispenser
+    {
+        get => _visibleDispenser;
+        set
+        {
+            _visibleDispenser = value;
+            OnPropertyChanged(nameof(VisibleDispenser));
+        }
+    }
+
+
+    private bool _visibleDocuments = false;
+    public bool VisibleDocuments
+    {
+        get => _visibleDocuments;
+        set
+        {
+            _visibleDocuments = value;
+            OnPropertyChanged(nameof(VisibleDocuments));
+        }
+    }
+
+    private bool _visibleExpenses = false;
+    public bool VisibleExpenses
+    {
+        get => _visibleExpenses;
+        set
+        {
+            _visibleExpenses = value;
+            OnPropertyChanged(nameof(VisibleExpenses));
+        }
+    }
+
+    private bool _visibleReceipts = false;
+    public bool VisibleReceipts
+    {
+        get => _visibleReceipts;
+        set
+        {
+            _visibleReceipts = value;
+            OnPropertyChanged(nameof(VisibleReceipts));
+        }
+    }
+
+    private bool _visibleAdditionalInfo = false;
+    public bool VisibleAdditionalInfo
+    {
+        get => _visibleAdditionalInfo;
+        set
+        {
+            _visibleAdditionalInfo = value;
+            OnPropertyChanged(nameof(VisibleAdditionalInfo));
+        }
+    }
+
+
+    //VALIDATION PICKER
+
+    private bool _isBusinessSelected;
+    public bool IsBusinessSelected
+    {
+        get => _isBusinessSelected;
+        set
+        {
+            _isBusinessSelected = value;
+            OnPropertyChanged(nameof(IsBusinessSelected));
+        }
+    }
+
+    private bool _isEdsSelected;
+    public bool IsEdsSelected
+    {
+        get => IsUserRole || _isEdsSelected;
+        set
+        {
+            _isEdsSelected = value;
+            OnPropertyChanged(nameof(IsEdsSelected));
+            OnPropertyChanged(nameof(NewSaleEnabled));
+        }
+    }
+
+    //TRADUCCION
+
+    private string _business = string.Empty;
+    public string Business
+    {
+        get => _business;
+        set
+        {
+            if (_business != value)
             {
-                _AdditionalInfoDescription = value;
-                OnPropertyChanged(nameof(AdditionalInfoDescription));
-                OnPropertyChanged(nameof(AdditionalInfoEnabled));
+                _business = value;
+                OnPropertyChanged(nameof(Business));
             }
         }
+    }
 
-        private int _consecutive;
-        public int Consecutive
+    private string _selectaBusiness = string.Empty;
+    public string SelectaBusiness
+    {
+        get => _selectaBusiness;
+        set
         {
-            get => _consecutive;
-            set
+            if (_selectaBusiness != value)
             {
-                _consecutive = value;
-                OnPropertyChanged(nameof(Consecutive));
+                _selectaBusiness = value;
+                OnPropertyChanged(nameof(SelectaBusiness));
             }
         }
+    }
 
-        private int _idEds;
-        public int IdEds
+
+    private string _selectaEds = string.Empty;
+    public string SelectaEds
+    {
+        get => _selectaEds;
+        set
         {
-            get => _idEds;
-            set
+            if (_selectaEds != value)
             {
-                _idEds = value;
-                OnPropertyChanged(nameof(IdEds));
+                _selectaEds = value;
+                OnPropertyChanged(nameof(SelectaEds));
             }
         }
+    }
 
-       
-        
-        private int _idCourtDispenser;
-        public int IdCourtDispenser
+    private string _cuttingManagement = string.Empty;
+    public string CuttingManagement
+    {
+        get => _cuttingManagement;
+        set
         {
-            get => _idCourtDispenser;
-            set
+            if (_cuttingManagement != value)
             {
-                _idCourtDispenser = value;
-                OnPropertyChanged(nameof(IdCourtDispenser));
+                _cuttingManagement = value;
+                OnPropertyChanged(nameof(CuttingManagement));
             }
         }
+    }
 
-        private int _idDocument;
-        public int IdDocument
+
+    private string _islander = string.Empty;
+    public string Islander
+    {
+        get => _islander;
+        set
         {
-            get => _idDocument;
-            set
+            if (_islander != value)
             {
-                _idDocument = value;
-                OnPropertyChanged(nameof(IdDocument));
+                _islander = value;
+                OnPropertyChanged(nameof(Islander));
             }
         }
+    }
 
-        private string _documentDescription;
-        public string DocumentDescription
+    private string _SelectAnIslander = string.Empty;
+    public string SelectAnIslander
+    {
+        get => _SelectAnIslander;
+        set
         {
-            get => _documentDescription;
-            set
+            if (_SelectAnIslander != value)
             {
-                _documentDescription = value;
-                OnPropertyChanged(nameof(DocumentDescription));
+                _SelectAnIslander = value;
+                OnPropertyChanged(nameof(SelectAnIslander));
             }
         }
+    }
 
-        private int _idExpenditure;
-        public int IdExpenditure
+    private string _time = string.Empty;
+    public string Time
+    {
+        get => _time;
+        set
         {
-            get => _idExpenditure;
-            set
+            if (_time != value)
             {
-                _idExpenditure = value;
-                OnPropertyChanged(nameof(IdExpenditure));
+                _time = value;
+                OnPropertyChanged(nameof(Time));
             }
         }
+    }
 
-        private decimal _amount;
-        public decimal Amount
+
+    private string _DateTranslation = string.Empty;
+    public string DateTranslation
+    {
+        get => _DateTranslation;
+        set
         {
-            get => _amount;
-            set
+            if (_DateTranslation != value)
             {
-                _amount = value;
-                OnPropertyChanged(nameof(Amount));
+                _DateTranslation = value;
+                OnPropertyChanged(nameof(DateTranslation));
             }
         }
+    }
 
-        private string _expenditureDescription;
-        public string ExpenditureDescription
+
+    private string _StartTime = string.Empty;
+    public string StartTime
+    {
+        get => _StartTime;
+        set
         {
-            get => _expenditureDescription;
-            set
+            if (_StartTime != value)
             {
-                _expenditureDescription = value;
-                OnPropertyChanged(nameof(ExpenditureDescription));
+                _StartTime = value;
+                OnPropertyChanged(nameof(StartTime));
             }
         }
+    }
 
-        private int _idType;
-        public int IdType
+    private string _EndTime = string.Empty;
+    public string EndTime
+    {
+        get => _EndTime;
+        set
         {
-            get => _idType;
-            set
+            if (_EndTime != value)
             {
-                _idType = value;
-                OnPropertyChanged(nameof(IdType));
+                _EndTime = value;
+                OnPropertyChanged(nameof(EndTime));
             }
         }
+    }
 
-        private string _typeName;
-        public string TypeName
+    private string _additionalInformation = string.Empty;
+    public string AdditionalInformation
+    {
+        get => _additionalInformation;
+        set
         {
-            get => _typeName;
-            set
+            if (_additionalInformation != value)
             {
-                _typeName = value;
-                OnPropertyChanged(nameof(TypeName));
+                _additionalInformation = value;
+                OnPropertyChanged(nameof(AdditionalInformation));
             }
         }
+    }
 
-
-
-        private int _idCourtTypeOfCollection;
-
-        public int IdCourtTypeOfCollection
+    private string _DescriptionTranslation = string.Empty;
+    public string DescriptionTranslation
+    {
+        get => _DescriptionTranslation;
+        set
         {
-            get => _idCourtTypeOfCollection;
-            set
+            if (_DescriptionTranslation != value)
             {
-                _idCourtTypeOfCollection = value;
-                OnPropertyChanged(nameof(IdCourtTypeOfCollection));
+                _DescriptionTranslation = value;
+                OnPropertyChanged(nameof(DescriptionTranslation));
             }
         }
-
-        private int _courtTypeOfCollectionIdCourt;
-
-        public int CourtTypeOfCollectionIdCourt
+    }
+    private string _EnterADescription = string.Empty;
+    public string EnterADescription
+    {
+        get => _EnterADescription;
+        set
         {
-            get => _courtTypeOfCollectionIdCourt;
-            set
+            if (_EnterADescription != value)
             {
-                _courtTypeOfCollectionIdCourt = value;
-                OnPropertyChanged(nameof(CourtTypeOfCollectionIdCourt));
+                _EnterADescription = value;
+                OnPropertyChanged(nameof(EnterADescription));
             }
         }
+    }
 
-        private string _courtTypeOfCollectionDescription;
-
-        public string CourtTypeOfCollectionDescription
+    private string _DistinticDescription = string.Empty;
+    public string DistinticDescription
+    {
+        get => _DistinticDescription;
+        set
         {
-            get => _courtTypeOfCollectionDescription;
-            set
+            if (_DistinticDescription != value)
             {
-                _courtTypeOfCollectionDescription = value;
-                OnPropertyChanged(nameof(CourtTypeOfCollectionDescription));
+                _DistinticDescription = value;
+                OnPropertyChanged(nameof(DistinticDescription));
             }
         }
+    }
 
-
-        private int _idTypeOfCollection;
-
-        public int IdTypeOfCollection
+    private string _CashCount = string.Empty;
+    public string CashCount
+    {
+        get => _CashCount;
+        set
         {
-            get => _idTypeOfCollection;
-            set
+            if (_CashCount != value)
             {
-                _idTypeOfCollection = value;
-                OnPropertyChanged(nameof(IdTypeOfCollection));
+                _CashCount = value;
+                OnPropertyChanged(nameof(CashCount));
             }
         }
+    }
 
-        private int _idBusiness;
-
-        public int IdBusiness
+    private string _SalesInGallons = string.Empty;
+    public string SalesInGallons
+    {
+        get => _SalesInGallons;
+        set
         {
-            get => _idBusiness;
-            set
+            if (_SalesInGallons != value)
             {
-                _idBusiness = value;
-                OnPropertyChanged(nameof(IdBusiness));
+                _SalesInGallons = value;
+                OnPropertyChanged(nameof(SalesInGallons));
             }
         }
+    }
 
-        private int _idDispensers;
-
-        public int IdDispensers
+    private string _SalesInMoney = string.Empty;
+    public string SalesInMoney
+    {
+        get => _SalesInMoney;
+        set
         {
-            get => _idDispensers;
-            set
+            if (_SalesInMoney != value)
             {
-                _idDispensers = value;
-                OnPropertyChanged(nameof(IdDispensers));
+                _SalesInMoney = value;
+                OnPropertyChanged(nameof(SalesInMoney));
             }
         }
+    }
 
-        private double _courtTypeOfCollectionAmount;
-
-        public double CourtTypeOfCollectionAmount
+    private string _AddedDispensers = string.Empty;
+    public string AddedDispensers
+    {
+        get => _AddedDispensers;
+        set
         {
-            get => _courtTypeOfCollectionAmount;
-            set
+            if (_AddedDispensers != value)
             {
-                _courtTypeOfCollectionAmount = value;
-                OnPropertyChanged(nameof(CourtTypeOfCollectionAmount));
+                _AddedDispensers = value;
+                OnPropertyChanged(nameof(AddedDispensers));
             }
         }
-        private int _idCourtExpenditure;
+    }
 
-        public int IdCourtExpenditure
+    private string _AddedDocuments = string.Empty;
+    public string AddedDocuments
+    {
+        get => _AddedDocuments;
+        set
         {
-            get => _idCourtExpenditure;
-            set
+            if (_AddedDocuments != value)
             {
-                _idCourtExpenditure = value;
-                OnPropertyChanged(nameof(IdCourtExpenditure));
+                _AddedDocuments = value;
+                OnPropertyChanged(nameof(AddedDocuments));
             }
         }
+    }
 
-        private int _courtExpenditureIdCourt;
-
-        public int CourtExpenditureIdCourt
+    private string _AddedExpenses = string.Empty;
+    public string AddedExpenses
+    {
+        get => _AddedExpenses;
+        set
         {
-            get => _courtExpenditureIdCourt;
-            set
+            if (_AddedExpenses != value)
             {
-                _courtExpenditureIdCourt = value;
-                OnPropertyChanged(nameof(CourtExpenditureIdCourt));
+                _AddedExpenses = value;
+                OnPropertyChanged(nameof(AddedExpenses));
             }
         }
+    }
 
-        private int _idExpenditures;
-        public int IdExpenditures
+    private string _AddDispenser = string.Empty;
+    public string AddDispenser
+    {
+        get => _AddDispenser;
+        set
         {
-            get => _idExpenditures;
-            set
+            if (_AddDispenser != value)
             {
-                _idExpenditures = value;
-                OnPropertyChanged(nameof(IdExpenditures));
+                _AddDispenser = value;
+                OnPropertyChanged(nameof(AddDispenser));
             }
         }
-        private double _courtExpenditureAmount;
+    }
 
-        public double CourtExpenditureAmount
+    private string _addDocumentTranslation = string.Empty;
+    public string AddDocumentTranslation
+    {
+        get => _addDocumentTranslation;
+        set
         {
-            get => _courtExpenditureAmount;
-            set
+            if (_addDocumentTranslation != value)
             {
-                _courtExpenditureAmount = value;
-                OnPropertyChanged(nameof(CourtExpenditureAmount));
+                _addDocumentTranslation = value;
+                OnPropertyChanged(nameof(AddDocumentTranslation));
             }
         }
-        private int _courtDocumentIdCourt;
+    }
 
-        public int CourtDocumentIdCourt
+    private string _AddExpense = string.Empty;
+    public string AddExpense
+    {
+        get => _AddExpense;
+        set
         {
-            get => _courtDocumentIdCourt;
-            set
+            if (_AddExpense != value)
             {
-                _courtDocumentIdCourt = value;
-                OnPropertyChanged(nameof(CourtDocumentIdCourt));
+                _AddExpense = value;
+                OnPropertyChanged(nameof(AddExpense));
             }
         }
-        private int _courtDispenserIdCourt;
+    }
 
-        public int CourtDispenserIdCourt
+    private string _AddCollectionType = string.Empty;
+    public string AddCollectionType
+    {
+        get => _AddCollectionType;
+        set
         {
-            get => _courtDispenserIdCourt;
-            set
+            if (_AddCollectionType != value)
             {
-                _courtDispenserIdCourt = value;
-                OnPropertyChanged(nameof(CourtDispenserIdCourt));
+                _AddCollectionType = value;
+                OnPropertyChanged(nameof(AddCollectionType));
             }
         }
-        private double _accumulatedAmount;
+    }
 
-        public double AccumulatedAmount
+    private string _SendData = string.Empty;
+    public string SendData
+    {
+        get => _SendData;
+        set
         {
-            get => _accumulatedAmount;
-            set
+            if (_SendData != value)
             {
-                _accumulatedAmount = value;
-                OnPropertyChanged(nameof(AccumulatedAmount));
-                UpdateAmountDifferenceResult();
+                _SendData = value;
+                OnPropertyChanged(nameof(SendData));
             }
         }
+    }
 
-        private double _accumulatedGallons;
-
-        public double AccumulatedGallons
+    private string _SelectAHose = string.Empty;
+    public string SelectAHose
+    {
+        get => _SelectAHose;
+        set
         {
-            get => _accumulatedGallons;
-            set
+            if (_SelectAHose != value)
             {
-                _accumulatedGallons = value;
+                _SelectAHose = value;
+                OnPropertyChanged(nameof(SelectAHose));
+            }
+        }
+    }
+
+    private string _Add = string.Empty;
+    public string Add
+    {
+        get => _Add;
+        set
+        {
+            if (_Add != value)
+            {
+                _Add = value;
+                OnPropertyChanged(nameof(Add));
+            }
+        }
+    }
+
+    private string _Select = string.Empty;
+    public string Select
+    {
+        get => _Select;
+        set
+        {
+            if (_Select != value)
+            {
+                _Select = value;
+                OnPropertyChanged(nameof(Select));
+            }
+        }
+    }
+
+    private string _Expenditures = string.Empty;
+    public string Expenditures
+    {
+        get => _Expenditures;
+        set
+        {
+            if (_Expenditures != value)
+            {
+                _Expenditures = value;
+                OnPropertyChanged(nameof(Expenditures));
+            }
+        }
+    }
+
+    private string _AmountTranslation = string.Empty;
+    public string AmountTranslation
+    {
+        get => _AmountTranslation;
+        set
+        {
+            if (_AmountTranslation != value)
+            {
+                _AmountTranslation = value;
+                OnPropertyChanged(nameof(AmountTranslation));
+            }
+        }
+    }
+
+    private string _CollectionAmount = string.Empty;
+    public string CollectionAmount
+    {
+        get => _CollectionAmount;
+        set
+        {
+            if (_CollectionAmount != value)
+            {
+                _CollectionAmount = value;
+                OnPropertyChanged(nameof(CollectionAmount));
+            }
+        }
+    }
+
+    private string _EnterthedescriptionTranslations = string.Empty;
+    public string EnterthedescriptionTranslations
+    {
+        get => _EnterthedescriptionTranslations;
+        set
+        {
+            if (_EnterthedescriptionTranslations != value)
+            {
+                _EnterthedescriptionTranslations = value;
+                OnPropertyChanged(nameof(EnterthedescriptionTranslations));
+            }
+        }
+    }
+
+
+    private string _SelectFile = string.Empty;
+    public string SelectFile
+    {
+        get => _SelectFile;
+        set
+        {
+            if (_SelectFile != value)
+            {
+                _SelectFile = value;
+                OnPropertyChanged(nameof(SelectFile));
+            }
+        }
+    }
+
+    private string _ShiftClosing = string.Empty;
+    public string ShiftClosing
+    {
+        get => _ShiftClosing;
+        set
+        {
+            if (_ShiftClosing != value)
+            {
+                _ShiftClosing = value;
+                OnPropertyChanged(nameof(ShiftClosing));
+            }
+        }
+    }
+
+    private string _TypesofAggregateCollections = string.Empty;
+    public string TypesofAggregateCollections
+    {
+        get => _TypesofAggregateCollections;
+        set
+        {
+            if (_TypesofAggregateCollections != value)
+            {
+                _TypesofAggregateCollections = value;
+                OnPropertyChanged(nameof(TypesofAggregateCollections));
+            }
+        }
+    }
+
+    private string _Eds = string.Empty;
+    public string Eds
+    {
+        get => _Eds;
+        set
+        {
+            if (_Eds != value)
+            {
+                _Eds = value;
+                OnPropertyChanged(nameof(Eds));
+            }
+        }
+    }
+
+    private string _Expenses = string.Empty;
+    public string Expenses
+    {
+        get => _Expenses;
+        set
+        {
+            if (_Expenses != value)
+            {
+                _Expenses = value;
+                OnPropertyChanged(nameof(Expenses));
+            }
+        }
+    }
+
+    private string _Collections = string.Empty;
+    public string Collections
+    {
+        get => _Collections;
+        set
+        {
+            if (_Collections != value)
+            {
+                _Collections = value;
+                OnPropertyChanged(nameof(Collections));
+            }
+        }
+    }
+
+    private string _TotalForTheDay = string.Empty;
+    public string TotalForTheDay
+    {
+        get => _TotalForTheDay;
+        set
+        {
+            if (_TotalForTheDay != value)
+            {
+                _TotalForTheDay = value;
+                OnPropertyChanged(nameof(TotalForTheDay));
+            }
+        }
+    }
+
+    private string _Lists = string.Empty;
+    public string Lists
+    {
+        get => _Lists;
+        set
+        {
+            if (_Lists != value)
+            {
+                _Lists = value;
+                OnPropertyChanged(nameof(Lists));
+            }
+        }
+    }
+
+    private string _NumberTranslation = string.Empty;
+    public string NumberTranslation
+    {
+        get => _NumberTranslation;
+        set
+        {
+            if (_NumberTranslation != value)
+            {
+                _NumberTranslation = value;
+                OnPropertyChanged(nameof(NumberTranslation));
+            }
+        }
+    }
+
+    private string _AccumulatedAmountTranslation = string.Empty;
+    public string AccumulatedAmountTranslation
+    {
+        get => _AccumulatedAmountTranslation;
+        set
+        {
+            if (_AccumulatedAmountTranslation != value)
+            {
+                _AccumulatedAmountTranslation = value;
+                OnPropertyChanged(nameof(_AccumulatedAmountTranslation));
+            }
+        }
+    }
+
+    private string _GallonsAccumulatedTranslation = string.Empty;
+    public string GallonsAccumulatedTranslation
+    {
+        get => _GallonsAccumulatedTranslation;
+        set
+        {
+            if (_GallonsAccumulatedTranslation != value)
+            {
+                _GallonsAccumulatedTranslation = value;
+                OnPropertyChanged(nameof(GallonsAccumulatedTranslation));
+            }
+        }
+    }
+
+    private string _GallonsAccumulated = string.Empty;
+    public string GallonsAccumulated
+    {
+        get => _GallonsAccumulated;
+        set
+        {
+            if (_GallonsAccumulated != value)
+            {
+                _GallonsAccumulated = value;
+                OnPropertyChanged(nameof(GallonsAccumulated));
+            }
+        }
+    }
+
+    private string _Document = string.Empty;
+    public string Document
+    {
+        get => _Document;
+        set
+        {
+            if (_Document != value)
+            {
+                _Document = value;
+                OnPropertyChanged(nameof(Document));
+            }
+        }
+    }
+
+    private string _Expenditure = string.Empty;
+    public string Expenditure
+    {
+        get => _Expenditure;
+        set
+        {
+            if (_Expenditure != value)
+            {
+                _Expenditure = value;
+                OnPropertyChanged(nameof(Expenditure));
+            }
+        }
+    }
+
+    private string _NewSale = string.Empty;
+    public string NewSale
+    {
+        get => _NewSale;
+        set
+        {
+            if (_NewSale != value)
+            {
+                _NewSale = value;
+                OnPropertyChanged(nameof(NewSale));
+            }
+        }
+    }
+
+    private string _UploadProofOfPayment = string.Empty;
+    public string UploadProofOfPayment
+    {
+        get => _UploadProofOfPayment;
+        set
+        {
+            if (_UploadProofOfPayment != value)
+            {
+                _UploadProofOfPayment = value;
+                OnPropertyChanged(nameof(UploadProofOfPayment));
+            }
+        }
+    }
+
+    private string _NewEgress = string.Empty;
+    public string NewEgress
+    {
+        get => _NewEgress;
+        set
+        {
+            if (_NewEgress != value)
+            {
+                _NewEgress = value;
+                OnPropertyChanged(nameof(NewEgress));
+            }
+        }
+    }
+
+    private string _AccumulatedGallonsTranslations = string.Empty;
+    public string AccumulatedGallonsTranslations
+    {
+        get => _AccumulatedGallonsTranslations;
+        set
+        {
+            if (AccumulatedGallonsTranslations != value)
+            {
+                _AccumulatedGallonsTranslations = value;
                 OnPropertyChanged(nameof(AccumulatedGallons));
-                UpdateGallonsDifferenceResult();
             }
         }
+    }
 
-        private double _lastAccumulatedAmount;
-        public double LastAccumulatedAmount
+    private string _EnterTheGallons = string.Empty;
+    public string EnterTheGallons
+    {
+        get => _EnterTheGallons;
+        set
         {
-            get => _lastAccumulatedAmount;
-            set
+            if (_EnterTheGallons != value)
             {
-                _lastAccumulatedAmount = value;
-                OnPropertyChanged(nameof(LastAccumulatedAmount));
-                UpdateAmountDifferenceResult();
+                _EnterTheGallons = value;
+                OnPropertyChanged(nameof(EnterTheGallons));
             }
         }
+    }
 
-        private double _lastAccumulatedGallons;
-        public double LastAccumulatedGallons
+    private string _HoseTranslation = string.Empty;
+    public string HoseTranslation
+    {
+        get => _HoseTranslation;
+        set
         {
-            get => _lastAccumulatedGallons;
-            set
+            if (_HoseTranslation != value)
             {
-                _lastAccumulatedGallons = value;
-                OnPropertyChanged(nameof(LastAccumulatedGallons));
-                UpdateGallonsDifferenceResult();
+                _HoseTranslation = value;
+                OnPropertyChanged(nameof(HoseTranslation));
             }
         }
-
-        private double _amountDifferenceResult;
-        public double AmountDifferenceResult
-        {
-            get => _amountDifferenceResult;
-            set
-            {
-                _amountDifferenceResult = value;
-                OnPropertyChanged(nameof(AmountDifferenceResult));
-            }
-        }
-
-        private double _gallonsDifferenceResult;
-        public double GallonsDifferenceResult
-        {
-            get => _gallonsDifferenceResult;
-            set
-            {
-                _gallonsDifferenceResult = value;
-                OnPropertyChanged(nameof(GallonsDifferenceResult));
-            }
-        }
-
-        private double _totalAmount;
-        public double TotalAmount
-        {
-            get => _totalAmount;
-            set
-            {
-                _totalAmount = value;
-                OnPropertyChanged(nameof(TotalAmount));
-            }
-        }
-
-        private double _totalGallons;
-        public double TotalGallons
-        {
-            get => _totalGallons;
-            set
-            {
-                _totalGallons = value;
-                OnPropertyChanged(nameof(TotalGallons));
-            }
-        }
-
-        private double _totalExpenditure;
-        public double TotalExpenditure
-        {
-            get => _totalExpenditure;
-            set
-            {
-                _totalExpenditure = value;
-                OnPropertyChanged(nameof(TotalExpenditure));
-            }
-        }
-
-        private double _totalTypeOfCollection;
-        public double TotalTypeOfCollection
-        {
-            get => _totalTypeOfCollection;
-            set
-            {
-                _totalTypeOfCollection = value;
-                OnPropertyChanged(nameof(TotalTypeOfCollection));
-            }
-        }
-
-        private double _totalSales;
-        public double TotalSales
-        {
-            get => _totalSales;
-            set
-            {
-                _totalSales = value;
-                OnPropertyChanged(nameof(TotalSales));
-                OnPropertyChanged(nameof(IsTotalSalesValid));
-            }
-        }
-
-        public bool IsTotalSalesValid => TotalSales >= 0;
-
-        private int _dispenserNumber;
-        public int DispenserNumber
-        {
-            get => _dispenserNumber;
-            set
-            {
-                _dispenserNumber = value;
-                OnPropertyChanged(nameof(DispenserNumber));
-            }
-        }
-
-        private int _number;
-        public int Number
-        {
-            get => _number;
-            set
-            {
-                _number = value;
-                OnPropertyChanged(nameof(Number));
-            }
-        }
-
-        private int _idProduct;
-        public int IdProduct
-        {
-            get => _idProduct;
-            set
-            {
-                _idProduct = value;
-                OnPropertyChanged(nameof(IdProduct));
-            }
-        }
-        private int _idCompartiment;
-        public int IdCompartiment
-        {
-            get => _idCompartiment;
-            set
-            {
-                _idCompartiment = value;
-                OnPropertyChanged(nameof(IdCompartiment));
-            }
-        }
-        private int _idHose;
-        public int IdHose
-        {
-            get => _idHose;
-            set
-            {
-                _idHose = value;
-                OnPropertyChanged(nameof(IdHose));
-            }
-        }
-
-        private int _distintic;
-        public int Distintic
-        {
-            get => _distintic;
-            set
-            {
-                _distintic = value;
-                OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
-                // üî• Notificar cambio en la visibilidad de la secci√≥n de Arqueo De Caja cuando cambia el distintivo
-                OnPropertyChanged(nameof(ShouldShowCashCountSection));
-            }
-        }        
-
-        //Vista
-
-        private bool _visibleLists = true;
-        public bool VisibleLists
-        {
-            get => _visibleLists;
-            set
-            {
-                _visibleLists = value;
-                OnPropertyChanged(nameof(VisibleLists));
-            }
-        }
-
-        private bool _visibleDispenser = false;
-        public bool VisibleDispenser
-        {
-            get => _visibleDispenser;
-            set
-            {
-                _visibleDispenser = value;
-                OnPropertyChanged(nameof(VisibleDispenser));
-            }
-        }
-
-
-        private bool _visibleDocuments = false;
-        public bool VisibleDocuments
-        {
-            get => _visibleDocuments;
-            set
-            {
-                _visibleDocuments = value;
-                OnPropertyChanged(nameof(VisibleDocuments));
-            }
-        }
-
-        private bool _visibleExpenses = false;
-        public bool VisibleExpenses
-        {
-            get => _visibleExpenses;
-            set
-            {
-                _visibleExpenses = value;
-                OnPropertyChanged(nameof(VisibleExpenses));
-            }
-        }
-
-        private bool _visibleReceipts = false;
-        public bool VisibleReceipts
-        {
-            get => _visibleReceipts;
-            set
-            {
-                _visibleReceipts = value;
-                OnPropertyChanged(nameof(VisibleReceipts));
-            }
-        }
-
-        private bool _visibleAdditionalInfo = false;
-        public bool VisibleAdditionalInfo
-        {
-            get => _visibleAdditionalInfo;
-            set
-            {
-                _visibleAdditionalInfo = value;
-                OnPropertyChanged(nameof(VisibleAdditionalInfo));
-            }
-        }
- 
- 
-        //VALIDATION PICKER
-
-        private bool _isBusinessSelected;
-        public bool IsBusinessSelected
-        {
-            get => _isBusinessSelected;
-            set
-            {
-                _isBusinessSelected = value;
-                OnPropertyChanged(nameof(IsBusinessSelected));
-            }
-        }
-
-        private bool _isEdsSelected;
-        public bool IsEdsSelected
-        {
-            get => IsUserRole || _isEdsSelected;
-            set
-            {
-                _isEdsSelected = value;
-                OnPropertyChanged(nameof(IsEdsSelected));
-                OnPropertyChanged(nameof(NewSaleEnabled));
-            }
-        }
-
-        //TRADUCCION
-
-        private string _business = string.Empty;
-        public string Business
-        {
-            get => _business;
-            set
-            {
-                if (_business != value)
-                {
-                    _business = value;
-                    OnPropertyChanged(nameof(Business));
-                }
-            }
-        }
-
-        private string _selectaBusiness = string.Empty;
-        public string SelectaBusiness
-        {
-            get => _selectaBusiness;
-            set
-            {
-                if (_selectaBusiness != value)
-                {
-                    _selectaBusiness = value;
-                    OnPropertyChanged(nameof(SelectaBusiness));
-                }
-            }
-        }
-
-
-        private string _selectaEds = string.Empty;
-        public string SelectaEds
-        {
-            get => _selectaEds;
-            set
-            {
-                if (_selectaEds != value)
-                {
-                    _selectaEds = value;
-                    OnPropertyChanged(nameof(SelectaEds));
-                }
-            }
-        }
-
-        private string _cuttingManagement = string.Empty;
-        public string CuttingManagement
-        {
-            get => _cuttingManagement;
-            set
-            {
-                if (_cuttingManagement != value)
-                {
-                    _cuttingManagement = value;
-                    OnPropertyChanged(nameof(CuttingManagement));
-                }
-            }
-        }
-
-
-        private string _islander = string.Empty;
-        public string Islander
-        {
-            get => _islander;
-            set
-            {
-                if (_islander != value)
-                {
-                    _islander = value;
-                    OnPropertyChanged(nameof(Islander));
-                }
-            }
-        }
-
-        private string _SelectAnIslander = string.Empty;
-        public string SelectAnIslander
-        {
-            get => _SelectAnIslander;
-            set
-            {
-                if (_SelectAnIslander != value)
-                {
-                    _SelectAnIslander = value;
-                    OnPropertyChanged(nameof(SelectAnIslander));
-                }
-            }
-        }
-
-        private string _time = string.Empty;
-        public string Time
-        {
-            get => _time;
-            set
-            {
-                if (_time != value)
-                {
-                    _time = value;
-                    OnPropertyChanged(nameof(Time));
-                }
-            }
-        }
-
-
-        private string _DateTranslation = string.Empty;
-        public string DateTranslation
-        {
-            get => _DateTranslation;
-            set
-            {
-                if (_DateTranslation != value)
-                {
-                    _DateTranslation = value;
-                    OnPropertyChanged(nameof(DateTranslation));
-                }
-            }
-        }
-
-
-        private string _StartTime = string.Empty;
-        public string StartTime
-        {
-            get => _StartTime;
-            set
-            {
-                if (_StartTime != value)
-                {
-                    _StartTime = value;
-                    OnPropertyChanged(nameof(StartTime));
-                }
-            }
-        }
-
-        private string _EndTime = string.Empty;
-        public string EndTime
-        {
-            get => _EndTime;
-            set
-            {
-                if (_EndTime != value)
-                {
-                    _EndTime = value;
-                    OnPropertyChanged(nameof(EndTime));
-                }
-            }
-        }
-
-        private string _additionalInformation = string.Empty;
-        public string AdditionalInformation
-        {
-            get => _additionalInformation;
-            set
-            {
-                if (_additionalInformation != value)
-                {
-                    _additionalInformation = value;
-                    OnPropertyChanged(nameof(AdditionalInformation));
-                }
-            }
-        }
-
-        private string _DescriptionTranslation = string.Empty;
-        public string DescriptionTranslation
-        {
-            get => _DescriptionTranslation;
-            set
-            {
-                if (_DescriptionTranslation != value)
-                {
-                    _DescriptionTranslation = value;
-                    OnPropertyChanged(nameof(DescriptionTranslation));
-                }
-            }
-        }
-        private string _EnterADescription = string.Empty;
-        public string EnterADescription
+    }
+    private string _LastAccumulatedGallonsTranslation = string.Empty;
+    public string LastAccumulatedGallonsTranslation
+    {
+        get => _LastAccumulatedGallonsTranslation;
+        set
         {
-            get => _EnterADescription;
-            set
+            if (_LastAccumulatedGallonsTranslation != value)
             {
-                if (_EnterADescription != value)
-                {
-                    _EnterADescription = value;
-                    OnPropertyChanged(nameof(EnterADescription));
-                }
+                _LastAccumulatedGallonsTranslation = value;
+                OnPropertyChanged(nameof(LastAccumulatedGallonsTranslation));
             }
         }
+    }
 
-        private string _DistinticDescription = string.Empty;
-        public string DistinticDescription
+    private string _LastAccumulatedAmountTranslation = string.Empty;
+    public string LastAccumulatedAmountTranslation
+    {
+        get => _LastAccumulatedAmountTranslation;
+        set
         {
-            get => _DistinticDescription;
-            set
+            if (_LastAccumulatedAmountTranslation != value)
             {
-                if (_DistinticDescription != value)
-                {
-                    _DistinticDescription = value;
-                    OnPropertyChanged(nameof(DistinticDescription));
-                }
+                _LastAccumulatedAmountTranslation = value;
+                OnPropertyChanged(nameof(LastAccumulatedAmountTranslation));
             }
         }
+    }
 
-        private string _CashCount = string.Empty;
-        public string CashCount
-        {
-            get => _CashCount;
-            set
-            {
-                if (_CashCount != value)
-                {
-                    _CashCount = value;
-                    OnPropertyChanged(nameof(CashCount));
-                }
-            }
-        }
 
-        private string _SalesInGallons = string.Empty;
-        public string SalesInGallons
-        {
-            get => _SalesInGallons;
-            set
-            {
-                if (_SalesInGallons != value)
-                {
-                    _SalesInGallons = value;
-                    OnPropertyChanged(nameof(SalesInGallons));
-                }
-            }
-        }
 
-        private string _SalesInMoney = string.Empty;
-        public string SalesInMoney
+    private string _TypeofCollectionTranslation = string.Empty;
+    public string TypeofCollectionTranslation
+    {
+        get => _TypeofCollectionTranslation;
+        set
         {
-            get => _SalesInMoney;
-            set
+            if (_TypeofCollectionTranslation != value)
             {
-                if (_SalesInMoney != value)
-                {
-                    _SalesInMoney = value;
-                    OnPropertyChanged(nameof(SalesInMoney));
-                }
+                _TypeofCollectionTranslation = value;
+                OnPropertyChanged(nameof(TypeofCollectionTranslation));
             }
         }
+    }
 
-        private string _AddedDispensers = string.Empty;
-        public string AddedDispensers
-        {
-            get => _AddedDispensers;
-            set
-            {
-                if (_AddedDispensers != value)
-                {
-                    _AddedDispensers = value;
-                    OnPropertyChanged(nameof(AddedDispensers));
-                }
-            }
-        }
 
-        private string _AddedDocuments = string.Empty;
-        public string AddedDocuments
-        {
-            get => _AddedDocuments;
-            set
-            {
-                if (_AddedDocuments != value)
-                {
-                    _AddedDocuments = value;
-                    OnPropertyChanged(nameof(AddedDocuments));
-                }
-            }
-        }
 
-        private string _AddedExpenses = string.Empty;
-        public string AddedExpenses
-        {
-            get => _AddedExpenses;
-            set
-            {
-                if (_AddedExpenses != value)
-                {
-                    _AddedExpenses = value;
-                    OnPropertyChanged(nameof(AddedExpenses));
-                }
-            }
-        }
+    private string _CategoryTranslation = string.Empty;
 
-        private string _AddDispenser = string.Empty;
-        public string AddDispenser
+    public string CategoryTranslation
+    {
+        get => _CategoryTranslation;
+        set
         {
-            get => _AddDispenser;
-            set
+            if (_CategoryTranslation != value)
             {
-                if (_AddDispenser != value)
-                {
-                    _AddDispenser = value;
-                    OnPropertyChanged(nameof(AddDispenser));
-                }
+                _CategoryTranslation = value;
+                OnPropertyChanged(nameof(CategoryTranslation));
             }
         }
+    }
 
-        private string _addDocumentTranslation = string.Empty;
-        public string AddDocumentTranslation
+    private string _AddButtonTranslation = string.Empty;
+    public string AddButtonTranslation
+    {
+        get => _AddButtonTranslation;
+        set
         {
-            get => _addDocumentTranslation;
-            set
+            if (_AddButtonTranslation != value)
             {
-                if (_addDocumentTranslation != value)
-                {
-                    _addDocumentTranslation = value;
-                    OnPropertyChanged(nameof(AddDocumentTranslation));
-                }
+                _AddButtonTranslation = value;
+                OnPropertyChanged(nameof(AddButtonTranslation));
             }
         }
-
-        private string _AddExpense = string.Empty;
-        public string AddExpense
+    }
+    private string _PricepergallonTranslation = string.Empty;
+    public string PricepergallonTranslation
+    {
+        get => _PricepergallonTranslation;
+        set
         {
-            get => _AddExpense;
-            set
+            if (_PricepergallonTranslation != value)
             {
-                if (_AddExpense != value)
-                {
-                    _AddExpense = value;
-                    OnPropertyChanged(nameof(AddExpense));
-                }
+                _PricepergallonTranslation = value;
+                OnPropertyChanged(nameof(PricepergallonTranslation));
             }
         }
-
-        private string _AddCollectionType = string.Empty;
-        public string AddCollectionType
+    }
+    private string _AddExtraInformationTranslation = string.Empty;
+    public string AddExtraInformationTranslation
+    {
+        get => _AddExtraInformationTranslation;
+        set
         {
-            get => _AddCollectionType;
-            set
+            if (_AddExtraInformationTranslation != value)
             {
-                if (_AddCollectionType != value)
-                {
-                    _AddCollectionType = value;
-                    OnPropertyChanged(nameof(AddCollectionType));
-                }
+                _AddExtraInformationTranslation = value;
+                OnPropertyChanged(nameof(AddExtraInformationTranslation));
             }
         }
-
-        private string _SendData = string.Empty;
-        public string SendData
+    }
+    private string _CategoryTheEgressTranslation = string.Empty;
+    public string CategoryTheEgressTranslation
+    {
+        get => _CategoryTheEgressTranslation;
+        set
         {
-            get => _SendData;
-            set
+            if (_CategoryTheEgressTranslation != value)
             {
-                if (_SendData != value)
-                {
-                    _SendData = value;
-                    OnPropertyChanged(nameof(SendData));
-                }
+                _CategoryTheEgressTranslation = value;
+                OnPropertyChanged(nameof(CategoryTheEgressTranslation));
             }
         }
-
-        private string _SelectAHose = string.Empty;
-        public string SelectAHose
+    }
+    private string _HomeTranslation = string.Empty;
+    public string HomeTranslation
+    {
+        get => _HomeTranslation;
+        set
         {
-            get => _SelectAHose;
-            set
+            if (_HomeTranslation != value)
             {
-                if (_SelectAHose != value)
-                {
-                    _SelectAHose = value;
-                    OnPropertyChanged(nameof(SelectAHose));
-                }
+                _HomeTranslation = value;
+                OnPropertyChanged(nameof(HomeTranslation));
             }
         }
-
-        private string _Add = string.Empty;
-        public string Add
+    }
+    private string _IncomeTranslation = string.Empty;
+    public string IncomeTranslation
+    {
+        get => _IncomeTranslation;
+        set
         {
-            get => _Add;
-            set
+            if (_IncomeTranslation != value)
             {
-                if (_Add != value)
-                {
-                    _Add = value;
-                    OnPropertyChanged(nameof(Add));
-                }
+                _IncomeTranslation = value;
+                OnPropertyChanged(nameof(IncomeTranslation));
             }
         }
-
-        private string _Select = string.Empty;
-        public string Select
+    }
+    private string _ReportsTranslation = string.Empty;
+    public string ReportsTranslation
+    {
+        get => _ReportsTranslation;
+        set
         {
-            get => _Select;
-            set
+            if (_ReportsTranslation != value)
             {
-                if (_Select != value)
-                {
-                    _Select = value;
-                    OnPropertyChanged(nameof(Select));
-                }
+                _ReportsTranslation = value;
+                OnPropertyChanged(nameof(ReportsTranslation));
             }
         }
-
-        private string _Expenditures = string.Empty;
-        public string Expenditures
+    }
+    private string _AddEgressTranslation = string.Empty;
+    public string AddEgressTranslation
+    {
+        get => _AddEgressTranslation;
+        set
         {
-            get => _Expenditures;
-            set
+            if (_AddEgressTranslation != value)
             {
-                if (_Expenditures != value)
-                {
-                    _Expenditures = value;
-                    OnPropertyChanged(nameof(Expenditures));
-                }
+                _AddEgressTranslation = value;
+                OnPropertyChanged(nameof(AddEgressTranslation));
             }
         }
-
-        private string _AmountTranslation = string.Empty;
-        public string AmountTranslation
+    }
+    private string _CourtDetailTranslation = string.Empty;
+    public string CourtDetailTranslation
+    {
+        get => _CourtDetailTranslation;
+        set
         {
-            get => _AmountTranslation;
-            set
+            if (_CourtDetailTranslation != value)
             {
-                if (_AmountTranslation != value)
-                {
-                    _AmountTranslation = value;
-                    OnPropertyChanged(nameof(AmountTranslation));
-                }
+                _CourtDetailTranslation = value;
+                OnPropertyChanged(nameof(CourtDetailTranslation));
             }
         }
+    }
 
-        private string _CollectionAmount = string.Empty;
-        public string CollectionAmount
-        {
-            get => _CollectionAmount;
-            set
-            {
-                if (_CollectionAmount != value)
-                {
-                    _CollectionAmount = value;
-                    OnPropertyChanged(nameof(CollectionAmount));
-                }
-            }
-        }
+    private string _EnterCategory = string.Empty;
 
-        private string _EnterthedescriptionTranslations = string.Empty;
-        public string EnterthedescriptionTranslations
+    public string EnterCategory
+    {
+        get => _EnterCategory;
+        set
         {
-            get => _EnterthedescriptionTranslations;
-            set
+            if (_EnterCategory != value)
             {
-                if (_EnterthedescriptionTranslations != value)
-                {
-                    _EnterthedescriptionTranslations = value;
-                    OnPropertyChanged(nameof(EnterthedescriptionTranslations));
-                }
+                _EnterCategory = value;
+                OnPropertyChanged(nameof(EnterCategory));
             }
         }
-
+    }
 
-        private string _SelectFile = string.Empty;
-        public string SelectFile
-        {
-            get => _SelectFile;
-            set
-            {
-                if (_SelectFile != value)
-                {
-                    _SelectFile = value;
-                    OnPropertyChanged(nameof(SelectFile));
-                }
-            }
-        }
+    private string _CategoryManagement = string.Empty;
 
-        private string _ShiftClosing = string.Empty;
-        public string ShiftClosing
+    public string CategoryManagement
+    {
+        get => _CategoryManagement;
+        set
         {
-            get => _ShiftClosing;
-            set
+            if (_CategoryManagement != value)
             {
-                if (_ShiftClosing != value)
-                {
-                    _ShiftClosing = value;
-                    OnPropertyChanged(nameof(ShiftClosing));
-                }
+                _CategoryManagement = value;
+                OnPropertyChanged(nameof(CategoryManagement));
             }
         }
+    }
 
-        private string _TypesofAggregateCollections = string.Empty;
-        public string TypesofAggregateCollections
+    private string _ConsecutiveTranslation = string.Empty;
+    public string ConsecutiveTranslation
+    {
+        get => _ConsecutiveTranslation;
+        set
         {
-            get => _TypesofAggregateCollections;
-            set
+            if (_ConsecutiveTranslation != value)
             {
-                if (_TypesofAggregateCollections != value)
-                {
-                    _TypesofAggregateCollections = value;
-                    OnPropertyChanged(nameof(TypesofAggregateCollections));
-                }
+                _ConsecutiveTranslation = value;
+                OnPropertyChanged(nameof(ConsecutiveTranslation));
             }
         }
+    }
 
-        private string _Eds = string.Empty;
-        public string Eds
+    private string _IslanderTranslation = string.Empty;
+    public string IslanderTranslation
+    {
+        get => _IslanderTranslation;
+        set
         {
-            get => _Eds;
-            set
+            if (_IslanderTranslation != value)
             {
-                if (_Eds != value)
-                {
-                    _Eds = value;
-                    OnPropertyChanged(nameof(Eds));
-                }
+                _IslanderTranslation = value;
+                OnPropertyChanged(nameof(IslanderTranslation));
             }
         }
-
-        private string _Expenses = string.Empty;
-        public string Expenses
+    }
+    private string _ShiftTranslation = string.Empty;
+    public string ShiftTranslation
+    {
+        get => _ShiftTranslation;
+        set
         {
-            get => _Expenses;
-            set
+            if (_ShiftTranslation != value)
             {
-                if (_Expenses != value)
-                {
-                    _Expenses = value;
-                    OnPropertyChanged(nameof(Expenses));
-                }
+                _ShiftTranslation = value;
+                OnPropertyChanged(nameof(ShiftTranslation));
             }
         }
-
-        private string _Collections = string.Empty;
-        public string Collections
+    }
+    private string _TotalsTranslation = string.Empty;
+    public string TotalsTranslation
+    {
+        get => _TotalsTranslation;
+        set
         {
-            get => _Collections;
-            set
+            if (_TotalsTranslation != value)
             {
-                if (_Collections != value)
-                {
-                    _Collections = value;
-                    OnPropertyChanged(nameof(Collections));
-                }
+                _TotalsTranslation = value;
+                OnPropertyChanged(nameof(TotalsTranslation));
             }
         }
-
-        private string _TotalForTheDay = string.Empty;
-        public string TotalForTheDay
+    }
+    private string _DistincTranslation = string.Empty;
+    public string DistincTranslation
+    {
+        get => _DistincTranslation;
+        set
         {
-            get => _TotalForTheDay;
-            set
+            if (_DistincTranslation != value)
             {
-                if (_TotalForTheDay != value)
-                {
-                    _TotalForTheDay = value;
-                    OnPropertyChanged(nameof(TotalForTheDay));
-                }
+                _DistincTranslation = value;
+                OnPropertyChanged(nameof(DistincTranslation));
             }
         }
-
-        private string _Lists = string.Empty;
-        public string Lists
+    }
+    private string _CollectionsTranslation = string.Empty;
+    public string CollectionsTranslation
+    {
+        get => _CollectionsTranslation;
+        set
         {
-            get => _Lists;
-            set
+            if (_CollectionsTranslation != value)
             {
-                if (_Lists != value)
-                {
-                    _Lists = value;
-                    OnPropertyChanged(nameof(Lists));
-                }
+                _CollectionsTranslation = value;
+                OnPropertyChanged(nameof(CollectionsTranslation));
             }
         }
-
-        private string _NumberTranslation = string.Empty;
-        public string NumberTranslation
+    }
+    private string _CollectionTranslation = string.Empty;
+    public string CollectionTranslation
+    {
+        get => _CollectionTranslation;
+        set
         {
-            get => _NumberTranslation;
-            set
+            if (_CollectionTranslation != value)
             {
-                if (_NumberTranslation != value)
-                {
-                    _NumberTranslation = value;
-                    OnPropertyChanged(nameof(NumberTranslation));
-                }
+                _CollectionTranslation = value;
+                OnPropertyChanged(nameof(CollectionTranslation));
             }
         }
-
-        private string _AccumulatedAmountTranslation = string.Empty;
-        public string AccumulatedAmountTranslation
+    }
+    private string _DispensersTranslation = string.Empty;
+    public string DispensersTranslation
+    {
+        get => _DispensersTranslation;
+        set
         {
-            get => _AccumulatedAmountTranslation;
-            set
+            if (_DispensersTranslation != value)
             {
-                if (_AccumulatedAmountTranslation != value)
-                {
-                    _AccumulatedAmountTranslation = value;
-                    OnPropertyChanged(nameof(_AccumulatedAmountTranslation));
-                }
+                _DispensersTranslation = value;
+                OnPropertyChanged(nameof(DispensersTranslation));
             }
         }
-
-        private string _GallonsAccumulatedTranslation = string.Empty;
-        public string GallonsAccumulatedTranslation
+    }
+    private string _DispenserTranslation = string.Empty;
+    public string DispenserTranslation
+    {
+        get => _DispenserTranslation;
+        set
         {
-            get => _GallonsAccumulatedTranslation;
-            set
+            if (_DispenserTranslation != value)
             {
-                if (_GallonsAccumulatedTranslation != value)
-                {
-                    _GallonsAccumulatedTranslation = value;
-                    OnPropertyChanged(nameof(GallonsAccumulatedTranslation));
-                }
+                _DispenserTranslation = value;
+                OnPropertyChanged(nameof(DispenserTranslation));
             }
         }
-
-        private string _GallonsAccumulated = string.Empty;
-        public string GallonsAccumulated
+    }
+    private string _NumberHoseTranslation = string.Empty;
+    public string NumberHoseTranslation
+    {
+        get => _NumberHoseTranslation;
+        set
         {
-            get => _GallonsAccumulated;
-            set
+            if (_NumberHoseTranslation != value)
             {
-                if (_GallonsAccumulated != value)
-                {
-                    _GallonsAccumulated = value;
-                    OnPropertyChanged(nameof(GallonsAccumulated));
-                }
+                _NumberHoseTranslation = value;
+                OnPropertyChanged(nameof(NumberHoseTranslation));
             }
         }
-
-        private string _Document = string.Empty;
-        public string Document
+    }
+    private string _ProductTranslation = string.Empty;
+    public string ProductTranslation
+    {
+        get => _ProductTranslation;
+        set
         {
-            get => _Document;
-            set
+            if (_ProductTranslation != value)
             {
-                if (_Document != value)
-                {
-                    _Document = value;
-                    OnPropertyChanged(nameof(Document));
-                }
+                _ProductTranslation = value;
+                OnPropertyChanged(nameof(ProductTranslation));
             }
         }
-
-        private string _Expenditure = string.Empty;
-        public string Expenditure
+    }
+    private string _PriceTranslation = string.Empty;
+    public string PriceTranslation
+    {
+        get => _PriceTranslation;
+        set
         {
-            get => _Expenditure;
-            set
+            if (_PriceTranslation != value)
             {
-                if (_Expenditure != value)
-                {
-                    _Expenditure = value;
-                    OnPropertyChanged(nameof(Expenditure));
-                }
+                _PriceTranslation = value;
+                OnPropertyChanged(nameof(PriceTranslation));
             }
         }
+    }
 
-        private string _NewSale = string.Empty;
-        public string NewSale
+    private string _StarttimeTranslation = string.Empty;
+    public string StarttimeTranslation
+    {
+        get => _StarttimeTranslation;
+        set
         {
-            get => _NewSale;
-            set
+            if (_StarttimeTranslation != value)
             {
-                if (_NewSale != value)
-                {
-                    _NewSale = value;
-                    OnPropertyChanged(nameof(NewSale));
-                }
+                _StarttimeTranslation = value;
+                OnPropertyChanged(nameof(StarttimeTranslation));
             }
         }
-
-        private string _UploadProofOfPayment = string.Empty;
-        public string UploadProofOfPayment
+    }
+    private string _EndtimeTranslation = string.Empty;
+    public string EndtimeTranslation
+    {
+        get => _EndtimeTranslation;
+        set
         {
-            get => _UploadProofOfPayment;
-            set
+            if (_EndtimeTranslation != value)
             {
-                if (_UploadProofOfPayment != value)
-                {
-                    _UploadProofOfPayment = value;
-                    OnPropertyChanged(nameof(UploadProofOfPayment));
-                }
+                _EndtimeTranslation = value;
+                OnPropertyChanged(nameof(EndtimeTranslation));
             }
         }
+    }
 
-        private string _NewEgress = string.Empty;
-        public string NewEgress
+    private string _DocumentsTranslation = string.Empty;
+    public string DocumentsTranslation
+    {
+        get => _DocumentsTranslation;
+        set
         {
-            get => _NewEgress;
-            set
+            if (_DocumentsTranslation != value)
             {
-                if (_NewEgress != value)
-                {
-                    _NewEgress = value;
-                    OnPropertyChanged(nameof(NewEgress));
-                }
+                _DocumentsTranslation = value;
+                OnPropertyChanged(nameof(DocumentsTranslation));
             }
         }
-
-        private string _AccumulatedGallonsTranslations = string.Empty;
-        public string AccumulatedGallonsTranslations
+    }
+    private string _ExpendituresTranslation = string.Empty;
+    public string ExpendituresTranslation
+    {
+        get => _ExpendituresTranslation;
+        set
         {
-            get => _AccumulatedGallonsTranslations;
-            set
+            if (_ExpendituresTranslation != value)
             {
-                if (AccumulatedGallonsTranslations != value)
-                {
-                    _AccumulatedGallonsTranslations = value;
-                    OnPropertyChanged(nameof(AccumulatedGallons));
-                }
+                _ExpendituresTranslation = value;
+                OnPropertyChanged(nameof(ExpendituresTranslation));
             }
         }
+    }
 
-        private string _EnterTheGallons = string.Empty;
-        public string EnterTheGallons
+    private string _CourtTranslation = string.Empty;
+    public string CourtTranslation
+    {
+        get => _CourtTranslation;
+        set
         {
-            get => _EnterTheGallons;
-            set
+            if (_CourtTranslation != value)
             {
-                if (_EnterTheGallons != value)
-                {
-                    _EnterTheGallons = value;
-                    OnPropertyChanged(nameof(EnterTheGallons));
-                }
+                _CourtTranslation = value;
+                OnPropertyChanged(nameof(CourtTranslation));
             }
         }
+    }
 
-        private string _HoseTranslation = string.Empty;
-        public string HoseTranslation
-        {
-            get => _HoseTranslation;
-            set
-            {
-                if (_HoseTranslation != value)
-                {
-                    _HoseTranslation = value;
-                    OnPropertyChanged(nameof(HoseTranslation));
-                }
-            }
-        }
-        private string _LastAccumulatedGallonsTranslation = string.Empty;
-        public string LastAccumulatedGallonsTranslation
+    private string _ThereIsNoImageTranslation = string.Empty;
+    public string ThereIsNoImageTranslation
+    {
+        get => _ThereIsNoImageTranslation;
+        set
         {
-            get => _LastAccumulatedGallonsTranslation;
-            set
+            if (_ThereIsNoImageTranslation != value)
             {
-                if (_LastAccumulatedGallonsTranslation != value)
-                {
-                    _LastAccumulatedGallonsTranslation = value;
-                    OnPropertyChanged(nameof(LastAccumulatedGallonsTranslation));
-                }
+                _ThereIsNoImageTranslation = value;
+                OnPropertyChanged(nameof(ThereIsNoImageTranslation));
             }
         }
+    }
 
-        private string _LastAccumulatedAmountTranslation = string.Empty;
-        public string LastAccumulatedAmountTranslation
+    private string _ExpenditureTranslation = string.Empty;
+    public string ExpenditureTranslation
+    {
+        get => _ExpenditureTranslation;
+        set
         {
-            get => _LastAccumulatedAmountTranslation;
-            set
+            if (_ExpenditureTranslation != value)
             {
-                if (_LastAccumulatedAmountTranslation != value)
-                {
-                    _LastAccumulatedAmountTranslation = value;
-                    OnPropertyChanged(nameof(LastAccumulatedAmountTranslation));
-                }
+                _ExpenditureTranslation = value;
+                OnPropertyChanged(nameof(ExpenditureTranslation));
             }
         }
-
+    }
 
-
-        private string _TypeofCollectionTranslation = string.Empty;
-        public string TypeofCollectionTranslation
+    private EdsCourtModel _selectedEds;
+    public EdsCourtModel SelectedEds
+    {
+        get => _selectedEds;
+        set
         {
-            get => _TypeofCollectionTranslation;
-            set
-            {
-                if (_TypeofCollectionTranslation != value)
-                {
-                    _TypeofCollectionTranslation = value;
-                    OnPropertyChanged(nameof(TypeofCollectionTranslation));
-                }
-            }
-        } 
-        
-        private string _CategoryTranslation = string.Empty;
+            _selectedEds = value;
+            OnPropertyChanged(nameof(SelectedEds));
 
-        public string CategoryTranslation
-        {
-            get => _CategoryTranslation;
-            set
-            {
-                if (_CategoryTranslation != value)
-                {
-                    _CategoryTranslation = value;
-                    OnPropertyChanged(nameof(CategoryTranslation));
-                }
-            }
-        }
+            IsEdsSelected = _selectedEds != null;
 
-        private string _AddButtonTranslation = string.Empty;
-        public string AddButtonTranslation
-        {
-            get => _AddButtonTranslation;
-            set
-            {
-                if (_AddButtonTranslation != value)
-                {
-                    _AddButtonTranslation = value;
-                    OnPropertyChanged(nameof(AddButtonTranslation));
-                }
-            }
-        }
-        private string _PricepergallonTranslation = string.Empty;
-        public string PricepergallonTranslation
-        {
-            get => _PricepergallonTranslation;
-            set
-            {
-                if (_PricepergallonTranslation != value)
-                {
-                    _PricepergallonTranslation = value;
-                    OnPropertyChanged(nameof(PricepergallonTranslation));
-                }
-            }
-        }
-        private string _AddExtraInformationTranslation = string.Empty;
-        public string AddExtraInformationTranslation
-        {
-            get => _AddExtraInformationTranslation;
-            set
-            {
-                if (_AddExtraInformationTranslation != value)
-                {
-                    _AddExtraInformationTranslation = value;
-                    OnPropertyChanged(nameof(AddExtraInformationTranslation));
-                }
-            }
-        }
-        private string _CategoryTheEgressTranslation = string.Empty;
-        public string CategoryTheEgressTranslation
-        {
-            get => _CategoryTheEgressTranslation;
-            set
-            {
-                if (_CategoryTheEgressTranslation != value)
-                {
-                    _CategoryTheEgressTranslation = value;
-                    OnPropertyChanged(nameof(CategoryTheEgressTranslation));
-                }
-            }
-        }
-        private string _HomeTranslation = string.Empty;
-        public string HomeTranslation
-        {
-            get => _HomeTranslation;
-            set
-            {
-                if (_HomeTranslation != value)
-                {
-                    _HomeTranslation = value;
-                    OnPropertyChanged(nameof(HomeTranslation));
-                }
-            }
-        }
-        private string _IncomeTranslation = string.Empty;
-        public string IncomeTranslation
-        {
-            get => _IncomeTranslation;
-            set
-            {
-                if (_IncomeTranslation != value)
-                {
-                    _IncomeTranslation = value;
-                    OnPropertyChanged(nameof(IncomeTranslation));
-                }
-            }
-        }
-        private string _ReportsTranslation = string.Empty;
-        public string ReportsTranslation
-        {
-            get => _ReportsTranslation;
-            set
-            {
-                if (_ReportsTranslation != value)
-                {
-                    _ReportsTranslation = value;
-                    OnPropertyChanged(nameof(ReportsTranslation));
-                }
-            }
-        }
-        private string _AddEgressTranslation = string.Empty;
-        public string AddEgressTranslation
-        {
-            get => _AddEgressTranslation;
-            set
-            {
-                if (_AddEgressTranslation != value)
-                {
-                    _AddEgressTranslation = value;
-                    OnPropertyChanged(nameof(AddEgressTranslation));
-                }
-            }
-        }
-        private string _CourtDetailTranslation = string.Empty;
-        public string CourtDetailTranslation
-        {
-            get => _CourtDetailTranslation;
-            set
+            if (_selectedEds != null)
             {
-                if (_CourtDetailTranslation != value)
-                {
-                    _CourtDetailTranslation = value;
-                    OnPropertyChanged(nameof(CourtDetailTranslation));
-                }
+                IdEds = _selectedEds.IdEds;
+                LoadHoseByEds(IdEds);
             }
         }
+    }
 
-        private string _EnterCategory = string.Empty;
-
-        public string EnterCategory
+    private IslanderResponse _selectedIslander;
+    public IslanderResponse SelectedIslander
+    {
+        get => _selectedIslander;
+        set
         {
-            get => _EnterCategory;
-            set
+            _selectedIslander = value;
+            OnPropertyChanged(nameof(SelectedIslander));
+            if (_selectedIslander != null)
             {
-                if (_EnterCategory != value)
-                {
-                    _EnterCategory = value;
-                    OnPropertyChanged(nameof(EnterCategory));
-                }
+                IdIslander = _selectedIslander.IdIslander;
             }
         }
-
-        private string _CategoryManagement = string.Empty;
-
-        public string CategoryManagement
+    }
+    private ProductCourtModel _selectedProduct;
+    public ProductCourtModel SelectedProduct
+    {
+        get => _selectedProduct;
+        set
         {
-            get => _CategoryManagement;
-            set
+            _selectedProduct = value;
+            OnPropertyChanged(nameof(SelectedProduct));
+            if (_selectedProduct != null)
             {
-                if (_CategoryManagement != value)
-                {
-                    _CategoryManagement = value;
-                    OnPropertyChanged(nameof(CategoryManagement));
-                }
+                IdProduct = _selectedProduct.IdProduct;
             }
         }
+    }
 
-        private string _ConsecutiveTranslation = string.Empty;
-        public string ConsecutiveTranslation
-        {
-            get => _ConsecutiveTranslation;
-            set
-            {
-                if (_ConsecutiveTranslation != value)
-                {
-                    _ConsecutiveTranslation = value;
-                    OnPropertyChanged(nameof(ConsecutiveTranslation));
-                }
-            }
-        }
 
-        private string _IslanderTranslation = string.Empty;
-        public string IslanderTranslation
-        {
-            get => _IslanderTranslation;
-            set
-            {
-                if (_IslanderTranslation != value)
-                {
-                    _IslanderTranslation = value;
-                    OnPropertyChanged(nameof(IslanderTranslation));
-                }
-            }
-        }
-        private string _ShiftTranslation = string.Empty;
-        public string ShiftTranslation
-        {
-            get => _ShiftTranslation;
-            set
-            {
-                if (_ShiftTranslation != value)
-                {
-                    _ShiftTranslation = value;
-                    OnPropertyChanged(nameof(ShiftTranslation));
-                }
-            }
-        }
-        private string _TotalsTranslation = string.Empty;
-        public string TotalsTranslation
-        {
-            get => _TotalsTranslation;
-            set
-            {
-                if (_TotalsTranslation != value)
-                {
-                    _TotalsTranslation = value;
-                    OnPropertyChanged(nameof(TotalsTranslation));
-                }
-            }
-        }
-        private string _DistincTranslation = string.Empty;
-        public string DistincTranslation
-        {
-            get => _DistincTranslation;
-            set
-            {
-                if (_DistincTranslation != value)
-                {
-                    _DistincTranslation = value;
-                    OnPropertyChanged(nameof(DistincTranslation));
-                }
-            }
-        }
-        private string _CollectionsTranslation = string.Empty;
-        public string CollectionsTranslation
-        {
-            get => _CollectionsTranslation;
-            set
-            {
-                if (_CollectionsTranslation != value)
-                {
-                    _CollectionsTranslation = value;
-                    OnPropertyChanged(nameof(CollectionsTranslation));
-                }
-            }
-        }
-        private string _CollectionTranslation = string.Empty;
-        public string CollectionTranslation
-        {
-            get => _CollectionTranslation;
-            set
-            {
-                if (_CollectionTranslation != value)
-                {
-                    _CollectionTranslation = value;
-                    OnPropertyChanged(nameof(CollectionTranslation));
-                }
-            }
-        }
-        private string _DispensersTranslation = string.Empty;
-        public string DispensersTranslation
-        {
-            get => _DispensersTranslation;
-            set
-            {
-                if (_DispensersTranslation != value)
-                {
-                    _DispensersTranslation = value;
-                    OnPropertyChanged(nameof(DispensersTranslation));
-                }
-            }
-        }
-        private string _DispenserTranslation = string.Empty;
-        public string DispenserTranslation
-        {
-            get => _DispenserTranslation;
-            set
-            {
-                if (_DispenserTranslation != value)
-                {
-                    _DispenserTranslation = value;
-                    OnPropertyChanged(nameof(DispenserTranslation));
-                }
-            }
-        }
-        private string _NumberHoseTranslation = string.Empty;
-        public string NumberHoseTranslation
-        {
-            get => _NumberHoseTranslation;
-            set
-            {
-                if (_NumberHoseTranslation != value)
-                {
-                    _NumberHoseTranslation = value;
-                    OnPropertyChanged(nameof(NumberHoseTranslation));
-                }
-            }
-        }
-        private string _ProductTranslation = string.Empty;
-        public string ProductTranslation
-        {
-            get => _ProductTranslation;
-            set
-            {
-                if (_ProductTranslation != value)
-                {
-                    _ProductTranslation = value;
-                    OnPropertyChanged(nameof(ProductTranslation));
-                }
-            }
-        }
-        private string _PriceTranslation = string.Empty;
-        public string PriceTranslation
+    private CompartimentCourtModel _selectedCompartiment;
+    public CompartimentCourtModel SelectedCompartiment
+    {
+        get => _selectedCompartiment;
+        set
         {
-            get => _PriceTranslation;
-            set
+            _selectedCompartiment = value;
+            OnPropertyChanged(nameof(SelectedCompartiment));
+            if (_selectedCompartiment != null)
             {
-                if (_PriceTranslation != value)
-                {
-                    _PriceTranslation = value;
-                    OnPropertyChanged(nameof(PriceTranslation));
-                }
+                IdCompartiment = _selectedCompartiment.IdCompartiment;
             }
         }
+    }
 
-        private string _StarttimeTranslation = string.Empty;
-        public string StarttimeTranslation
-        {
-            get => _StarttimeTranslation;
-            set
-            {
-                if (_StarttimeTranslation != value)
-                {
-                    _StarttimeTranslation = value;
-                    OnPropertyChanged(nameof(StarttimeTranslation));
-                }
-            }
-        }
-        private string _EndtimeTranslation = string.Empty;
-        public string EndtimeTranslation
+    private HoseCourtModel _selectedHose;
+    public HoseCourtModel SelectedHose
+    {
+        get => _selectedHose;
+        set
         {
-            get => _EndtimeTranslation;
-            set
+            _selectedHose = value;
+            OnPropertyChanged(nameof(SelectedHose));
+            if (_selectedHose != null)
             {
-                if (_EndtimeTranslation != value)
-                {
-                    _EndtimeTranslation = value;
-                    OnPropertyChanged(nameof(EndtimeTranslation));
-                }
+                IdHose = _selectedHose.IdHose;
+                LoadLastAccumulated(_selectedHose.IdDispensers, _selectedHose.IdHose);
             }
         }
+    }
 
-        private string _DocumentsTranslation = string.Empty;
-        public string DocumentsTranslation
-        {
-            get => _DocumentsTranslation;
-            set
-            {
-                if (_DocumentsTranslation != value)
-                {
-                    _DocumentsTranslation = value;
-                    OnPropertyChanged(nameof(DocumentsTranslation));
-                }
-            }
-        }
-        private string _ExpendituresTranslation = string.Empty;
-        public string ExpendituresTranslation
+    private ExpendituresCourtModel _selectedExpenditure;
+    public ExpendituresCourtModel SelectedExpenditure
+    {
+        get => _selectedExpenditure;
+        set
         {
-            get => _ExpendituresTranslation;
-            set
+            _selectedExpenditure = value;
+            OnPropertyChanged(nameof(SelectedExpenditure));
+            if (_selectedExpenditure != null)
             {
-                if (_ExpendituresTranslation != value)
-                {
-                    _ExpendituresTranslation = value;
-                    OnPropertyChanged(nameof(ExpendituresTranslation));
-                }
+                IdCourtExpenditure = _selectedExpenditure.IdCourtExpenditure;
             }
         }
+    }
 
-        private string _CourtTranslation = string.Empty;
-        public string CourtTranslation
+    private TypeOfCollectionCourtModel _selectedTypeOfCollection;
+    public TypeOfCollectionCourtModel SelectedTypeOfCollection
+    {
+        get => _selectedTypeOfCollection;
+        set
         {
-            get => _CourtTranslation;
-            set
+            _selectedTypeOfCollection = value;
+            OnPropertyChanged(nameof(SelectedTypeOfCollection));
+            if (_selectedTypeOfCollection != null)
             {
-                if (_CourtTranslation != value)
-                {
-                    _CourtTranslation = value;
-                    OnPropertyChanged(nameof(CourtTranslation));
-                }
+                IdTypeOfCollection = _selectedTypeOfCollection.IdTypeOfCollection;
             }
         }
+    }
 
-        private string _ThereIsNoImageTranslation = string.Empty;
-        public string ThereIsNoImageTranslation
-        {
-            get => _ThereIsNoImageTranslation;
-            set
-            {
-                if (_ThereIsNoImageTranslation != value)
-                {
-                    _ThereIsNoImageTranslation = value;
-                    OnPropertyChanged(nameof(ThereIsNoImageTranslation));
-                }
-            }
-        }
 
-        private string _ExpenditureTranslation = string.Empty;
-        public string ExpenditureTranslation
+    private BusinessModel _selectedBusiness;
+    public BusinessModel SelectedBusiness
+    {
+        get => _selectedBusiness;
+        set
         {
-            get => _ExpenditureTranslation;
-            set
-            {
-                if (_ExpenditureTranslation != value)
-                {
-                    _ExpenditureTranslation = value;
-                    OnPropertyChanged(nameof(ExpenditureTranslation));
-                }
-            }
-        }
+            _selectedBusiness = value;
+            OnPropertyChanged(nameof(SelectedBusiness));
 
-        private EdsCourtModel _selectedEds;
-        public EdsCourtModel SelectedEds
-        {
-            get => _selectedEds;
-            set
+            if (_selectedBusiness != null)
             {
-                _selectedEds = value;
-                OnPropertyChanged(nameof(SelectedEds));
-
-                IsEdsSelected = _selectedEds != null;
-
-                if (_selectedEds != null)
-                {
-                    IdEds = _selectedEds.IdEds;
-                    LoadHoseByEds(IdEds);
-                }
+                IdBusiness = _selectedBusiness.IdBusiness;
             }
         }
+    }
 
-        private IslanderResponse _selectedIslander;
-        public IslanderResponse SelectedIslander
-        {
-            get => _selectedIslander;
-            set
-            {
-                _selectedIslander = value;
-                OnPropertyChanged(nameof(SelectedIslander));
-                if (_selectedIslander != null)
-                {
-                    IdIslander = _selectedIslander.IdIslander;
-                }
-            }
-        }
-        private ProductCourtModel _selectedProduct;
-        public ProductCourtModel SelectedProduct
-        {
-            get => _selectedProduct;
-            set
-            {
-                _selectedProduct = value;
-                OnPropertyChanged(nameof(SelectedProduct));
-                if (_selectedProduct != null)
-                {
-                    IdProduct = _selectedProduct.IdProduct;
-                }
-            }
-        }
 
 
-        private CompartimentCourtModel _selectedCompartiment;
-        public CompartimentCourtModel SelectedCompartiment
+    private ObservableCollection<CourtExpenditure> _courtExpenditures;
+    public ObservableCollection<CourtExpenditure> CourtExpenditures
+    {
+        get => _courtExpenditures;
+        set
         {
-            get => _selectedCompartiment;
-            set
-            {
-                _selectedCompartiment = value;
-                OnPropertyChanged(nameof(SelectedCompartiment));
-                if (_selectedCompartiment != null)
-                {
-                    IdCompartiment = _selectedCompartiment.IdCompartiment;
-                }
-            }
+            _courtExpenditures = value;
+            OnPropertyChanged(nameof(CourtExpenditures));
         }
+    }
 
-        private HoseCourtModel _selectedHose;
-        public HoseCourtModel SelectedHose
+    private ObservableCollection<CourtDispenser> _courtDispensers;
+    public ObservableCollection<CourtDispenser> CourtDispensers
+    {
+        get => _courtDispensers;
+        set
         {
-            get => _selectedHose;
-            set
-            {
-                _selectedHose = value;
-                OnPropertyChanged(nameof(SelectedHose));
-                if (_selectedHose != null)
-                {
-                    IdHose = _selectedHose.IdHose;
-                    LoadLastAccumulated(_selectedHose.IdDispensers, _selectedHose.IdHose);
-                }
-            }
+            _courtDispensers = value;
+            OnPropertyChanged(nameof(CourtDispensers));
+            // ?? Notificar cambio en la visibilidad cuando cambie la colecciÛn
+            OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
+    }
 
-        private ExpendituresCourtModel _selectedExpenditure;
-        public ExpendituresCourtModel SelectedExpenditure
+    private ObservableCollection<CourtLastAccumulated> _lastAccumulated;
+    public ObservableCollection<CourtLastAccumulated> LastAccumulated
+    {
+        get => _lastAccumulated;
+        set
         {
-            get => _selectedExpenditure;
-            set
-            {
-                _selectedExpenditure = value;
-                OnPropertyChanged(nameof(SelectedExpenditure));
-                if (_selectedExpenditure != null)
-                {
-                    IdCourtExpenditure = _selectedExpenditure.IdCourtExpenditure;
-                }
-            }
+            _lastAccumulated = value;
+            OnPropertyChanged(nameof(LastAccumulated));
         }
+    }
 
-        private TypeOfCollectionCourtModel _selectedTypeOfCollection;
-        public TypeOfCollectionCourtModel SelectedTypeOfCollection
+    private ObservableCollection<CourtDocument> _courtDocuments;
+    public ObservableCollection<CourtDocument> CourtDocuments
+    {
+        get => _courtDocuments;
+        set
         {
-            get => _selectedTypeOfCollection;
-            set
-            {
-                _selectedTypeOfCollection = value;
-                OnPropertyChanged(nameof(SelectedTypeOfCollection));
-                if (_selectedTypeOfCollection != null)
-                {
-                    IdTypeOfCollection = _selectedTypeOfCollection.IdTypeOfCollection;
-                }
-            }
+            _courtDocuments = value;
+            OnPropertyChanged(nameof(CourtDocuments));
         }
+    }
 
-      
-        private BusinessModel _selectedBusiness;
-        public BusinessModel SelectedBusiness
+    private ObservableCollection<CourtTypeOfCollection> _courtTypeOfCollections;
+    public ObservableCollection<CourtTypeOfCollection> CourtTypeOfCollections
+    {
+        get => _courtTypeOfCollections;
+        set
         {
-            get => _selectedBusiness;
-            set
-            {
-                _selectedBusiness = value;
-                OnPropertyChanged(nameof(SelectedBusiness));
-
-                if (_selectedBusiness != null)
-                {
-                    IdBusiness = _selectedBusiness.IdBusiness;
-                }
-            }
+            _courtTypeOfCollections = value;
+            OnPropertyChanged(nameof(CourtTypeOfCollections));
+            // ?? Notificar cambio en la visibilidad cuando cambie la colecciÛn
+            OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
+    }
 
-
-
-        private ObservableCollection<CourtExpenditure> _courtExpenditures;
-        public ObservableCollection<CourtExpenditure> CourtExpenditures
+    private ObservableCollection<CourtBusiness> _courtBusiness;
+    public ObservableCollection<CourtBusiness> CourtBusiness
+    {
+        get => _courtBusiness;
+        set
         {
-            get => _courtExpenditures;
-            set
-            {
-                _courtExpenditures = value;
-                OnPropertyChanged(nameof(CourtExpenditures));
-            }
+            _courtBusiness = value;
+            OnPropertyChanged(nameof(CourtBusiness));
         }
+    }
 
-        private ObservableCollection<CourtDispenser> _courtDispensers;
-        public ObservableCollection<CourtDispenser> CourtDispensers
+    private ObservableCollection<CourtDispenser> _courtDispenser;
+    public ObservableCollection<CourtDispenser> CourtDispenser
+    {
+        get => _courtDispenser;
+        set
         {
-            get => _courtDispensers;
-            set
-            {
-                _courtDispensers = value;
-                OnPropertyChanged(nameof(CourtDispensers));
-                // üî• Notificar cambio en la visibilidad cuando cambie la colecci√≥n
-                OnPropertyChanged(nameof(ShouldShowDispensersSection));
-            }
+            _courtDispenser = value;
+            OnPropertyChanged(nameof(CourtDispenser));
         }
+    }
 
-        private ObservableCollection<CourtLastAccumulated> _lastAccumulated;
-        public ObservableCollection<CourtLastAccumulated> LastAccumulated
-        {
-            get => _lastAccumulated;
-            set
-            {
-                _lastAccumulated = value;
-                OnPropertyChanged(nameof(LastAccumulated));
-            }
-        }
+    public ICommand LoadCourtDataCommand { get; }
+    public ICommand SendCourtDataCommand { get; }
+    public Command HideLists { get; }
+    public Command HideListDispenser { get; }
+    public Command HideDocumentList { get; }
+    public Command HideExpenseList { get; }
+    public Command HideCollectionList { get; }
 
-        private ObservableCollection<CourtDocument> _courtDocuments;
-        public ObservableCollection<CourtDocument> CourtDocuments
-        {
-            get => _courtDocuments;
-            set
-            {
-                _courtDocuments = value;
-                OnPropertyChanged(nameof(CourtDocuments));
-            }
-        }
+    public ICommand DeleteDispenserCommand => new Command<CourtDispenser>(DeleteDispenser);
+    public ICommand DeleteDocumentCommand => new Command<CourtDocument>(DeleteDocument);
+    public ICommand DeleteExpenseCommand => new Command<CourtExpenditure>(DeleteExpense);
+    public ICommand DeleteCollectionCommand => new Command<CourtTypeOfCollection>(DeleteCollection);
 
-        private ObservableCollection<CourtTypeOfCollection> _courtTypeOfCollections;
-        public ObservableCollection<CourtTypeOfCollection> CourtTypeOfCollections
+    public async Task LoadTranslationsAsync()
+    {
+        try
         {
-            get => _courtTypeOfCollections;
-            set
-            {
-                _courtTypeOfCollections = value;
-                OnPropertyChanged(nameof(CourtTypeOfCollections));
-                // üî• Notificar cambio en la visibilidad cuando cambie la colecci√≥n
-                OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-            }
-        }
+            var result = await GetTranslationsByLanguageAsync("es-CO");
+            GlobalTranslations.SetTranslations(result ?? []);
 
-        private ObservableCollection<CourtBusiness> _courtBusiness;
-        public ObservableCollection<CourtBusiness> CourtBusiness
-        {
-            get => _courtBusiness;
-            set
-            {
-                _courtBusiness = value;
-                OnPropertyChanged(nameof(CourtBusiness));
-            }
-        }
+            Business = GlobalTranslations.Get("Business");
+            SelectaBusiness = GlobalTranslations.Get("SelectABusiness");
+            SelectaEds = GlobalTranslations.Get("SelectAEDS");
+            CuttingManagement = GlobalTranslations.Get("CuttingManagement");
+            Islander = GlobalTranslations.Get("Islander");
+            SelectAnIslander = GlobalTranslations.Get("SelectAnIslander");
+            Time = GlobalTranslations.Get("Time");
+            DateTranslation = GlobalTranslations.Get("Date");
+            StartTime = GlobalTranslations.Get("StartTime");
+            EndTime = GlobalTranslations.Get("EndTime");
+            AdditionalInformation = GlobalTranslations.Get("AdditionalInformation");
+            DescriptionTranslation = GlobalTranslations.Get("Description");
+            EnterADescription = GlobalTranslations.Get("EnterADescription");
+            DistinticDescription = GlobalTranslations.Get("DistinticDescription");
+            CashCount = GlobalTranslations.Get("CashCount");
+            SalesInGallons = GlobalTranslations.Get("SalesInGallons");
+            SalesInMoney = GlobalTranslations.Get("SalesInMoney");
+            AddedDispensers = GlobalTranslations.Get("AddedDispensers");
+            AddedDocuments = GlobalTranslations.Get("AddedDocuments");
+            AddedExpenses = GlobalTranslations.Get("AddedExpenses");
+            TypesofAggregateCollections = GlobalTranslations.Get("TypesOfAggregateCollections");
+            AddDispenser = GlobalTranslations.Get("AddDispenser");
+            AddDocumentTranslation = GlobalTranslations.Get("AddDocument");
+            AddExpense = GlobalTranslations.Get("AddExpense");
+            AddCollectionType = GlobalTranslations.Get("AddCollectionType");
+            SendData = GlobalTranslations.Get("SendData");
+            SelectAHose = GlobalTranslations.Get("SelectAHose");
+            Add = GlobalTranslations.Get("Add");
+            SelectFile = GlobalTranslations.Get("SelectFile");
+            Select = GlobalTranslations.Get("Select");
+            Expenditures = GlobalTranslations.Get("Expenditures");
+            AmountTranslation = GlobalTranslations.Get("Amount");
+            CollectionAmount = GlobalTranslations.Get("CollectionAmount");
+            EnterthedescriptionTranslations = GlobalTranslations.Get("EnterThedescription");
+            ShiftClosing = GlobalTranslations.Get("ShiftClosing");
+            Eds = GlobalTranslations.Get("Eds");
+            Expenses = GlobalTranslations.Get("Expenses");
+            Collections = GlobalTranslations.Get("Collections");
+            TotalForTheDay = GlobalTranslations.Get("TotalForTheDay");
+            Lists = GlobalTranslations.Get("Lists");
+            NumberTranslation = GlobalTranslations.Get("Number");
+            AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
+            GallonsAccumulatedTranslation = GlobalTranslations.Get("GallonsAccumulated");
+            Document = GlobalTranslations.Get("Document");
+            Expenditure = GlobalTranslations.Get("Expenditure");
+            NewSale = GlobalTranslations.Get("NewSale");
+            UploadProofOfPayment = GlobalTranslations.Get("UploadProofOfPayment");
+            NewEgress = GlobalTranslations.Get("NewEgress");
+            AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
+            EnterTheGallons = GlobalTranslations.Get("EnterTheGallons");
+            HoseTranslation = GlobalTranslations.Get("Hose");
+            TypeofCollectionTranslation = GlobalTranslations.Get("TypeofCollection");
+            LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
+            LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
+            AddButtonTranslation = GlobalTranslations.Get("AddButton");
+            PricepergallonTranslation = GlobalTranslations.Get("Pricepergallon");
+            AddExtraInformationTranslation = GlobalTranslations.Get("AddExtraInformation");
+            CategoryTheEgressTranslation = GlobalTranslations.Get("CategoryTheEgress");
+            HomeTranslation = GlobalTranslations.Get("Home");
+            IncomeTranslation = GlobalTranslations.Get("Income");
+            ReportsTranslation = GlobalTranslations.Get("Reports");
+            AddEgressTranslation = GlobalTranslations.Get("AddEgress");
+            CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
+            ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
+            IslanderTranslation = GlobalTranslations.Get("Islander");
+            ShiftTranslation = GlobalTranslations.Get("Shift");
+            TotalsTranslation = GlobalTranslations.Get("Totals");
+            DistincTranslation = GlobalTranslations.Get("Distinc");
+            CollectionsTranslation = GlobalTranslations.Get("Collections");
+            CollectionTranslation = GlobalTranslations.Get("Collection");
+            AmountTranslation = GlobalTranslations.Get("Amount");
+            DispensersTranslation = GlobalTranslations.Get("Dispensers");
+            NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
+            ProductTranslation = GlobalTranslations.Get("Product");
+            PriceTranslation = GlobalTranslations.Get("Price");
+            StarttimeTranslation = GlobalTranslations.Get("Starttime");
+            EndtimeTranslation = GlobalTranslations.Get("Endtime");
+            DocumentsTranslation = GlobalTranslations.Get("Documents");
+            ExpendituresTranslation = GlobalTranslations.Get("Expenditures");
+            CourtTranslation = GlobalTranslations.Get("Court");
+            ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
+            ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
 
-        private ObservableCollection<CourtDispenser> _courtDispenser;
-        public ObservableCollection<CourtDispenser> CourtDispenser
-        {
-            get => _courtDispenser;
-            set
-            {
-                _courtDispenser = value;
-                OnPropertyChanged(nameof(CourtDispenser));
-            }
         }
-
-        public ICommand LoadCourtDataCommand { get; }
-        public ICommand SendCourtDataCommand { get; }
-        public ICommand OpenCourtDetailCommand => new Command<CourtListItemModel>(OpenCourtDetail);
-        public Command HideLists { get; }
-        public Command HideListDispenser { get; }
-        public Command HideDocumentList { get; }
-        public Command HideExpenseList { get; }
-        public Command HideCollectionList { get; }
-
-        public ICommand DeleteDispenserCommand => new Command<CourtDispenser>(DeleteDispenser);
-        public ICommand DeleteDocumentCommand => new Command<CourtDocument>(DeleteDocument);
-        public ICommand DeleteExpenseCommand => new Command<CourtExpenditure>(DeleteExpense);
-        public ICommand DeleteCollectionCommand => new Command<CourtTypeOfCollection>(DeleteCollection);
-
-        public async Task LoadTranslationsAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                var result = await GetTranslationsByLanguageAsync("es-CO");
-                GlobalTranslations.SetTranslations(result ?? []);
-
-                Business = GlobalTranslations.Get("Business");
-                SelectaBusiness = GlobalTranslations.Get("SelectABusiness");
-                SelectaEds = GlobalTranslations.Get("SelectAEDS");
-                CuttingManagement = GlobalTranslations.Get("CuttingManagement");
-                Islander = GlobalTranslations.Get("Islander");
-                SelectAnIslander = GlobalTranslations.Get("SelectAnIslander");
-                Time = GlobalTranslations.Get("Time");
-                DateTranslation = GlobalTranslations.Get("Date");
-                StartTime = GlobalTranslations.Get("StartTime");
-                EndTime = GlobalTranslations.Get("EndTime");
-                AdditionalInformation = GlobalTranslations.Get("AdditionalInformation");
-                DescriptionTranslation = GlobalTranslations.Get("Description");
-                EnterADescription = GlobalTranslations.Get("EnterADescription");
-                DistinticDescription = GlobalTranslations.Get("DistinticDescription");
-                CashCount = GlobalTranslations.Get("CashCount");
-                SalesInGallons = GlobalTranslations.Get("SalesInGallons");
-                SalesInMoney = GlobalTranslations.Get("SalesInMoney");
-                AddedDispensers = GlobalTranslations.Get("AddedDispensers");
-                AddedDocuments = GlobalTranslations.Get("AddedDocuments");
-                AddedExpenses = GlobalTranslations.Get("AddedExpenses");
-                TypesofAggregateCollections = GlobalTranslations.Get("TypesOfAggregateCollections");
-                AddDispenser = GlobalTranslations.Get("AddDispenser");
-                AddDocumentTranslation = GlobalTranslations.Get("AddDocument");
-                AddExpense = GlobalTranslations.Get("AddExpense");
-                AddCollectionType = GlobalTranslations.Get("AddCollectionType");
-                SendData = GlobalTranslations.Get("SendData");
-                SelectAHose = GlobalTranslations.Get("SelectAHose");
-                Add = GlobalTranslations.Get("Add");
-                SelectFile = GlobalTranslations.Get("SelectFile");
-                Select = GlobalTranslations.Get("Select");
-                Expenditures = GlobalTranslations.Get("Expenditures");
-                AmountTranslation = GlobalTranslations.Get("Amount");
-                CollectionAmount = GlobalTranslations.Get("CollectionAmount");
-                EnterthedescriptionTranslations = GlobalTranslations.Get("EnterThedescription");
-                ShiftClosing = GlobalTranslations.Get("ShiftClosing");
-                Eds = GlobalTranslations.Get("Eds");
-                Expenses = GlobalTranslations.Get("Expenses");
-                Collections = GlobalTranslations.Get("Collections");
-                TotalForTheDay = GlobalTranslations.Get("TotalForTheDay");
-                Lists = GlobalTranslations.Get("Lists");
-                NumberTranslation = GlobalTranslations.Get("Number");
-                AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
-                GallonsAccumulatedTranslation = GlobalTranslations.Get("GallonsAccumulated");
-                Document = GlobalTranslations.Get("Document");
-                Expenditure = GlobalTranslations.Get("Expenditure");
-                NewSale = GlobalTranslations.Get("NewSale");
-                UploadProofOfPayment = GlobalTranslations.Get("UploadProofOfPayment");
-                NewEgress = GlobalTranslations.Get("NewEgress");
-                AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
-                EnterTheGallons = GlobalTranslations.Get("EnterTheGallons");
-                HoseTranslation = GlobalTranslations.Get("Hose");
-                TypeofCollectionTranslation = GlobalTranslations.Get("TypeofCollection");
-                LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
-                LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
-                AddButtonTranslation = GlobalTranslations.Get("AddButton");
-                PricepergallonTranslation = GlobalTranslations.Get("Pricepergallon");
-                AddExtraInformationTranslation = GlobalTranslations.Get("AddExtraInformation");
-                CategoryTheEgressTranslation = GlobalTranslations.Get("CategoryTheEgress");
-                HomeTranslation = GlobalTranslations.Get("Home");
-                IncomeTranslation = GlobalTranslations.Get("Income");
-                ReportsTranslation = GlobalTranslations.Get("Reports");
-                AddEgressTranslation = GlobalTranslations.Get("AddEgress");
-                CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
-                ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
-                IslanderTranslation = GlobalTranslations.Get("Islander");
-                ShiftTranslation = GlobalTranslations.Get("Shift");
-                TotalsTranslation = GlobalTranslations.Get("Totals");
-                DistincTranslation = GlobalTranslations.Get("Distinc");
-                CollectionsTranslation = GlobalTranslations.Get("Collections");
-                CollectionTranslation = GlobalTranslations.Get("Collection");
-                AmountTranslation = GlobalTranslations.Get("Amount");
-                DispensersTranslation = GlobalTranslations.Get("Dispensers");
-                NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
-                ProductTranslation = GlobalTranslations.Get("Product");
-                PriceTranslation = GlobalTranslations.Get("Price");
-                StarttimeTranslation = GlobalTranslations.Get("Starttime");
-                EndtimeTranslation = GlobalTranslations.Get("Endtime");
-                DocumentsTranslation = GlobalTranslations.Get("Documents");
-                ExpendituresTranslation = GlobalTranslations.Get("Expenditures");
-                CourtTranslation = GlobalTranslations.Get("Court");
-                ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
-                ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
-
-            }
-            catch (Exception ex)
-            {
-                GlobalTranslations.SetTranslations([]);
-            }
+            GlobalTranslations.SetTranslations([]);
         }
-
-        public CourtService()
-        {
-            VisibleDispenser = false;
-            VisibleDocuments = false;
-            VisibleExpenses = false;
-            VisibleReceipts = false;
-            VisibleAdditionalInfo = false;
-           
-
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            
-
-
-            HideLists = new Command(() =>
-            {
-                VisibleLists = !VisibleLists;
-
-            });
+    }
 
-            HideListDispenser = new Command(() =>
-            {
-                VisibleDispenser = !VisibleDispenser;
-
-            });
-
-            HideDocumentList = new Command(() =>
-            {
-                VisibleDocuments = !VisibleDocuments;
-            });
-
-            HideExpenseList = new Command(() =>
-            {
+    public CourtService()
+    {
+        VisibleDispenser = false;
+        VisibleDocuments = false;
+        VisibleExpenses = false;
+        VisibleReceipts = false;
+        VisibleAdditionalInfo = false;
 
-                VisibleExpenses = !VisibleExpenses;
-            });
 
-            HideCollectionList = new Command(() =>
-            {
-                VisibleReceipts = !VisibleReceipts;
-            });
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-            GetAllEdsData();
-            DateStarttime = DateTime.Now;
-            DateEndtime = DateTime.Now;
-            Starttime = new TimeSpan(6, 0, 0);
-            Endtime = new TimeSpan(18, 0, 0);
-            LoadCourtDataCommand = new Command<int>(async (courtId) => await LoadCourtDataAsync(courtId));
-            SendCourtDataCommand = new Command(async () => await SendCourtDataAsync());
-            CourtExpenditures = new ObservableCollection<CourtExpenditure>();
-            IsIslanderLogin = false;
-            
+
+
+
+        HideLists = new Command(() =>
+       {
+           VisibleLists = !VisibleLists;
+
+       });
+
+        HideListDispenser = new Command(() =>
+                {
+                    VisibleDispenser = !VisibleDispenser;
+
+                });
+
+        HideDocumentList = new Command(() =>
+        {
+            VisibleDocuments = !VisibleDocuments;
+        });
+
+        HideExpenseList = new Command(() =>
+         {
+
+             VisibleExpenses = !VisibleExpenses;
+         });
+
+        HideCollectionList = new Command(() =>
+        {
+            VisibleReceipts = !VisibleReceipts;
+        });
+        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        GetAllEdsData();
+        DateStarttime = DateTime.Now;
+        DateEndtime = DateTime.Now;
+        Starttime = new TimeSpan(6, 0, 0);
+        Endtime = new TimeSpan(18, 0, 0);
+        LoadCourtDataCommand = new Command<int>(async (courtId) => await LoadCourtGetByIdDataAsync(courtId));
+        SendCourtDataCommand = new Command(async () => await SendCourtDataAsync());
+        CourtExpenditures = new ObservableCollection<CourtExpenditure>();
+        IsIslanderLogin = false;
+
+    }
+
+    public async Task GetAllEdsData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticaciÛn no encontrado");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontrÛ el token de autenticaciÛn", "OK");
+            return;
         }
 
-        public async 
-        Task
-GetAllEdsData()
+        try
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticaci√≥n no encontrado");
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontr√≥ el token de autenticaci√≥n", "OK");
-                return;
-            }
-            
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Iniciando carga de datos desde API");
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos m·s lentos
+
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de business, islander y eds...");
+            var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
+            var IslanderResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
+            var edsResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
+
+            var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
+            UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
+            UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
+
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos adicionales...");
+            var productResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100");
+            var compartimentResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
+            var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
+            var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
+
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de type-of-collection...");
+            var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
+
+            var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
+
+            var productList = JsonSerializer.Deserialize<ProductCourtResponseModel>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
+            UpdateCompartiment(compartimentList?.Data ?? new List<CompartimentCourtModel>());
+            UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
+            UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
+
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Actualizando TypeOfCollection con {typeOfCollectionList?.Data?.Count ?? 0} elementos");
+            UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
+
+            UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
+
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Datos cargados exitosamente. TypeOfCollectionList tiene {TypeOfCollectionList?.Count ?? 0} elementos");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexiÛn HTTP: {httpEx.Message}");
+            Console.WriteLine($"Error de conexiÛn cargando los datos: {httpEx.Message}");
+        }
+        catch (TaskCanceledException timeoutEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operaciÛn: {timeoutEx.Message}");
+            Console.WriteLine($"Timeout cargando los datos: {timeoutEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error general: {ex.Message}");
+            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+        }
+
+        // Ejecutar la lÛgica de preferencias despuÈs de cargar los datos
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
             try
             {
-                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Iniciando carga de datos desde API");
-                
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos m√°s lentos
+                var username = Preferences.Get("Usernamelogin", "");
 
-                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de business, islander y eds...");
-                var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
-                var IslanderResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
-                var edsResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
-
-                var businessList = JsonSerializer.Deserialize<BusinessResponseModel>(businessResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var IslanderList = JsonSerializer.Deserialize<IslanderApiResponse>(IslanderResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var edsList = JsonSerializer.Deserialize<EdsCourtResponseModel>(edsResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                UpdateEdsList(edsList?.Data ?? new List<EdsCourtModel>());
-                UpdateIslanderList(IslanderList?.Data ?? new List<IslanderResponse>());
-                UpdateBusiness(businessList?.Data ?? new List<BusinessModel>());
-
-                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos adicionales...");
-                var productResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/product?PageNumber=1&PageSize=100");
-                var compartimentResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment?PageNumber=1&PageSize=100");
-                var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
-                var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
-                
-                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de type-of-collection...");
-                var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
-                
-                var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
-
-                var productList = JsonSerializer.Deserialize<ProductCourtResponseModel>(productResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
-                UpdateCompartiment(compartimentList?.Data ?? new List<CompartimentCourtModel>());
-                UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
-                UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
-                
-                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Actualizando TypeOfCollection con {typeOfCollectionList?.Data?.Count ?? 0} elementos");
-                UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
-                
-                UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
-
-                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Datos cargados exitosamente. TypeOfCollectionList tiene {TypeOfCollectionList?.Count ?? 0} elementos");
-            }
-            catch (HttpRequestException httpEx)
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexi√≥n HTTP: {httpEx.Message}");
-                Console.WriteLine($"Error de conexi√≥n cargando los datos: {httpEx.Message}");
-            }
-            catch (TaskCanceledException timeoutEx)
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operaci√≥n: {timeoutEx.Message}");
-                Console.WriteLine($"Timeout cargando los datos: {timeoutEx.Message}");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error general: {ex.Message}");
-                Console.WriteLine($"Error cargando los datos: {ex.Message}");
-            }
-
-            // Ejecutar la l√≥gica de preferencias despu√©s de cargar los datos
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                try
+                var islander = IslanderList.FirstOrDefault(i => i.Name.ToLower() == username.ToLower());
+                if (islander != null)
                 {
-                    var username = Preferences.Get("Usernamelogin", "");
+                    Preferences.Set("islanderId", islander.IdIslander.ToString());
 
-                    var islander = IslanderList.FirstOrDefault(i => i.Name.ToLower() == username.ToLower());
-                    if (islander != null)
+                    var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
+                    if (eds != null)
                     {
-                        Preferences.Set("islanderId", islander.IdIslander.ToString());
+                        Preferences.Set("edsId", eds.IdEds.ToString());
+                        Preferences.Set("edsName", eds.Name);
 
-                        var eds = EdsList.FirstOrDefault(e => e.IdEds == islander.IdEds);
-                        if (eds != null)
+                        var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
+                        if (business != null)
                         {
-                            Preferences.Set("edsId", eds.IdEds.ToString());
-                            Preferences.Set("edsName", eds.Name);
-
-                            var business = BusinessList.FirstOrDefault(b => b.IdBusiness == eds.IdBusiness);
-                            if (business != null)
-                            {
-                                Preferences.Set("businessId", business.IdBusiness.ToString());
-                                Preferences.Set("businessName", business.Name);
-                            }
+                            Preferences.Set("businessId", business.IdBusiness.ToString());
+                            Preferences.Set("businessName", business.Name);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error configurando preferencias: {ex.Message}");
-                }
-            });
-        }
-
-        private async void LoadLastAccumulated(int idDispenser, int idHose)
-        {
-            if (idDispenser <= 0 || idHose <= 0)
-            {
-                throw new ArgumentException("idDispenser and idHose must be greater than 0.");
-            }
-
-            var selectedHose = HoseList.FirstOrDefault(h => h.IdDispensers == idDispenser && h.IdHose == idHose);
-            if (selectedHose != null)
-            {
-                LastAccumulatedAmount = selectedHose.AccumulatedAmount;
-                LastAccumulatedGallons = selectedHose.AccumulatedGallons;
-            }
-        }
-
-        private void AddAmountDifferenceResult(double accumulatedAmount, double lastAccumulatedAmount)
-        {
-            AmountDifferenceResult = accumulatedAmount - lastAccumulatedAmount;
-            AmountResults.Add(AmountDifferenceResult);
-        }
-
-        private void AddGallonsDifferenceResult(double accumulatedGallons, double lastAccumulatedGallons)
-        {
-            GallonsDifferenceResult = accumulatedGallons - lastAccumulatedGallons;
-            GallonResults.Add(GallonsDifferenceResult);
-        }
-
-        public void UpdateAmountDifferenceResult()
-        {
-            if(AccumulatedAmount >= LastAccumulatedAmount)
-            {
-                AmountDifferenceResult = AccumulatedAmount - LastAccumulatedAmount;
-            }
-            else
-            {
-                AmountDifferenceResult = 0;
-            }
-        }
-
-        public void UpdateGallonsDifferenceResult()
-        {
-            if(AccumulatedGallons >= LastAccumulatedGallons)
-            {
-                GallonsDifferenceResult = AccumulatedGallons - LastAccumulatedGallons;
-            }
-            else
-            {
-                GallonsDifferenceResult = 0;
-            }
-        }
-
-        private void UpdateDispensers(IEnumerable<DispenserModelResponse> dispensers)
-        {
-            DispensersList.Clear();
-            foreach (var Dispensers in dispensers)
-            {
-                DispensersList.Add(Dispensers);
-            }
-        }
-        private void UpdateIslanderList(IEnumerable<IslanderResponse> islanders)
-        {
-            IslanderList.Clear();
-            foreach (var islander in islanders)
-            {
-                IslanderList.Add(islander);
-            }
-        }
-
-        private void UpdateEdsList(IEnumerable<EdsCourtModel> edsData)
-        {
-            EdsList.Clear();
-            foreach (var eds in edsData)
-            {
-                EdsList.Add(eds);
-            }
-        }
-
-        private void UpdateProductList(IEnumerable<ProductCourtModel> productData)
-        {
-            ProductList.Clear();
-            foreach (var product in productData)
-            {
-                ProductList.Add(product);
-            }
-        }
-
-        private void UpdateCompartiment(IEnumerable<CompartimentCourtModel> compartimentData)
-        {
-            CompartimentList.Clear();
-            foreach (var compartiment in compartimentData)
-            {
-                CompartimentList.Add(compartiment);
-            }
-        }
-
-        private void UpdateHose(IEnumerable<HoseCourtModel> hoseData)
-        {
-            HoseList.Clear();
-            foreach (var hose in hoseData)
-            {
-                HoseList.Add(hose);
-            }
-
-        }
-
-        private void UpdateCourtExpenditure(IEnumerable<ExpendituresCourtModel> expenditureData)
-        {
-            ExpenditureList.Clear();
-            foreach (var expenditure in expenditureData)
-            {
-                ExpenditureList.Add(expenditure);
-            }
-        }
-
-        private void UpdateTypeOfCollection(IEnumerable<TypeOfCollectionCourtModel> typeOfCollectionData)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualizaci√≥n con {typeOfCollectionData?.Count() ?? 0} elementos");
-                
-                TypeOfCollectionList.Clear();
-                
-                if (typeOfCollectionData != null)
-                {
-                    foreach (var typeOfCollection in typeOfCollectionData)
-                    {
-                        TypeOfCollectionList.Add(typeOfCollection);
-                        System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Agregado '{typeOfCollection.Description}' (ID: {typeOfCollection.IdTypeOfCollection})");
-                    }
-                }
-                
-                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualizaci√≥n completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
-                
-                // Notificar cambio en la propiedad para refrescar la UI
-                OnPropertyChanged(nameof(TypeOfCollectionList));
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Error actualizando lista: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error configurando preferencias: {ex.Message}");
             }
+        });
+    }
+
+    private async void LoadLastAccumulated(int idDispenser, int idHose)
+    {
+        if (idDispenser <= 0 || idHose <= 0)
+        {
+            throw new ArgumentException("idDispenser and idHose must be greater than 0.");
         }
 
-        private void UpdateBusiness(IEnumerable<BusinessModel> businessData)
+        var selectedHose = HoseList.FirstOrDefault(h => h.IdDispensers == idDispenser && h.IdHose == idHose);
+        if (selectedHose != null)
         {
-            BusinessList.Clear();
-            foreach (var business in businessData)
+            LastAccumulatedAmount = selectedHose.AccumulatedAmount;
+            LastAccumulatedGallons = selectedHose.AccumulatedGallons;
+        }
+    }
+
+    private void AddAmountDifferenceResult(double accumulatedAmount, double lastAccumulatedAmount)
+    {
+        AmountDifferenceResult = accumulatedAmount - lastAccumulatedAmount;
+        AmountResults.Add(AmountDifferenceResult);
+    }
+
+    private void AddGallonsDifferenceResult(double accumulatedGallons, double lastAccumulatedGallons)
+    {
+        GallonsDifferenceResult = accumulatedGallons - lastAccumulatedGallons;
+        GallonResults.Add(GallonsDifferenceResult);
+    }
+
+    public void UpdateAmountDifferenceResult()
+    {
+        if (AccumulatedAmount >= LastAccumulatedAmount)
+        {
+            AmountDifferenceResult = AccumulatedAmount - LastAccumulatedAmount;
+        }
+        else
+        {
+            AmountDifferenceResult = 0;
+        }
+    }
+
+    public void UpdateGallonsDifferenceResult()
+    {
+        if (AccumulatedGallons >= LastAccumulatedGallons)
+        {
+            GallonsDifferenceResult = AccumulatedGallons - LastAccumulatedGallons;
+        }
+        else
+        {
+            GallonsDifferenceResult = 0;
+        }
+    }
+
+    private void UpdateDispensers(IEnumerable<DispenserModelResponse> dispensers)
+    {
+        DispensersList.Clear();
+        foreach (var Dispensers in dispensers)
+        {
+            DispensersList.Add(Dispensers);
+        }
+    }
+    private void UpdateIslanderList(IEnumerable<IslanderResponse> islanders)
+    {
+        IslanderList.Clear();
+        foreach (var islander in islanders)
+        {
+            IslanderList.Add(islander);
+        }
+    }
+
+    private void UpdateEdsList(IEnumerable<EdsCourtModel> edsData)
+    {
+        EdsList.Clear();
+        foreach (var eds in edsData)
+        {
+            EdsList.Add(eds);
+        }
+    }
+
+    private void UpdateProductList(IEnumerable<ProductCourtModel> productData)
+    {
+        ProductList.Clear();
+        foreach (var product in productData)
+        {
+            ProductList.Add(product);
+        }
+    }
+
+    private void UpdateCompartiment(IEnumerable<CompartimentCourtModel> compartimentData)
+    {
+        CompartimentList.Clear();
+        foreach (var compartiment in compartimentData)
+        {
+            CompartimentList.Add(compartiment);
+        }
+    }
+
+    private void UpdateHose(IEnumerable<HoseCourtModel> hoseData)
+    {
+        HoseList.Clear();
+        foreach (var hose in hoseData)
+        {
+            HoseList.Add(hose);
+        }
+
+    }
+
+    private void UpdateCourtExpenditure(IEnumerable<ExpendituresCourtModel> expenditureData)
+    {
+        ExpenditureList.Clear();
+        foreach (var expenditure in expenditureData)
+        {
+            ExpenditureList.Add(expenditure);
+        }
+    }
+
+    private void UpdateTypeOfCollection(IEnumerable<TypeOfCollectionCourtModel> typeOfCollectionData)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualizaciÛn con {typeOfCollectionData?.Count() ?? 0} elementos");
+
+            TypeOfCollectionList.Clear();
+
+            if (typeOfCollectionData != null)
             {
-                BusinessList.Add(business);
+                foreach (var typeOfCollection in typeOfCollectionData)
+                {
+                    TypeOfCollectionList.Add(typeOfCollection);
+                    System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Agregado '{typeOfCollection.Description}' (ID: {typeOfCollection.IdTypeOfCollection})");
+                }
             }
-        }
 
-        public async Task SaveAdditionalInfoAsync(string description)
-        {
-            AdditionalInfoDescription = description;
-            VisibleAdditionalInfo = !string.IsNullOrEmpty(description);
-            OnPropertyChanged(nameof(AdditionalInfoDescription));
-        }
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: ActualizaciÛn completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
 
-        private void UpdateDateEndtime()
-        {
-            if (Endtime < Starttime)
-                DateEndtime = DateStarttime.AddDays(1);
-            else
-                DateEndtime = DateStarttime;
+            // Notificar cambio en la propiedad para refrescar la UI
+            OnPropertyChanged(nameof(TypeOfCollectionList));
         }
-
-        public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
+        catch (Exception ex)
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontr√≥ el token de autenticaci√≥n", "OK");
-                return new Dictionary<string, string>();
-            }
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Error actualizando lista: {ex.Message}");
+        }
+    }
+
+    private void UpdateBusiness(IEnumerable<BusinessModel> businessData)
+    {
+        BusinessList.Clear();
+        foreach (var business in businessData)
+        {
+            BusinessList.Add(business);
+        }
+    }
+
+    public async Task SaveAdditionalInfoAsync(string description)
+    {
+        AdditionalInfoDescription = description;
+        VisibleAdditionalInfo = !string.IsNullOrEmpty(description);
+        OnPropertyChanged(nameof(AdditionalInfoDescription));
+    }
+
+    private void UpdateDateEndtime()
+    {
+        if (Endtime < Starttime)
+            DateEndtime = DateStarttime.AddDays(1);
+        else
+            DateEndtime = DateStarttime;
+    }
+
+    public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontrÛ el token de autenticaciÛn", "OK");
+            return new Dictionary<string, string>();
+        }
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+        var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/translations");
+        var data = JsonSerializer.Deserialize<TranslationsResponse>(response, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        return data.Translations.TryGetValue(languageTag, out var translations)
+            ? translations
+            : new Dictionary<string, string>();
+    }
+
+    public async Task LoadCourtGetByIdDataAsync(int courtId)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontrÛ el token de autenticaciÛn", "OK");
+            return;
+        }
+        try
+        {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/translations");
-            var data = JsonSerializer.Deserialize<TranslationsResponse>(response, new JsonSerializerOptions
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/court/{courtId}");
+            Console.WriteLine(response);
+
+            Court = JsonSerializer.Deserialize<CourtModel>(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
-
-            return data.Translations.TryGetValue(languageTag, out var translations)
-                ? translations
-                : new Dictionary<string, string>();
-
         }
-
-        public async Task LoadCourtDataAsync(int courtId)
+        catch (Exception ex)
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontr√≥ el token de autenticaci√≥n", "OK");
-                return;
-            }
-            try
-            {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/court/{courtId}");
-                Console.WriteLine(response);
-
-                Court = JsonSerializer.Deserialize<CourtModel>(response, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
-            }
+            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar el dato: {ex.Message}", "OK");
         }
-        
-        public async Task LoadAllCourtListAsync()
+    }
+
+    private void DeleteCollection(CourtTypeOfCollection collection)
+    {
+        if (collection != null && CourtTypeOfCollections.Contains(collection))
         {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontr√≥ el token de autenticaci√≥n", "OK");
-                return;
-            }
-            try
-            {
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                
-                System.Diagnostics.Debug.WriteLine("CourtService.LoadAllCourtListAsync - Loading court list from API...");
-                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=10");
-                
-                // Log the raw response for debugging
-                System.Diagnostics.Debug.WriteLine($"CourtService.LoadAllCourtListAsync - API Response: {response.Substring(0, Math.Min(500, response.Length))}...");
-                
-                var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(response, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+            CourtTypeOfCollections.Remove(collection);
+            TotalSales = GetTotalSales();
+            OnPropertyChanged(nameof(CourtTypeOfCollections));
+            // ?? Notificar cambio en la visibilidad despuÈs de eliminar el mÈtodo de pago
+            OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
+        }
+    }
 
-                CourtList.Clear();
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-                if (courts != null)
+    // ImplementaciÛn explÌcita de INotifyPropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    // MÈtodos restantes del servicio (SendCourtDataAsync, etc.)
+    public async Task SendCourtDataAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontrÛ el token de autenticaciÛn", "OK");
+            return;
+        }
+        try
+        {
+            var totalVentas = GetTotalAmount();
+            var totalMetodosPago = GetTotalTypeOfCollection();
+            var tolerancia = 0.01;
+
+            if (Math.Abs(totalVentas - totalMetodosPago) > tolerancia)
+            {
+                var diferencia = totalVentas - totalMetodosPago;
+                string mensajeError;
+
+                if (diferencia > 0)
                 {
-                    System.Diagnostics.Debug.WriteLine($"CourtService.LoadAllCourtListAsync - Loaded {courts.Count} courts from API");
-                    
-                    foreach (var court in courts)
-                    {
-                        // Simplemente agregar el court tal como viene de la API
-                        System.Diagnostics.Debug.WriteLine($"CourtService - Court {court.Id}: Collections count = {court.Collections?.Count ?? 0}");
-                        CourtList.Add(court);
-                    }
+                    mensajeError = $"?? ValidaciÛn de Pagos Fallida\n\n" +
+                                  $"El total de mÈtodos de pago es menor al total de ventas:\n\n" +
+                                  $"ï Total de ventas: ${totalVentas:N2}\n" +
+                                  $"ï Total mÈtodos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"ï Faltante: ${diferencia:N2}\n\n" +
+                                  $"Por favor, agregue mÈtodos de pago por el monto faltante antes de enviar el corte.";
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("CourtService.LoadAllCourtListAsync - No courts returned from API");
+                    mensajeError = $"?? ValidaciÛn de Pagos Fallida\n\n" +
+                                  $"El total de mÈtodos de pago excede al total de ventas:\n\n" +
+                                  $"ï Total de ventas: ${totalVentas:N2}\n" +
+                                  $"ï Total mÈtodos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"ï Excedente: ${Math.Abs(diferencia):N2}\n\n" +
+                                  $"Por favor, ajuste los mÈtodos de pago antes de enviar el corte.";
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.LoadAllCourtListAsync - Error: {ex.Message}");
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar la lista de courts: {ex.Message}", "OK");
-            }
-        }
-
-        /// <summary>
-        /// Valida la consistencia de datos entre las ventas y las formas de pago
-        /// </summary>
-        public void ValidateCourtCollectionsConsistency(CourtListItemModel court)
-        {
-            if (court == null) return;
-
-            System.Diagnostics.Debug.WriteLine($"CourtService.ValidateCourtCollectionsConsistency - Validating court {court.Id}...");
-
-            // 1. Verificar que hay formas de pago si hay ventas
-            if (court.TotalAccumulatedAmount > 0)
-            {
-                if (court.Collections == null || !court.Collections.Any())
-                {
-                    System.Diagnostics.Debug.WriteLine($"‚ùå CRITICAL ISSUE: Court {court.Id} has sales (${court.TotalAccumulatedAmount:C}) but NO payment methods!");
-                    System.Diagnostics.Debug.WriteLine("   This violates business rules - every sale must have a payment method!");
-                }
-                else
-                {
-                    // 2. Verificar que la suma de Collections coincide con el total
-                    var totalCollections = court.Collections.Sum(c => c.Amount);
-                    var difference = Math.Abs(totalCollections - court.TotalAccumulatedAmount);
-                    
-                    if (difference > 0.01) // Permitir peque√±as diferencias de redondeo
-                    {
-                        System.Diagnostics.Debug.WriteLine($"‚ö†Ô∏è WARNING: Court {court.Id} payment methods total (${totalCollections:C}) doesn't match sales total (${court.TotalAccumulatedAmount:C})");
-                        System.Diagnostics.Debug.WriteLine($"   Difference: ${difference:C}");
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"‚úÖ Court {court.Id} payment methods are consistent with sales total");
-                    }
-                }
-            }
-            else if (court.Collections != null && court.Collections.Any())
-            {
-                System.Diagnostics.Debug.WriteLine($"‚ö†Ô∏è WARNING: Court {court.Id} has payment methods but no sales total");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"‚ÑπÔ∏è Court {court.Id} has no sales and no payment methods (may be valid if no transactions occurred)");
-            }
-        }
-
-        private async void OpenCourtDetail(CourtListItemModel selectedCourt)
-        {
-            if (selectedCourt == null) return;
-
-            System.Diagnostics.Debug.WriteLine($"CourtService.OpenCourtDetail - Opening court {selectedCourt.Id}");
-
-            // **PASO 1**: Validar consistencia de datos ANTES de abrir el detalle
-            ValidateCourtCollectionsConsistency(selectedCourt);
-
-            // **PASO 2**: Intentar cargar Collections si est√°n vac√≠os pero hay ventas
-            if (selectedCourt.TotalAccumulatedAmount > 0 && 
-                (selectedCourt.Collections == null || !selectedCourt.Collections.Any()))
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.OpenCourtDetail - Collections missing for court {selectedCourt.Id}, attempting to load...");
-               
-            }
-
-            // **PASO 3**: Asignar traducciones
-            selectedCourt.DateTranslation = GlobalTranslations.Get("Date");
-            selectedCourt.ConsecutiveTranslation = GlobalTranslations.Get("Consecutive");
-            selectedCourt.IslanderTranslation = GlobalTranslations.Get("Islander");
-            selectedCourt.CourtDetailTranslation = GlobalTranslations.Get("CourtDetail");
-            selectedCourt.ShiftTranslation = GlobalTranslations.Get("Shift");
-            selectedCourt.TotalsTranslation = GlobalTranslations.Get("Totals");
-            selectedCourt.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
-            selectedCourt.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
-            selectedCourt.DistincTranslation = GlobalTranslations.Get("Distinc");
-            selectedCourt.DispensersTranslation = GlobalTranslations.Get("Dispensers");
-            selectedCourt.LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
-            selectedCourt.LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
-            selectedCourt.DocumentsTranslation = GlobalTranslations.Get("Documents");
-            selectedCourt.ExpendituresTranslation = GlobalTranslations.Get("Expenditures");
-            selectedCourt.CourtTranslation = GlobalTranslations.Get("Court");
-            selectedCourt.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
-            selectedCourt.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
-
-            // **PASO 4**: Asignar traducciones a Collections
-            if (selectedCourt.Collections != null)
-            {
-                System.Diagnostics.Debug.WriteLine($"CourtService.OpenCourtDetail - Applying translations to {selectedCourt.Collections.Count} collections");
-                
-                foreach (var collection in selectedCourt.Collections)
-                {
-                    collection.DateTranslation = GlobalTranslations.Get("Date");
-                    collection.CollectionTranslation = GlobalTranslations.Get("Collection");
-                    collection.AmountTranslation = GlobalTranslations.Get("Amount");
-                    collection.DescriptionTranslation = GlobalTranslations.Get("Description");
-                }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("‚ö†Ô∏è CourtService.OpenCourtDetail - Collections is still null after loading attempt");
-            }
-
-            // **PASO 5**: Asignar traducciones a otros elementos
-            if (selectedCourt.Dispensers != null)
-            {
-                foreach (var dispenser in selectedCourt.Dispensers) 
-                {
-                    dispenser.DispenserTranslation = GlobalTranslations.Get("Dispenser");
-                    dispenser.NumberHoseTranslation = GlobalTranslations.Get("NumberHose");
-                    dispenser.ProductTranslation = GlobalTranslations.Get("Product");
-                    dispenser.PriceTranslation = GlobalTranslations.Get("Price");
-                    dispenser.StarttimeTranslation = GlobalTranslations.Get("Starttime");
-                    dispenser.EndtimeTranslation = GlobalTranslations.Get("Endtime");
-                    dispenser.AccumulatedAmountTranslation = GlobalTranslations.Get("AccumulatedAmount");
-                    dispenser.AccumulatedGallonsTranslations = GlobalTranslations.Get("AccumulatedGallons");
-                    dispenser.LastAccumulatedAmountTranslation = GlobalTranslations.Get("LastAccumulatedAmount");
-                    dispenser.LastAccumulatedGallonsTranslation = GlobalTranslations.Get("LastAccumulatedGallons");
-                }
-            }
-
-            if (selectedCourt.Documents != null)
-            {
-                foreach (var document in selectedCourt.Documents) 
-                {
-                    document.CourtTranslation = GlobalTranslations.Get("Court");
-                    document.ThereIsNoImageTranslation = GlobalTranslations.Get("ThereIsNoImage");
-                }
-            }
-
-            if (selectedCourt.Expenditures != null)
-            {
-                foreach (var expenditure in selectedCourt.Expenditures) 
-                {
-                    expenditure.DateTranslation = GlobalTranslations.Get("Date");
-                    expenditure.ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
-                    expenditure.AmountTranslation = GlobalTranslations.Get("Amount");
-                    expenditure.DescriptionTranslation = GlobalTranslations.Get("Description");
-                }
-            }
-
-            // **PASO 6**: Log final de estado antes de navegar
-            System.Diagnostics.Debug.WriteLine($"CourtService.OpenCourtDetail - Final state for court {selectedCourt.Id}:");
-            System.Diagnostics.Debug.WriteLine($"  - Total Amount: ${selectedCourt.TotalAccumulatedAmount:C}");
-            System.Diagnostics.Debug.WriteLine($"  - Collections Count: {selectedCourt.Collections?.Count ?? 0}");
-            System.Diagnostics.Debug.WriteLine($"  - Dispensers Count: {selectedCourt.Dispensers?.Count ?? 0}");
-            System.Diagnostics.Debug.WriteLine($"  - Expenditures Count: {selectedCourt.Expenditures?.Count ?? 0}");
-
-            if (selectedCourt.Collections != null && selectedCourt.Collections.Any())
-            {
-                var totalFromCollections = selectedCourt.Collections.Sum(c => c.Amount);
-                System.Diagnostics.Debug.WriteLine($"  - Total from Collections: ${totalFromCollections:C}");
-                
-                foreach (var collection in selectedCourt.Collections)
-                {
-                    System.Diagnostics.Debug.WriteLine($"    * {collection.Collection}: ${collection.Amount:C}");
-                }
-            }
-
-            // **PASO 7**: Navegar a la p√°gina de detalle
-            try
-            {
-                var detailPage = new APP.Eds.UsesCases.Court.CourtDetailPage(selectedCourt);
-                await Application.Current.MainPage.Navigation.PushAsync(detailPage);
-                
-                System.Diagnostics.Debug.WriteLine($"‚úÖ Successfully navigated to court detail page for court {selectedCourt.Id}");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"‚ùå Error navigating to court detail page: {ex.Message}");
-                await Application.Current.MainPage.DisplayAlert("Error", 
-                    "No se pudo abrir el detalle del corte. Por favor, intente nuevamente.", "OK");
-            }
-        }
-
-        private void DeleteCollection(CourtTypeOfCollection collection)
-        {
-            if (collection != null && CourtTypeOfCollections.Contains(collection))
-            {
-                CourtTypeOfCollections.Remove(collection);
-                TotalSales = GetTotalSales();
-                OnPropertyChanged(nameof(CourtTypeOfCollections));
-                // üî• Notificar cambio en la visibilidad despu√©s de eliminar el m√©todo de pago
-                OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-            }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        // Implementaci√≥n expl√≠cita de INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        // M√©todos restantes del servicio (SendCourtDataAsync, etc.)
-        public async Task SendCourtDataAsync()
-        {
-            if (string.IsNullOrEmpty(_authToken))
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontr√≥ el token de autenticaci√≥n", "OK");
-                return;
-            }
-            try
-            {
-                var totalVentas = GetTotalAmount();
-                var totalMetodosPago = GetTotalTypeOfCollection();
-                var tolerancia = 0.01; 
-
-                if (Math.Abs(totalVentas - totalMetodosPago) > tolerancia)
-                {
-                    var diferencia = totalVentas - totalMetodosPago;
-                    string mensajeError;
-
-                    if (diferencia > 0)
-                    {
-                        mensajeError = $"‚ö†Ô∏è Validaci√≥n de Pagos Fallida\n\n" +
-                                      $"El total de m√©todos de pago es menor al total de ventas:\n\n" +
-                                      $"‚Ä¢ Total de ventas: ${totalVentas:N2}\n" +
-                                      $"‚Ä¢ Total m√©todos de pago: ${totalMetodosPago:N2}\n" +
-                                      $"‚Ä¢ Faltante: ${diferencia:N2}\n\n" +
-                                      $"Por favor, agregue m√©todos de pago por el monto faltante antes de enviar el corte.";
-                    }
-                    else
-                    {
-                        mensajeError = $"‚ö†Ô∏è Validaci√≥n de Pagos Fallida\n\n" +
-                                      $"El total de m√©todos de pago excede al total de ventas:\n\n" +
-                                      $"‚Ä¢ Total de ventas: ${totalVentas:N2}\n" +
-                                      $"‚Ä¢ Total m√©todos de pago: ${totalMetodosPago:N2}\n" +
-                                      $"‚Ä¢ Excedente: ${Math.Abs(diferencia):N2}\n\n" +
-                                      $"Por favor, ajuste los m√©todos de pago antes de enviar el corte.";
-                    }
-
-                    LastSendWasSuccessful = false;
-                    await Application.Current.MainPage.DisplayAlert("Validaci√≥n Fallida", mensajeError, "Entendido");
-                    return;
-                }
-
-                if (totalVentas > 0 && (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any()))
-                {
-                    LastSendWasSuccessful = false;
-                    await Application.Current.MainPage.DisplayAlert(
-                        "M√©todos de Pago Requeridos",
-                        $"No se pueden enviar datos del corte sin registrar m√©todos de pago.\n\n" +
-                        $"Total de ventas: ${totalVentas:N2}\n" +
-                        $"M√©todos de pago registrados: 0\n\n" +
-                        $"Por favor, agregue al menos un m√©todo de pago que cubra el total de ventas.",
-                        "Entendido");
-                    return;
-                }
-
-                if (Court == null)
-                {
-                    Court = new CourtModel();
-                }
-
-                Court.IdBusiness = IdBusiness;
-                Court.IdEds = IdEds;
-                Court.IdIslander = IdIslander;
-
-                UserRole = Preferences.Get("userRole", string.Empty);
-
-                if (UserRole == "User")
-                {
-                    Court.IdBusiness = int.Parse(Preferences.Get("businessId", string.Empty));
-                    Court.IdEds = int.Parse(Preferences.Get("edsId", string.Empty));
-                    Court.IdIslander = int.Parse(Preferences.Get("islanderId", string.Empty));
-                }
-            
-               
-                Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
-                Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
-                Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
-                Court.Endtime = Endtime.ToString(@"hh\:mm\:ss");
-                Court.Descripcion = AdditionalInfoDescription;
-                Court.Distintic = Distintic;
-                Court.CourtDocuments = CourtDocuments?.ToList();
-
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                var json = JsonSerializer.Serialize(Court, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/court", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    LastSendWasSuccessful = true;
-
-                    if (CourtDocuments?.Any() == true)
-                    {
-                        string apiUrl = $"{Configuration.BaseUrl}/api/v1/files/upload";
-
-                        using var client = new HttpClient();
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-                        foreach (var doc in CourtDocuments)
-                        {
-                            try
-                            {
-                                byte[] fileBytes = Convert.FromBase64String(doc.Descripcion);
-                                using var fileStream = new MemoryStream(fileBytes);
-                                using var contentFile = new MultipartFormDataContent();
-                                var fileContent = new StreamContent(fileStream);
-                                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
-                                contentFile.Add(fileContent, "files", doc.DocumentName);
-
-                                HttpResponseMessage fileResponse = await client.PostAsync(apiUrl, contentFile);
-                                if (!fileResponse.IsSuccessStatusCode)
-                                {
-                                    Console.WriteLine($"Error al subir archivo: {doc.DocumentName} - {fileResponse.StatusCode}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                LastSendWasSuccessful = false;
-
-                                Console.WriteLine($"Error subiendo {doc.DocumentName}: {ex.Message}");
-                            }
-                        }
-                    }
-
-                    await Application.Current.MainPage.DisplayAlert(
-                        "‚úÖ Corte Enviado Exitosamente", 
-                        $"El corte se ha enviado correctamente:\n\n" +
-                        $"‚Ä¢ Total de ventas: ${totalVentas:N2}\n" +
-                        $"‚Ä¢ M√©todos de pago: ${totalMetodosPago:N2}\n" +
-                        $"‚Ä¢ Gastos: ${GetTotalExpenditure():N2}\n" +
-                        $"‚Ä¢ Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
-                        $"La validaci√≥n de pagos fue exitosa.", 
-                        "Completado");
-                }
-                else
-                {
-                    LastSendWasSuccessful = false;
-
-                    var error = await response.Content.ReadAsStringAsync();
-                    
-                    string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo m√°s tarde.";
-                    if (!string.IsNullOrEmpty(error))
-                    {
-                       
-                        if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
-                        {
-                            userFriendlyError = $"Error de validaci√≥n: {error}";
-                        }
-                        else if (error.Contains("server error", StringComparison.OrdinalIgnoreCase) || error.Contains("internal server error", StringComparison.OrdinalIgnoreCase))
-                        {
-                            userFriendlyError = $"Error del servidor. Por favor, intente de nuevo m√°s tarde.";
-                        }
-                        else
-                        {
-                            userFriendlyError = $"Error al enviar el dato: {error}";
-                        }
-                    }
-                    await Application.Current.MainPage.DisplayAlert("Error", userFriendlyError, "OK");
-                }
-            }
-            catch (Exception ex)
-            {
 
                 LastSendWasSuccessful = false;
-
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
-            }
-        }
-
-        // Resto de m√©todos necesarios
-        public async Task AddDispenserFromPopup()
-        { 
-            if (Court == null)
-            {
-                Court = new CourtModel();
+                await Application.Current.MainPage.DisplayAlert("ValidaciÛn Fallida", mensajeError, "Entendido");
+                return;
             }
 
-            if (CourtDispensers == null)
+            if (totalVentas > 0 && (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any()))
             {
-                CourtDispensers = new ObservableCollection<CourtDispenser>();
-            }
-
-            var newDispenser = new CourtDispenser
-            {
-               
-                DispenserNumber = SelectedHose.IdDispensers,
-                NumberName = SelectedHose.Number,
-                AccumulatedAmount = AccumulatedAmount,
-                AccumulatedGallons = AccumulatedGallons,
-                LastAccumulatedAmount = LastAccumulatedAmount,
-                LastAccumulatedGallons = LastAccumulatedGallons,
-                AmountDifferenceResult = AmountDifferenceResult,
-                GallonsDifferenceResult = GallonsDifferenceResult,
-                IdHose = IdHose
-            };
-
-            CourtDispensers.Add(newDispenser);
-            Court.CourtDispensers = CourtDispensers.ToList();
-            VisibleDispenser = true;
-
-            AddAmountDifferenceResult(AccumulatedAmount, LastAccumulatedAmount);
-            AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
-
-            TotalSales = GetTotalSales();
-            
-            // üî• Notificar cambio en la visibilidad despu√©s de agregar el dispensador
-            OnPropertyChanged(nameof(ShouldShowDispensersSection));
-        }
-
-        public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
-        {
-            if (Court == null)
-                Court = new CourtModel();
-
-            if (CourtDocuments == null)
-                CourtDocuments = new ObservableCollection<CourtDocument>();
-
-            for (int i = 0; i < filesBase64.Count; i++)
-            {
-                var newDocument = new CourtDocument
-                {
-                    Descripcion = filesBase64[i], 
-                    DocumentName = nombresDocumentos[i],
-                };
-
-                CourtDocuments.Add(newDocument);
-            }
-
-            Court.CourtDocuments = CourtDocuments.ToList();
-            VisibleDocuments = true;
-        }
-
-        public async Task AddCourtExpenditureFromPopup()
-        {
-            if (Court == null)
-            {
-                Court = new CourtModel();
-            }
-
-            if (CourtExpenditures == null)
-            {
-                CourtExpenditures = new ObservableCollection<CourtExpenditure>();
-            }
-
-            //  Verificar que hay suficiente efectivo para cubrir el gasto
-            double montoGasto = CourtExpenditureAmount;
-
-            // Calcular el efectivo disponible en los m√©todos de pago
-            double efectivoDisponible = 0;
-            if (CourtTypeOfCollections != null && CourtTypeOfCollections.Any())
-            {
-                // Buscar m√©todos de pago que sean efectivo (case-insensitive)
-                var metodosEfectivo = CourtTypeOfCollections.Where(m =>
-                    m.TypeOfCollectionName != null &&
-                    m.TypeOfCollectionName.Contains("Efectivo", StringComparison.OrdinalIgnoreCase));
-
-                efectivoDisponible = metodosEfectivo.Sum(m => m.Amount);
-            }
-
-            // Calcular el total de gastos YA registrados
-            double gastosYaRegistrados = CourtExpenditures?.Sum(g => g.Amount) ?? 0;
-
-            // Calcular el efectivo disponible despu√©s de restar los gastos ya registrados
-            double efectivoRestante = efectivoDisponible - gastosYaRegistrados;
-
-            // Validar que el nuevo gasto no exceda el efectivo disponible
-            if (montoGasto > efectivoRestante)
-            {
-                string mensaje = $"‚ö†Ô∏è Gasto Excede Efectivo Disponible\n\n" +
-                                $"El monto del gasto que intenta registrar excede el efectivo disponible:\n\n" +
-                                $"‚Ä¢ Efectivo en m√©todos de pago: ${efectivoDisponible:N2}\n" +
-                                $"‚Ä¢ Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
-                                $"‚Ä¢ Efectivo disponible: ${efectivoRestante:N2}\n" +
-                                $"‚Ä¢ Monto del gasto: ${montoGasto:N2}\n" +
-                                $"‚Ä¢ Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
-
-                if (efectivoDisponible == 0)
-                {
-                    mensaje += "No hay m√©todos de pago en efectivo registrados.\n" +
-                              "Por favor, agregue un m√©todo de pago en efectivo antes de registrar gastos.";
-                }
-                else if (efectivoRestante <= 0)
-                {
-                    mensaje += "Ya se han registrado gastos por el total del efectivo disponible.\n" +
-                              "No es posible registrar m√°s gastos sin agregar m√°s efectivo.";
-                }
-                else
-                {
-                    mensaje += $"El monto m√°ximo que puede registrar como gasto es: ${efectivoRestante:N2}";
-                }
-
+                LastSendWasSuccessful = false;
                 await Application.Current.MainPage.DisplayAlert(
-                    "Gasto No Permitido",
-                    mensaje,
+                    "MÈtodos de Pago Requeridos",
+                    $"No se pueden enviar datos del corte sin registrar mÈtodos de pago.\n\n" +
+                    $"Total de ventas: ${totalVentas:N2}\n" +
+                    $"MÈtodos de pago registrados: 0\n\n" +
+                    $"Por favor, agregue al menos un mÈtodo de pago que cubra el total de ventas.",
                     "Entendido");
                 return;
             }
 
-            var newCourtExpenditure = new CourtExpenditure
-            {
-                ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
-                Amount = CourtExpenditureAmount,
-                Description = ExpenditureDescription,
-                IdExpenditure =SelectedExpenditure.IdExpenditure,
-            };
-
-            CourtExpenditures.Add(newCourtExpenditure);
-            Court.CourtExpenditures = CourtExpenditures.ToList();
-            VisibleExpenses = true;
-
-            TotalSales = GetTotalSales();
-            CourtExpenditureAmount = 0;
-            ExpenditureDescription = "";
-        }
-
-        public async Task AddCourtTypeOfCollectionFromPopup()
-        {
             if (Court == null)
             {
                 Court = new CourtModel();
             }
 
-            if (CourtTypeOfCollections == null)
+            Court.IdBusiness = IdBusiness;
+            Court.IdEds = IdEds;
+            Court.IdIslander = IdIslander;
+
+            UserRole = Preferences.Get("userRole", string.Empty);
+
+            if (UserRole == "User")
             {
-                CourtTypeOfCollections = new ObservableCollection<CourtTypeOfCollection>();
+                Court.IdBusiness = int.Parse(Preferences.Get("businessId", string.Empty));
+                Court.IdEds = int.Parse(Preferences.Get("edsId", string.Empty));
+                Court.IdIslander = int.Parse(Preferences.Get("islanderId", string.Empty));
             }
-            var newCourtTypeOfCollection = new CourtTypeOfCollection
+
+            Court.DateStarttime = DateStarttime.ToString("yyyy-MM-dd");
+            Court.Starttime = Starttime.ToString(@"hh\:mm\:ss");
+            Court.DateEndtime = DateEndtime.ToString("yyyy-MM-dd");
+            Court.Endtime = Endtime.ToString(@"hh\:mm\:ss");
+            Court.Descripcion = AdditionalInfoDescription;
+            Court.Distintic = Distintic;
+            Court.CourtDocuments = CourtDocuments?.ToList();
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(Court, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/court", content);
+
+            if (response.IsSuccessStatusCode)
             {
-                TypeOfCollectionName = SelectedTypeOfCollection.Description ?? string.Empty,
-                Amount = CourtTypeOfCollectionAmount,
-                Description = CourtTypeOfCollectionDescription,
-                IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
+                LastSendWasSuccessful = true;
+
+                // Usar el servicio de subida de archivos si hay documentos
+                if (CourtDocuments?.Any() == true)
+                {
+                    var fileUploadService = new FileUploadService(_authToken);
+                    var uploadResult = await fileUploadService.UploadDocumentsAsync(CourtDocuments);
+
+                    if (!uploadResult.Success)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: Advertencia - {uploadResult.Message}");
+
+                        // Log de archivos fallidos
+                        foreach (var failedUpload in uploadResult.FailedUploads)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  - {failedUpload.FileName}: {failedUpload.Message}");
+                        }
+                    }
+                }
+
+                await Application.Current.MainPage.DisplayAlert(
+                    "? Corte Enviado Exitosamente",
+                    $"El corte se ha enviado correctamente:\n\n" +
+                    $"ï Total de ventas: ${totalVentas:N2}\n" +
+                    $"ï MÈtodos de pago: ${totalMetodosPago:N2}\n" +
+                    $"ï Gastos: ${GetTotalExpenditure():N2}\n" +
+                    $"ï Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
+                    $"La validaciÛn de pagos fue exitosa.",
+                    "Completado");
+            }
+            else
+            {
+                LastSendWasSuccessful = false;
+
+                var error = await response.Content.ReadAsStringAsync();
+
+                string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo m·s tarde.";
+                if (!string.IsNullOrEmpty(error))
+                {
+
+                    if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
+                    {
+                        userFriendlyError = $"Error de validaciÛn: {error}";
+                    }
+                    else if (error.Contains("server error", StringComparison.OrdinalIgnoreCase) || error.Contains("internal server error", StringComparison.OrdinalIgnoreCase))
+                    {
+                        userFriendlyError = $"Error del servidor. Por favor, intente de nuevo m·s tarde.";
+                    }
+                    else
+                    {
+                        userFriendlyError = $"Error al enviar el dato: {error}";
+                    }
+                }
+                await Application.Current.MainPage.DisplayAlert("Error", userFriendlyError, "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+
+            LastSendWasSuccessful = false;
+
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+        }
+    }
+
+    // Resto de mÈtodos necesarios
+    public async Task AddDispenserFromPopup()
+    {
+        if (Court == null)
+        {
+            Court = new CourtModel();
+        }
+
+        if (CourtDispensers == null)
+        {
+            CourtDispensers = new ObservableCollection<CourtDispenser>();
+        }
+
+        var newDispenser = new CourtDispenser
+        {
+
+            DispenserNumber = SelectedHose.IdDispensers,
+            NumberName = SelectedHose.Number,
+            AccumulatedAmount = AccumulatedAmount,
+            AccumulatedGallons = AccumulatedGallons,
+            LastAccumulatedAmount = LastAccumulatedAmount,
+            LastAccumulatedGallons = LastAccumulatedGallons,
+            AmountDifferenceResult = AmountDifferenceResult,
+            GallonsDifferenceResult = GallonsDifferenceResult,
+            IdHose = IdHose
+        };
+
+        CourtDispensers.Add(newDispenser);
+        Court.CourtDispensers = CourtDispensers.ToList();
+        VisibleDispenser = true;
+
+        AddAmountDifferenceResult(AccumulatedAmount, LastAccumulatedAmount);
+        AddGallonsDifferenceResult(AccumulatedGallons, LastAccumulatedGallons);
+
+        TotalSales = GetTotalSales();
+
+        // ?? Notificar cambio en la visibilidad despuÈs de agregar el dispensador
+        OnPropertyChanged(nameof(ShouldShowDispensersSection));
+    }
+
+    public void AddDocumentsFromPopup(List<string> filesBase64, List<string> nombresDocumentos)
+    {
+        if (Court == null)
+            Court = new CourtModel();
+
+        if (CourtDocuments == null)
+            CourtDocuments = new ObservableCollection<CourtDocument>();
+
+        for (int i = 0; i < filesBase64.Count; i++)
+        {
+            var newDocument = new CourtDocument
+            {
+                Descripcion = filesBase64[i],
+                DocumentName = nombresDocumentos[i],
             };
 
-            CourtTypeOfCollections.Add(newCourtTypeOfCollection);
-            Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
-            VisibleReceipts = true;
-
-            TotalSales = GetTotalSales();
-            CourtTypeOfCollectionAmount = 0;
-            CourtTypeOfCollectionDescription = "";
-            
-            // üî• Notificar cambio en la visibilidad despu√©s de agregar el m√©todo de pago
-            OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
+            CourtDocuments.Add(newDocument);
         }
 
-        public double GetTotalAmount()
-        {
-            if (AmountResults == null || !AmountResults.Any())
-                return 0;
+        Court.CourtDocuments = CourtDocuments.ToList();
+        VisibleDocuments = true;
+    }
 
-            return AmountResults.Sum();
+    public async Task AddCourtExpenditureFromPopup()
+    {
+        if (Court == null)
+        {
+            Court = new CourtModel();
         }
 
-        public double GetTotalGallons()
+        if (CourtExpenditures == null)
         {
-            if (GallonResults == null || !GallonResults.Any())
-                return 0;
-
-            return GallonResults.Sum();
+            CourtExpenditures = new ObservableCollection<CourtExpenditure>();
         }
 
-        public double GetTotalExpenditure()
+        //  Verificar que hay suficiente efectivo para cubrir el gasto
+        double montoGasto = CourtExpenditureAmount;
+
+        // Calcular el efectivo disponible en los mÈtodos de pago
+        double efectivoDisponible = 0;
+        if (CourtTypeOfCollections != null && CourtTypeOfCollections.Any())
         {
-            if (CourtExpenditures == null || !CourtExpenditures.Any())
-                return 0;
+            // Buscar mÈtodos de pago que sean efectivo (case-insensitive)
+            var metodosEfectivo = CourtTypeOfCollections.Where(m =>
+                m.TypeOfCollectionName != null &&
+                m.TypeOfCollectionName.Contains("Efectivo", StringComparison.OrdinalIgnoreCase));
 
-            return CourtExpenditures.Sum(item => item.Amount);
-        }      
-
-        public double GetTotalTypeOfCollection()
-        {
-            if (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any())
-                return 0;
-
-            return CourtTypeOfCollections.Sum(item => item.Amount);
+            efectivoDisponible = metodosEfectivo.Sum(m => m.Amount);
         }
 
-        public double GetTotalSales()
+        // Calcular el total de gastos YA registrados
+        double gastosYaRegistrados = CourtExpenditures?.Sum(g => g.Amount) ?? 0;
+
+        // Calcular el efectivo disponible despuÈs de restar los gastos ya registrados
+        double efectivoRestante = efectivoDisponible - gastosYaRegistrados;
+
+        // Validar que el nuevo gasto no exceda el efectivo disponible
+        if (montoGasto > efectivoRestante)
         {
+            string mensaje = $"?? Gasto Excede Efectivo Disponible\n\n" +
+                            $"El monto del gasto que intenta registrar excede el efectivo disponible:\n\n" +
+                            $"ï Efectivo en mÈtodos de pago: ${efectivoDisponible:N2}\n" +
+                            $"ï Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
+                            $"ï Efectivo disponible: ${efectivoRestante:N2}\n" +
+                            $"ï Monto del gasto: ${montoGasto:N2}\n" +
+                            $"ï Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
+
+            if (efectivoDisponible == 0)
+            {
+                mensaje += "No hay mÈtodos de pago en efectivo registrados.\n" +
+                          "Por favor, agregue un mÈtodo de pago en efectivo antes de registrar gastos.";
+            }
+            else if (efectivoRestante <= 0)
+            {
+                mensaje += "Ya se han registrado gastos por el total del efectivo disponible.\n" +
+                          "No es posible registrar m·s gastos sin agregar m·s efectivo.";
+            }
+            else
+            {
+                mensaje += $"El monto m·ximo que puede registrar como gasto es: ${efectivoRestante:N2}";
+            }
+
+            await Application.Current.MainPage.DisplayAlert(
+                "Gasto No Permitido",
+                mensaje,
+                "Entendido");
+            return;
+        }
+
+        var newCourtExpenditure = new CourtExpenditure
+        {
+            ExpenditureName = SelectedExpenditure.Description ?? string.Empty,
+            Amount = CourtExpenditureAmount,
+            Description = ExpenditureDescription,
+            IdExpenditure = SelectedExpenditure.IdExpenditure,
+        };
+
+        CourtExpenditures.Add(newCourtExpenditure);
+        Court.CourtExpenditures = CourtExpenditures.ToList();
+        VisibleExpenses = true;
+
+        TotalSales = GetTotalSales();
+        CourtExpenditureAmount = 0;
+        ExpenditureDescription = "";
+    }
+
+    public async Task AddCourtTypeOfCollectionFromPopup()
+    {
+        if (Court == null)
+        {
+            Court = new CourtModel();
+        }
+
+        if (CourtTypeOfCollections == null)
+        {
+            CourtTypeOfCollections = new ObservableCollection<CourtTypeOfCollection>();
+        }
+        var newCourtTypeOfCollection = new CourtTypeOfCollection
+        {
+            TypeOfCollectionName = SelectedTypeOfCollection.Description ?? string.Empty,
+            Amount = CourtTypeOfCollectionAmount,
+            Description = CourtTypeOfCollectionDescription,
+            IdTypeOfCollection = SelectedTypeOfCollection.IdTypeOfCollection,
+        };
+
+        CourtTypeOfCollections.Add(newCourtTypeOfCollection);
+        Court.CourtTypeOfCollections = CourtTypeOfCollections.ToList();
+        VisibleReceipts = true;
+
+        TotalSales = GetTotalSales();
+        CourtTypeOfCollectionAmount = 0;
+        CourtTypeOfCollectionDescription = "";
+
+        // ?? Notificar cambio en la visibilidad despuÈs de agregar el mÈtodo de pago
+        OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
+    }
+
+    public double GetTotalAmount()
+    {
+        if (AmountResults == null || !AmountResults.Any())
+            return 0;
+
+        return AmountResults.Sum();
+    }
+
+    public double GetTotalGallons()
+    {
+        if (GallonResults == null || !GallonResults.Any())
+            return 0;
+
+        return GallonResults.Sum();
+    }
+
+    public double GetTotalExpenditure()
+    {
+        if (CourtExpenditures == null || !CourtExpenditures.Any())
+            return 0;
+
+        return CourtExpenditures.Sum(item => item.Amount);
+    }
+
+    public double GetTotalTypeOfCollection()
+    {
+        if (CourtTypeOfCollections == null || !CourtTypeOfCollections.Any())
+            return 0;
+
+        return CourtTypeOfCollections.Sum(item => item.Amount);
+    }
+
+    public double GetTotalSales()
+    {
+        TotalAmount = GetTotalAmount();
+        TotalGallons = GetTotalGallons();
+        TotalExpenditure = GetTotalExpenditure();
+        TotalTypeOfCollection = GetTotalTypeOfCollection();
+
+        // Notificar cambios en las propiedades para que la UI se actualice
+        OnPropertyChanged(nameof(TotalAmount));
+        OnPropertyChanged(nameof(TotalGallons));
+        OnPropertyChanged(nameof(TotalExpenditure));
+        OnPropertyChanged(nameof(TotalTypeOfCollection));
+        OnPropertyChanged(nameof(TotalSales));
+        // ?? Notificar cambio en la visibilidad de la secciÛn de Arqueo De Caja
+        OnPropertyChanged(nameof(ShouldShowCashCountSection));
+
+        return TotalAmount; // Return total sales amount
+    }
+
+    public void LoadEdsByBusiness(int businessId)
+    {
+
+        var filteredEds = EdsList.Where(x => x.IdBusiness == businessId).ToList();
+        EdsSelectList.Clear();
+        foreach (var eds in filteredEds)
+        {
+            EdsSelectList.Add(eds);
+        }
+        OnPropertyChanged(nameof(EdsSelectList));
+    }
+
+    public void LoadIslandersByEds(int edsId)
+    {
+        var filteredIslanders = IslanderList.Where(x => x.IdEds == edsId).ToList();
+        IslanderSelectList.Clear();
+        foreach (var islander in filteredIslanders)
+        {
+            IslanderSelectList.Add(islander);
+        }
+        OnPropertyChanged(nameof(IslanderSelectList));
+    }
+
+    public void LoadHoseByEds(int edsId)
+    {
+        var filteredIsHoseByEds = HoseList
+            .Where(x => x.EdsEntity.IdEds == edsId)
+            .OrderBy(x => x.IdDispensers)
+            .ThenBy(x => x.Number)
+            .ToList();
+
+        HoseList.Clear();
+        foreach (var hose in filteredIsHoseByEds)
+        {
+            HoseList.Add(hose);
+        }
+        OnPropertyChanged(nameof(HoseList));
+        OnPropertyChanged(nameof(AreAvailableHoses));
+        OnPropertyChanged(nameof(NewSaleEnabled));
+    }
+
+    public void AddSelectedHose(HoseCourtModel hose)
+    {
+        if (hose != null && !selectedHoses.Contains(hose))
+        {
+            selectedHoses.Add(hose);
+            UpdateAvailableHoses();
+        }
+    }
+    private void UpdateAvailableHoses()
+    {
+        var filteredHoses = HoseList.Where(h => !selectedHoses.Contains(h)).ToList();
+        HoseList.Clear();
+        foreach (var hose in filteredHoses)
+        {
+            HoseList.Add(hose);
+        }
+        OnPropertyChanged(nameof(HoseList));
+        OnPropertyChanged(nameof(AreAvailableHoses));
+        OnPropertyChanged(nameof(NewSaleEnabled));
+    }
+
+    private void DeleteDispenser(CourtDispenser dispenser)
+    {
+        if (dispenser != null && CourtDispensers?.Contains(dispenser) == true)
+        {
+            // Remover el dispensador de la lista
+            CourtDispensers.Remove(dispenser);
+
+            // Buscar la manguera en la lista de mangueras seleccionadas
+            var selectedHose = selectedHoses.FirstOrDefault(h => h.IdHose == dispenser.IdHose);
+
+            if (selectedHose != null)
+            {
+                // Remover de la lista de mangueras seleccionadas
+                selectedHoses.Remove(selectedHose);
+
+                // Agregar de vuelta a la lista de mangueras disponibles
+                HoseList.Add(selectedHose);
+
+                // Ordenar la lista para mantener el orden
+                var sortedHoses = HoseList
+                    .OrderBy(x => x.IdDispensers)
+                    .ThenBy(x => x.Number)
+                    .ToList();
+
+                HoseList.Clear();
+                foreach (var hose in sortedHoses)
+                {
+                    HoseList.Add(hose);
+                }
+
+                // Notificar cambios en las propiedades relacionadas con mangueras disponibles
+                OnPropertyChanged(nameof(HoseList));
+                OnPropertyChanged(nameof(AreAvailableHoses));
+                OnPropertyChanged(nameof(NewSaleEnabled));
+            }
+
+            // Actualizar los resultados de diferencias - remover los valores del dispensador eliminado
+            var amountToRemove = dispenser.AmountDifferenceResult;
+            var gallonsToRemove = dispenser.GallonsDifferenceResult;
+
+            if (AmountResults.Contains(amountToRemove))
+            {
+                AmountResults.Remove(amountToRemove);
+            }
+
+            if (GallonResults.Contains(gallonsToRemove))
+            {
+                GallonResults.Remove(gallonsToRemove);
+            }
+
+            // Recalcular totales despuÈs de remover los valores
             TotalAmount = GetTotalAmount();
             TotalGallons = GetTotalGallons();
-            TotalExpenditure = GetTotalExpenditure();
-            TotalTypeOfCollection = GetTotalTypeOfCollection();
+            TotalSales = GetTotalSales();
 
-            // Notificar cambios en las propiedades para que la UI se actualice
+            // Notificar cambios en las propiedades
+            OnPropertyChanged(nameof(CourtDispensers));
             OnPropertyChanged(nameof(TotalAmount));
             OnPropertyChanged(nameof(TotalGallons));
-            OnPropertyChanged(nameof(TotalExpenditure));
-            OnPropertyChanged(nameof(TotalTypeOfCollection));
             OnPropertyChanged(nameof(TotalSales));
-            // üî• Notificar cambio en la visibilidad de la secci√≥n de Arqueo De Caja
-            OnPropertyChanged(nameof(ShouldShowCashCountSection));
-
-            return TotalAmount; // Return total sales amount
+            // ?? Notificar cambio en la visibilidad despuÈs de eliminar el dispensador
+            OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
+    }
 
-        public void LoadEdsByBusiness(int businessId)
+    private void DeleteDocument(CourtDocument document)
+    {
+        if (document != null && CourtDocuments.Contains(document))
         {
-          
-            var filteredEds = EdsList.Where(x => x.IdBusiness == businessId).ToList();
-            EdsSelectList.Clear();
-            foreach (var eds in filteredEds)
-            {
-                EdsSelectList.Add(eds);
-            }
-            OnPropertyChanged(nameof(EdsSelectList));
+            CourtDocuments.Remove(document);
+            OnPropertyChanged(nameof(CourtDocuments));
         }
+    }
 
-        public void LoadIslandersByEds(int edsId)
-        {            
-            var filteredIslanders = IslanderList.Where(x => x.IdEds == edsId).ToList();
-            IslanderSelectList.Clear();
-            foreach (var islander in filteredIslanders)
-            {
-                IslanderSelectList.Add(islander);
-            }
-            OnPropertyChanged(nameof(IslanderSelectList));
-        }
-
-        public void LoadHoseByEds(int edsId)
+    private void DeleteExpense(CourtExpenditure expense)
+    {
+        if (expense != null && CourtExpenditures.Contains(expense))
         {
-            var filteredIsHoseByEds = HoseList
-                .Where(x => x.EdsEntity.IdEds == edsId)
-                .OrderBy(x => x.IdDispensers)
-                .ThenBy(x => x.Number) 
-                .ToList();
-
-            HoseList.Clear();
-            foreach (var hose in filteredIsHoseByEds)
-            {
-                HoseList.Add(hose);
-            }
-            OnPropertyChanged(nameof(HoseList));
-            OnPropertyChanged(nameof(AreAvailableHoses));
-            OnPropertyChanged(nameof(NewSaleEnabled));
-        }
-
-        public void AddSelectedHose(HoseCourtModel hose)
-        {
-            if (hose != null && !selectedHoses.Contains(hose))
-            {
-                selectedHoses.Add(hose);
-                UpdateAvailableHoses();
-            }
-        }
-        private void UpdateAvailableHoses()
-        {
-            var filteredHoses = HoseList.Where(h => !selectedHoses.Contains(h)).ToList();
-            HoseList.Clear();
-            foreach (var hose in filteredHoses)
-            {
-                HoseList.Add(hose);
-            }
-            OnPropertyChanged(nameof(HoseList));
-            OnPropertyChanged(nameof(AreAvailableHoses));
-            OnPropertyChanged(nameof(NewSaleEnabled));
-        }
-
-        private void DeleteDispenser(CourtDispenser dispenser)
-        {
-            if (dispenser != null && CourtDispensers?.Contains(dispenser) == true)
-            {
-                // Remover el dispensador de la lista
-                CourtDispensers.Remove(dispenser);
-
-                // Buscar la manguera en la lista de mangueras seleccionadas
-                var selectedHose = selectedHoses.FirstOrDefault(h => h.IdHose == dispenser.IdHose);
-                
-                if (selectedHose != null)
-                {
-                    // Remover de la lista de mangueras seleccionadas
-                    selectedHoses.Remove(selectedHose);
-                    
-                    // Agregar de vuelta a la lista de mangueras disponibles
-                    HoseList.Add(selectedHose);
-                    
-                    // Ordenar la lista para mantener el orden
-                    var sortedHoses = HoseList
-                        .OrderBy(x => x.IdDispensers)
-                        .ThenBy(x => x.Number)
-                        .ToList();
-                    
-                    HoseList.Clear();
-                    foreach (var hose in sortedHoses)
-                    {
-                        HoseList.Add(hose);
-                    }
-                    
-                    // Notificar cambios en las propiedades relacionadas con mangueras disponibles
-                    OnPropertyChanged(nameof(HoseList));
-                    OnPropertyChanged(nameof(AreAvailableHoses));
-                    OnPropertyChanged(nameof(NewSaleEnabled));
-                }
-
-                // Actualizar los resultados de diferencias - remover los valores del dispensador eliminado
-                var amountToRemove = dispenser.AmountDifferenceResult;
-                var gallonsToRemove = dispenser.GallonsDifferenceResult;
-                
-                if (AmountResults.Contains(amountToRemove))
-                {
-                    AmountResults.Remove(amountToRemove);
-                }
-                
-                if (GallonResults.Contains(gallonsToRemove))
-                {
-                    GallonResults.Remove(gallonsToRemove);
-                }
-
-                // Recalcular totales despu√©s de remover los valores
-                TotalAmount = GetTotalAmount();
-                TotalGallons = GetTotalGallons();
-                TotalSales = GetTotalSales();
-                
-                // Notificar cambios en las propiedades
-                OnPropertyChanged(nameof(CourtDispensers));
-                OnPropertyChanged(nameof(TotalAmount));
-                OnPropertyChanged(nameof(TotalGallons));
-                OnPropertyChanged(nameof(TotalSales));
-                // üî• Notificar cambio en la visibilidad despu√©s de eliminar el dispensador
-                OnPropertyChanged(nameof(ShouldShowDispensersSection));
-            }
-        }
-
-        private void DeleteDocument(CourtDocument document)
-        {
-            if (document != null && CourtDocuments.Contains(document))
-            {
-                CourtDocuments.Remove(document);
-                OnPropertyChanged(nameof(CourtDocuments));
-            }
-        }
-
-        private void DeleteExpense(CourtExpenditure expense)
-        {
-            if (expense != null && CourtExpenditures.Contains(expense))
-            {
-                CourtExpenditures.Remove(expense);
-                TotalSales = GetTotalSales();
-                OnPropertyChanged(nameof(CourtExpenditures));
-            }
+            CourtExpenditures.Remove(expense);
+            TotalSales = GetTotalSales();
+            OnPropertyChanged(nameof(CourtExpenditures));
         }
     }
 }
