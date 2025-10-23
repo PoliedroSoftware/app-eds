@@ -2729,7 +2729,7 @@ GetAllEdsData()
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 
                 System.Diagnostics.Debug.WriteLine("CourtService.LoadAllCourtListAsync - Loading court list from API...");
-                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=100");
+                var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=10");
                 
                 // Log the raw response for debugging
                 System.Diagnostics.Debug.WriteLine($"CourtService.LoadAllCourtListAsync - API Response: {response.Substring(0, Math.Min(500, response.Length))}...");
