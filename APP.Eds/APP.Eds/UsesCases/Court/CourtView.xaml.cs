@@ -16,7 +16,7 @@ public partial class CourtView : ContentPage
 
         if (BindingContext is CourtService viewModel)
         {
-            await viewModel.LoadCourtDataAsync(int.Parse(courtId));
+            await viewModel.LoadCourtGetByIdDataAsync(int.Parse(courtId));
 
         }
     }
