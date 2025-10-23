@@ -25,37 +25,40 @@ public partial class AddCourtTypeOfCollection : Popup
 
         public required TypeOfCollectionCourtModel Type { get; init; }
 
+        // NUEVO: indica si este método fue pagado previamente (solo lectura en el popup)
+        public bool IsPreviouslyPaid { get; set; }
+
         private bool _isSelected;
-        public bool IsSelected 
-        { 
-            get => _isSelected; 
-            set 
-            { 
-                _isSelected = value; 
-                PropertyChanged?.Invoke(this, new(nameof(IsSelected))); 
-            } 
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                PropertyChanged?.Invoke(this, new(nameof(IsSelected)));
+            }
         }
 
         decimal _amount;
-        public decimal Amount 
-        { 
-            get => _amount; 
-            set 
-            { 
-                _amount = value; 
-                PropertyChanged?.Invoke(this, new(nameof(Amount))); 
-            } 
+        public decimal Amount
+        {
+            get => _amount;
+            set
+            {
+                _amount = value;
+                PropertyChanged?.Invoke(this, new(nameof(Amount)));
+            }
         }
 
         string _notes = string.Empty;
-        public string Notes 
-        { 
-            get => _notes; 
-            set 
-            { 
-                _notes = value; 
-                PropertyChanged?.Invoke(this, new(nameof(Notes))); 
-            } 
+        public string Notes
+        {
+            get => _notes;
+            set
+            {
+                _notes = value;
+                PropertyChanged?.Invoke(this, new(nameof(Notes)));
+            }
         }
     }
 
@@ -65,16 +68,14 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         InitializeComponent();
         this.courtService = courtService;
-        
-        // Set BindingContext for proper data binding
+
+        // Encadenar al servicio para los bindings (RemainingToPay en el encabezado)
         BindingContext = courtService;
 
-        // Inicializar timer para actualización retardada del total
-        _updateTimer = new System.Timers.Timer(1500); // 1.5 segundos de delay
+        _updateTimer = new System.Timers.Timer(1500);
         _updateTimer.Elapsed += OnUpdateTimerElapsed;
         _updateTimer.AutoReset = false;
 
-        // Inicializar las opciones de pago con verificación y reintento
         InitializePaymentOptionsAsync();
     }
 
@@ -82,74 +83,86 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Iniciando inicialización de opciones de pago");
-            
-            // Verificar si los datos están disponibles
             if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
             {
-                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: TypeOfCollectionList está vacía, intentando recargar datos...");
-                
-                // Intentar recargar los datos
                 await courtService.GetAllEdsData();
-                
-                // Esperar un poco para permitir que los datos se carguen
                 await Task.Delay(500);
             }
 
-            // Verificar nuevamente después del reintento
             if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
             {
-                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: No se pudieron cargar los tipos de colección después del reintento");
                 await CustomAlert.ShowWarningAsync(
                     "No se pudieron cargar los métodos de pago disponibles.\n\n" +
-                    "Esto puede deberse a:\n" +
-                    "• Problemas de conexión a internet\n" +
-                    "• Problemas con el servidor\n" +
-                    "• Problemas de autenticación\n\n" +
-                    "Por favor, verifique su conexión e intente nuevamente.",
+                    "Posibles causas: conexión, servidor o autenticación.",
                     "Datos No Disponibles");
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Creando {courtService.TypeOfCollectionList.Count} opciones de pago");
-            
-            // Ejecutar en el hilo principal para asegurar que la UI se actualice correctamente
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 PaymentOptions.Clear();
-                
                 foreach (var t in courtService.TypeOfCollectionList)
                 {
-                    var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m };
+                    var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m, IsPreviouslyPaid = false };
                     opt.PropertyChanged += PaymentOption_PropertyChanged;
                     PaymentOptions.Add(opt);
                 }
 
-                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Se agregaron {PaymentOptions.Count} opciones de pago a la colección");
-                
+                // Mostrar pagos previos marcados y bloqueados
+                RestorePreviousSelections();
+
                 RecalcRemaining();
             });
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Error inicializando opciones de pago: {ex.Message}");
             await CustomAlert.ShowErrorAsync(
                 $"Error al inicializar los métodos de pago:\n\n{ex.Message}",
                 "Error de Inicialización");
         }
     }
 
+    // Marca pagos ya registrados como seleccionados, con monto y en solo lectura
+    private void RestorePreviousSelections()
+    {
+        try
+        {
+            var previous = courtService.CourtTypeOfCollections?.ToList();
+            if (previous == null || previous.Count == 0)
+                return;
+
+            foreach (var prev in previous)
+            {
+                var option = PaymentOptions.FirstOrDefault(p =>
+                    string.Equals(p.Type.Description, prev.TypeOfCollectionName, StringComparison.OrdinalIgnoreCase));
+
+                if (option != null)
+                {
+                    option.IsSelected = true;
+                    option.IsPreviouslyPaid = true;              // Bloquear edición
+                    option.Amount = (decimal)prev.Amount;        // Mostrar el monto pagado
+                    option.Notes = prev.Description ?? string.Empty;
+                }
+            }
+
+            RecalcRemaining();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error restoring previous selections: {ex.Message}");
+        }
+    }
+
     private void PaymentOption_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        // Solo actualizar inmediatamente si cambia IsSelected
         if (e.PropertyName == nameof(PaymentOption.IsSelected))
         {
             RecalcRemaining();
         }
-        // Si cambia Amount, usar el timer para actualizar con retraso
         else if (e.PropertyName == nameof(PaymentOption.Amount))
         {
-            StartUpdateTimer();
+            // Antes: StartUpdateTimer();
+            RecalcRemaining(); // recalcula al instante
         }
     }
 
@@ -170,11 +183,7 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         try
         {
-            // Ejecutar en el hilo principal usando la API moderna de MAUI
-            Application.Current?.Dispatcher.Dispatch(() =>
-            {
-                RecalcRemaining();
-            });
+            Application.Current?.Dispatcher.Dispatch(() => RecalcRemaining());
         }
         catch (Exception ex)
         {
@@ -182,13 +191,88 @@ public partial class AddCourtTypeOfCollection : Popup
         }
     }
 
+    private void Amount_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry)
+            {
+                var newText = e.NewTextValue ?? string.Empty;
+                var oldText = e.OldTextValue ?? string.Empty;
+
+                if (oldText == "0.00" && !string.IsNullOrEmpty(newText) && newText != "0" && newText != "0.0")
+                {
+                    entry.Text = newText.Replace("0.00", "");
+                    return;
+                }
+
+                if (!string.IsNullOrWhiteSpace(newText) &&
+                    !decimal.TryParse(newText, NumberStyles.Number, CultureInfo.InvariantCulture, out _))
+                {
+                    entry.Text = oldText;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Amount_TextChanged: {ex.Message}");
+        }
+        finally
+        {
+            RecalcRemaining(); // recalcula al escribir
+        }
+    }
+
+    private void Amount_Focused(object sender, FocusEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry && entry.Text == "0.00")
+            {
+                entry.Text = string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Amount_Focused: {ex.Message}");
+        }
+    }
+
+    private void Amount_Unfocused(object sender, FocusEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry)
+            {
+                if (string.IsNullOrWhiteSpace(entry.Text))
+                {
+                    entry.Text = "0.00";
+                }
+                else if (decimal.TryParse(entry.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
+                {
+                    entry.Text = value.ToString("F2");
+                }
+
+                StartUpdateTimer();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in Amount_Unfocused: {ex.Message}");
+        }
+    }
+
     private void RecalcRemaining()
     {
         try
         {
-            var added = PaymentOptions.Where(p => p.IsSelected).Sum(p => p.Amount);
-            var baseTotal = (decimal)courtService.TotalSales;
-            Remaining = baseTotal - added;
+            // Solo lo que el usuario está agregando AHORA (excluye pagos ya registrados)
+            var addedThisSession = PaymentOptions
+                .Where(p => p.IsSelected && !p.IsPreviouslyPaid)
+                .Sum(p => p.Amount);
+
+            var baseTotal = (decimal)courtService.RemainingToPay; // pendiente actual del servicio
+            Remaining = Math.Max(0, baseTotal - addedThisSession);
         }
         catch (Exception ex)
         {
@@ -204,112 +288,26 @@ public partial class AddCourtTypeOfCollection : Popup
             _updateTimer?.Dispose();
             Close();
         }
-        catch (ObjectDisposedException ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection popup was already disposed during close: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error closing AddCourtTypeOfCollection popup: {ex.Message}");
-        }
-    }
-
-    private void Amount_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        try
-        {
-            if (sender is Entry entry)
-            {
-                var newText = e.NewTextValue ?? string.Empty;
-                var oldText = e.OldTextValue ?? string.Empty;
-                
-                // Si el texto anterior era "0.00" y el usuario está escribiendo, limpiar automáticamente
-                if (oldText == "0.00" && !string.IsNullOrEmpty(newText) && newText != "0" && newText != "0.0")
-                {
-                    entry.Text = newText.Replace("0.00", "");
-                    return;
-                }
-                
-                // Validación de formato numérico
-                if (string.IsNullOrWhiteSpace(newText)) 
-                {
-                    // Si está vacío, permitir (el usuario puede querer limpiar)
-                    return;
-                }
-
-                if (!decimal.TryParse(newText, NumberStyles.Number, CultureInfo.InvariantCulture, out _))
-                {
-                    entry.Text = oldText;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in Amount_TextChanged: {ex.Message}");
-        }
-    }
-
-    private void Amount_Focused(object sender, FocusEventArgs e)
-    {
-        try
-        {
-            if (sender is Entry entry)
-            {
-                // Si el valor es 0.00, limpiar cuando el usuario enfoque
-                if (entry.Text == "0.00")
-                {
-                    entry.Text = string.Empty;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in Amount_Focused: {ex.Message}");
-        }
-    }
-
-    private void Amount_Unfocused(object sender, FocusEventArgs e)
-    {
-        try
-        {
-            if (sender is Entry entry)
-            {
-                // Si el usuario sale del campo vacío, restaurar a 0.00
-                if (string.IsNullOrWhiteSpace(entry.Text))
-                {
-                    entry.Text = "0.00";
-                }
-                else
-                {
-                    // Formatear el número correctamente
-                    if (decimal.TryParse(entry.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
-                    {
-                        entry.Text = value.ToString("F2");
-                    }
-                }
-                
-                // Iniciar el timer para actualizar el total después de un retraso
-                StartUpdateTimer();
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error in Amount_Unfocused: {ex.Message}");
-        }
+        catch { }
     }
 
     private void Clear_All(object sender, EventArgs e)
     {
         try
         {
-            _updateTimer?.Stop(); // Detener timer antes de limpiar
-            
+            _updateTimer?.Stop();
+
             foreach (var p in PaymentOptions)
             {
-                p.IsSelected = false;
-                p.Amount = 0m;
-                p.Notes = string.Empty;
+                if (!p.IsPreviouslyPaid) // No limpiar pagos ya registrados
+                {
+                    p.IsSelected = false;
+                    p.Amount = 0m;
+                    p.Notes = string.Empty;
+                }
             }
+
+            RecalcRemaining();
         }
         catch (Exception ex)
         {
@@ -321,22 +319,30 @@ public partial class AddCourtTypeOfCollection : Popup
     {
         try
         {
-            // Disable button to prevent multiple submissions
             if (sender is Button button)
             {
                 button.IsEnabled = false;
                 button.Text = "Agregando...";
             }
 
-            var selected = PaymentOptions.Where(p => p.IsSelected).ToList();
-            
+            // Solo los nuevos de esta sesión
+            var selected = PaymentOptions
+                .Where(p => p.IsSelected && !p.IsPreviouslyPaid)
+                .ToList();
+
             if (selected.Count == 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar al menos un método de pago.", "Selección Requerida");
+                if (courtService.RemainingToPay <= 0)
+                {
+                    await CustomAlert.ShowInfoAsync("No hay saldo pendiente por pagar.", "Sin Pendiente");
+                }
+                else
+                {
+                    await CustomAlert.ShowErrorAsync("Seleccione al menos un método de pago nuevo.", "Selección Requerida");
+                }
                 return;
             }
 
-            // Validate amounts
             foreach (var p in selected)
             {
                 if (p.Amount <= 0m)
@@ -346,22 +352,23 @@ public partial class AddCourtTypeOfCollection : Popup
                 }
             }
 
-            // Check if total matches
-            decimal totalSalesDay = (decimal)courtService.TotalSales;
-            decimal addedNow = (decimal)(courtService.CourtTypeOfCollections?.Sum(p => p.Amount) ?? 0d);
+            // Validar contra el pendiente actual
+            decimal pendingBefore = (decimal)courtService.RemainingToPay;
             decimal dataNew = selected.Sum(p => p.Amount);
-            decimal amountNew = totalSalesDay - addedNow - dataNew;
+            decimal diff = pendingBefore - dataNew;
 
-            if (Math.Abs(amountNew) > 0)
+            if (Math.Abs(diff) > 0.009m) // tolerancia centavos
             {
                 await CustomAlert.ShowErrorAsync(
-                    $"El total de los métodos de pago seleccionados ({dataNew:C2}) no coincide con el total de la venta ({totalSalesDay:C2}).\n\n" +
-                    $"Diferencia: {amountNew:C2}", 
+                    $"El total que intenta registrar no coincide con el pendiente.\n\n" +
+                    $"• Pendiente actual: {pendingBefore:C2}\n" +
+                    $"• A registrar ahora: {dataNew:C2}\n" +
+                    $"• Diferencia: {diff:C2}",
                     "Total No Coincide");
                 return;
             }
 
-            // Add selected payment methods
+            // Registrar los nuevos métodos
             foreach (var p in selected)
             {
                 courtService.SelectedTypeOfCollection = p.Type;
@@ -372,26 +379,57 @@ public partial class AddCourtTypeOfCollection : Popup
             }
 
             await CustomAlert.ShowSuccessAsync(
-                $"Se agregaron {selected.Count} método(s) de pago correctamente:\n\n" +
-                $"• Total procesado: {dataNew:C2}\n" +
-                $"• Métodos agregados: {string.Join(", ", selected.Select(s => s.Type.Description))}", 
+                $"Se agregaron {selected.Count} método(s) por {dataNew:C2}.",
                 "Métodos de Pago Agregados");
+
+            // IMPORTANTE: NO resetear TotalSales; el pendiente se actualiza dentro del servicio
+            // courtService.TotalSales = 0;  // ← eliminar esta línea si existía
 
             await CloseAsync();
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error adding selected payment methods: {ex.Message}");
             await CustomAlert.ShowErrorAsync($"Error al agregar métodos de pago:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
-        {
-            // Re-enable button
+        {   
             if (sender is Button button)
             {
                 button.IsEnabled = true;
                 button.Text = courtService.Add ?? "Agregar";
             }
+        }
+    }
+
+    private void PreselectDefaultOption()
+    {
+        try
+        {
+            var pending = (decimal)courtService.RemainingToPay;
+
+            PaymentOption target = null;
+            var last = courtService.CourtTypeOfCollections?.LastOrDefault();
+            if (last != null)
+            {
+                target = PaymentOptions.FirstOrDefault(p =>
+                    string.Equals(p.Type.Description, last.TypeOfCollectionName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (target == null)
+                target = PaymentOptions.FirstOrDefault(p =>
+                    p.Type.Description?.Contains("Efectivo", StringComparison.OrdinalIgnoreCase) == true);
+
+            target ??= PaymentOptions.FirstOrDefault();
+
+            if (target != null && !target.IsPreviouslyPaid)
+            {
+                target.IsSelected = true;
+                target.Amount = pending;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error preselecting default payment option: {ex.Message}");
         }
     }
 
@@ -401,16 +439,9 @@ public partial class AddCourtTypeOfCollection : Popup
         {
             _updateTimer?.Stop();
             _updateTimer?.Dispose();
-            await Task.Delay(100); // Small delay for smooth animation
+            await Task.Delay(100);
             Close();
         }
-        catch (ObjectDisposedException ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection popup was already disposed during close: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error closing popup: {ex.Message}");
-        }
+        catch { }
     }
 }
