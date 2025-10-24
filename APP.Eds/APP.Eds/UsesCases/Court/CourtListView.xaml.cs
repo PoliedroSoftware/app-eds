@@ -5,30 +5,30 @@ namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtListView : ContentPage
 {
+    private readonly CourtListService _courtListService;
+
     public CourtListView()
     {
-
         InitializeComponent();
-        BindingContext = new CourtService();
+        _courtListService = new CourtListService();
+        BindingContext = _courtListService;
     }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is CourtService courtService)
+        try
         {
-            try
-            {
-                LoadingOverlay.ShowLoading();
-                await courtService.LoadAllCourtListAsync();
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
-            }
-            finally
-            {
-                LoadingOverlay.HideLoading();
-            }
+            LoadingOverlay.ShowLoading();
+            await _courtListService.LoadAllCourtListAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+        }
+        finally
+        {
+            LoadingOverlay.HideLoading();
         }
     }
 
@@ -36,11 +36,8 @@ public partial class CourtListView : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is CourtListItemModel selectedCourt)
         {
-            // Use the CourtService command to open court detail
-            if (BindingContext is CourtService courtService)
-            {
-                courtService.OpenCourtDetailCommand.Execute(selectedCourt);
-            }
+            // Use the CourtListService command to open court detail
+            _courtListService.OpenCourtDetailCommand.Execute(selectedCourt);
 
             ((CollectionView)sender).SelectedItem = null;
         }
