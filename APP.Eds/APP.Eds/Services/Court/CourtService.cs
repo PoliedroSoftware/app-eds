@@ -1886,11 +1886,8 @@ public class CourtService : INotifyPropertyChanged
         get => _NumberHoseTranslation;
         set
         {
-            if (_NumberHoseTranslation != value)
-            {
-                _NumberHoseTranslation = value;
-                OnPropertyChanged(nameof(NumberHoseTranslation));
-            }
+            _NumberHoseTranslation = value;
+            OnPropertyChanged(nameof(NumberHoseTranslation));
         }
     }
     private string _ProductTranslation = string.Empty;
@@ -1899,11 +1896,8 @@ public class CourtService : INotifyPropertyChanged
         get => _ProductTranslation;
         set
         {
-            if (_ProductTranslation != value)
-            {
-                _ProductTranslation = value;
-                OnPropertyChanged(nameof(ProductTranslation));
-            }
+            _ProductTranslation = value;
+            OnPropertyChanged(nameof(ProductTranslation));
         }
     }
     private string _PriceTranslation = string.Empty;
@@ -1912,11 +1906,8 @@ public class CourtService : INotifyPropertyChanged
         get => _PriceTranslation;
         set
         {
-            if (_PriceTranslation != value)
-            {
-                _PriceTranslation = value;
-                OnPropertyChanged(nameof(PriceTranslation));
-            }
+            _PriceTranslation = value;
+            OnPropertyChanged(nameof(PriceTranslation));
         }
     }
 
@@ -3102,16 +3093,18 @@ public class CourtService : INotifyPropertyChanged
         TotalExpenditure = GetTotalExpenditure();
         TotalTypeOfCollection = GetTotalTypeOfCollection();
 
-        // Notificar cambios en las propiedades para que la UI se actualice
+        // Notificar cambios para refrescar la UI
         OnPropertyChanged(nameof(TotalAmount));
         OnPropertyChanged(nameof(TotalGallons));
         OnPropertyChanged(nameof(TotalExpenditure));
         OnPropertyChanged(nameof(TotalTypeOfCollection));
         OnPropertyChanged(nameof(TotalSales));
-        // ?? Notificar cambio en la visibilidad de la sección de Arqueo De Caja
         OnPropertyChanged(nameof(ShouldShowCashCountSection));
 
-        return TotalAmount; // Return total sales amount
+        // NUEVO: calcula el pendiente que usará el popup
+        RemainingToPay = Math.Max(0, TotalAmount - TotalTypeOfCollection);
+
+        return TotalAmount;
     }
 
     public void LoadEdsByBusiness(int businessId)
@@ -3257,6 +3250,21 @@ public class CourtService : INotifyPropertyChanged
             CourtExpenditures.Remove(expense);
             TotalSales = GetTotalSales();
             OnPropertyChanged(nameof(CourtExpenditures));
+        }
+    }
+
+    // NUEVO: pendiente por pagar (ventas - métodos de pago)
+    private double _remainingToPay;
+    public double RemainingToPay
+    {
+        get => _remainingToPay;
+        set
+        {
+            if (Math.Abs(_remainingToPay - value) > double.Epsilon)
+            {
+                _remainingToPay = value;
+                OnPropertyChanged(nameof(RemainingToPay));
+            }
         }
     }
 }

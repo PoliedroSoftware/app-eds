@@ -87,7 +87,7 @@
                                HorizontalOptions="Center" 
                                VerticalOptions="Center"/>
                     </Border>
-                    <Label Text="{Binding Source={x:Reference Root}, Path=Remaining, StringFormat='Total del Día: $ {0:N0}'}"
+                    <Label Text="{Binding Source={x:Reference Root}, Path=Remaining, StringFormat='Total del Día: ${0:N0}'}"
                            FontSize="15"
                            FontAttributes="Bold"
                            TextColor="#1976D2"
@@ -129,7 +129,13 @@
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                       Color="#2196F3"
-                                                      VerticalOptions="Center"/>
+                                                      VerticalOptions="Center">
+                                                <CheckBox.Triggers>
+                                                    <DataTrigger TargetType="CheckBox" Binding="{Binding IsPreviouslyPaid}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    </DataTrigger>
+                                                </CheckBox.Triggers>
+                                            </CheckBox>
 
                                             <!-- Payment Method Name -->
                                             <StackLayout Grid.Column="1"
@@ -172,7 +178,13 @@
                                                        PlaceholderColor="#9E9E9E"
                                                        BackgroundColor="Transparent"
                                                        FontSize="13"
-                                                       FontAttributes="Bold"/>
+                                                       FontAttributes="Bold">
+                                                    <Entry.Triggers>
+                                                        <DataTrigger TargetType="Entry" Binding="{Binding IsPreviouslyPaid}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Entry.Triggers>
+                                                </Entry>
                                             </Border>
                                             
                                             <!-- Amount Display - Both Currency Format and Words -->
