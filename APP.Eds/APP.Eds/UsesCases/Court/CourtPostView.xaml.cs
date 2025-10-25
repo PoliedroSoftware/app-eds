@@ -391,9 +391,19 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     // --- Botones obligatorios
     private async void OpenDispenserPopUp(object sender, EventArgs e)
     {
-        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
+        // Prevent double-click by disabling the button immediately
+        var button = sender as Button;
+        if (button != null && !button.IsEnabled) return;
+        if (button != null) button.IsEnabled = false;
+
         try
         {
+            if (!PuedeEditar) 
+            { 
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
+                return; 
+            }
+
             await ShowPopupSafelyAsync<object>(new AddDispenser(_service));
             // Refrescar SOLO ventas por mangueras
             await RefreshSectionsAsync(refreshDispensers: true, refreshPayments: false);
@@ -403,18 +413,32 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             Debug.WriteLine($"Error opening dispenser popup: {ex.Message}");
             await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario del dispensador", "Error de Interfaz");
         }
+        finally
+        {
+            // Re-enable the button after a short delay to prevent rapid consecutive clicks
+            if (button != null)
+            {
+                await Task.Delay(500); // 500ms delay before re-enabling
+                button.IsEnabled = true;
+            }
+        }
     }
 
     private async void OpenTypeOfCollectionPopUp(object sender, EventArgs e)
     {
-        if (!PuedeEditar) 
-        { 
-            await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
-            return; 
-        }
+        // Prevent double-click by disabling the button immediately
+        var button = sender as Button;
+        if (button != null && !button.IsEnabled) return;
+        if (button != null) button.IsEnabled = false;
 
         try
         {
+            if (!PuedeEditar) 
+            { 
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
+                return; 
+            }
+
             // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
             double totalSales = _service.GetTotalAmount();
             
@@ -452,6 +476,15 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             Debug.WriteLine($"Error opening collection popup: {ex.Message}");
             await CustomAlert.ShowErrorAsync("No se pudo abrir el formulario de tipos de cobro", "Error de Interfaz");
+        }
+        finally
+        {
+            // Re-enable the button after a short delay to prevent rapid consecutive clicks
+            if (button != null)
+            {
+                await Task.Delay(500); // 500ms delay before re-enabling
+                button.IsEnabled = true;
+            }
         }
     }
 
