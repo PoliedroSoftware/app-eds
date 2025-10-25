@@ -90,6 +90,28 @@
                                 </Border>
                             </StackLayout>
 
+                            <!-- EDS Section -->
+                            <StackLayout Spacing="6">
+                                <Label Text="EDS" 
+                                       FontSize="11" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72"/>
+                                <Border BackgroundColor="#E3F2FD"
+                                        StrokeShape="RoundRectangle 6"
+                                        Stroke="#2196F3"
+                                        Padding="12,8">
+                                    <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="🏭" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Eds}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               TextColor="#1565C0" 
+                                               VerticalOptions="Center"
+                                               AutomationId="LabelEdsValue"/>
+                                    </StackLayout>
+                                </Border>
+                            </StackLayout>
+
                             <!-- Schedule Section -->
                             <StackLayout Spacing="6">
                                 <Label Text="Horario de Trabajo" 
