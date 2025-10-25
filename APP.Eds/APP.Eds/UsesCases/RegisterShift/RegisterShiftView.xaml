@@ -68,7 +68,7 @@
                     StrokeShape="RoundRectangle 8"
                     Stroke="#DDD6FE" 
                     Grid.Row="1" Grid.Column="1">
-                                <Picker Title="Seleccione una EDS"
+                                <Picker Title="Seleccione su EDS"
                         AutomationId="EdsPicker"
                         ItemDisplayBinding="{Binding Name}" 
                         ItemsSource="{Binding EdsList}"
