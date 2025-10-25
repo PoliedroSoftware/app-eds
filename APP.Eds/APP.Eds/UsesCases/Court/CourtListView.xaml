@@ -110,7 +110,7 @@
                                                        FontAttributes="Bold"
                                                        TextColor="#64748B"
                                                        VerticalOptions="Center"/>
-                                                <Label Text="{Binding Eds}" 
+                                                <Label Text="{Binding Eds, FallbackValue='Sin asignar', TargetNullValue='Sin asignar'}" 
                                                        FontSize="12" 
                                                        TextColor="#475569"
                                                        VerticalOptions="Center"/>
