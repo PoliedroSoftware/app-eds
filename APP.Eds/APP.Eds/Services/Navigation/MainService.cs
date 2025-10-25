@@ -29,6 +29,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using APP.Eds.UsesCases.StrongBox;
 using APP.Eds.UsesCases.Phone;
+using APP.Eds.UsesCases.RegisterShift;
 
 namespace APP.Eds.Services.Navigation
 {
@@ -39,6 +40,7 @@ namespace APP.Eds.Services.Navigation
 
         public ICommand NavigateToCourtCommand { get; }
         public ICommand NavigateToWizardCommand { get; }
+        public ICommand NavigateToRegisterShiftCommand { get; } 
         
         public MainService()
         {
@@ -57,6 +59,15 @@ namespace APP.Eds.Services.Navigation
                 if (Application.Current?.MainPage is NavigationPage navPage)
                 {
                     await navPage.PushAsync(new SetupWizardView());
+                }
+            });
+
+            // Command to navigate to Register Shift
+            NavigateToRegisterShiftCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new RegisterShiftView());
                 }
             });
 
@@ -99,6 +110,7 @@ namespace APP.Eds.Services.Navigation
                         new("Corte", typeof(CourtPostView), "💰"),
                         new("Negocio", typeof(BusinessPostView), "🏢"),
                         new("EDS", typeof(EdsPostView), "🏪"),
+                        new("Registrar Turno", typeof(RegisterShiftView), "⏱️"), // Added
                         new("Caja Fuerte", typeof(StrongBoxView), "💼"),
                         new("Telefonos", typeof(PhoneRegistrationView), "📱")
 
@@ -138,7 +150,12 @@ namespace APP.Eds.Services.Navigation
             }
             else
             {
-                Categories = new ObservableCollection<CategoryModel>();
+                // For User role: provide direct navigation to Corte and Registrar Turno
+                Categories = new ObservableCollection<CategoryModel>
+                {
+                    new("Corte del Dia", "💰", NavigateToCourtCommand, isDirectNavigation: true),
+                    new("Registrar Turno", "⏱️", NavigateToRegisterShiftCommand, isDirectNavigation: true)
+                };
             }
         }
 

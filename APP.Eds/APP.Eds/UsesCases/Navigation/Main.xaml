@@ -44,54 +44,6 @@
                 </Border>
 
                 <!-- Court Button for Islander -->
-                <Border IsVisible="{Binding IsIslander}"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
-                            <GradientStop Color="{StaticResource Tertiary}" Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" 
-                                Offset="0,6" 
-                                Radius="12" 
-                                Opacity="0.25"/>
-                    </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavigateToCourtCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="20,15" ColumnDefinitions="Auto,*,Auto">
-                        <Border Grid.Column="0"
-                                BackgroundColor="White"
-                                StrokeShape="RoundRectangle 8"
-                                WidthRequest="32"
-                                HeightRequest="32"
-                                Margin="0,0,15,0"
-                                VerticalOptions="Center">
-                            <Label Text="C"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="{StaticResource Primary}"
-                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
-                        <Label Grid.Column="1"
-                               Text="Corte del Día"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource White}"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="2"
-                               Text=">"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource White}"
-                               VerticalOptions="Center"/>
-                    </Grid>
-                </Border>
                 
                 <!-- Menu Categories -->
                 <CollectionView ItemsSource="{Binding Categories}" 

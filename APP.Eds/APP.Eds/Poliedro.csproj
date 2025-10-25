@@ -269,6 +269,9 @@
     <MauiXaml Update="UsesCases\Provider\ProviderPostView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="UsesCases\RegisterShift\RegisterShiftView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="UsesCases\Shopping\ShoppingPostView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

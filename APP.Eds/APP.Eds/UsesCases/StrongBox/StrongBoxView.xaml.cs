@@ -24,7 +24,7 @@ public partial class StrongBoxView : ContentPage
         {
             if (_strongBoxService.IsLoading)
             {
-                LoadingOverlay.ShowLoading("Procesando retiro...", "Realizando operación en caja fuerte");
+                LoadingOverlay.ShowLoading("Procesando retiro...", "Realizando operaciï¿½n en caja fuerte");
             }
             else
             {
@@ -35,7 +35,7 @@ public partial class StrongBoxView : ContentPage
         {
             if (_strongBoxService.IsLoadingCourtDetails)
             {
-                LoadingOverlay.ShowLoading("Cargando detalles del corte...", "Obteniendo información detallada del movimiento");
+                LoadingOverlay.ShowLoading("Cargando detalles del corte...", "Obteniendo informaciï¿½n detallada del movimiento");
             }
             else
             {

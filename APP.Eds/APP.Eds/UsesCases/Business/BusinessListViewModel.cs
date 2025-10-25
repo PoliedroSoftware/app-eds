@@ -85,7 +85,7 @@ public class BusinessListViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al abrir el formulario de creación:\n\n{ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al abrir el formulario de creaciï¿½n:\n\n{ex.Message}", "OK");
         }
     }
 
@@ -96,14 +96,14 @@ public class BusinessListViewModel : INotifyPropertyChanged
         try
         {
             // For now, show a detailed info popup. Later can be expanded to a dedicated detail page
-            var message = $"Información del Negocio:\n\n" +
-                         $"• ID: {business.IdBusiness}\n" +
-                         $"• Nombre: {business.Name}\n" +
-                         $"• Estado: Activo\n\n" +
+            var message = $"Informaciï¿½n del Negocio:\n\n" +
+                         $"ï¿½ ID: {business.IdBusiness}\n" +
+                         $"ï¿½ Nombre: {business.Name}\n" +
+                         $"ï¿½ Estado: Activo\n\n" +
                          $"Acciones disponibles:\n" +
-                         $"• Editar información\n" +
-                         $"• Ver estadísticas\n" +
-                         $"• Gestionar EDS asociadas";
+                         $"ï¿½ Editar informaciï¿½n\n" +
+                         $"ï¿½ Ver estadï¿½sticas\n" +
+                         $"ï¿½ Gestionar EDS asociadas";
 
             await Application.Current.MainPage.DisplayAlert($"Detalles - {business.Name}", message, "OK");
         }
@@ -131,7 +131,7 @@ public class BusinessListViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al cargar los datos del negocio para edición:\n\n{ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al cargar los datos del negocio para ediciï¿½n:\n\n{ex.Message}", "OK");
         }
     }
 
@@ -146,9 +146,9 @@ public class BusinessListViewModel : INotifyPropertyChanged
                 "Cancelar",
                 "Eliminar Negocio",
                 "Ver Detalles Completos",
-                "Editar Información",
+                "Editar Informaciï¿½n",
                 "Gestionar EDS",
-                "Ver Estadísticas",
+                "Ver Estadï¿½sticas",
                 "Exportar Datos");
 
             switch (action)
@@ -156,13 +156,13 @@ public class BusinessListViewModel : INotifyPropertyChanged
                 case "Ver Detalles Completos":
                     await ViewBusinessDetailAsync(business);
                     break;
-                case "Editar Información":
+                case "Editar Informaciï¿½n":
                     await EditBusinessAsync(business);
                     break;
                 case "Gestionar EDS":
                     await ManageEdsAsync(business);
                     break;
-                case "Ver Estadísticas":
+                case "Ver Estadï¿½sticas":
                     await ShowStatisticsAsync(business);
                     break;
                 case "Exportar Datos":
@@ -181,28 +181,28 @@ public class BusinessListViewModel : INotifyPropertyChanged
 
     private async Task ManageEdsAsync(BusinessModel business)
     {
-        await Application.Current.MainPage.DisplayAlert("Gestión de EDS", 
-            $"Funcionalidad en desarrollo.\n\nEn esta sección podrás gestionar todas las estaciones de servicio (EDS) asociadas a '{business.Name}'.", 
+        await Application.Current.MainPage.DisplayAlert("Gestiï¿½n de EDS", 
+            $"Funcionalidad en desarrollo.\n\nEn esta secciï¿½n podrï¿½s gestionar todas las estaciones de servicio (EDS) asociadas a '{business.Name}'.", 
             "OK");
     }
 
     private async Task ShowStatisticsAsync(BusinessModel business)
     {
         // Sample statistics - in a real app, this would fetch real data
-        var stats = $"Estadísticas de {business.Name}:\n\n" +
-                   $"• Total EDS: En desarrollo\n" +
-                   $"• Ventas del mes: En desarrollo\n" +
-                   $"• Isleros activos: En desarrollo\n" +
-                   $"• Última actividad: En desarrollo\n\n" +
-                   $"Nota: Las estadísticas detalladas estarán disponibles en futuras actualizaciones.";
+        var stats = $"Estadï¿½sticas de {business.Name}:\n\n" +
+                   $"ï¿½ Total EDS: En desarrollo\n" +
+                   $"ï¿½ Ventas del mes: En desarrollo\n" +
+                   $"ï¿½ Isleros activos: En desarrollo\n" +
+                   $"ï¿½ ï¿½ltima actividad: En desarrollo\n\n" +
+                   $"Nota: Las estadï¿½sticas detalladas estarï¿½n disponibles en futuras actualizaciones.";
 
-        await Application.Current.MainPage.DisplayAlert($"Estadísticas - {business.Name}", stats, "OK");
+        await Application.Current.MainPage.DisplayAlert($"Estadï¿½sticas - {business.Name}", stats, "OK");
     }
 
     private async Task ExportDataAsync(BusinessModel business)
     {
         await Application.Current.MainPage.DisplayAlert("Exportar Datos", 
-            $"Funcionalidad de exportación en desarrollo.\n\nPodrás exportar todos los datos de '{business.Name}' en formatos Excel, PDF y CSV.", 
+            $"Funcionalidad de exportaciï¿½n en desarrollo.\n\nPodrï¿½s exportar todos los datos de '{business.Name}' en formatos Excel, PDF y CSV.", 
             "OK");
     }
 
@@ -211,22 +211,22 @@ public class BusinessListViewModel : INotifyPropertyChanged
         try
         {
             bool confirm = await Application.Current.MainPage.DisplayAlert(
-                "Confirmar Eliminación",
-                $"¿Está seguro de que desea eliminar el negocio '{business.Name}'?\n\n" +
-                $"Esta acción eliminará:\n" +
-                $"• Todas las EDS asociadas\n" +
-                $"• Todos los registros de ventas\n" +
-                $"• Todos los datos relacionados\n\n" +
-                $"?? ESTA ACCIÓN NO SE PUEDE DESHACER",
+                "Confirmar Eliminaciï¿½n",
+                $"ï¿½Estï¿½ seguro de que desea eliminar el negocio '{business.Name}'?\n\n" +
+                $"Esta acciï¿½n eliminarï¿½:\n" +
+                $"ï¿½ Todas las EDS asociadas\n" +
+                $"ï¿½ Todos los registros de ventas\n" +
+                $"ï¿½ Todos los datos relacionados\n\n" +
+                $"?? ESTA ACCIï¿½N NO SE PUEDE DESHACER",
                 "Eliminar",
                 "Cancelar");
 
             if (confirm)
             {
                 // For now, show that this is in development
-                await Application.Current.MainPage.DisplayAlert("Eliminación en Desarrollo", 
-                    "La funcionalidad de eliminación está en desarrollo.\n\n" +
-                    "Esta función incluirá validaciones adicionales y respaldos de seguridad antes de permitir la eliminación.", 
+                await Application.Current.MainPage.DisplayAlert("Eliminaciï¿½n en Desarrollo", 
+                    "La funcionalidad de eliminaciï¿½n estï¿½ en desarrollo.\n\n" +
+                    "Esta funciï¿½n incluirï¿½ validaciones adicionales y respaldos de seguridad antes de permitir la eliminaciï¿½n.", 
                     "OK");
 
                 // TODO: Implement actual deletion when API is ready
