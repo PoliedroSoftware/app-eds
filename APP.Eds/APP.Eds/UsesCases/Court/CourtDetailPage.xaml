@@ -3,8 +3,19 @@
     x:Class="APP.Eds.UsesCases.Court.CourtDetailPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Detalle Del Corte"
     BackgroundColor="#F8F9FA">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
+            <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="120,*">
 
@@ -164,12 +175,20 @@
                                        FontAttributes="Bold"
                                        TextColor="#2E7D32"
                                        HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                        FontSize="11"
                                        FontAttributes="Bold"
                                        TextColor="#1B5E20"
                                        HorizontalOptions="Center"
                                        AutomationId="LabelTotalAccumulatedAmount"/>
+                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource NumberToWordsConverter}}" 
+                                       FontSize="8" 
+                                       TextColor="#2E7D32" 
+                                       FontAttributes="Italic"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
                             </StackLayout>
                         </Border>
 
@@ -206,12 +225,20 @@
                                        FontAttributes="Bold"
                                        TextColor="#7B1FA2"
                                        HorizontalOptions="Center"/>
-                                <Label Text="{Binding Distinc, StringFormat='$ {0:N0}'}" 
+                                <Label Text="{Binding Distinc, Converter={StaticResource CurrencyFormat}}" 
                                        FontSize="11"
                                        FontAttributes="Bold"
                                        TextColor="#4A148C"
                                        HorizontalOptions="Center"
                                        AutomationId="LabelDistincValue"/>
+                                <Label Text="{Binding Distinc, Converter={StaticResource NumberToWordsConverter}}" 
+                                       FontSize="8" 
+                                       TextColor="#7B1FA2" 
+                                       FontAttributes="Italic"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
                             </StackLayout>
                         </Border>
                     </Grid>
@@ -290,7 +317,7 @@
                                                    FontSize="9"
                                                    FontAttributes="Bold"
                                                    TextColor="#636E72"/>
-                                            <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}"
+                                            <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}"
                                                    FontSize="11"
                                                    FontAttributes="Bold"
                                                    TextColor="#4CAF50"
@@ -382,7 +409,7 @@
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
                                                            TextColor="#636E72"/>
-                                                    <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                    <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                            FontSize="11" 
                                                            FontAttributes="Bold"
                                                            TextColor="#4CAF50"/>
@@ -407,7 +434,7 @@
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
                                                            TextColor="#636E72"/>
-                                                    <Label Text="{Binding LastAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                    <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                            FontSize="11" 
                                                            TextColor="#757575"/>
                                                 </StackLayout>
@@ -475,7 +502,7 @@
                                                    FontSize="9" 
                                                    FontAttributes="Bold" 
                                                    TextColor="#636E72"/>
-                                            <Label Text="{Binding Amount, StringFormat='$ {0:N0}'}" 
+                                            <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                    FontSize="11"
                                                    FontAttributes="Bold"
                                                    TextColor="#D4716B" 
