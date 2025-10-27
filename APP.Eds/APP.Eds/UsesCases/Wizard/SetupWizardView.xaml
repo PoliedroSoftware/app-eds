@@ -1,343 +1,297 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="APP.Eds.UsesCases.Wizard.SetupWizardView"
-             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:APP.Eds.Converters.Wizard"
-             xmlns:controls="clr-namespace:APP.Eds.Controls"
+   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:APP.Eds.Converters.Wizard"
+    xmlns:controls="clr-namespace:APP.Eds.Controls"
              Title="Configuración del Sistema">
-    
+ 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+ <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
     <Grid>
-        <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="20">
-                
-                <Frame BackgroundColor="{AppThemeBinding Light=#F3E8FF, Dark=#2A263B}"
-                       BorderColor="{AppThemeBinding Light=#E9D5FF, Dark=#3B3757}"
-                       HasShadow="False"
-                       CornerRadius="12">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="⭐ Asistente de Configuración ⭐"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=#3B0764, Dark=#EDE9FE}"
-                               HorizontalOptions="Center" />
-                        <Label Text="Complete todos los pasos para configurar su sistema EDS"
-                               FontSize="16"
-                               TextColor="{AppThemeBinding Light=#5B21B6, Dark=#C4B5FD}"
-                               HorizontalOptions="Center" />
-                        <Label Text="{Binding CompletedSteps, StringFormat='Pasos completados: {0} de 10'}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=#4C1D95, Dark=#DDD6FE}"
-                               HorizontalOptions="Center" />
-                        <ProgressBar x:Name="OverallProgressBar"
-                                     Progress="0.0"
-                                     ProgressColor="{AppThemeBinding Light=#86EFAC, Dark=#34D399}"
-                                     BackgroundColor="{AppThemeBinding Light=#EDE9FE, Dark=#3B3757}"
-                                     HeightRequest="6" />
-                    </VerticalStackLayout>
-                </Frame>
+    <ScrollView>
+      <VerticalStackLayout Padding="20" Spacing="20">
+     
+  <Frame BackgroundColor="{AppThemeBinding Light=#F3E8FF, Dark=#2A263B}"
+       BorderColor="{AppThemeBinding Light=#E9D5FF, Dark=#3B3757}"
+            HasShadow="False"
+                CornerRadius="12">
+  <VerticalStackLayout Spacing="10">
+    <Label Text="⭐ Asistente de Configuración ⭐"
+       FontSize="18"
+             FontAttributes="Bold"
+         TextColor="{AppThemeBinding Light=#3B0764, Dark=#EDE9FE}"
+      HorizontalOptions="Center" />
+         <Label Text="Complete todos los pasos para configurar su sistema EDS"
+           FontSize="16"
+   TextColor="{AppThemeBinding Light=#5B21B6, Dark=#C4B5FD}"
+                HorizontalOptions="Center" />
+     <Label Text="{Binding CompletedSteps, StringFormat='Pasos completados: {0} de 10'}"
+         FontSize="18"
+ FontAttributes="Bold"
+        TextColor="{AppThemeBinding Light=#4C1D95, Dark=#DDD6FE}"
+     HorizontalOptions="Center" />
+ <ProgressBar x:Name="OverallProgressBar"
+ Progress="0.0"
+             ProgressColor="{AppThemeBinding Light=#86EFAC, Dark=#34D399}"
+    BackgroundColor="{AppThemeBinding Light=#EDE9FE, Dark=#3B3757}"
+           HeightRequest="6" />
+           </VerticalStackLayout>
+    </Frame>
 
-                <Frame BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1F2937}"
-                       BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
-                       CornerRadius="12" Padding="15">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="📋 Progreso de Configuración"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=#0F172A, Dark=#E5E7EB}"
-                               HorizontalOptions="Center" />
-                        
-                        <CollectionView ItemsSource="{Binding WizardService.Steps}"
-                                        BackgroundColor="Transparent">
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Padding="10,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30" />
-                                            <ColumnDefinition Width="40" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="30" />
-                                        </Grid.ColumnDefinitions>
-                                        
-                                        <Frame Grid.Column="0"
-                                               WidthRequest="30"
-                                               HeightRequest="30"
-                                               CornerRadius="15"
-                                               Padding="0"
-                                               HasShadow="False">
-                                            <Frame.Triggers>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsCompleted}" Value="True">
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10B981, Dark=#059669}" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsActive}" Value="True">
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#8B5CF6, Dark=#7C3AED}" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="True">
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F59E0B, Dark=#D97706}" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="False">
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#CBD5E1, Dark=#475569}" />
-                                                </DataTrigger>
-                                            </Frame.Triggers>
-                                            
-                                            <Label Text="{Binding Order}"
-                                                   FontSize="12"
-                                                   FontAttributes="Bold"
-                                                   TextColor="White"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center" />
-                                        </Frame>
-                                        
-                                        <Label Grid.Column="1"
-                                               Text="{Binding Icon}"
-                                               FontSize="20"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="Center" />
-                                        
-                                        <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
-                                            <Label Text="{Binding Title}"
-                                                   FontSize="16"
-                                                   FontAttributes="Bold"
-                                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F3F4F6}">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
-                                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
-                                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsEnabled}" Value="False">
-                                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <Label Text="{Binding Description}"
-                                                   FontSize="12"
-                                                   TextColor="{AppThemeBinding Light=#475569, Dark=#94A3B8}" />
-                                        </VerticalStackLayout>
-                                        
-                                        <Label Grid.Column="3"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="Center"
-                                               FontSize="16"
-                                               TextColor="{AppThemeBinding Light=#16A34A, Dark=#22C55E}">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
-                                                    <Setter Property="Text" Value="✓" />
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
-                                                    <Setter Property="Text" Value="▶" />
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
-                                                </DataTrigger>
-                                                <MultiTrigger TargetType="Label">
-                                                    <MultiTrigger.Conditions>
-                                                        <BindingCondition Binding="{Binding IsCompleted}" Value="False" />
-                                                        <BindingCondition Binding="{Binding IsActive}" Value="False" />
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter Property="Text" Value="" />
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
-                                                </MultiTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </VerticalStackLayout>
-                </Frame>
+             <Frame BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1F2937}"
+    BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+           CornerRadius="12" Padding="15">
+            <VerticalStackLayout Spacing="10">
+    <Label Text="📋 Progreso de Configuración"
+               FontSize="18"
+          FontAttributes="Bold"
+         TextColor="{AppThemeBinding Light=#0F172A, Dark=#E5E7EB}"
+              HorizontalOptions="Center" />
+       
+             <CollectionView ItemsSource="{Binding WizardService.Steps}"
+                 BackgroundColor="Transparent">
+      <CollectionView.ItemsLayout>
+       <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
+           </CollectionView.ItemsLayout>
+         <CollectionView.ItemTemplate>
+          <DataTemplate>
+              <Grid Padding="10,5">
+    <Grid.ColumnDefinitions>
+   <ColumnDefinition Width="30" />
+         <ColumnDefinition Width="40" />
+    <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="30" />
+    </Grid.ColumnDefinitions>
+ 
+  <Frame Grid.Column="0"
+ WidthRequest="30"
+      HeightRequest="30"
+      CornerRadius="15"
+           Padding="0"
+ HasShadow="False">
+  <Frame.Triggers>
+              <DataTrigger TargetType="Frame" Binding="{Binding IsCompleted}" Value="True">
+         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10B981, Dark=#059669}" />
+          </DataTrigger>
+     <DataTrigger TargetType="Frame" Binding="{Binding IsActive}" Value="True">
+    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#8B5CF6, Dark=#7C3AED}" />
+              </DataTrigger>
+    <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="True">
+       <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F59E0B, Dark=#D97706}" />
+           </DataTrigger>
+                <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="False">
+         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#CBD5E1, Dark=#475569}" />
+           </DataTrigger>
+  </Frame.Triggers>
+       
+   <Label Text="{Binding Order}"
+     FontSize="12"
+           FontAttributes="Bold"
+   TextColor="White"
+       HorizontalOptions="Center"
+  VerticalOptions="Center" />
+           </Frame>
+      
+           <Label Grid.Column="1"
+    Text="{Binding Icon}"
+      FontSize="20"
+     VerticalOptions="Center"
+     HorizontalOptions="Center" />
+  
+            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+             <Label Text="{Binding Title}"
+ FontSize="16"
+      FontAttributes="Bold"
+               TextColor="{AppThemeBinding Light=#0F172A, Dark=#F3F4F6}">
+     <Label.Triggers>
+      <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+          <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
+        </DataTrigger>
+   <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
+    <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
+         </DataTrigger>
+   <DataTrigger TargetType="Label" Binding="{Binding IsEnabled}" Value="False">
+       <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
+         </DataTrigger>
+        </Label.Triggers>
+ </Label>
+ <Label Text="{Binding Description}"
+              FontSize="12"
+  TextColor="{AppThemeBinding Light=#475569, Dark=#94A3B8}" />
+          </VerticalStackLayout>
+      
+  <Label Grid.Column="3"
+     VerticalOptions="Center"
+   HorizontalOptions="Center"
+   FontSize="16"
+ TextColor="{AppThemeBinding Light=#16A34A, Dark=#22C55E}">
+               <Label.Triggers>
+ <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+           <Setter Property="Text" Value="✓" />
+   <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
+   </DataTrigger>
+     <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
+       <Setter Property="Text" Value="▶" />
+         <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
+               </DataTrigger>
+            <MultiTrigger TargetType="Label">
+      <MultiTrigger.Conditions>
+       <BindingCondition Binding="{Binding IsCompleted}" Value="False" />
+   <BindingCondition Binding="{Binding IsActive}" Value="False" />
+         </MultiTrigger.Conditions>
+      <Setter Property="Text" Value="" />
+    <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
+           </MultiTrigger>
+</Label.Triggers>
+            </Label>
+    </Grid>
+         </DataTemplate>
+        </CollectionView.ItemTemplate>
+  </CollectionView>
+    </VerticalStackLayout>
+          </Frame>
 
-                <Frame BackgroundColor="White" HasShadow="True" CornerRadius="10" Padding="20">
-                    <VerticalStackLayout Spacing="15">
-                        <Label Text="{Binding WizardService.CurrentStep.Title, StringFormat='📌 Paso Actual: {0}'}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="Purple" />
-                        
-                        <Label Text="{Binding WizardService.CurrentStep.Description}"
-                               FontSize="14"
-                               TextColor="Gray" />
-                        
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                            <Button Grid.Column="0"
-                                    Text="📝 Ir al Formulario"
-                                    Command="{Binding NavigateToStepCommand}"
-                                    BackgroundColor="Purple"
-                                    TextColor="White"
-                                    CornerRadius="20"
-                                    HeightRequest="45"
-                                    IsEnabled="{Binding WizardService.CurrentStep.IsEnabled}" />
-                            
-                            <Button Grid.Column="1"
-                                    Text="✨"
-                                    Command="{Binding GetContextualHelpCommand}"
-                                    BackgroundColor="Gold"
-                                    TextColor="White"
-                                    CornerRadius="22"
-                                    WidthRequest="45"
-                                    HeightRequest="45"
-                                    FontSize="20" />
-                        </Grid>
-                    </VerticalStackLayout>
-                </Frame>
-
-                <Frame BackgroundColor="#F0F8FF" CornerRadius="15" Padding="20" HasShadow="True">
-                    <VerticalStackLayout Spacing="15">
-                        <HorizontalStackLayout Spacing="8" HorizontalOptions="Start">
-                            <Label Text="⭐" 
-                                   FontSize="20" 
-                                   VerticalOptions="Center" />
-                            <Label Text="Asistente IA - Ayuda Personalizada"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="#1E3A8A"
-                                   VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Entry x:Name="HelpEntry"
-                                   Grid.Column="0"
-                                   Placeholder="💬 Pregúntame sobre la configuración..."
-                                   BackgroundColor="White"
-                                   TextColor="Black"
-                                   FontSize="14"
-                                   Margin="0,0,0,10" 
-                                   ReturnType="Send"
-                                   ReturnCommand="{Binding GetHelpCommand}"
-                                   ReturnCommandParameter="{Binding Source={x:Reference HelpEntry}, Path=Text}" />
-                            
-                            <Button Grid.Column="1"
-                                    Text="🚀"
-                                    Command="{Binding GetHelpCommand}"
-                                    CommandParameter="{Binding Source={x:Reference HelpEntry}, Path=Text}"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#3B82F6"
-                                    CornerRadius="20"
-                                    WidthRequest="40"
-                                    HeightRequest="40"
-                                    FontSize="16"
-                                    Margin="5,0,0,10"
-                                    VerticalOptions="Center" />
-                        </Grid>
-                        
-                        <StackLayout IsVisible="{Binding CopilotService.IsLoading}" 
-                                     HorizontalOptions="Center"
-                                     Orientation="Horizontal"
-                                     Spacing="10">
-                            <ActivityIndicator IsRunning="True"
-                                               Color="#3B82F6"
-                                               WidthRequest="20"
-                                               HeightRequest="20" />
-                            <Label Text="🤔 Pensando..."
-                                   FontSize="14"
-                                   TextColor="#6B7280"
-                                   VerticalOptions="Center" />
-                        </StackLayout>
-                        
-                        <Frame BackgroundColor="White"
-                               IsVisible="{Binding ShowHelpResponse}"
-                               CornerRadius="10"
-                               Padding="15"
-                               HasShadow="True"
-                               BorderColor="#E5E7EB">
-                            <VerticalStackLayout Spacing="10">
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label Text="🤖" FontSize="16" VerticalOptions="Center" />
-                                    <Label Text="Respuesta del Asistente IA"
-                                           FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="#1F2937"
-                                           VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                                
-                                <BoxView BackgroundColor="#E5E7EB" HeightRequest="1" />
-                                
-                                <ScrollView MaximumHeightRequest="250">
-                                    <controls:SimpleMarkdownLabel MarkdownText="{Binding CopilotService.MarkdownResponse}" />
-                                </ScrollView>
-                            </VerticalStackLayout>
-                        </Frame>
-
-                    </VerticalStackLayout>
-                </Frame>
+  <Frame BackgroundColor="White" HasShadow="True" CornerRadius="10" Padding="20">
+         <VerticalStackLayout Spacing="15">
+         <Label Text="{Binding WizardService.CurrentStep.Title, StringFormat='📌 Paso Actual: {0}'}"
+ FontSize="18"
+   FontAttributes="Bold"
+   TextColor="Purple" />
+            
+   <Label Text="{Binding WizardService.CurrentStep.Description}"
+          FontSize="14"
+  TextColor="Gray" />
+          
+   <Button Text="📝 Ir al Formulario"
+           Command="{Binding NavigateToStepCommand}"
+   BackgroundColor="Purple"
+    TextColor="White"
+           CornerRadius="20"
+   HeightRequest="45"
+         IsEnabled="{Binding WizardService.CurrentStep.IsEnabled}" />
+             </VerticalStackLayout>
+           </Frame>
 
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                    <Button Grid.Column="0"
-                            Text="← Anterior"
-                            Command="{Binding PreviousStepCommand}"
-                            BackgroundColor="Gray"
-                            TextColor="White"
-                            CornerRadius="20"
-                            HeightRequest="45"
-                            IsEnabled="{Binding WizardService.CanGoPrevious}" />
-                    
-                    <Button Grid.Column="1"
-                            Text="🔍 Validar Paso"
-                            Command="{Binding ValidateStepCommand}"
-                            BackgroundColor="Orange"
-                            TextColor="White"
-                            CornerRadius="20"
-                            HeightRequest="45" />
-                    
-                    <Button Grid.Column="2"
-                            Text="Siguiente →"
-                            Command="{Binding NextStepCommand}"
-                            BackgroundColor="Green"
-                            TextColor="White"
-                            CornerRadius="20"
-                            HeightRequest="45"
-                            IsEnabled="{Binding WizardService.CanGoNext}" />
-                </Grid>
+       <Button Grid.Column="0"
+       Text="← Anterior"
+           Command="{Binding PreviousStepCommand}"
+        BackgroundColor="Gray"
+             TextColor="White"
+      CornerRadius="20"
+  HeightRequest="45"
+     IsEnabled="{Binding WizardService.CanGoPrevious}" />
+          
+   <Button Grid.Column="1"
+          Text="🔍 Validar Paso"
+    Command="{Binding ValidateStepCommand}"
+         BackgroundColor="Orange"
+       TextColor="White"
+             CornerRadius="20"
+     HeightRequest="45" />
+          
+            <Button Grid.Column="2"
+Text="Siguiente →"
+               Command="{Binding NextStepCommand}"
+        BackgroundColor="Green"
+    TextColor="White"
+            CornerRadius="20"
+ HeightRequest="45"
+     IsEnabled="{Binding WizardService.CanGoNext}" />
+         </Grid>
 
-                <Frame BackgroundColor="Green"
-                       IsVisible="{Binding WizardService.IsComplete}"
-                       CornerRadius="10"
-                       Padding="15">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="🎉 ¡Configuración Completada!"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               HorizontalOptions="Center" />
-                        
-                        <Label Text="Su sistema EDS ha sido configurado correctamente. Ya puede comenzar a utilizarlo."
-                               FontSize="14"
-                               TextColor="White"
-                               HorizontalOptions="Center" />
-                        
-                        <Button Text="✅ Finalizar"
-                                Command="{Binding FinishWizardCommand}"
-                                BackgroundColor="DarkGreen"
-                                TextColor="White"
-                                CornerRadius="20"
-                                HeightRequest="45" />
-                    </VerticalStackLayout>
-                </Frame>
+       <Frame BackgroundColor="Green"
+     IsVisible="{Binding WizardService.IsComplete}"
+    CornerRadius="10"
+       Padding="15">
+              <VerticalStackLayout Spacing="10">
+   <Label Text="🎉 ¡Configuración Completada!"
+       FontSize="18"
+      FontAttributes="Bold"
+ TextColor="White"
+ HorizontalOptions="Center" />
+      
+            <Label Text="Su sistema EDS ha sido configurado correctamente. Ya puede comenzar a utilizarlo."
+       FontSize="14"
+            TextColor="White"
+          HorizontalOptions="Center" />
+    
+             <Button Text="✅ Finalizar"
+         Command="{Binding FinishWizardCommand}"
+    BackgroundColor="DarkGreen"
+          TextColor="White"
+   CornerRadius="20"
+         HeightRequest="45" />
+              </VerticalStackLayout>
+        </Frame>
 
-            </VerticalStackLayout>
+      </VerticalStackLayout>
         </ScrollView>
 
-        <Grid x:Name="LoadingOverlay"
-              BackgroundColor="#80000000"
-              IsVisible="{Binding IsLoading}"
-              VerticalOptions="Fill"
-              HorizontalOptions="Fill"
-              ZIndex="1">
-            <ActivityIndicator IsRunning="True"
-                               Color="Purple"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               WidthRequest="50"
-                               HeightRequest="50" />
-        </Grid>
-    </Grid>
+        <!-- ✨ Botón Flotante del Asistente IA - MEJORADO -->
+<Frame x:Name="FloatingChatButton"
+       BackgroundColor="#6A1B9A"
+    CornerRadius="32"
+       Padding="0"
+       HasShadow="True"
+   WidthRequest="64"
+  HeightRequest="64"
+ HorizontalOptions="End"
+  VerticalOptions="End"
+       Margin="0,0,20,20"
+       ZIndex="200">
+  <Frame.GestureRecognizers>
+  <TapGestureRecognizer Tapped="OnFloatingChatTapped" />
+  </Frame.GestureRecognizers>
+    
+        <Grid>
+   <!-- Icono del chat con sombra interna -->
+     <Label Text="💬"
+    FontSize="32"
+     HorizontalOptions="Center"
+         VerticalOptions="Center"
+    Margin="0,2,0,0" />
+      
+        <!-- Indicador de notificación (opcional) -->
+   <Frame x:Name="NotificationDot"
+  IsVisible="False"
+    BackgroundColor="#FF5252"
+     CornerRadius="8"
+ Padding="0"
+      WidthRequest="18"
+            HeightRequest="18"
+  HorizontalOptions="End"
+  VerticalOptions="Start"
+  Margin="0,2,2,0"
+      HasShadow="False"
+    ZIndex="1">
+   <Label Text="!"
+ FontSize="12"
+FontAttributes="Bold"
+   TextColor="White"
+     HorizontalOptions="Center"
+  VerticalOptions="Center" />
+     </Frame>
+   </Grid>
+</Frame>
+
+<Grid x:Name="LoadingOverlay"
+      BackgroundColor="#80000000"
+        IsVisible="{Binding IsLoading}"
+     VerticalOptions="Fill"
+HorizontalOptions="Fill"
+   ZIndex="1">
+ <ActivityIndicator IsRunning="True"
+Color="Purple"
+     VerticalOptions="Center"
+     HorizontalOptions="Center"
+  WidthRequest="50"
+   HeightRequest="50" />
+  </Grid>
+</Grid>
 </ContentPage>
