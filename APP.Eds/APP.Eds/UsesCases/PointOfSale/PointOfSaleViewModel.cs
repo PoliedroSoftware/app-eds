@@ -1,4 +1,4 @@
-using APP.Eds.Models.PointOfSale;
+﻿using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.Client;
 using APP.Eds.Services.PointOfSale;
@@ -18,14 +18,18 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     private PaymentMethod _selectedPaymentMethod = PaymentMethod.Cash;
     private ClientLegalModel _selectedClient;
     private bool _isClientSelectorVisible;
+    private string _clientSearchText;
+    private bool _isSearching;
+    private string _clientWhatsAppNumber;
 
     public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService)
     {
         _pointOfSaleService = pointOfSaleService;
         Products = new ObservableCollection<ProductModel>();
         CartItems = new ObservableCollection<SaleItemModel>();
+        // Ya no necesitamos la lista de clientes precargada
         Clients = new ObservableCollection<ClientLegalModel>();
-  
+
         AddToCartCommand = new Command<ProductModel>(AddToCart);
         RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
@@ -35,9 +39,10 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
         ToggleClientSelectorCommand = new Command(ToggleClientSelector);
-      
+        SearchClientCommand = new Command(async () => await SearchClient());
+
         LoadProducts();
-        LoadClients();
+        // Ya no llamamos LoadClients() aquí porque ahora buscaremos bajo demanda
     }
 
     public ObservableCollection<ProductModel> Products { get; }
@@ -69,9 +74,49 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         set => SetProperty(ref _isClientSelectorVisible, value);
     }
 
-    public string ClientButtonText => SelectedClient != null && SelectedClient.Id > 0 
-        ? $"? {SelectedClient.Name}" 
-        : "Sin Cliente Seleccionado";
+    public string ClientSearchText
+    {
+        get => _clientSearchText;
+        set => SetProperty(ref _clientSearchText, value);
+    }
+
+    public bool IsSearching
+    {
+        get => _isSearching;
+        set => SetProperty(ref _isSearching, value);
+    }
+
+    public string ClientWhatsAppNumber
+    {
+        get => _clientWhatsAppNumber;
+        set => SetProperty(ref _clientWhatsAppNumber, value);
+    }
+
+    public string ClientButtonText
+    {
+        get
+        {
+            if (SelectedClient != null && SelectedClient.Id > 0)
+            {
+                // Mostrar: TipoDoc NumeroDoc - Nombre/Razón Social
+                var docType = SelectedClient.DocumentType;
+                var docNumber = SelectedClient.DocumentNumber;
+
+                // Agregar dígito de verificación si es NIT
+                if (SelectedClient.DocumentTypeId == 1 && SelectedClient.VerificationDigit > 0)
+                {
+                    docNumber = $"{docNumber}-{SelectedClient.VerificationDigit}";
+                }
+
+                // Convertir el nombre a mayúsculas
+                var clientName = SelectedClient.Name.ToUpper();
+
+                return $"{docType} {docNumber} - {clientName}";
+            }
+
+            return "Sin Cliente Seleccionado";
+        }
+    }
 
     public double SubTotal => CartItems.Sum(item => item.TotalPrice);
     public double Tax => SubTotal * 0.16; // 16% tax
@@ -101,8 +146,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         set => SetProperty(ref _selectedPaymentMethod, value);
     }
 
-    public bool CanCompleteTransaction => 
-        CartItems.Any() && 
+    public bool CanCompleteTransaction =>
+        CartItems.Any() &&
         (SelectedPaymentMethod == PaymentMethod.Card || CashReceived >= Total);
 
     public ICommand AddToCartCommand { get; }
@@ -114,6 +159,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public ICommand ClearCartCommand { get; }
     public ICommand SelectPaymentMethodCommand { get; }
     public ICommand ToggleClientSelectorCommand { get; }
+    public ICommand SearchClientCommand { get; }
 
     private async void LoadProducts()
     {
@@ -131,7 +177,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             // Handle error
-            await Application.Current.MainPage.DisplayAlert("Error", 
+            await Application.Current.MainPage.DisplayAlert("Error",
                 "No se pudieron cargar los productos", "OK");
         }
         finally
@@ -140,34 +186,47 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         }
     }
 
-    private async void LoadClients()
+    private async Task SearchClient()
     {
+        if (string.IsNullOrWhiteSpace(ClientSearchText))
+        {
+            await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
+                        "Por favor ingrese un número de documento para buscar", "OK");
+            return;
+        }
+
+        IsSearching = true;
         try
         {
-            System.Diagnostics.Debug.WriteLine("Iniciando carga de clientes...");
-            var clients = await _pointOfSaleService.GetClientsAsync();
+            System.Diagnostics.Debug.WriteLine($"Buscando cliente con documento: {ClientSearchText}");
 
-            Clients.Clear();
-            // Agregar opci�n "Sin Cliente" al inicio
-            Clients.Add(new ClientLegalModel 
-            { 
-                Id = 0, 
-                Name = "Sin Cliente / Consumidor Final",
-                DocumentNumber = "N/A"
-            });
-  
-            foreach (var client in clients)
+            var client = await _pointOfSaleService.SearchClientByDocumentAsync(ClientSearchText.Trim());
+
+            if (client != null)
             {
-                Clients.Add(client);
+                SelectedClient = client;
+                ClientSearchText = string.Empty; // Limpiar el campo de búsqueda
+                IsClientSelectorVisible = false; // Ocultar el selector
+
+                // ✅ ELIMINADO: Ya no mostramos modal cuando se encuentra el cliente
+                // El usuario verá el cliente seleccionado en la UI
             }
-            
-            System.Diagnostics.Debug.WriteLine($"Clientes cargados en ObservableCollection: {Clients.Count}");
+            else
+            {
+                // ⚠️ Solo mostramos modal cuando NO se encuentra el cliente
+                await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
+                   $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error cargando clientes: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Advertencia", 
-                "No se pudieron cargar los clientes. Puede continuar sin seleccionar cliente.", "OK");
+            System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error",
+     "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
+        }
+        finally
+        {
+            IsSearching = false;
         }
     }
 
@@ -211,7 +270,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(Total));
             OnPropertyChanged(nameof(CanCompleteTransaction));
         }
-        
+
         UpdateProductCartStatus();
     }
 
@@ -293,28 +352,28 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             };
 
             var success = await _pointOfSaleService.ProcessSaleAsync(sale);
-            
+
             if (success)
             {
-                string clientInfo = SelectedClient != null && SelectedClient.Id > 0 
-                    ? $"\nCliente: {SelectedClient.Name}" 
+                string clientInfo = SelectedClient != null && SelectedClient.Id > 0
+                    ? $"\nCliente: {SelectedClient.Name}"
                     : "";
-     
-                await Application.Current.MainPage.DisplayAlert("�xito", 
+
+                await Application.Current.MainPage.DisplayAlert("Éxito",
                     $"Venta procesada correctamente{clientInfo}\nTotal: ${Total:F2}\nCambio: ${Change:F2}", "OK");
                 ClearCart();
                 LoadProducts(); // Recargar para actualizar stock
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Error", 
+                await Application.Current.MainPage.DisplayAlert("Error",
                     "No se pudo procesar la venta. Verifique el stock disponible.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", 
-                "Ocurri� un error al procesar la venta", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error",
+                "Ocurrió un error al procesar la venta", "OK");
         }
         finally
         {
@@ -332,6 +391,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         CartItems.Clear();
         CashReceived = 0;
         SelectedClient = null;
+        ClientWhatsAppNumber = string.Empty;
         IsClientSelectorVisible = false;
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
@@ -359,10 +419,10 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "")
     {
         if (EqualityComparer<T>.Default.Equals(backingStore, value))
-       return false;
+            return false;
 
         backingStore = value;
         OnPropertyChanged(propertyName);
- return true;
+        return true;
     }
 }
