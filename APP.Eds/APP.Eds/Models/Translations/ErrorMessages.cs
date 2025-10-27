@@ -7,10 +7,10 @@ public static class ErrorMessages
         { "invalid_grant", ("Usuario o contraseña incorrectos.", "⚠️", "#FFEBEE", "#C62828") },
         { "user_not_found", ("El usuario no se encuentra registrado.", "⚠️", "#FFEBEE", "#C62828") },
         { "server_unavailable", ("Revise su conexión a internet.", "⚠️", "#FFEBEE", "#C62828") },
-        { "invalid_input", ("ingresa tu usuario y contraseña.", "⚠️", "#FFEBEE", "#C62828") },
+        { "invalid_input", ("Ingresa tu usuario y contraseña.", "⚠️", "#FFEBEE", "#C62828") },
         { "token_missing", ("Fallo de autenticación.", "⚠️", "#FFEBEE", "#C62828") },
         { "token_invalid", ("Token inválido.", "⚠️", "#FFEBEE", "#C62828") },
-        { "default", ("ha ocurrido un error inesperado.", "⚠️", "#FFEBEE", "#C62828") }
+        { "default", ("Se produjo un error.Error de conexion.", "⚠️", "#FFEBEE", "#C62828") }
     };
 
     public static (string Message, string Icon, string BackgroundColor, string TextColor) GetFriendlyErrorMessage(string technicalError)
