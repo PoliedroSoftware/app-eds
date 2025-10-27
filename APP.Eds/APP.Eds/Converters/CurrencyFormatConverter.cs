@@ -9,15 +9,15 @@ namespace APP.Eds.Converters
         {
             if (value is double doubleValue)
             {
-                return $"$ {FormatDecimalValue(doubleValue)}";
+                return "$ " + FormatDecimalValue(doubleValue);
             }
             
             if (value is decimal decimalValue)
             {
-                return $"$ {FormatDecimalValue((double)decimalValue)}";
+                return "$ " + FormatDecimalValue((double)decimalValue);
             }
             
-            return "$ 0";
+            return "$0";
         }
 
         private string FormatDecimalValue(double value)
@@ -27,8 +27,8 @@ namespace APP.Eds.Converters
             customCulture.NumberFormat.NumberGroupSeparator = ",";
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             
-            // Siempre mostrar 3 decimales fijos según los requisitos
-            return value.ToString("N3", customCulture);
+            // Mostrar 1 decimal fijo
+            return value.ToString("N1", customCulture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
