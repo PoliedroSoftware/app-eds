@@ -45,10 +45,6 @@ public partial class PointOfSaleView : ContentPage
         var cartSection = CreateCartSection();
         mainStack.Add(cartSection);
 
-        // Payment section
-        var paymentSection = CreatePaymentSection();
-        mainStack.Add(paymentSection);
-
         scrollView.Content = mainStack;
         Content = scrollView;
     }
@@ -842,166 +838,37 @@ public partial class PointOfSaleView : ContentPage
         {
             ColumnDefinitions = new ColumnDefinitionCollection
  {
-         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-       new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-          },
-            ColumnSpacing = 12,
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+},
             Margin = new Thickness(0, 12, 0, 0)
         };
 
-        var clearButton = new Button
-        {
-            Text = "Limpiar",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#D97706"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        clearButton.SetBinding(Button.CommandProperty, "ClearCartCommand");
-        grid.SetColumn(clearButton, 0);
-        grid.Add(clearButton);
+        // ✅ REMOVED: Clear button - eliminado completamente
 
         var processButton = new Button
-        {
-            Text = "Procesar Pago",
-            FontSize = 16,
+  {
+            Text = "Facturar", // ✅ Changed from "Procesar Pago" to "Facturar"
+         FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#059669"),
+        BackgroundColor = Color.FromArgb("#059669"),
             TextColor = Colors.White,
             CornerRadius = 12,
-            HeightRequest = 50
+          HeightRequest = 55
         };
-        processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
+   processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
         processButton.SetBinding(Button.IsEnabledProperty, "CanCompleteTransaction");
-        grid.SetColumn(processButton, 1);
+        grid.SetColumn(processButton, 0);
         grid.Add(processButton);
 
-        return grid;
+     return grid;
     }
 
     private Frame CreatePaymentSection()
     {
-        var frame = new Frame
-        {
-            BackgroundColor = Colors.White,
-            CornerRadius = 16,
-            HasShadow = true,
-            Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#E2E8F0")
-        };
-
-        var stackLayout = new StackLayout { Spacing = 16 };
-
-        // Payment method header
-        var paymentHeader = new Label
-        {
-            Text = "Método de Pago",
-            FontSize = 20,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            HorizontalOptions = LayoutOptions.Center
-        };
-        stackLayout.Add(paymentHeader);
-
-        // Payment buttons
-        var paymentGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            },
-            ColumnSpacing = 12
-        };
-
-        var cashButton = new Button
-        {
-            Text = "Efectivo",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#059669"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        cashButton.SetBinding(Button.CommandProperty, "SelectPaymentMethodCommand");
-        cashButton.CommandParameter = "Cash";
-        paymentGrid.SetColumn(cashButton, 0);
-        paymentGrid.Add(cashButton);
-
-        var cardButton = new Button
-        {
-            Text = "Tarjeta",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#6B7280"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        cardButton.SetBinding(Button.CommandProperty, "SelectPaymentMethodCommand");
-        cardButton.CommandParameter = "Card";
-        paymentGrid.SetColumn(cardButton, 1);
-        paymentGrid.Add(cardButton);
-
-        stackLayout.Add(paymentGrid);
-
-        // Cash section
-        var cashGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            },
-            ColumnSpacing = 12
-        };
-
-        var receivedLabel = new Label
-        {
-            Text = "Recibido:",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            VerticalOptions = LayoutOptions.Center
-        };
-        cashGrid.SetColumn(receivedLabel, 0);
-        cashGrid.Add(receivedLabel);
-
-        var cashEntry = new Entry
-        {
-            Keyboard = Keyboard.Numeric,
-            FontSize = 16,
-            BackgroundColor = Color.FromArgb("#F1F5F9"),
-            TextColor = Color.FromArgb("#374151"),
-            Placeholder = "$0",
-            PlaceholderColor = Color.FromArgb("#9CA3AF"),
-            HeightRequest = 45
-        };
-        cashEntry.SetBinding(Entry.TextProperty, "CashReceived");
-        cashGrid.SetColumn(cashEntry, 1);
-        cashGrid.Add(cashEntry);
-
-        var changeLabel = new Label
-        {
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#059669"),
-            VerticalOptions = LayoutOptions.Center,
-            HorizontalOptions = LayoutOptions.End
-        };
-        changeLabel.SetBinding(Label.TextProperty, new Binding("Change", stringFormat: "Cambio: ${0:N0}"));
-        cashGrid.SetColumn(changeLabel, 2);
-        cashGrid.Add(changeLabel);
-
-        stackLayout.Add(cashGrid);
-
-        frame.Content = stackLayout;
-        return frame;
-    }
+      // ✅ MÉTODO ELIMINADO - Ya no se usa la sección de métodos de pago
+  // Este método puede ser eliminado completamente o dejarlo comentado por si se necesita en el futuro
+    return null;
+}
 }
 
 // Helper converter for toggle button

@@ -35,7 +35,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
         DecreaseQuantityCommand = new Command<SaleItemModel>(DecreaseQuantity);
         UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
-        ProcessPaymentCommand = new Command(async () => await ProcessPayment(), CanProcessPayment);
+        ProcessPaymentCommand = new Command(async () => await ProcessPayment()); // ✅ FIX: Removed CanProcessPayment
         ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
         ToggleClientSelectorCommand = new Command(ToggleClientSelector);
@@ -130,7 +130,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             SetProperty(ref _cashReceived, value);
             Change = value - Total;
             OnPropertyChanged(nameof(Change));
-            OnPropertyChanged(nameof(CanCompleteTransaction));
         }
     }
 
@@ -146,9 +145,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         set => SetProperty(ref _selectedPaymentMethod, value);
     }
 
-    public bool CanCompleteTransaction =>
-        CartItems.Any() &&
-        (SelectedPaymentMethod == PaymentMethod.Card || CashReceived >= Total);
+    public bool CanCompleteTransaction => true; // ✅ Siempre habilitado
 
     public ICommand AddToCartCommand { get; }
     public ICommand RemoveFromCartCommand { get; }
@@ -250,7 +247,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
                 OnPropertyChanged(nameof(SubTotal));
                 OnPropertyChanged(nameof(Tax));
                 OnPropertyChanged(nameof(Total));
-                OnPropertyChanged(nameof(CanCompleteTransaction));
+                // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
             }
         }
         else
@@ -268,7 +265,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
-            OnPropertyChanged(nameof(CanCompleteTransaction));
+            // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
         }
 
         UpdateProductCartStatus();
@@ -280,7 +277,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
-        OnPropertyChanged(nameof(CanCompleteTransaction));
         UpdateProductCartStatus();
     }
 
@@ -294,7 +290,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
-            OnPropertyChanged(nameof(CanCompleteTransaction));
+            // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
         }
     }
 
@@ -308,7 +304,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
-            OnPropertyChanged(nameof(CanCompleteTransaction));
         }
         else
         {
@@ -324,7 +319,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
-        OnPropertyChanged(nameof(CanCompleteTransaction));
     }
 
     private void SelectPaymentMethod(string method)
@@ -332,13 +326,31 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (Enum.TryParse<PaymentMethod>(method, out var paymentMethod))
         {
             SelectedPaymentMethod = paymentMethod;
-            OnPropertyChanged(nameof(CanCompleteTransaction));
         }
     }
 
     private async Task ProcessPayment()
     {
-        if (!CanProcessPayment()) return;
+        // ✅ VALIDACIÓN 1: Verificar que haya productos en el carrito
+        if (!CartItems.Any())
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Carrito Vacío",
+                "⚠️ Debe agregar al menos un producto al carrito antes de facturar.",
+                "OK");
+            return;
+        }
+
+        // ✅ VALIDACIÓN 2: Verificar que se haya seleccionado un cliente
+        if (SelectedClient == null || SelectedClient.Id <= 0)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Cliente Requerido",
+                "⚠️ Debe seleccionar un cliente antes de facturar.\n\n" +
+                "Use el buscador para encontrar el cliente por su número de documento.",
+                "OK");
+            return;
+        }
 
         IsLoading = true;
         try
@@ -359,31 +371,42 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
                     ? $"\nCliente: {SelectedClient.Name}"
                     : "";
 
-                await Application.Current.MainPage.DisplayAlert("Éxito",
-                    $"Venta procesada correctamente{clientInfo}\nTotal: ${Total:F2}\nCambio: ${Change:F2}", "OK");
+                string whatsappInfo = !string.IsNullOrWhiteSpace(ClientWhatsAppNumber)
+                    ? $"\nWhatsApp: {ClientWhatsAppNumber}"
+                    : "";
+
+                await Application.Current.MainPage.DisplayAlert(
+                    "✅ Factura Generada",
+                    $"Venta procesada correctamente{clientInfo}{whatsappInfo}\n\n" +
+                    $"💰 Total: ${Total:N2}\n" +
+                    $"📦 Productos: {CartItems.Count}",
+                    "OK");
+
                 ClearCart();
                 LoadProducts(); // Recargar para actualizar stock
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Error",
-                    "No se pudo procesar la venta. Verifique el stock disponible.", "OK");
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    "❌ No se pudo procesar la venta.\n\n" +
+                    "Verifique el stock disponible de los productos.",
+                    "OK");
             }
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error",
-                "Ocurrió un error al procesar la venta", "OK");
+            System.Diagnostics.Debug.WriteLine($"Error procesando pago: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert(
+                "Error del Sistema",
+                "❌ Ocurrió un error al procesar la venta.\n\n" +
+                "Por favor intente nuevamente.",
+                "OK");
         }
         finally
         {
             IsLoading = false;
         }
-    }
-
-    private bool CanProcessPayment()
-    {
-        return CanCompleteTransaction && !IsLoading;
     }
 
     private void ClearCart()
@@ -396,7 +419,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
-        OnPropertyChanged(nameof(CanCompleteTransaction));
         OnPropertyChanged(nameof(ClientButtonText));
         UpdateProductCartStatus();
     }
