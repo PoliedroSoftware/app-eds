@@ -103,6 +103,20 @@
                                             <Label Text="Islero Responsable" 
                                                    FontSize="13" 
                                                    TextColor="#64748B"/>
+                                            <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                                                <Label Text="🏭" 
+                                                       FontSize="13" 
+                                                       VerticalOptions="Center"/>
+                                                <Label Text="EDS:" 
+                                                       FontSize="12" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="#64748B"
+                                                       VerticalOptions="Center"/>
+                                                <Label Text="{Binding Eds, FallbackValue='Sin asignar', TargetNullValue='Sin asignar'}" 
+                                                       FontSize="12" 
+                                                       TextColor="#475569"
+                                                       VerticalOptions="Center"/>
+                                            </StackLayout>
                                         </StackLayout>
 
                                         <!-- Enhanced Status Indicator -->
