@@ -1,4 +1,4 @@
-using APP.Eds.Models.PointOfSale;
+﻿using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.Client;
 using APP.Eds.Models.ShoppingProduct;
@@ -16,75 +16,76 @@ public interface IPointOfSaleService
     Task<bool> ProcessSaleAsync(SaleModel sale);
     Task<List<SaleModel>> GetSalesHistoryAsync();
     Task<List<ClientLegalModel>> GetClientsAsync();
+    Task<ClientLegalModel?> SearchClientByDocumentAsync(string documentNumber);
 }
 
 public class PointOfSaleService : IPointOfSaleService
 {
- private readonly string? _authToken;
+    private readonly string? _authToken;
     private readonly List<SaleModel> _salesHistory = new();
 
-  public PointOfSaleService()
+    public PointOfSaleService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
     }
 
     public async Task<List<ProductModel>> GetAvailableProductsAsync()
     {
- if (string.IsNullOrEmpty(_authToken))
+        if (string.IsNullOrEmpty(_authToken))
         {
- System.Diagnostics.Debug.WriteLine("No hay token de autenticaci�n para obtener productos");
-    return new List<ProductModel>();
-     }
+            System.Diagnostics.Debug.WriteLine("No hay token de autenticación para obtener productos");
+            return new List<ProductModel>();
+        }
 
- try
+        try
         {
-   using var httpClient = new HttpClient();
-httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
- 
-          string url = $"{Configuration.BaseUrl}/api/v1/product";
-     var response = await httpClient.GetStringAsync(url);
-    
- var productResponse = JsonSerializer.Deserialize<ProductApiResponse>(response, new JsonSerializerOptions 
-    { 
-         PropertyNameCaseInsensitive = true 
-      });
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
- // Convertir de ProductResponse (del API) a ProductModel
-   if (productResponse?.Data != null)
-    {
-   return productResponse.Data.Select(p => new ProductModel
-     {
-  IdProduct = p.IdProduct,
-     Name = p.Name,
-  IdProductType = p.IdProductType,
-     SellPrice = p.SellPrice,
-     PurchasePrice = p.PurchasePrice,
-      Stock = (int)p.Stock
-    }).ToList();
-    }
+            string url = $"{Configuration.BaseUrl}/api/v1/product";
+            var response = await httpClient.GetStringAsync(url);
 
-     return new List<ProductModel>();
-  }
-      catch (Exception ex)
-     {
-    System.Diagnostics.Debug.WriteLine($"Error obteniendo productos: {ex.Message}");
-    return new List<ProductModel>();
+            var productResponse = JsonSerializer.Deserialize<ProductApiResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Convertir de ProductResponse (del API) a ProductModel
+            if (productResponse?.Data != null)
+            {
+                return productResponse.Data.Select(p => new ProductModel
+                {
+                    IdProduct = p.IdProduct,
+                    Name = p.Name,
+                    IdProductType = p.IdProductType,
+                    SellPrice = p.SellPrice,
+                    PurchasePrice = p.PurchasePrice,
+                    Stock = (int)p.Stock
+                }).ToList();
+            }
+
+            return new List<ProductModel>();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error obteniendo productos: {ex.Message}");
+            return new List<ProductModel>();
         }
     }
 
     public async Task<bool> ProcessSaleAsync(SaleModel sale)
     {
-      try
-   {
-  // Aqu� implementar�as la l�gica para procesar la venta
-    _salesHistory.Add(sale);
- return true;
+        try
+        {
+            // Aquí implementarías la lógica para procesar la venta
+            _salesHistory.Add(sale);
+            return true;
         }
         catch (Exception ex)
-{
-         System.Diagnostics.Debug.WriteLine($"Error procesando venta: {ex.Message}");
-       return false;
-    }
+        {
+            System.Diagnostics.Debug.WriteLine($"Error procesando venta: {ex.Message}");
+            return false;
+        }
     }
 
     public async Task<List<SaleModel>> GetSalesHistoryAsync()
@@ -92,62 +93,149 @@ httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("
         return await Task.FromResult(_salesHistory);
     }
 
+    public async Task<ClientLegalModel?> SearchClientByDocumentAsync(string documentNumber)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("No hay token de autenticación para buscar cliente");
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(documentNumber))
+        {
+            return null;
+        }
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("X-Environment", "clients");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            // Primero intentar buscar en clientes jurídicos (empresas)
+            System.Diagnostics.Debug.WriteLine($"🔍 Buscando cliente jurídico con documento: {documentNumber}");
+
+            string legalUrl = $"{Configuration.BaseUrl}/api/v1/client/legal";
+            var legalResponse = await httpClient.GetStringAsync(legalUrl);
+            var legalClientResponse = JsonSerializer.Deserialize<ClientLegalResponse>(legalResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Buscar por número de documento en clientes jurídicos
+            var legalClient = legalClientResponse?.Data?.FirstOrDefault(c =>
+     c.DocumentNumber?.Trim().Equals(documentNumber, StringComparison.OrdinalIgnoreCase) == true);
+
+            if (legalClient != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"✅ Cliente jurídico encontrado: {legalClient.Name}");
+                return legalClient;
+            }
+
+            // Si no se encuentra en jurídicos, buscar en clientes naturales (personas)
+            System.Diagnostics.Debug.WriteLine($"🔍 Buscando cliente natural con documento: {documentNumber}");
+
+            string naturalUrl = $"{Configuration.BaseUrl}/api/v1/client/natural";
+            var naturalResponse = await httpClient.GetStringAsync(naturalUrl);
+            var naturalClientResponse = JsonSerializer.Deserialize<ClientNaturalResponse>(naturalResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Buscar por número de documento en clientes naturales
+            var naturalClient = naturalClientResponse?.Data?.FirstOrDefault(c =>
+            c.DocumentNumber?.Trim().Equals(documentNumber, StringComparison.OrdinalIgnoreCase) == true);
+
+            if (naturalClient != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"✅ Cliente natural encontrado: {naturalClient.FullName}");
+
+                // Convertir ClientNaturalModel a ClientLegalModel para mantener compatibilidad
+                return new ClientLegalModel
+                {
+                    Id = naturalClient.Id,
+                    Name = naturalClient.FullName, // Usar nombre completo
+                    DocumentTypeId = naturalClient.DocumentTypeId,
+                    DocumentNumber = naturalClient.DocumentNumber,
+                    Email = naturalClient.Email,
+                    // Los campos específicos de persona jurídica quedan en falso/cero
+                    VerificationDigit = 0,
+                    VatResponsibleParty = false,
+                    LargeTaxpayer = false,
+                    SelfRetainer = false,
+                    WithholdingAgent = false,
+                    SimpleTaxRegime = false
+                };
+            }
+
+            System.Diagnostics.Debug.WriteLine($"❌ No se encontró ningún cliente con documento: {documentNumber}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error buscando cliente: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            return null;
+        }
+    }
+
     public async Task<List<ClientLegalModel>> GetClientsAsync()
     {
-      if (string.IsNullOrEmpty(_authToken))
+        if (string.IsNullOrEmpty(_authToken))
         {
-      System.Diagnostics.Debug.WriteLine("No hay token de autenticaci�n para obtener clientes");
-return new List<ClientLegalModel>();
-     }
-
-     try
-  {
-          using var httpClient = new HttpClient();
-   httpClient.DefaultRequestHeaders.Clear();
-     httpClient.DefaultRequestHeaders.Add("X-Environment", "clients");
- httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
- 
-  string url = $"{Configuration.BaseUrl}/api/v1/client/legal";
-   System.Diagnostics.Debug.WriteLine($"Llamando a URL de clientes: {url}");
-    
-    var response = await httpClient.GetStringAsync(url);
-        System.Diagnostics.Debug.WriteLine($"Respuesta completa de clientes: {response}");
-    
-  var clientResponse = JsonSerializer.Deserialize<ClientLegalResponse>(response, new JsonSerializerOptions 
-    { 
-   PropertyNameCaseInsensitive = true 
-      });
-
-  if (clientResponse?.Data != null && clientResponse.Data.Any())
-       {
-     System.Diagnostics.Debug.WriteLine($"? Se cargaron {clientResponse.Data.Count} clientes correctamente");
-  
-            // Log detallado de los primeros 3 clientes
- for (int i = 0; i < Math.Min(3, clientResponse.Data.Count); i++)
-  {
-   var client = clientResponse.Data[i];
-        System.Diagnostics.Debug.WriteLine($"Cliente {i + 1}:");
- System.Diagnostics.Debug.WriteLine($"  - ID: {client.Id}");
-   System.Diagnostics.Debug.WriteLine($"  - Nombre: '{client.Name}'");
-          System.Diagnostics.Debug.WriteLine($"  - DocTypeId: {client.DocumentTypeId} ({client.DocumentType})");
- System.Diagnostics.Debug.WriteLine($"  - DocNumber: '{client.DocumentNumber}'");
-     System.Diagnostics.Debug.WriteLine($"  - VerificationDigit: {client.VerificationDigit}");
- System.Diagnostics.Debug.WriteLine($"  - DisplayText: '{client.DisplayText}'");
-   }
-           
-         return clientResponse.Data;
-    }
-          else
-    {
-  System.Diagnostics.Debug.WriteLine("?? No se encontraron clientes en la respuesta");
-      return new List<ClientLegalModel>();
-}
-     }
-     catch (Exception ex)
-   {
-     System.Diagnostics.Debug.WriteLine($"? Error obteniendo clientes: {ex.Message}");
-       System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            System.Diagnostics.Debug.WriteLine("No hay token de autenticación para obtener clientes");
             return new List<ClientLegalModel>();
-   }
+        }
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("X-Environment", "clients");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            string url = $"{Configuration.BaseUrl}/api/v1/client/legal";
+            System.Diagnostics.Debug.WriteLine($"Llamando a URL de clientes: {url}");
+
+            var response = await httpClient.GetStringAsync(url);
+            System.Diagnostics.Debug.WriteLine($"Respuesta completa de clientes: {response}");
+
+            var clientResponse = JsonSerializer.Deserialize<ClientLegalResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (clientResponse?.Data != null && clientResponse.Data.Any())
+            {
+                System.Diagnostics.Debug.WriteLine($"✅ Se cargaron {clientResponse.Data.Count} clientes correctamente");
+
+                // Log detallado de los primeros 3 clientes
+                for (int i = 0; i < Math.Min(3, clientResponse.Data.Count); i++)
+                {
+                    var client = clientResponse.Data[i];
+                    System.Diagnostics.Debug.WriteLine($"Cliente {i + 1}:");
+                    System.Diagnostics.Debug.WriteLine($"  - ID: {client.Id}");
+                    System.Diagnostics.Debug.WriteLine($"  - Nombre: '{client.Name}'");
+                    System.Diagnostics.Debug.WriteLine($"  - DocTypeId: {client.DocumentTypeId} ({client.DocumentType})");
+                    System.Diagnostics.Debug.WriteLine($"  - DocNumber: '{client.DocumentNumber}'");
+                    System.Diagnostics.Debug.WriteLine($"  - VerificationDigit: {client.VerificationDigit}");
+                    System.Diagnostics.Debug.WriteLine($"  - DisplayText: '{client.DisplayText}'");
+                }
+
+                return clientResponse.Data;
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("⚠️ No se encontraron clientes en la respuesta");
+                return new List<ClientLegalModel>();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error obteniendo clientes: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            return new List<ClientLegalModel>();
+        }
     }
 }
