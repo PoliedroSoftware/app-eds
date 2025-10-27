@@ -27,5 +27,5 @@ public class CompartimentResponse
     public int IdProduct { get; set; }
 
     public string DisplayCompartiment =>
-        $"Compartiment: {Number}\nNominal: {Nominal}\nOperative: {Operative}\nHeight: {Height}\nProduct ID: {IdProduct}\n-------------------------------------------------";
+        $"Compartimento: {Number}\nCapacidad nominal: {Nominal}\nCapacidad operativa: {Operative}\nAltura: {Height}\nID del producto: {IdProduct}\n-------------------------------------------------";
 }

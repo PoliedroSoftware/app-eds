@@ -25,7 +25,7 @@ public class DispenserModelResponse
     [JsonPropertyName("hoseNumber")]
     public int NumberHose { get; set; }
 
-    public string DisplayName => $" Number:{Number} - Code:{Code} ";
+    public string DisplayName => $" Número:{Number} - Código:{Code} ";
 
     public string DispenserTypeDescription { get; set; }
     public string EdsName { get; set; }

@@ -12,6 +12,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
+            <converters:CurrencyFormatConverter x:Key="CurrencyFormat" />
+            <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -224,11 +226,19 @@
                                                            TextColor="#064E3B"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
-                                                <Label Text="{Binding TotalAccumulatedAmount, StringFormat='$ {0:N0}'}" 
+                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="16"
                                                        FontAttributes="Bold"
                                                        TextColor="#059669"
                                                        HorizontalOptions="Center"/>
+                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource NumberToWordsConverter}}" 
+                                                       FontSize="9" 
+                                                       TextColor="#047857" 
+                                                       FontAttributes="Italic"
+                                                       LineBreakMode="WordWrap"
+                                                       MaxLines="2"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"/>
                                             </StackLayout>
                                         </Border>
 
