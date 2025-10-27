@@ -10,7 +10,7 @@ public static class ErrorMessages
         { "invalid_input", ("Ingresa tu usuario y contraseña.", "⚠️", "#FFEBEE", "#C62828") },
         { "token_missing", ("Fallo de autenticación.", "⚠️", "#FFEBEE", "#C62828") },
         { "token_invalid", ("Token inválido.", "⚠️", "#FFEBEE", "#C62828") },
-        { "default", ("Se produjo un error.Error de conexion.", "⚠️", "#FFEBEE", "#C62828") }
+        { "default", ("Usuario o contraseña incorrectos.", "⚠️", "#FFEBEE", "#C62828") }
     };
 
     public static (string Message, string Icon, string BackgroundColor, string TextColor) GetFriendlyErrorMessage(string technicalError)
