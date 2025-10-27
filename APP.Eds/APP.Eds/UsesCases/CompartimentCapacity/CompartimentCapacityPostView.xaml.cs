@@ -39,9 +39,9 @@ public partial class CompartimentCapacityPostView : ContentPage
                 return;
             }
 
-            if (_compartimentCapacityService.Default <= 0)
+            if (_compartimentCapacityService.Default <= 0 || !_compartimentCapacityService.Default.HasValue)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad vï¿½lida mayor que 0", "Capacidad Invï¿½lida");
                 return;
             }
 
@@ -54,11 +54,11 @@ public partial class CompartimentCapacityPostView : ContentPage
             // Show professional confirmation dialog
             string tankCode = _compartimentCapacityService.SelectCapacity.Code ?? "N/A";
             int compartmentNumber = _compartimentCapacityService.SelectCompartiment.Number;
-            byte capacity = _compartimentCapacityService.Default;
+            byte capacity = _compartimentCapacityService.Default.Value;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
-                "Confirmar Configuración", 
+                $"ï¿½Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuraciï¿½n afectarï¿½ las operaciones del compartimento.", 
+                "Confirmar Configuraciï¿½n", 
                 "Confirmar", 
                 "Cancelar");
 
@@ -69,7 +69,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar la configuración de capacidad:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la configuraciï¿½n de capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -78,7 +78,7 @@ public partial class CompartimentCapacityPostView : ContentPage
             // Clear form fields after successful submission
             _compartimentCapacityService.SelectCapacity = null;
             _compartimentCapacityService.SelectCompartiment = null;
-            Default = 0;
+            Default = null;
 
             // Re-enable button
             if (sender is Button button)
@@ -108,7 +108,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
     }
 
-    public byte Default
+    public byte? Default
     {
         get => _compartimentCapacityService.Default;
         set
