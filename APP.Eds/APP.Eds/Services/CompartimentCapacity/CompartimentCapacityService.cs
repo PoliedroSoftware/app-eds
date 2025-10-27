@@ -262,7 +262,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
                 return;
             }
 
-            if (Default <= 0 || !Default.HasValue)
+            if (!Default.HasValue || Default <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar un valor de capacidad válido (mayor que 0)", "Capacidad Inválida");
                 return;
