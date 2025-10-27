@@ -14,7 +14,7 @@
                 <!-- Header Card with Purple Gradient -->
                 <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
                     <StackLayout Spacing="8">
-                        <Label Text="⚡ Gestión Capacidad del Compartimento" 
+                        <Label Text="⚡ Gestión de Capacidad del Compartimento" 
                                FontSize="28" 
                                FontAttributes="Bold" 
                                TextColor="White" 
