@@ -446,6 +446,20 @@ public class BusinessService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
+
+        // Check for duplicate business name locally before sending to API
+        var duplicateBusiness = BusinessList.FirstOrDefault(b => 
+            string.Equals(b.Name.Trim(), Name.Trim(), StringComparison.OrdinalIgnoreCase));
+        
+        if (duplicateBusiness != null)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Negocio Duplicado",
+                $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
+                "Por favor, ingrese un nombre diferente.",
+                "OK");
+            return;
+        }
         
         try
         {
