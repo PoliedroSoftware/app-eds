@@ -28,8 +28,8 @@ namespace APP.Eds.UsesCases.Behaviors
                     return;
                 }
 
-                // Permitir solo letras y espacios
-                bool isValid = System.Text.RegularExpressions.Regex.IsMatch(newText, @"^[a-zA-Z\s]*$");
+                // Permitir letras (incluyendo acentos), números, espacios y caracteres especiales comunes (/, #, -, etc.)
+                bool isValid = System.Text.RegularExpressions.Regex.IsMatch(newText, @"^[a-zA-Z0-9\u00C0-\u00FF\s/#\-._&()]+$");
 
                 if (!isValid)
                 {
