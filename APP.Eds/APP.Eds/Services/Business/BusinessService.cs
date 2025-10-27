@@ -30,6 +30,9 @@ public class EnhancedBusinessItem
 
 public class BusinessService : INotifyPropertyChanged
 {
+    // Error detection keywords
+    private static readonly string[] DuplicateErrorKeywords = { "ya existe", "already exists", "duplicate", "duplicado", "unique", "constraint" };
+    
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
     
@@ -453,11 +456,7 @@ public class BusinessService : INotifyPropertyChanged
         
         if (duplicateBusiness != null)
         {
-            await Application.Current.MainPage.DisplayAlert(
-                "Negocio Duplicado",
-                $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
-                "Por favor, ingrese un nombre diferente.",
-                "OK");
+            await ShowDuplicateBusinessErrorAsync();
             return;
         }
         
@@ -555,16 +554,9 @@ public class BusinessService : INotifyPropertyChanged
             if (statusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 // Check for duplicate business name error
-                if (errorResponse.Contains("ya existe") || 
-                    errorResponse.Contains("already exists") ||
-                    errorResponse.Contains("duplicate") ||
-                    errorResponse.Contains("duplicado"))
+                if (IsDuplicateError(errorResponse))
                 {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Negocio Duplicado",
-                        $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
-                        "Por favor, ingrese un nombre diferente.",
-                        "OK");
+                    await ShowDuplicateBusinessErrorAsync();
                     return;
                 }
 
@@ -581,17 +573,9 @@ public class BusinessService : INotifyPropertyChanged
             else if (statusCode == System.Net.HttpStatusCode.InternalServerError)
             {
                 // Check if it's a constraint violation (duplicate)
-                if (errorResponse.Contains("duplicate") || 
-                    errorResponse.Contains("duplicado") ||
-                    errorResponse.Contains("unique") ||
-                    errorResponse.Contains("constraint") ||
-                    errorResponse.Contains("ya existe"))
+                if (IsDuplicateError(errorResponse))
                 {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Negocio Duplicado",
-                        $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
-                        "Por favor, ingrese un nombre diferente para continuar.",
-                        "OK");
+                    await ShowDuplicateBusinessErrorAsync();
                     return;
                 }
 
@@ -635,6 +619,21 @@ public class BusinessService : INotifyPropertyChanged
                 "Si el problema persiste, contacta al administrador.",
                 "OK");
         }
+    }
+
+    private bool IsDuplicateError(string errorResponse)
+    {
+        return DuplicateErrorKeywords.Any(keyword => 
+            errorResponse.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task ShowDuplicateBusinessErrorAsync()
+    {
+        await Application.Current.MainPage.DisplayAlert(
+            "Negocio Duplicado",
+            $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
+            "Por favor, ingrese un nombre diferente.",
+            "OK");
     }
 
     private void ValidateName()
