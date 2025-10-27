@@ -496,12 +496,130 @@ public class BusinessService : INotifyPropertyChanged
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                await HandleBusinessErrorAsync(response.StatusCode, error);
             }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Error de Conexión", 
+                $"No se pudo conectar con el servidor.\n\nVerifica tu conexión a internet y que el servidor esté disponible.\n\nDetalles técnicos: {httpEx.Message}", 
+                "OK");
+        }
+        catch (TaskCanceledException)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Tiempo Agotado", 
+                "La operación tardó demasiado tiempo en responder.\n\nEl servidor puede estar sobrecargado. Intenta nuevamente en unos minutos.", 
+                "OK");
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error inesperado al enviar los datos: {ex.Message}", "OK");
+        }
+    }
+
+    private async Task HandleBusinessErrorAsync(System.Net.HttpStatusCode statusCode, string errorResponse)
+    {
+        try
+        {
+            // Try to parse error response
+            ErrorResponse? errorObj = null;
+            try
+            {
+                errorObj = JsonSerializer.Deserialize<ErrorResponse>(errorResponse, new JsonSerializerOptions 
+                { 
+                    PropertyNameCaseInsensitive = true 
+                });
+            }
+            catch
+            {
+                // If JSON parsing fails, continue with string-based error handling
+            }
+
+            // Handle specific error cases
+            if (statusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                // Check for duplicate business name error
+                if (errorResponse.Contains("ya existe") || 
+                    errorResponse.Contains("already exists") ||
+                    errorResponse.Contains("duplicate") ||
+                    errorResponse.Contains("duplicado"))
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Negocio Duplicado",
+                        $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
+                        "Por favor, ingrese un nombre diferente.",
+                        "OK");
+                    return;
+                }
+
+                // Generic validation error
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error de Validación",
+                    "Los datos enviados no son válidos.\n\n" +
+                    "Por favor, verifica que:\n" +
+                    "• El nombre del negocio sea único\n" +
+                    "• Todos los campos requeridos estén completos\n" +
+                    "• Los valores sean correctos",
+                    "OK");
+            }
+            else if (statusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                // Check if it's a constraint violation (duplicate)
+                if (errorResponse.Contains("duplicate") || 
+                    errorResponse.Contains("duplicado") ||
+                    errorResponse.Contains("unique") ||
+                    errorResponse.Contains("constraint") ||
+                    errorResponse.Contains("ya existe"))
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Negocio Duplicado",
+                        $"El nombre del negocio '{Name}' ya existe en la base de datos.\n\n" +
+                        "Por favor, ingrese un nombre diferente para continuar.",
+                        "OK");
+                    return;
+                }
+
+                // Generic internal server error
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error del Servidor",
+                    "Error interno del servidor al procesar la solicitud.\n\n" +
+                    "Intenta nuevamente en unos minutos. Si el problema persiste, contacta al administrador.",
+                    "OK");
+            }
+            else if (statusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Sesión Expirada",
+                    "Tu sesión ha expirado.\n\nPor favor, inicia sesión nuevamente.",
+                    "OK");
+            }
+            else if (statusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Acceso Denegado",
+                    "No tienes permisos suficientes para registrar negocios.\n\nContacta al administrador.",
+                    "OK");
+            }
+            else
+            {
+                // Generic error
+                var errorMessage = errorObj?.Detail ?? "Error desconocido del servidor";
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"No se pudo registrar el negocio.\n\nCódigo de error: {statusCode}\n\n{errorMessage}",
+                    "OK");
+            }
+        }
+        catch
+        {
+            // Fallback error message
+            await Application.Current.MainPage.DisplayAlert(
+                "Error",
+                $"No se pudo registrar el negocio.\n\nCódigo de error: {statusCode}\n\n" +
+                "Si el problema persiste, contacta al administrador.",
+                "OK");
         }
     }
 
