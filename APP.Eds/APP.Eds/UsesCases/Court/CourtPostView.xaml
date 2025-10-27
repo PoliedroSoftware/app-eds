@@ -7,7 +7,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource OffBlack}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -46,13 +46,13 @@
 
                 <!-- Business Selection Card -->
                 <Border x:Name="Business"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
@@ -60,7 +60,7 @@
                             <Label Text="{Binding Business}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkPrimaryText}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -68,12 +68,12 @@
                             <!-- Business -->
                             <Label Text="Negocio" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="0" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorderColor}}" 
                                     Grid.Row="0" Grid.Column="1">
                                 <Picker Title="{Binding SelectaBusiness}"
                                         AutomationId="BusinessPicker"
@@ -88,12 +88,12 @@
                             <!-- EDS -->
                             <Label Text="EDS" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="1" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorderColor}}" 
                                     Grid.Row="1" Grid.Column="1">
                                 <Picker Title="{Binding SelectaEds}"
                                         AutomationId="EdsPicker"
@@ -109,12 +109,12 @@
                             <!-- Islander -->
                             <Label Text="Islero" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="2" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorderColor}}" 
                                     Grid.Row="2" Grid.Column="1">
                                 <Picker Title="{Binding SelectAnIslander}"
                                         AutomationId="IslanderPicker"
@@ -132,12 +132,12 @@
 
                 <!-- Time Card -->
                 <Border x:Name="Time" 
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
@@ -145,7 +145,7 @@
                             <Label Text="{Binding Time}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkPrimaryText}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -154,11 +154,11 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Fecha" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#FFF3CD" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#FFF3CD, Dark={StaticResource DarkYellowSection}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#F39C12" 
+                                        Stroke="{AppThemeBinding Light=#F39C12, Dark=#8B7200}" 
                                         Padding="8">
                                     <DatePicker x:Name="datePicker" 
                                                 AutomationId="DatePicker" 
@@ -166,7 +166,7 @@
                                                 MinimumDate="1900-01-01"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E67E22"/>
+                                                TextColor="{AppThemeBinding Light=#E67E22, Dark=#FFA500}"/>
                                 </Border>
                             </StackLayout>
 
@@ -174,17 +174,17 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Hora Inicio" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#D4EDDA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#D4EDDA, Dark={StaticResource DarkSuccessBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#27AE60" 
+                                        Stroke="{AppThemeBinding Light=#27AE60, Dark=#2E7D32}" 
                                         Padding="8">
                                     <TimePicker AutomationId="StartTimePicker" 
                                                 Time="{Binding Starttime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#27AE60"/>
+                                                TextColor="{AppThemeBinding Light=#27AE60, Dark=#66BB6A}"/>
                                 </Border>
                             </StackLayout>
 
@@ -192,17 +192,17 @@
                             <StackLayout Grid.Row="0" Grid.Column="2">
                                 <Label Text="Hora Fin" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkSecondaryText}}" 
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#F8D7DA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8D7DA, Dark={StaticResource DarkErrorBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E74C3C" 
+                                        Stroke="{AppThemeBinding Light=#E74C3C, Dark=#D32F2F}" 
                                         Padding="8">
                                     <TimePicker AutomationId="EndTimePicker" 
                                                 Time="{Binding Endtime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E74C3C"/>
+                                                TextColor="{AppThemeBinding Light=#E74C3C, Dark=#EF5350}"/>
                                 </Border>
                             </StackLayout>
                         </Grid>
@@ -211,13 +211,13 @@
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20"
                         IsVisible="{Binding ShouldShowCashCountSection}">
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
+                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
@@ -225,125 +225,125 @@
                             <Label Text="{Binding CashCount}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkPrimaryText}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="16">
                             <!-- Sales in Money -->
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#E8F5E8, Dark={StaticResource DarkSuccessBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light=#4CAF50, Dark=#2E7D32}"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding SalesInMoney}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#2E7D32"
+                                           TextColor="{AppThemeBinding Light=#2E7D32, Dark=#81C784}"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalAmount, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#1B5E20"
+                                           TextColor="{AppThemeBinding Light=#1B5E20, Dark=#A5D6A7}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Sales in Gallons -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark={StaticResource DarkInfoBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light=#2196F3, Dark=#1976D2}"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding SalesInGallons}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#1976D2"
+                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalGallons, Converter={StaticResource DecimalFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#0D47A1"
+                                           TextColor="{AppThemeBinding Light=#0D47A1, Dark=#90CAF9}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Expenses -->
-                            <Border BackgroundColor="#FFEBEE" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#F44336"
+                                    Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding Expenses}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#D32F2F"
+                                           TextColor="{AppThemeBinding Light=#D32F2F, Dark=#E57373}"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalExpenditure, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#B71C1C"
+                                           TextColor="{AppThemeBinding Light=#B71C1C, Dark=#EF5350}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Collections -->
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark={StaticResource DarkWarningBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light=#FF9800, Dark=#F57C00}"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding Collections}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#F57C00"
+                                           TextColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalTypeOfCollection, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#E65100"
+                                           TextColor="{AppThemeBinding Light=#E65100, Dark=#FFA726}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Total and Distintic -->
-                            <Border BackgroundColor="#F3E5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F3E5F5, Dark={StaticResource DarkPurpleSection}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9C27B0"
+                                    Stroke="{AppThemeBinding Light=#9C27B0, Dark=#7B1FA2}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="0">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding TotalForTheDay}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#7B1FA2"
+                                           TextColor="{AppThemeBinding Light=#7B1FA2, Dark=#BA68C8}"
                                            HorizontalOptions="Center"/>
                                     <Label Text="{Binding TotalSales, Converter={StaticResource CurrencyFormat}}" 
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#4A148C"
+                                           TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
-                            <Border BackgroundColor="#F5F5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9E9E9E"
+                                    Stroke="{AppThemeBinding Light=#9E9E9E, Dark={StaticResource DarkBorderColor}}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding DistinticDescription}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#616161"
+                                           TextColor="{AppThemeBinding Light=#616161, Dark={StaticResource DarkSecondaryText}}"
                                            HorizontalOptions="Center"/>
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#2A2A2A}"
                                             StrokeShape="RoundRectangle 6"
-                                            Stroke="#BDBDBD"
+                                            Stroke="{AppThemeBinding Light=#BDBDBD, Dark={StaticResource DarkBorderAccent}}"
                                             Padding="8">
                                         <Entry Keyboard="Numeric" 
                                                Placeholder="Ingrese distintivo" 
@@ -370,9 +370,9 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#E8F5E8" 
+                    <Border BackgroundColor="{AppThemeBinding Light=#E8F5E8, Dark={StaticResource DarkGreenSection}}" 
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#4CAF50"
+                            Stroke="{AppThemeBinding Light=#4CAF50, Dark=#2E7D32}"
                             Padding="16"
                             Margin="0,0,0,8">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
@@ -380,7 +380,7 @@
                             <Label Text="Ventas por mangueras" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#2E7D32"
+                                   TextColor="{AppThemeBinding Light=#2E7D32, Dark=#81C784}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -388,61 +388,61 @@
                     <CollectionView ItemsSource="{Binding CourtDispensers}" x:Name="CourtDispensers">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorderColor}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,1" Radius="3" Opacity="0.1"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
-                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
+                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkPrimaryText}}" VerticalOptions="Center"/>
+                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Money Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Monto acumulado" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto acumulado" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#4CAF50, Dark=#81C784}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en dinero" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en dinero" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#2196F3, Dark=#64B5F6}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Gallons Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Galones acumulados" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Galones acumulados" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
-                                                       FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en galones" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en galones" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
-                                                       FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#9C27B0, Dark=#BA68C8}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="5"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteDispenserButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light=#F44336, Dark=#EF5350}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -469,9 +469,9 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#E3F2FD" 
+                    <Border BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark={StaticResource DarkBlueSection}}" 
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#2196F3"
+                            Stroke="{AppThemeBinding Light=#2196F3, Dark=#1976D2}"
                             Padding="16"
                             Margin="0,0,0,8">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
@@ -479,7 +479,7 @@
                             <Label Text="Formas de pago" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#1976D2"
+                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -487,56 +487,56 @@
                     <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" x:Name="CourtTypeOfCollections">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorderColor}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,1" Radius="3" Opacity="0.1"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkPrimaryText}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Método" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Método" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding TypeOfCollectionName}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#2196F3, Dark=#64B5F6}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#4CAF50, Dark=#81C784}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                       FontSize="10" TextColor="#666666" FontAttributes="Italic"
+                                                       FontSize="10" TextColor="{AppThemeBinding Light=#666666, Dark={StaticResource DarkMutedText}}" FontAttributes="Italic"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark={StaticResource DarkMutedText}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteCollectionButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light=#F44336, Dark=#EF5350}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -553,9 +553,9 @@
 
                 <!-- Documents Section (no se oculta por la tarea) -->
                 <StackLayout x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
-                    <Border BackgroundColor="#FFF3E0" 
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark={StaticResource DarkOrangeSection}}" 
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#FF9800"
+                            Stroke="{AppThemeBinding Light=#FF9800, Dark=#F57C00}"
                             Padding="16"
                             Margin="0,0,0,8"
                             IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}">
@@ -564,7 +564,7 @@
                             <Label Text="Comprobantes" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#F57C00"
+                                   TextColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -572,34 +572,34 @@
                     <CollectionView ItemsSource="{Binding CourtDocuments}" x:Name="CourtDocuments">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorderColor}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,1" Radius="3" Opacity="0.1"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" RowSpacing="8">
                                         <!-- Document Info -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="📎" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkPrimaryText}}" VerticalOptions="Center"/>
                                             <Label Text="{Binding DocumentName}" 
-                                                   FontSize="14" TextColor="#FF9800" FontAttributes="Bold" VerticalOptions="Center"/>
+                                                   FontSize="14" TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}" FontAttributes="Bold" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.Row="0"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteDocumentButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light=#F44336, Dark=#EF5350}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -627,9 +627,9 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#FFEBEE" 
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkRedSection}}" 
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#F44336"
+                            Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                             Padding="16"
                             Margin="0,0,0,8"
                             IsVisible="{Binding CourtExpenditures, Converter={StaticResource CountToBoolConverter}}">
@@ -638,7 +638,7 @@
                             <Label Text="Gastos" 
                                    FontAttributes="Bold" 
                                    FontSize="16" 
-                                   TextColor="#D32F2F"
+                                   TextColor="{AppThemeBinding Light=#D32F2F, Dark=#E57373}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -646,53 +646,53 @@
                     <CollectionView ItemsSource="{Binding CourtExpenditures}" x:Name="CourtExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorderColor}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
+                                        <Shadow Brush="{AppThemeBinding Light=Black, Dark={StaticResource Gray950}}" Offset="0,1" Radius="3" Opacity="0.1"/>
                                     </Border.Shadow>
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkPrimaryText}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Tipo" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Tipo" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding ExpenditureName}" 
-                                                       FontSize="14" TextColor="#F44336" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#F44336, Dark=#EF5350}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
+                                                       FontSize="14" TextColor="{AppThemeBinding Light=#D32F2F, Dark=#E57373}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkSecondaryText}}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark={StaticResource DarkMutedText}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" 
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
+                                                Stroke="{AppThemeBinding Light=#F44336, Dark=#D32F2F}"
                                                 WidthRequest="40" HeightRequest="40"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
                                             <Button Text="✕" 
                                                     AutomationId="DeleteExpenseButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light=#F44336, Dark=#EF5350}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
                                                     WidthRequest="40" HeightRequest="40"
@@ -721,7 +721,7 @@
                                 <Label Text="Acciones Obligatorias"
                                        FontAttributes="Bold"
                                        FontSize="16"
-                                       TextColor="#D32F2F"
+                                       TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
 
@@ -759,8 +759,8 @@
                                             </VisualState>
                                             <VisualState Name="Disabled">
                                                 <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=LightGray, Dark=#3A3A3A}"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#9E9E9E, Dark=#6B6B6B}"/>
                                                 </VisualState.Setters>
                                             </VisualState>
                                         </VisualStateGroup>
@@ -794,9 +794,9 @@
                                             </VisualState>
                                             <VisualState Name="Disabled">
                                                 <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=LightGray, Dark=#3A3A3A}"/>
                                                     <!-- Apagado -->
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#9E9E9E, Dark=#6B6B6B}"/>
                                                 </VisualState.Setters>
                                             </VisualState>
                                         </VisualStateGroup>
@@ -826,7 +826,7 @@
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
-                                    <Setter Property="TextColor" Value="#BDBDBD" />
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#BDBDBD, Dark=#6B6B6B}" />
                                 </DataTrigger>
                                 <!-- Deshabilitar tras enviar -->
                                 <DataTrigger TargetType="Button"

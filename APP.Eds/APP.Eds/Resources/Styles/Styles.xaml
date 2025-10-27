@@ -438,13 +438,13 @@
     </Style>
 
     <Style x:Key="RequiredActionsCardStyle" TargetType="Border">
-        <Setter Property="BackgroundColor" Value="#FFEBEE" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark={StaticResource DarkErrorBackground}}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 16" />
-        <Setter Property="Stroke" Value="#F44336" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=#F44336, Dark=#D32F2F}" />
         <Setter Property="Padding" Value="20" />
         <Setter Property="Shadow">
             <Setter.Value>
-                <Shadow Brush="#F44336" 
+                <Shadow Brush="{AppThemeBinding Light=#F44336, Dark={StaticResource Gray950}}" 
                         Offset="0,3" 
                         Radius="12" 
                         Opacity="0.15"/>

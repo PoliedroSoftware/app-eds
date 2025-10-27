@@ -62,6 +62,34 @@
     <Color x:Key="Gray900">#111827</Color>
     <Color x:Key="Gray950">#030712</Color>
 
+    <!-- Dark Mode Specific Colors for Better Contrast -->
+    <!-- Card backgrounds for dark mode - using darker grays with good separation from page background -->
+    <Color x:Key="DarkCardBackground">#2D2D2D</Color>
+    <Color x:Key="DarkInputBackground">#3A3A3A</Color>
+    
+    <!-- Border colors for dark mode - lighter to create contrast -->
+    <Color x:Key="DarkBorderColor">#4A4A4A</Color>
+    <Color x:Key="DarkBorderAccent">#5A5A5A</Color>
+    
+    <!-- Text colors for dark mode - high contrast white/light gray -->
+    <Color x:Key="DarkPrimaryText">#FFFFFF</Color>
+    <Color x:Key="DarkSecondaryText">#B0B0B0</Color>
+    <Color x:Key="DarkMutedText">#909090</Color>
+    
+    <!-- Section header backgrounds for dark mode with color tints -->
+    <Color x:Key="DarkGreenSection">#1E4D2B</Color>
+    <Color x:Key="DarkBlueSection">#1A3A5C</Color>
+    <Color x:Key="DarkOrangeSection">#5C3A1A</Color>
+    <Color x:Key="DarkRedSection">#5C1A1A</Color>
+    <Color x:Key="DarkPurpleSection">#3A1A5C</Color>
+    <Color x:Key="DarkYellowSection">#5C5C1A</Color>
+    
+    <!-- Colored backgrounds for metrics in dark mode -->
+    <Color x:Key="DarkSuccessBackground">#1B3D1F</Color>
+    <Color x:Key="DarkInfoBackground">#1A2F4D</Color>
+    <Color x:Key="DarkWarningBackground">#4D3A1A</Color>
+    <Color x:Key="DarkErrorBackground">#4D1A1A</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
