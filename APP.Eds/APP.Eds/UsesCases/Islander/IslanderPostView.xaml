@@ -77,7 +77,7 @@
 
                             <!-- First Name -->
                             <StackLayout Grid.Row="0" Grid.Column="1">
-                                <Label Text="Primer Nombre" 
+                                <Label Text="Nombre completo" 
                                        FontAttributes="Bold" 
                                        TextColor="#636E72" 
                                        FontSize="14"/>
@@ -86,7 +86,7 @@
                                         Stroke="#DDD6FE" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
-                                           Placeholder="Primer nombre"
+                                           Placeholder="Nombre completo"
                                            Text="{Binding FirstName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryFirstName"
@@ -96,7 +96,7 @@
 
                             <!-- Last Name -->
                             <StackLayout Grid.Row="1" Grid.Column="0">
-                                <Label Text="Apellidos" 
+                                <Label Text="Apellidos completos" 
                                        FontAttributes="Bold" 
                                        TextColor="#636E72" 
                                        FontSize="14"/>
@@ -105,7 +105,7 @@
                                         Stroke="#DDD6FE" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
-                                           Placeholder="Apellidos del islero"
+                                           Placeholder="Apellidos completos"
                                            Text="{Binding LastName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryLastName"
@@ -228,7 +228,7 @@
                                         <CheckBox IsChecked="{Binding CanManageDispensers, Mode=TwoWay}"
                                                   Color="#6A1B9A"
                                                   AutomationId="CheckBoxCanManageDispensers"/>
-                                        <Label Text="Puede Gestionar Dispensadores" 
+                                        <Label Text="¿Puede gestionar dispensadores?" 
                                                FontSize="13" 
                                                TextColor="#636E72"
                                                VerticalOptions="Center"/>
