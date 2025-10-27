@@ -39,7 +39,7 @@ public partial class CompartimentCapacityPostView : ContentPage
                 return;
             }
 
-            if (_compartimentCapacityService.Default <= 0 || !_compartimentCapacityService.Default.HasValue)
+            if (!_compartimentCapacityService.Default.HasValue || _compartimentCapacityService.Default <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad v�lida mayor que 0", "Capacidad Inv�lida");
                 return;
