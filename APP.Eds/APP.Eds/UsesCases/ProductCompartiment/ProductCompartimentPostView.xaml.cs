@@ -79,6 +79,11 @@ public partial class ProductCompartimentPostView : ContentPage
                 $"• Stock Inicial: {_productCompartimentService.Stock:F2} L\n\n" +
                 $"El producto ahora está disponible en este compartimento.",
                 "Producto Asignado");
+
+            // Clear selections
+            _productCompartimentService.SelectProduct = null;
+            _productCompartimentService.SelectCompartiment = null;
+            Stock = 0;
         }
         catch (Exception ex)
         {
@@ -87,11 +92,6 @@ public partial class ProductCompartimentPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Clear selections
-            _productCompartimentService.SelectProduct = null;
-            _productCompartimentService.SelectCompartiment = null;
-            Stock = 0;
             
             // Re-enable button
             if (sender is Button button)

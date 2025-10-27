@@ -180,6 +180,13 @@ public partial class ShoppingPostView : ContentPage
                 LoadingOverlay.ShowLoading();
 
             await vm.SaveShoppingDataAsync();
+
+            // Clear form fields after successful submission
+            Invoice = string.Empty;
+            Date = DateTime.Now;
+            Amount = 0;
+            _shoppingService.SelectedProvider = null;
+            _shoppingService.SelectedCategory = null;
         }
         catch (Exception ex)
         {
@@ -189,13 +196,6 @@ public partial class ShoppingPostView : ContentPage
         {
             if (LoadingOverlay != null)
                 LoadingOverlay.HideLoading();
-
-            // Clear form fields after successful submission
-            Invoice = string.Empty;
-            Date = DateTime.Now;
-            Amount = 0;
-            _shoppingService.SelectedProvider = null;
-            _shoppingService.SelectedCategory = null;
 
             // Re-enable button
             if (sender is Button button)
