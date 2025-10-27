@@ -158,7 +158,7 @@
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#FFF3CD, Dark={StaticResource DarkYellowSection}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#F39C12, Dark=#8B7200}" 
+                                        Stroke="{AppThemeBinding Light=#F39C12, Dark={StaticResource DarkYellowBorder}}" 
                                         Padding="8">
                                     <DatePicker x:Name="datePicker" 
                                                 AutomationId="DatePicker" 
@@ -178,7 +178,7 @@
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#D4EDDA, Dark={StaticResource DarkSuccessBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#27AE60, Dark=#2E7D32}" 
+                                        Stroke="{AppThemeBinding Light=#27AE60, Dark={StaticResource DarkGreenBorder}}" 
                                         Padding="8">
                                     <TimePicker AutomationId="StartTimePicker" 
                                                 Time="{Binding Starttime, Mode=TwoWay}"
@@ -196,7 +196,7 @@
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8D7DA, Dark={StaticResource DarkErrorBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#E74C3C, Dark=#D32F2F}" 
+                                        Stroke="{AppThemeBinding Light=#E74C3C, Dark={StaticResource DarkRedBorder}}" 
                                         Padding="8">
                                     <TimePicker AutomationId="EndTimePicker" 
                                                 Time="{Binding Endtime, Mode=TwoWay}"
@@ -759,8 +759,8 @@
                                             </VisualState>
                                             <VisualState Name="Disabled">
                                                 <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=LightGray, Dark=#3A3A3A}"/>
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#9E9E9E, Dark=#6B6B6B}"/>
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightDisabledBackground}, Dark={StaticResource DarkDisabledBackground}}"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightDisabledText}, Dark={StaticResource DarkDisabledText}}"/>
                                                 </VisualState.Setters>
                                             </VisualState>
                                         </VisualStateGroup>
@@ -794,9 +794,9 @@
                                             </VisualState>
                                             <VisualState Name="Disabled">
                                                 <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=LightGray, Dark=#3A3A3A}"/>
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightDisabledBackground}, Dark={StaticResource DarkDisabledBackground}}"/>
                                                     <!-- Apagado -->
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#9E9E9E, Dark=#6B6B6B}"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightDisabledText}, Dark={StaticResource DarkDisabledText}}"/>
                                                 </VisualState.Setters>
                                             </VisualState>
                                         </VisualStateGroup>
@@ -826,7 +826,7 @@
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
-                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#BDBDBD, Dark=#6B6B6B}" />
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightDisabledText}, Dark={StaticResource DarkDisabledText}}" />
                                 </DataTrigger>
                                 <!-- Deshabilitar tras enviar -->
                                 <DataTrigger TargetType="Button"

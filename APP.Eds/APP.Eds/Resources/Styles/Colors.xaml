@@ -89,6 +89,17 @@
     <Color x:Key="DarkInfoBackground">#1A2F4D</Color>
     <Color x:Key="DarkWarningBackground">#4D3A1A</Color>
     <Color x:Key="DarkErrorBackground">#4D1A1A</Color>
+    
+    <!-- Disabled state colors -->
+    <Color x:Key="LightDisabledBackground">#D3D3D3</Color>
+    <Color x:Key="DarkDisabledBackground">#3A3A3A</Color>
+    <Color x:Key="LightDisabledText">#9E9E9E</Color>
+    <Color x:Key="DarkDisabledText">#6B6B6B</Color>
+    
+    <!-- Border colors for colored sections in dark mode -->
+    <Color x:Key="DarkYellowBorder">#8B7200</Color>
+    <Color x:Key="DarkGreenBorder">#2E7D32</Color>
+    <Color x:Key="DarkRedBorder">#D32F2F</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
