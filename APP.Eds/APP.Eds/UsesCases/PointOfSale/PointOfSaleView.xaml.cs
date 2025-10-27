@@ -45,10 +45,6 @@ public partial class PointOfSaleView : ContentPage
         var cartSection = CreateCartSection();
         mainStack.Add(cartSection);
 
-        // Payment section
-        var paymentSection = CreatePaymentSection();
-        mainStack.Add(paymentSection);
-
         scrollView.Content = mainStack;
         Content = scrollView;
     }
@@ -73,10 +69,10 @@ public partial class PointOfSaleView : ContentPage
         var headerGrid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection
-   {
-           new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+       {
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
   new ColumnDefinition { Width = GridLength.Auto }
-        }
+    }
         };
 
         var headerLabel = new Label
@@ -103,7 +99,7 @@ public partial class PointOfSaleView : ContentPage
 
         // Bind text to change based on visibility state
         toggleButton.SetBinding(Button.TextProperty, new Binding("IsClientSelectorVisible",
-            converter: new FuncConverter<bool, string>(visible => visible ? "▲" : "▼")));
+      converter: new FuncConverter<bool, string>(visible => visible ? "▲" : "▼")));
         toggleButton.SetBinding(Button.CommandProperty, "ToggleClientSelectorCommand");
         headerGrid.SetColumn(toggleButton, 1);
         headerGrid.Add(toggleButton);
@@ -126,15 +122,6 @@ public partial class PointOfSaleView : ContentPage
             Spacing = 12
         };
 
-        // Icon for selected client
-        var clientIcon = new Label
-        {
-            Text = "👤",
-            FontSize = 24,
-            VerticalOptions = LayoutOptions.Center
-        };
-        selectedClientStack.Add(clientIcon);
-
         var selectedClientLabel = new Label
         {
             FontSize = 16,
@@ -149,141 +136,98 @@ public partial class PointOfSaleView : ContentPage
         selectedClientFrame.Content = selectedClientStack;
         stackLayout.Add(selectedClientFrame);
 
-        // Search section - NEW
+        // Search section
         var searchFrame = new Frame
         {
-      BackgroundColor = Color.FromArgb("#FEF3C7"),
-      CornerRadius = 12,
-   HasShadow = false,
-      Padding = new Thickness(16),
-     BorderColor = Color.FromArgb("#F59E0B")
-  };
+            BackgroundColor = Color.FromArgb("#FEF3C7"),
+            CornerRadius = 12,
+            HasShadow = false,
+            Padding = new Thickness(16),
+            BorderColor = Color.FromArgb("#F59E0B")
+        };
         searchFrame.SetBinding(VisualElement.IsVisibleProperty, "IsClientSelectorVisible");
 
-      var searchStack = new StackLayout
-  {
-    Spacing = 8
-  };
+        var searchStack = new StackLayout
+        {
+            Spacing = 8
+        };
 
         var searchLabel = new Label
         {
-          Text = "🔍 Buscar por Número de Documento:",
-FontSize = 14,
-       TextColor = Color.FromArgb("#92400E"),
-FontAttributes = FontAttributes.Bold
- };
+            Text = "🔍 Buscar por Número de Documento:",
+            FontSize = 14,
+            TextColor = Color.FromArgb("#92400E"),
+            FontAttributes = FontAttributes.Bold
+        };
         searchStack.Add(searchLabel);
 
         var searchInputGrid = new Grid
- {
-       ColumnDefinitions = new ColumnDefinitionCollection
-            {
-      new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-       new ColumnDefinition { Width = GridLength.Auto }
-            },
-      ColumnSpacing = 8
- };
+        {
+            ColumnDefinitions = new ColumnDefinitionCollection
+   {
+        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+             new ColumnDefinition { Width = GridLength.Auto }
+       },
+            ColumnSpacing = 8
+        };
 
         var searchEntry = new Entry
- {
-       Placeholder = "Ej: 123456789",
-   FontSize = 16,
-    BackgroundColor = Colors.White,
- TextColor = Color.FromArgb("#374151"),
-     PlaceholderColor = Color.FromArgb("#9CA3AF"),
-       HeightRequest = 50
+        {
+            Placeholder = "Ej: 123456789",
+            FontSize = 16,
+            BackgroundColor = Colors.White,
+            TextColor = Color.FromArgb("#374151"),
+            PlaceholderColor = Color.FromArgb("#9CA3AF"),
+            HeightRequest = 50
         };
         searchEntry.SetBinding(Entry.TextProperty, "ClientSearchText");
         searchInputGrid.SetColumn(searchEntry, 0);
-  searchInputGrid.Add(searchEntry);
+        searchInputGrid.Add(searchEntry);
 
         var searchButton = new Button
         {
-    Text = "Buscar",
-   FontSize = 14,
-FontAttributes = FontAttributes.Bold,
-    BackgroundColor = Color.FromArgb("#F59E0B"),
-TextColor = Colors.White,
-    CornerRadius = 10,
-       WidthRequest = 100,
-    HeightRequest = 50
-     };
-   searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
-        searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching", 
-       converter: new FuncConverter<bool, bool>(searching => !searching)));
+            Text = "Buscar",
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            BackgroundColor = Color.FromArgb("#F59E0B"),
+            TextColor = Colors.White,
+            CornerRadius = 10,
+            WidthRequest = 100,
+            HeightRequest = 50
+        };
+        searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
+        searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching",
+           converter: new FuncConverter<bool, bool>(searching => !searching)));
         searchInputGrid.SetColumn(searchButton, 1);
-  searchInputGrid.Add(searchButton);
+        searchInputGrid.Add(searchButton);
 
         searchStack.Add(searchInputGrid);
 
         // Loading indicator
-   var activityIndicator = new ActivityIndicator
+        var activityIndicator = new ActivityIndicator
         {
-      Color = Color.FromArgb("#F59E0B"),
-       IsRunning = false,
-   HeightRequest = 30
+            Color = Color.FromArgb("#F59E0B"),
+            IsRunning = false,
+            HeightRequest = 30
         };
         activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsSearching");
-activityIndicator.SetBinding(VisualElement.IsVisibleProperty, "IsSearching");
+        activityIndicator.SetBinding(VisualElement.IsVisibleProperty, "IsSearching");
         searchStack.Add(activityIndicator);
 
-  var searchHintLabel = new Label
-  {
-     Text = "💡 Busca en clientes legales (empresas) y naturales (personas)",
-     FontSize = 11,
-         TextColor = Color.FromArgb("#92400E"),
-       FontAttributes = FontAttributes.Italic,
-   HorizontalOptions = LayoutOptions.Start
- };
+        var searchHintLabel = new Label
+        {
+            Text = "💡 Busca en clientes legales (empresas) y naturales (personas)",
+            FontSize = 11,
+            TextColor = Color.FromArgb("#92400E"),
+            FontAttributes = FontAttributes.Italic,
+            HorizontalOptions = LayoutOptions.Start
+        };
         searchStack.Add(searchHintLabel);
 
- searchFrame.Content = searchStack;
+        searchFrame.Content = searchStack;
         stackLayout.Add(searchFrame);
 
- // Client picker (collapsible) - Existing
-        var pickerFrame = new Frame
-        {
-       BackgroundColor = Color.FromArgb("#F1F5F9"),
-      CornerRadius = 12,
-            HasShadow = false,
-       Padding = new Thickness(16),
- BorderColor = Color.FromArgb("#E2E8F0")
-        };
-        pickerFrame.SetBinding(VisualElement.IsVisibleProperty, "IsClientSelectorVisible");
-
-  var pickerStack = new StackLayout
- {
-       Spacing = 8
-        };
-
-    var pickerLabel = new Label
- {
-        Text = "O seleccione de la lista:",
-FontSize = 14,
-     TextColor = Color.FromArgb("#6B7280"),
-       FontAttributes = FontAttributes.Bold
-    };
-        pickerStack.Add(pickerLabel);
-
-        var clientPicker = new Picker
-        {
-      Title = "-- Seleccionar --",
- FontSize = 16,
-     TextColor = Color.FromArgb("#374151"),
-     TitleColor = Color.FromArgb("#9CA3AF"),
-BackgroundColor = Colors.White,
-        HeightRequest = 50
- };
-   
-        clientPicker.SetBinding(Picker.ItemsSourceProperty, "Clients");
-        clientPicker.SetBinding(Picker.SelectedItemProperty, "SelectedClient", BindingMode.TwoWay);
-        clientPicker.ItemDisplayBinding = new Binding("DisplayText");
-
-  pickerStack.Add(clientPicker);
-        pickerFrame.Content = pickerStack;
-        stackLayout.Add(pickerFrame);
-
-  frame.Content = stackLayout;
+        frame.Content = stackLayout;
         return frame;
     }
 
@@ -316,7 +260,8 @@ BackgroundColor = Colors.White,
         var collectionView = new CollectionView
         {
             SelectionMode = SelectionMode.None,
-            HeightRequest = 320, // Reducido de 400 a 320
+            HeightRequest = 320 // Reducido de 400 a 320
+,
             ItemsLayout = new GridItemsLayout(2, ItemsLayoutOrientation.Vertical)
             {
                 HorizontalItemSpacing = 12,
@@ -726,9 +671,9 @@ BackgroundColor = Colors.White,
         var totalsFrame = CreateTotalsSection();
         stackLayout.Add(totalsFrame);
 
-        // Action buttons
-        var buttonsGrid = CreateActionButtons();
-        stackLayout.Add(buttonsGrid);
+        // Action buttons section (includes WhatsApp field)
+        var actionButtonsSection = CreateActionButtonsSection();
+        stackLayout.Add(actionButtonsSection);
 
         frame.Content = stackLayout;
         return frame;
@@ -751,10 +696,10 @@ BackgroundColor = Colors.White,
         var subtotalGrid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection
-            {
+       {
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = GridLength.Auto }
-            }
+          }
         };
 
         var subtotalLabel = new Label
@@ -793,8 +738,8 @@ BackgroundColor = Colors.White,
         {
             ColumnDefinitions = new ColumnDefinitionCollection
             {
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = GridLength.Auto }
+           new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+        new ColumnDefinition { Width = GridLength.Auto }
             }
         };
 
@@ -824,171 +769,106 @@ BackgroundColor = Colors.White,
         return frame;
     }
 
+    private Frame CreateWhatsAppSection()
+    {
+        var frame = new Frame
+        {
+            BackgroundColor = Colors.Transparent, // ✅ Changed from green to transparent
+            CornerRadius = 12,
+            HasShadow = false,
+            Padding = new Thickness(16),
+            BorderColor = Colors.Transparent,
+            Margin = new Thickness(0, 12, 0, 0)
+        };
+
+        var stackLayout = new StackLayout
+        {
+            Spacing = 8
+        };
+
+        var whatsappLabel = new Label
+        {
+            Text = "📱 WhatsApp para enviar factura:",
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#374151"), // ✅ Changed to dark gray (was white)
+            HorizontalOptions = LayoutOptions.Start
+        };
+        stackLayout.Add(whatsappLabel);
+
+        var whatsappEntry = new Entry
+        {
+            Placeholder = "Ej: +573154286798",
+            FontSize = 16,
+            BackgroundColor = Colors.White,
+            TextColor = Color.FromArgb("#374151"),
+            PlaceholderColor = Color.FromArgb("#9CA3AF"),
+            HeightRequest = 50,
+            Keyboard = Keyboard.Telephone,
+            ClearButtonVisibility = ClearButtonVisibility.WhileEditing
+        };
+        whatsappEntry.SetBinding(Entry.TextProperty, "ClientWhatsAppNumber");
+        stackLayout.Add(whatsappEntry);
+
+        frame.Content = stackLayout;
+        return frame;
+    }
+
+    private StackLayout CreateActionButtonsSection()
+    {
+        var section = new StackLayout
+        {
+            Spacing = 0
+        };
+
+        // WhatsApp section
+        var whatsappSection = CreateWhatsAppSection();
+        section.Add(whatsappSection);
+
+        // Buttons grid
+        var buttonsGrid = CreateActionButtons();
+        section.Add(buttonsGrid);
+
+        return section;
+    }
+
     private Grid CreateActionButtons()
     {
         var grid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            },
-            ColumnSpacing = 12
+ {
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+},
+            Margin = new Thickness(0, 12, 0, 0)
         };
 
-        var clearButton = new Button
-        {
-            Text = "Limpiar",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#D97706"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        clearButton.SetBinding(Button.CommandProperty, "ClearCartCommand");
-        grid.SetColumn(clearButton, 0);
-        grid.Add(clearButton);
+        // ✅ REMOVED: Clear button - eliminado completamente
 
         var processButton = new Button
-        {
-            Text = "Procesar Pago",
-            FontSize = 16,
+  {
+            Text = "Facturar", // ✅ Changed from "Procesar Pago" to "Facturar"
+         FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#059669"),
+        BackgroundColor = Color.FromArgb("#059669"),
             TextColor = Colors.White,
             CornerRadius = 12,
-            HeightRequest = 50
+          HeightRequest = 55
         };
-        processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
+   processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
         processButton.SetBinding(Button.IsEnabledProperty, "CanCompleteTransaction");
-        grid.SetColumn(processButton, 1);
+        grid.SetColumn(processButton, 0);
         grid.Add(processButton);
 
-        return grid;
+     return grid;
     }
 
     private Frame CreatePaymentSection()
     {
-        var frame = new Frame
-        {
-            BackgroundColor = Colors.White,
-            CornerRadius = 16,
-            HasShadow = true,
-            Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#E2E8F0")
-        };
-
-        var stackLayout = new StackLayout { Spacing = 16 };
-
-        // Payment method header
-        var paymentHeader = new Label
-        {
-            Text = "Método de Pago",
-            FontSize = 20,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            HorizontalOptions = LayoutOptions.Center
-        };
-        stackLayout.Add(paymentHeader);
-
-        // Payment buttons
-        var paymentGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            },
-            ColumnSpacing = 12
-        };
-
-        var cashButton = new Button
-        {
-            Text = "Efectivo",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#059669"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        cashButton.SetBinding(Button.CommandProperty, "SelectPaymentMethodCommand");
-        cashButton.CommandParameter = "Cash";
-        paymentGrid.SetColumn(cashButton, 0);
-        paymentGrid.Add(cashButton);
-
-        var cardButton = new Button
-        {
-            Text = "Tarjeta",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#6B7280"),
-            TextColor = Colors.White,
-            CornerRadius = 12,
-            HeightRequest = 50
-        };
-        cardButton.SetBinding(Button.CommandProperty, "SelectPaymentMethodCommand");
-        cardButton.CommandParameter = "Card";
-        paymentGrid.SetColumn(cardButton, 1);
-        paymentGrid.Add(cardButton);
-
-        stackLayout.Add(paymentGrid);
-
-        // Cash section
-        var cashGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            },
-            ColumnSpacing = 12
-        };
-
-        var receivedLabel = new Label
-        {
-            Text = "Recibido:",
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            VerticalOptions = LayoutOptions.Center
-        };
-        cashGrid.SetColumn(receivedLabel, 0);
-        cashGrid.Add(receivedLabel);
-
-        var cashEntry = new Entry
-        {
-            Keyboard = Keyboard.Numeric,
-            FontSize = 16,
-            BackgroundColor = Color.FromArgb("#F1F5F9"),
-            TextColor = Color.FromArgb("#374151"),
-            Placeholder = "$0",
-            PlaceholderColor = Color.FromArgb("#9CA3AF"),
-            HeightRequest = 45
-        };
-        cashEntry.SetBinding(Entry.TextProperty, "CashReceived");
-        cashGrid.SetColumn(cashEntry, 1);
-        cashGrid.Add(cashEntry);
-
-        var changeLabel = new Label
-        {
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#059669"),
-            VerticalOptions = LayoutOptions.Center,
-            HorizontalOptions = LayoutOptions.End
-        };
-        changeLabel.SetBinding(Label.TextProperty, new Binding("Change", stringFormat: "Cambio: ${0:N0}"));
-        cashGrid.SetColumn(changeLabel, 2);
-        cashGrid.Add(changeLabel);
-
-        stackLayout.Add(cashGrid);
-
-        frame.Content = stackLayout;
-        return frame;
-    }
+      // ✅ MÉTODO ELIMINADO - Ya no se usa la sección de métodos de pago
+  // Este método puede ser eliminado completamente o dejarlo comentado por si se necesita en el futuro
+    return null;
+}
 }
 
 // Helper converter for toggle button
