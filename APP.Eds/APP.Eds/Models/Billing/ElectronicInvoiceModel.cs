@@ -43,15 +43,13 @@ public class ElectronicInvoiceModel
     [JsonPropertyName("email")]
     public string Email { get; set; }
 
-    // ✨ NUEVO: Código QR de la factura
     [JsonPropertyName("qrCode")]
     public string QRCode { get; set; }
 
-    // ✨ NUEVO: Nota del proveedor tecnológico
+   
     [JsonPropertyName("techProviderFootNote")]
     public string TechProviderFootNote { get; set; }
 
-    // Propiedades calculadas para la UI
     public string DateFormatted => Date.ToString("dd/MM/yyyy HH:mm");
     public string TotalAmountFormatted => $"${TotalAmount:N2}";
     public string StatusIcon => Status == "Emitida" ? "✅" : "⚠️";
@@ -62,7 +60,6 @@ public class ElectronicInvoiceModel
         _ => "💰"
     };
 
-    
     public bool IsPdfAvailable => !string.IsNullOrEmpty(InvoiceHash);
     public string CudeInfo => !string.IsNullOrEmpty(InvoiceHash)
         ? $"CUDE: {InvoiceHash.Substring(0, Math.Min(16, InvoiceHash.Length))}..."

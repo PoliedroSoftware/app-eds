@@ -1,6 +1,7 @@
 ﻿using APP.Eds.UsesCases.Business;
 using APP.Eds.UsesCases.Capacity;
 using APP.Eds.UsesCases.Category;
+using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.CompartimentCapacity;
 using APP.Eds.UsesCases.Court;
 using APP.Eds.UsesCases.Dispensers;
@@ -12,23 +13,21 @@ using APP.Eds.UsesCases.HoseHistory;
 using APP.Eds.UsesCases.Inventory;
 using APP.Eds.UsesCases.Island;
 using APP.Eds.UsesCases.Islander;
+using APP.Eds.UsesCases.Phone;
+using APP.Eds.UsesCases.PowerBI;
 using APP.Eds.UsesCases.Product;
 using APP.Eds.UsesCases.ProductCompartiment;
 using APP.Eds.UsesCases.Provider;
 using APP.Eds.UsesCases.Shopping;
+using APP.Eds.UsesCases.StrongBox;
 using APP.Eds.UsesCases.Tank;
-using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.UsesCases.TypeOfCollection;
 using APP.Eds.UsesCases.Wizard;
-using APP.Eds.UsesCases.PointOfSale;
-using APP.Eds.UsesCases.PowerBI;
 using APP.Eds.Views.Popups;
 using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using System.Diagnostics;
-using APP.Eds.UsesCases.StrongBox;
-using APP.Eds.UsesCases.Phone;
+using System.Windows.Input;
 
 namespace APP.Eds.Services.Navigation
 {
@@ -39,18 +38,18 @@ namespace APP.Eds.Services.Navigation
 
         public ICommand NavigateToCourtCommand { get; }
         public ICommand NavigateToWizardCommand { get; }
-        
+
         public MainService()
         {
-           var userRole = Preferences.Get("userRole", "");
+            var userRole = Preferences.Get("userRole", "");
 
             NavigateToCourtCommand = new Command(async () =>
-            {
-                if (Application.Current?.MainPage is NavigationPage navPage)
-                {
-                    await navPage.PushAsync(new CourtPostView());
-                }
-            });
+                    {
+                        if (Application.Current?.MainPage is NavigationPage navPage)
+                        {
+                            await navPage.PushAsync(new CourtPostView());
+                        }
+                    });
 
             NavigateToWizardCommand = new Command(async () =>
             {
@@ -62,79 +61,90 @@ namespace APP.Eds.Services.Navigation
 
             // Comando directo para Inventario
             var NavigateToInventoryCommand = new Command(async () =>
-            {
-                if (Application.Current?.MainPage is NavigationPage navPage)
-                {
-                    await navPage.PushAsync(new InventoryPostView());
-                }
-            });
+         {
+             if (Application.Current?.MainPage is NavigationPage navPage)
+             {
+                 await navPage.PushAsync(new InventoryPostView());
+             }
+         });
 
-            // Comando directo para Punto de Venta
-            var NavigateToPointOfSaleCommand = new Command(async () =>
-            {
-                if (Application.Current?.MainPage is NavigationPage navPage)
-                {
-                    await navPage.PushAsync(new PointOfSaleView());
-                }
-            });
+            // ✅ NUEVO: Comando para mostrar popup de Punto de Venta
+            var ShowPointOfSaleMenuCommand = new Command(async () =>
+                   {
+                       var popup = new PointOfSaleMenuPopup();
+                       await MainThread.InvokeOnMainThreadAsync(async () =>
+                            {
+                           try
+                           {
+                               await Application.Current.MainPage.ShowPopupAsync(popup);
+                           }
+                           catch (ObjectDisposedException ex)
+                           {
+                               Debug.WriteLine($"PointOfSaleMenuPopup was disposed: {ex.Message}");
+                           }
+                           catch (Exception ex)
+                           {
+                               Debug.WriteLine($"Error showing PointOfSaleMenuPopup: {ex.Message}");
+                           }
+                       });
+                   });
 
             // Comando directo para Power BI Dashboard
             var NavigateToPowerBICommand = new Command(async () =>
-            {
-                if (Application.Current?.MainPage is NavigationPage navPage)
-                {
-                    await navPage.PushAsync(new PowerBIView());
-                }
-            });
+           {
+               if (Application.Current?.MainPage is NavigationPage navPage)
+               {
+                   await navPage.PushAsync(new PowerBIView());
+               }
+           });
 
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
                 {
-                    new("Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
-                    new("Punto de Venta", "💳", NavigateToPointOfSaleCommand, isDirectNavigation: true),
-                    new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
-                    new("Administración", "⚙️", new List<MenuItemModel>
-                    {
-                        new("Corte", typeof(CourtPostView), "💰"),
-                        new("Negocio", typeof(BusinessPostView), "🏢"),
-                        new("EDS", typeof(EdsPostView), "🏪"),
-                        new("Caja Fuerte", typeof(StrongBoxView), "💼"),
-                        new("Telefonos", typeof(PhoneRegistrationView), "📱")
-
-                    }),
-                    new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
-                    {
-                        new("Dispensadores", typeof(DispensersPostView), "⛽"),
-                        new("Manguera", typeof(HosePostView), "🔧"),
-                        new("Historial de la manguera", typeof(HoseHistoryPostView), "📋")
-                    }),
-                    new("Compras y productos", "🛒", new List<MenuItemModel>
-                    {
-                        new("Productos", typeof(ProductPostView), "➕"),
-                        new("Compras", typeof(ShoppingPostView), "🛒"),
-                        new("Proveedor", typeof(ProviderPostView), "🏭"),
-                        new("Categoría", typeof(CategoryPostView), "📂")
-                    }),
-                    new("Tanques y compartimentos", "🛢️", new List<MenuItemModel>
-                    {
-                        new("Capacidad", typeof(CapacityPostView), "📏"),
-                        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView), "📐"),
-                        new("Tanque EDS", typeof(EdsTankPostView), "🛢️"),
-                        new("Tanque", typeof(TankPostView), "🗂️"),
-                        new("Compartimento", typeof(CompartimentPostView), "📦"),
-                        new("Compartimento del producto", typeof(ProductCompartimentPostView), "🔗")
-                    }),
-                    new("EDS y otros", "🏪", new List<MenuItemModel>
-                    {
-                        new("Gasto", typeof(ExpendituresPostView), "💳"),
-                        new("Islero", typeof(IslanderPostView), "👤"),
-                        new("Isla", typeof(IslandPostView), "🏝️"),
-                        new("Formas de Pago", typeof(TypeOfCollectionPostView), "📝")
-                    }),
-                    // Cambio de modal a navegación directa
-                    new("Inventario", "📦", NavigateToInventoryCommand, isDirectNavigation: true)
-                };
+       // ✅ PRIMERO: Administración
+         new("Administración", "⚙️", new List<MenuItemModel>
+           {
+          new("Corte", typeof(CourtPostView), "💰"),
+new("Negocio", typeof(BusinessPostView), "🏢"),
+        new("EDS", typeof(EdsPostView), "🏪"),
+          new("Caja Fuerte", typeof(StrongBoxView), "💼"),
+        new("Telefonos", typeof(PhoneRegistrationView), "📱")
+         }),
+   new("Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
+         new("Punto de Venta", "💳", ShowPointOfSaleMenuCommand, isDirectNavigation: true),
+        new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
+        new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
+        {
+       new("Dispensadores", typeof(DispensersPostView), "⛽"),
+      new("Manguera", typeof(HosePostView), "🔧"),
+ new("Historial de la manguera", typeof(HoseHistoryPostView), "📋")
+     }),
+new("Compras y productos", "🛒", new List<MenuItemModel>
+  {
+         new("Productos", typeof(ProductPostView), "➕"),
+       new("Compras", typeof(ShoppingPostView), "🛒"),
+       new("Proveedor", typeof(ProviderPostView), "🏭"),
+        new("Categoría", typeof(CategoryPostView), "📂")
+         }),
+        new("Tanques y compartimentos", "🛢️", new List<MenuItemModel>
+    {
+    new("Capacidad", typeof(CapacityPostView), "📏"),
+        new("Capacidad del compartimento", typeof(CompartimentCapacityPostView), "📐"),
+         new("Tanque EDS", typeof(EdsTankPostView), "🛢️"),
+         new("Tanque", typeof(TankPostView), "🗂️"),
+          new("Compartimento", typeof(CompartimentPostView), "📦"),
+           new("Compartimento del producto", typeof(ProductCompartimentPostView), "🔗")
+    }),
+       new("EDS y otros", "🏪", new List<MenuItemModel>
+    {
+        new("Gasto", typeof(ExpendituresPostView), "💳"),
+         new("Islero", typeof(IslanderPostView), "👤"),
+           new("Isla", typeof(IslandPostView), "🏝️"),
+ new("Formas de Pago", typeof(TypeOfCollectionPostView), "📝")
+         }),
+     new("Inventario", "📦", NavigateToInventoryCommand, isDirectNavigation: true)
+       };
             }
             else
             {
@@ -191,7 +201,7 @@ namespace APP.Eds.Services.Navigation
         public class MenuItemModel
         {
             public string Title { get; set; }
-            public string Name => Title; 
+            public string Name => Title;
             public string Icon { get; set; }
             public Type PageType { get; set; }
             public ICommand NavigateCommand { get; }
@@ -217,7 +227,7 @@ namespace APP.Eds.Services.Navigation
                     }
                     catch (Exception ex)
                     {
-                        await Application.Current?.MainPage?.DisplayAlert("Error", 
+                        await Application.Current?.MainPage?.DisplayAlert("Error",
                             $"No se pudo navegar a {title}: {ex.Message}", "OK");
                     }
                 });

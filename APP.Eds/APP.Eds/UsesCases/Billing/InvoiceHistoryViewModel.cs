@@ -1,4 +1,4 @@
-using APP.Eds.Models.Billing;
+﻿using APP.Eds.Models.Billing;
 using APP.Eds.Services.Billing;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -53,7 +53,7 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
 
     private void LoadInvoices()
     {
-        // Actualizar estado de vac�o
+        // Actualizar estado de vacío
         IsEmpty = !Invoices.Any();
         OnPropertyChanged(nameof(Invoices));
     }
@@ -63,16 +63,24 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         if (invoice == null || !invoice.IsPdfAvailable)
         {
             await Application.Current.MainPage.DisplayAlert(
-    "PDF No Disponible",
-        "El PDF de esta factura no est� disponible",
-          "OK");
+             "PDF No Disponible",
+             "El PDF de esta factura no está disponible",
+             "OK");
             return;
         }
 
         IsLoading = true;
         try
         {
-            await _billingService.OpenInvoicePdfAsync(invoice.InvoiceHash, invoice.FullInvoiceNumber);
+            // ✨ NUEVO: Usar PDF mock si el modo mock está activo
+            if (ElectronicBillingService.UseMockData)
+            {
+                await MockInvoiceService.OpenMockPdfAsync(invoice.FullInvoiceNumber);
+            }
+            else
+            {
+                await _billingService.OpenInvoicePdfAsync(invoice.InvoiceHash, invoice.FullInvoiceNumber);
+            }
         }
         catch (Exception ex)
         {
@@ -94,7 +102,7 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         {
             await Application.Current.MainPage.DisplayAlert(
             "PDF No Disponible",
-            "El PDF de esta factura no est� disponible para compartir",
+            "El PDF de esta factura no está disponible para compartir",
             "OK");
             return;
         }
@@ -102,7 +110,15 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         IsLoading = true;
         try
         {
-            await _billingService.ShareInvoicePdfAsync(invoice.InvoiceHash, invoice.FullInvoiceNumber);
+            // ✨ NUEVO: Usar PDF mock si el modo mock está activo
+            if (ElectronicBillingService.UseMockData)
+            {
+                await MockInvoiceService.ShareMockPdfAsync(invoice.FullInvoiceNumber);
+            }
+            else
+            {
+                await _billingService.ShareInvoicePdfAsync(invoice.InvoiceHash, invoice.FullInvoiceNumber);
+            }
         }
         catch (Exception ex)
         {

@@ -17,18 +17,15 @@ public partial class InvoiceHistoryView : ContentPage
     private void CreateContent()
     {
         Title = "Historial de Facturas";
-
-        // Layout principal
         var mainLayout = new Grid
         {
             RowDefinitions =
-       {
-    new RowDefinition { Height = GridLength.Star }
-    },
+             {
+                new RowDefinition { Height = GridLength.Star }
+             },
             Padding = 0
         };
 
-        // CollectionView para mostrar facturas
         var invoicesCollection = new CollectionView
         {
             SelectionMode = SelectionMode.None,
@@ -37,7 +34,6 @@ public partial class InvoiceHistoryView : ContentPage
         };
         invoicesCollection.SetBinding(CollectionView.ItemsSourceProperty, nameof(InvoiceHistoryViewModel.Invoices));
 
-        // ScrollView para permitir desplazamiento
         var scrollView = new ScrollView
         {
             Content = invoicesCollection
@@ -45,7 +41,6 @@ public partial class InvoiceHistoryView : ContentPage
 
         mainLayout.Add(scrollView, 0, 0);
 
-        // Overlay de carga
         var loadingOverlay = new Frame
         {
             BackgroundColor = Color.FromArgb("#80000000"),
