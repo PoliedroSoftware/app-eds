@@ -182,7 +182,8 @@
                             Stroke="#FFCDD2"
                             Padding="15,12">
                         <StackLayout Orientation="Horizontal" Spacing="8">
-                            <Label Text="⚠️" 
+                            <Label x:Name="ErrorIcon"
+                                   Text="⚠️"
                                    FontSize="16"
                                    VerticalOptions="Center"/>
                             <Label x:Name="ErrorLabel"
