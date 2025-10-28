@@ -51,181 +51,147 @@ public partial class PointOfSaleView : ContentPage
 
     private Frame CreateClientSelectorSection()
     {
-        var frame = new Frame
+     var frame = new Frame
         {
-            BackgroundColor = Colors.White,
-            CornerRadius = 16,
+     BackgroundColor = Colors.White,
+  CornerRadius = 16,
             HasShadow = true,
-            Padding = new Thickness(20),
+      Padding = new Thickness(20),
             BorderColor = Color.FromArgb("#E2E8F0")
         };
 
         var stackLayout = new StackLayout
-        {
+{
             Spacing = 12
-        };
+  };
 
-        // Header with toggle button
-        var headerGrid = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-       {
-         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-  new ColumnDefinition { Width = GridLength.Auto }
-    }
-        };
-
+        // Header
         var headerLabel = new Label
         {
             Text = "👤 Cliente",
             FontSize = 20,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            VerticalOptions = LayoutOptions.Center
+  FontAttributes = FontAttributes.Bold,
+       TextColor = Color.FromArgb("#374151"),
+          HorizontalOptions = LayoutOptions.Start,
+            Margin = new Thickness(0, 0, 0, 8)
         };
-        headerGrid.SetColumn(headerLabel, 0);
-        headerGrid.Add(headerLabel);
+        stackLayout.Add(headerLabel);
 
-        var toggleButton = new Button
+        // Selected client display with search integrated
+   var clientDisplayFrame = new Frame
         {
-            FontSize = 18,
-            WidthRequest = 40,
-            HeightRequest = 40,
-            BackgroundColor = Color.FromArgb("#3B82F6"),
-            TextColor = Colors.White,
-            CornerRadius = 20,
-            Padding = new Thickness(0)
-        };
-
-        // Bind text to change based on visibility state
-        toggleButton.SetBinding(Button.TextProperty, new Binding("IsClientSelectorVisible",
-      converter: new FuncConverter<bool, string>(visible => visible ? "▲" : "▼")));
-        toggleButton.SetBinding(Button.CommandProperty, "ToggleClientSelectorCommand");
-        headerGrid.SetColumn(toggleButton, 1);
-        headerGrid.Add(toggleButton);
-
-        stackLayout.Add(headerGrid);
-
-        // Selected client display - always visible
-        var selectedClientFrame = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#F1F5F9"),
-            CornerRadius = 12,
-            HasShadow = false,
-            Padding = new Thickness(16),
+            BackgroundColor = Color.FromArgb("#F8FAFC"),
+  CornerRadius = 12,
+     HasShadow = false,
+   Padding = new Thickness(16, 12),
             BorderColor = Color.FromArgb("#3B82F6")
-        };
+ };
 
-        var selectedClientStack = new StackLayout
-        {
-            Orientation = StackOrientation.Horizontal,
-            Spacing = 12
-        };
-
-        var selectedClientLabel = new Label
-        {
-            FontSize = 16,
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
-            VerticalOptions = LayoutOptions.Center,
-            HorizontalOptions = LayoutOptions.FillAndExpand
-        };
-        selectedClientLabel.SetBinding(Label.TextProperty, "ClientButtonText");
-        selectedClientStack.Add(selectedClientLabel);
-
-        selectedClientFrame.Content = selectedClientStack;
-        stackLayout.Add(selectedClientFrame);
-
-        // Search section
-        var searchFrame = new Frame
-        {
-            BackgroundColor = Color.FromArgb("#FEF3C7"),
-            CornerRadius = 12,
-            HasShadow = false,
-            Padding = new Thickness(16),
-            BorderColor = Color.FromArgb("#F59E0B")
-        };
-        searchFrame.SetBinding(VisualElement.IsVisibleProperty, "IsClientSelectorVisible");
-
-        var searchStack = new StackLayout
-        {
+        var clientStack = new StackLayout
+  {
             Spacing = 8
         };
 
-        var searchLabel = new Label
-        {
-            Text = "🔍 Buscar por Número de Documento:",
-            FontSize = 14,
-            TextColor = Color.FromArgb("#92400E"),
-            FontAttributes = FontAttributes.Bold
+        // Cliente seleccionado (visible cuando hay cliente)
+      var selectedClientLabel = new Label
+ {
+            FontSize = 16,
+      FontAttributes = FontAttributes.Bold,
+          TextColor = Color.FromArgb("#374151"),
+         LineBreakMode = LineBreakMode.WordWrap
         };
-        searchStack.Add(searchLabel);
+        selectedClientLabel.SetBinding(Label.TextProperty, "ClientButtonText");
+        selectedClientLabel.SetBinding(VisualElement.IsVisibleProperty, new Binding("SelectedClient", 
+          converter: new FuncConverter<ClientLegalModel, bool>(client => client != null && client.Id > 0)));
+  clientStack.Add(selectedClientLabel);
 
-        var searchInputGrid = new Grid
+        // Separator line (visible cuando hay cliente)
+        var separator = new BoxView
+     {
+       Color = Color.FromArgb("#E2E8F0"),
+         HeightRequest = 1,
+ Margin = new Thickness(0, 4, 0, 4)
+        };
+        separator.SetBinding(VisualElement.IsVisibleProperty, new Binding("SelectedClient",
+     converter: new FuncConverter<ClientLegalModel, bool>(client => client != null && client.Id > 0)));
+        clientStack.Add(separator);
+
+        // Search section
+        var searchLabel = new Label
+{
+       Text = "🔍 Buscar por Número de Documento:",
+    FontSize = 13,
+            TextColor = Color.FromArgb("#6B7280"),
+            FontAttributes = FontAttributes.Bold
+   };
+        clientStack.Add(searchLabel);
+
+        var searchGrid = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitionCollection
+  ColumnDefinitions = new ColumnDefinitionCollection
    {
-        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-             new ColumnDefinition { Width = GridLength.Auto }
-       },
-            ColumnSpacing = 8
+      new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+         new ColumnDefinition { Width = GridLength.Auto }
+  },
+      ColumnSpacing = 8
         };
 
         var searchEntry = new Entry
-        {
-            Placeholder = "Ej: 123456789",
-            FontSize = 16,
+  {
+    Placeholder = "Ej: 123456789",
+ FontSize = 15,
             BackgroundColor = Colors.White,
-            TextColor = Color.FromArgb("#374151"),
-            PlaceholderColor = Color.FromArgb("#9CA3AF"),
-            HeightRequest = 50
-        };
+     TextColor = Color.FromArgb("#374151"),
+    PlaceholderColor = Color.FromArgb("#9CA3AF"),
+         HeightRequest = 45
+   };
         searchEntry.SetBinding(Entry.TextProperty, "ClientSearchText");
-        searchInputGrid.SetColumn(searchEntry, 0);
-        searchInputGrid.Add(searchEntry);
+ searchGrid.SetColumn(searchEntry, 0);
+        searchGrid.Add(searchEntry);
 
-        var searchButton = new Button
+     var searchButton = new Button
         {
-            Text = "Buscar",
+        Text = "Buscar",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#F59E0B"),
-            TextColor = Colors.White,
-            CornerRadius = 10,
-            WidthRequest = 100,
-            HeightRequest = 50
+            BackgroundColor = Color.FromArgb("#3B82F6"),
+     TextColor = Colors.White,
+     CornerRadius = 10,
+      WidthRequest = 90,
+            HeightRequest = 45
         };
-        searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
-        searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching",
-           converter: new FuncConverter<bool, bool>(searching => !searching)));
-        searchInputGrid.SetColumn(searchButton, 1);
-        searchInputGrid.Add(searchButton);
+  searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
+  searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching",
+            converter: new FuncConverter<bool, bool>(searching => !searching)));
+        searchGrid.SetColumn(searchButton, 1);
+        searchGrid.Add(searchButton);
 
-        searchStack.Add(searchInputGrid);
+  clientStack.Add(searchGrid);
 
         // Loading indicator
-        var activityIndicator = new ActivityIndicator
+   var activityIndicator = new ActivityIndicator
         {
-            Color = Color.FromArgb("#F59E0B"),
+         Color = Color.FromArgb("#3B82F6"),
             IsRunning = false,
-            HeightRequest = 30
+  HeightRequest = 25
         };
         activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsSearching");
         activityIndicator.SetBinding(VisualElement.IsVisibleProperty, "IsSearching");
-        searchStack.Add(activityIndicator);
+        clientStack.Add(activityIndicator);
 
-        var searchHintLabel = new Label
-        {
-            Text = "💡 Busca en clientes legales (empresas) y naturales (personas)",
-            FontSize = 11,
-            TextColor = Color.FromArgb("#92400E"),
+        // Hint label
+        var hintLabel = new Label
+  {
+   Text = "💡 Busca en persona jurídica (empresas) y naturales (personas)",
+         FontSize = 11,
+            TextColor = Color.FromArgb("#6B7280"),
             FontAttributes = FontAttributes.Italic,
-            HorizontalOptions = LayoutOptions.Start
-        };
-        searchStack.Add(searchHintLabel);
+   HorizontalOptions = LayoutOptions.Start
+     };
+        clientStack.Add(hintLabel);
 
-        searchFrame.Content = searchStack;
-        stackLayout.Add(searchFrame);
+        clientDisplayFrame.Content = clientStack;
+     stackLayout.Add(clientDisplayFrame);
 
         frame.Content = stackLayout;
         return frame;

@@ -19,7 +19,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     private double _change;
     private PaymentMethod _selectedPaymentMethod = PaymentMethod.Cash;
     private ClientLegalModel _selectedClient;
-    private bool _isClientSelectorVisible;
     private string _clientSearchText;
     private bool _isSearching;
     private string _clientWhatsAppNumber;
@@ -30,17 +29,16 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         _billingService = new ElectronicBillingService(); 
         Products = [];
         CartItems = [];
-        Clients = [];
+Clients = [];
 
         AddToCartCommand = new Command<ProductModel>(AddToCart);
-        RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
+ RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
         DecreaseQuantityCommand = new Command<SaleItemModel>(DecreaseQuantity);
-        UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
+      UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
         ProcessPaymentCommand = new Command(async () => await ProcessPayment()); 
-        ClearCartCommand = new Command(ClearCart);
+     ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
-        ToggleClientSelectorCommand = new Command(ToggleClientSelector);
         SearchClientCommand = new Command(async () => await SearchClient());
 
         LoadProducts();
@@ -53,7 +51,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public bool IsLoading
     {
         get => _isLoading;
-        set => SetProperty(ref _isLoading, value);
+     set => SetProperty(ref _isLoading, value);
     }
 
     public ClientLegalModel SelectedClient
@@ -61,23 +59,17 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         get => _selectedClient;
         set
         {
-            if (SetProperty(ref _selectedClient, value))
+   if (SetProperty(ref _selectedClient, value))
             {
-                OnPropertyChanged(nameof(ClientButtonText));
-                System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
-            }
-        }
+           OnPropertyChanged(nameof(ClientButtonText));
+            System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
     }
-
-    public bool IsClientSelectorVisible
-    {
-        get => _isClientSelectorVisible;
-        set => SetProperty(ref _isClientSelectorVisible, value);
+  }
     }
 
     public string ClientSearchText
     {
-        get => _clientSearchText;
+   get => _clientSearchText;
         set => SetProperty(ref _clientSearchText, value);
     }
 
@@ -98,24 +90,24 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         get
         {
             if (SelectedClient != null && SelectedClient.Id > 0)
-            {
-                // Mostrar: TipoDoc NumeroDoc - Nombre/Razón Social
-                var docType = SelectedClient.DocumentType;
-                var docNumber = SelectedClient.DocumentNumber;
+          {
+      // Mostrar: TipoDoc NumeroDoc - Nombre/Razón Social
+       var docType = SelectedClient.DocumentType;
+    var docNumber = SelectedClient.DocumentNumber;
 
-                // Agregar dígito de verificación si es NIT
-                if (SelectedClient.DocumentTypeId == 1 && SelectedClient.VerificationDigit > 0)
-                {
-                    docNumber = $"{docNumber}-{SelectedClient.VerificationDigit}";
-                }
+  // Agregar dígito de verificación si es NIT
+     if (SelectedClient.DocumentTypeId == 1 && SelectedClient.VerificationDigit > 0)
+     {
+    docNumber = $"{docNumber}-{SelectedClient.VerificationDigit}";
+        }
 
-                // Convertir el nombre a mayúsculas
-                var clientName = SelectedClient.Name.ToUpper();
+          // Convertir el nombre a mayúsculas
+  var clientName = SelectedClient.Name.ToUpper();
 
-                return $"{docType} {docNumber} - {clientName}";
-            }
+     return $"{docType} {docNumber} - {clientName}";
+          }
 
-            return "Sin Cliente Seleccionado";
+         return "Sin Cliente Seleccionado";
         }
     }
 
@@ -126,11 +118,11 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public double CashReceived
     {
         get => _cashReceived;
-        set
-        {
-            SetProperty(ref _cashReceived, value);
-            Change = value - Total;
-            OnPropertyChanged(nameof(Change));
+set
+  {
+        SetProperty(ref _cashReceived, value);
+       Change = value - Total;
+   OnPropertyChanged(nameof(Change));
         }
     }
 
@@ -140,7 +132,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         private set => SetProperty(ref _change, value);
     }
 
-    public PaymentMethod SelectedPaymentMethod
+  public PaymentMethod SelectedPaymentMethod
     {
         get => _selectedPaymentMethod;
         set => SetProperty(ref _selectedPaymentMethod, value);
@@ -148,38 +140,37 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
 
     public bool CanCompleteTransaction => true; 
 
-    public ICommand AddToCartCommand { get; }
-    public ICommand RemoveFromCartCommand { get; }
+  public ICommand AddToCartCommand { get; }
+ public ICommand RemoveFromCartCommand { get; }
     public ICommand IncreaseQuantityCommand { get; }
     public ICommand DecreaseQuantityCommand { get; }
     public ICommand UpdateTotalAmountCommand { get; }
     public ICommand ProcessPaymentCommand { get; }
     public ICommand ClearCartCommand { get; }
     public ICommand SelectPaymentMethodCommand { get; }
-    public ICommand ToggleClientSelectorCommand { get; }
     public ICommand SearchClientCommand { get; }
 
     private async void LoadProducts()
     {
         IsLoading = true;
         try
-        {
-            var products = await _pointOfSaleService.GetAvailableProductsAsync();
-            Products.Clear();
-            foreach (var product in products)
-            {
-                Products.Add(product);
+  {
+  var products = await _pointOfSaleService.GetAvailableProductsAsync();
+          Products.Clear();
+        foreach (var product in products)
+   {
+     Products.Add(product);
             }
-            UpdateProductCartStatus();
+    UpdateProductCartStatus();
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error",
+     await Application.Current.MainPage.DisplayAlert("Error",
                 "No se pudieron cargar los productos", "OK");
-        }
+    }
         finally
         {
-            IsLoading = false;
+       IsLoading = false;
         }
     }
 
@@ -187,46 +178,40 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     {
         if (string.IsNullOrWhiteSpace(ClientSearchText))
         {
-            await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
-                        "Por favor ingrese un número de documento para buscar", "OK");
+        await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
+             "Por favor ingrese un número de documento para buscar", "OK");
             return;
         }
 
         IsSearching = true;
-        try
+    try
         {
-            System.Diagnostics.Debug.WriteLine($"Buscando cliente con documento: {ClientSearchText}");
+       System.Diagnostics.Debug.WriteLine($"Buscando cliente con documento: {ClientSearchText}");
 
-            var client = await _pointOfSaleService.SearchClientByDocumentAsync(ClientSearchText.Trim());
+    var client = await _pointOfSaleService.SearchClientByDocumentAsync(ClientSearchText.Trim());
 
-            if (client != null)
-            {
+   if (client != null)
+        {
                 SelectedClient = client;
-                ClientSearchText = string.Empty; 
-                IsClientSelectorVisible = false; 
+ClientSearchText = string.Empty; 
+  }
+    else
+    {
+          await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
+       $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
             }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
-                   $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
-            }
-        }
-        catch (Exception ex)
+    }
+    catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error",
-            "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
+    System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
+   await Application.Current.MainPage.DisplayAlert("Error",
+         "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
         }
         finally
         {
-            IsSearching = false;
+     IsSearching = false;
         }
-    }
-
-    private void ToggleClientSelector()
-    {
-        IsClientSelectorVisible = !IsClientSelectorVisible;
-    }
+}
 
     private void AddToCart(ProductModel product)
     {
@@ -291,7 +276,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         {
             item.Quantity--;
             item.TotalAmount = item.TotalPrice;
-            item.TotalAmountText = item.TotalAmount.ToString("F0"); /
+            item.TotalAmountText = item.TotalAmount.ToString("F0"); 
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -443,12 +428,11 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         CashReceived = 0;
         SelectedClient = null;
         ClientWhatsAppNumber = string.Empty;
-        IsClientSelectorVisible = false;
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
-        OnPropertyChanged(nameof(Total));
+   OnPropertyChanged(nameof(Total));
         OnPropertyChanged(nameof(ClientButtonText));
-        UpdateProductCartStatus();
+    UpdateProductCartStatus();
     }
 
     private void UpdateProductCartStatus()
