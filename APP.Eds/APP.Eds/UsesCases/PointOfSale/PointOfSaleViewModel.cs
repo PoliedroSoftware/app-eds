@@ -1,6 +1,7 @@
-﻿using APP.Eds.Models.PointOfSale;
+﻿using APP.Eds.Models.Client;
+using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
-using APP.Eds.Models.Client;
+using APP.Eds.Services.Billing;
 using APP.Eds.Services.PointOfSale;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,12 +13,12 @@ namespace APP.Eds.UsesCases.PointOfSale;
 public class PointOfSaleViewModel : INotifyPropertyChanged
 {
     private readonly IPointOfSaleService _pointOfSaleService;
+    private readonly ElectronicBillingService _billingService;
     private bool _isLoading;
     private double _cashReceived;
     private double _change;
     private PaymentMethod _selectedPaymentMethod = PaymentMethod.Cash;
     private ClientLegalModel _selectedClient;
-    private bool _isClientSelectorVisible;
     private string _clientSearchText;
     private bool _isSearching;
     private string _clientWhatsAppNumber;
@@ -25,24 +26,22 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService)
     {
         _pointOfSaleService = pointOfSaleService;
-        Products = new ObservableCollection<ProductModel>();
-        CartItems = new ObservableCollection<SaleItemModel>();
-        // Ya no necesitamos la lista de clientes precargada
-        Clients = new ObservableCollection<ClientLegalModel>();
+        _billingService = new ElectronicBillingService();
+        Products = [];
+        CartItems = [];
+        Clients = [];
 
         AddToCartCommand = new Command<ProductModel>(AddToCart);
         RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
         DecreaseQuantityCommand = new Command<SaleItemModel>(DecreaseQuantity);
         UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
-        ProcessPaymentCommand = new Command(async () => await ProcessPayment()); // ✅ FIX: Removed CanProcessPayment
+        ProcessPaymentCommand = new Command(async () => await ProcessPayment());
         ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
-        ToggleClientSelectorCommand = new Command(ToggleClientSelector);
         SearchClientCommand = new Command(async () => await SearchClient());
 
         LoadProducts();
-        // Ya no llamamos LoadClients() aquí porque ahora buscaremos bajo demanda
     }
 
     public ObservableCollection<ProductModel> Products { get; }
@@ -66,12 +65,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
                 System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
             }
         }
-    }
-
-    public bool IsClientSelectorVisible
-    {
-        get => _isClientSelectorVisible;
-        set => SetProperty(ref _isClientSelectorVisible, value);
     }
 
     public string ClientSearchText
@@ -119,7 +112,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     }
 
     public double SubTotal => CartItems.Sum(item => item.TotalPrice);
-    public double Tax => SubTotal * 0.16; // 16% tax
+    public double Tax => SubTotal * 0;
     public double Total => SubTotal + Tax;
 
     public double CashReceived
@@ -145,7 +138,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         set => SetProperty(ref _selectedPaymentMethod, value);
     }
 
-    public bool CanCompleteTransaction => true; // ✅ Siempre habilitado
+    public bool CanCompleteTransaction => true;
 
     public ICommand AddToCartCommand { get; }
     public ICommand RemoveFromCartCommand { get; }
@@ -155,7 +148,6 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public ICommand ProcessPaymentCommand { get; }
     public ICommand ClearCartCommand { get; }
     public ICommand SelectPaymentMethodCommand { get; }
-    public ICommand ToggleClientSelectorCommand { get; }
     public ICommand SearchClientCommand { get; }
 
     private async void LoadProducts()
@@ -173,9 +165,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            // Handle error
             await Application.Current.MainPage.DisplayAlert("Error",
-                "No se pudieron cargar los productos", "OK");
+                       "No se pudieron cargar los productos", "OK");
         }
         finally
         {
@@ -188,7 +179,7 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(ClientSearchText))
         {
             await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
-                        "Por favor ingrese un número de documento para buscar", "OK");
+                 "Por favor ingrese un número de documento para buscar", "OK");
             return;
         }
 
@@ -202,24 +193,19 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
             if (client != null)
             {
                 SelectedClient = client;
-                ClientSearchText = string.Empty; // Limpiar el campo de búsqueda
-                IsClientSelectorVisible = false; // Ocultar el selector
-
-                // ✅ ELIMINADO: Ya no mostramos modal cuando se encuentra el cliente
-                // El usuario verá el cliente seleccionado en la UI
+                ClientSearchText = string.Empty;
             }
             else
             {
-                // ⚠️ Solo mostramos modal cuando NO se encuentra el cliente
                 await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
-                   $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
+             $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
             await Application.Current.MainPage.DisplayAlert("Error",
-     "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
+                  "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
         }
         finally
         {
@@ -227,27 +213,19 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         }
     }
 
-    private void ToggleClientSelector()
-    {
-        IsClientSelectorVisible = !IsClientSelectorVisible;
-    }
-
     private void AddToCart(ProductModel product)
     {
-        if (product.Stock <= 0) return;
-
         var existingItem = CartItems.FirstOrDefault(item => item.ProductName == product.Name);
         if (existingItem != null)
         {
             if (existingItem.Quantity < product.Stock)
             {
                 existingItem.Quantity++;
-                existingItem.TotalAmount = existingItem.TotalPrice; // Update total amount to reflect quantity change
-                existingItem.TotalAmountText = existingItem.TotalAmount.ToString("F0"); // Update text representation
+                existingItem.TotalAmount = existingItem.TotalPrice;
+                existingItem.TotalAmountText = existingItem.TotalAmount.ToString("F0");
                 OnPropertyChanged(nameof(SubTotal));
                 OnPropertyChanged(nameof(Tax));
                 OnPropertyChanged(nameof(Total));
-                // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
             }
         }
         else
@@ -257,15 +235,14 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
                 ProductName = product.Name,
                 UnitPrice = product.SellPrice,
                 Quantity = 1,
-                Stock = product.Stock
+                Stock = product.Stock,
+                TotalAmount = product.SellPrice,
+                TotalAmountText = product.SellPrice.ToString("F0")
             };
-            newItem.TotalAmount = product.SellPrice; // Initialize with unit price
-            newItem.TotalAmountText = product.SellPrice.ToString("F0"); // Initialize text representation
             CartItems.Add(newItem);
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
-            // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
         }
 
         UpdateProductCartStatus();
@@ -285,12 +262,11 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (item.Quantity < item.Stock)
         {
             item.Quantity++;
-            item.TotalAmount = item.TotalPrice; // Update total amount
-            item.TotalAmountText = item.TotalAmount.ToString("F0"); // Update text representation
+            item.TotalAmount = item.TotalPrice;
+            item.TotalAmountText = item.TotalAmount.ToString("F0");
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
-            // ✅ REMOVED: OnPropertyChanged(nameof(CanCompleteTransaction)) - ya no es necesario
         }
     }
 
@@ -299,8 +275,8 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         if (item.Quantity > 1)
         {
             item.Quantity--;
-            item.TotalAmount = item.TotalPrice; // Update total amount
-            item.TotalAmountText = item.TotalAmount.ToString("F0"); // Update text representation
+            item.TotalAmount = item.TotalPrice;
+            item.TotalAmountText = item.TotalAmount.ToString("F0");
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -360,38 +336,70 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
                 Items = CartItems.ToList(),
                 Tax = Tax,
                 PaymentMethod = SelectedPaymentMethod,
-                Status = SaleStatus.Pending
+                Status = SaleStatus.Pending,
+                Date = DateTime.Now,
+                SaleId = GenerateSaleId() // ✨ NUEVO: Generar ID único para la venta
             };
 
+            // ✨ NUEVO: Procesar la venta localmente primero
             var success = await _pointOfSaleService.ProcessSaleAsync(sale);
 
-            if (success)
-            {
-                string clientInfo = SelectedClient != null && SelectedClient.Id > 0
-                    ? $"\nCliente: {SelectedClient.Name}"
-                    : "";
-
-                string whatsappInfo = !string.IsNullOrWhiteSpace(ClientWhatsAppNumber)
-                    ? $"\nWhatsApp: {ClientWhatsAppNumber}"
-                    : "";
-
-                await Application.Current.MainPage.DisplayAlert(
-                    "✅ Factura Generada",
-                    $"Venta procesada correctamente{clientInfo}{whatsappInfo}\n\n" +
-                    $"💰 Total: ${Total:N2}\n" +
-                    $"📦 Productos: {CartItems.Count}",
-                    "OK");
-
-                ClearCart();
-                LoadProducts(); // Recargar para actualizar stock
-            }
-            else
+            if (!success)
             {
                 await Application.Current.MainPage.DisplayAlert(
                     "Error",
                     "❌ No se pudo procesar la venta.\n\n" +
                     "Verifique el stock disponible de los productos.",
                     "OK");
+                return;
+            }
+
+
+            var billingResult = await _billingService.GenerateElectronicInvoiceAsync(
+                sale,
+                SelectedClient,
+                ClientWhatsAppNumber
+            );
+
+            if (billingResult.Success)
+            {
+                string clientInfo = $"\nCliente: {SelectedClient.Name}";
+                string whatsappInfo = !string.IsNullOrWhiteSpace(ClientWhatsAppNumber)
+                     ? $"\nWhatsApp: {ClientWhatsAppNumber}"
+                   : "";
+
+
+                string cudeInfo = !string.IsNullOrWhiteSpace(billingResult.InvoiceHash)
+                        ? $"\n🔐 CUDE: {billingResult.InvoiceHash.Substring(0, Math.Min(16, billingResult.InvoiceHash.Length))}..."
+                        : "";
+
+                await Application.Current.MainPage.DisplayAlert(
+                   "✅ Factura Electrónica Generada",
+                      $"Venta procesada y factura electrónica generada correctamente{clientInfo}{whatsappInfo}\n\n" +
+                       $"📄 Número de Factura: FE-{billingResult.InvoiceNumber}\n" +
+                $"💰 Total: ${Total:N2}\n" +
+                $"📦 Productos: {CartItems.Count}{cudeInfo}\n\n" +
+                  $"✅ La factura ha sido enviada al correo electrónico del cliente.\n" +
+               $"📱 Puede consultar el PDF desde el Historial de Facturas.",
+                   "OK");
+
+                ClearCart();
+                LoadProducts();
+            }
+            else
+            {
+
+                await Application.Current.MainPage.DisplayAlert(
+                    "⚠️ Venta Procesada - Error en Factura Electrónica",
+                    $"La venta se procesó correctamente, pero hubo un problema al generar la factura electrónica:\n\n" +
+                    $"{billingResult.Message}\n\n" +
+                    $"💰 Total: ${Total:N2}\n" +
+                    $"📦 Productos: {CartItems.Count}\n\n" +
+                    $"Por favor, contacte soporte técnico para generar la factura manualmente.",
+                    "OK");
+
+                ClearCart();
+                LoadProducts();
             }
         }
         catch (Exception ex)
@@ -409,13 +417,17 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         }
     }
 
+    private int GenerateSaleId()
+    {
+        return (int)(DateTime.Now.Ticks / TimeSpan.TicksPerSecond);
+    }
+
     private void ClearCart()
     {
         CartItems.Clear();
         CashReceived = 0;
         SelectedClient = null;
         ClientWhatsAppNumber = string.Empty;
-        IsClientSelectorVisible = false;
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
         OnPropertyChanged(nameof(Total));
