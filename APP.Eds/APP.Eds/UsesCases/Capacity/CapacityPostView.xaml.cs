@@ -108,6 +108,12 @@ public partial class CapacityPostView : ContentPage
                 $"• Altura: {_capacityService.Height.GetValueOrDefault():F2} m\n" +
                 $"• Capacidad: {_capacityService.Gallon.GetValueOrDefault():F2} gal / {_capacityService.Liters:F0} L",
                 "Capacidad Registrada");
+
+            // Clear form fields after successful submission
+            _capacityService.Code = null;
+            _capacityService.Height = null;
+            _capacityService.Gallon = null;  
+            _capacityService.Liters = null;
         }
         catch (Exception ex)
         {
@@ -116,12 +122,6 @@ public partial class CapacityPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Clear form fields after successful submission
-            _capacityService.Code = null;
-            _capacityService.Height = null;
-            _capacityService.Gallon = null;  
-            _capacityService.Liters = null;
 
             // Re-enable button
             if (sender is Button button)

@@ -112,6 +112,13 @@ public partial class HoseHistoryPostView : ContentPage
                     $"• Galones: {vm.AccumulatedGallons:F2}\n" +
                     $"• Precio/Galón: ${pricePerGallon:F0}",
                     "Historial Registrado");
+
+                // Clear form fields after successful submission
+                _hosehistoryService.Date = DateTime.Now;
+                AccumulatedAmount = 0;
+                AccumulatedGallons = 0;
+                _hosehistoryService.SelectedDispensers = null;
+                _hosehistoryService.SelectHose = null;
             }
             catch (Exception ex)
             {
@@ -120,13 +127,6 @@ public partial class HoseHistoryPostView : ContentPage
             finally
             {
                 LoadingOverlay.HideLoading();
-
-                // Clear form fields after successful submission
-                _hosehistoryService.Date = DateTime.Now;
-                AccumulatedAmount = 0;
-                AccumulatedGallons = 0;
-                _hosehistoryService.SelectedDispensers = null;
-                _hosehistoryService.SelectHose = null;
 
                 // Re-enable button
                 if (sender is HoverButton hoverButton)

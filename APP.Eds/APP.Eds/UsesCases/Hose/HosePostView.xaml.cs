@@ -114,6 +114,13 @@ public partial class HosePostView : ContentPage
                     $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
                     $"• Precio por Galón: ${pricePerGallon:F0}",
                     "Manguera Registrada");
+
+                // Clear form fields after successful submission
+                Number = 0;
+                AccumulatedAmount = 0;
+                AccumulatedGallons = 0;
+                _hoseService.SelectedDispensers = null;
+                _hoseService.SelectProductType = null;
             }
             catch (Exception ex)
             {
@@ -122,13 +129,6 @@ public partial class HosePostView : ContentPage
             finally
             {
                 LoadingOverlay.HideLoading();
-
-                // Clear form fields after successful submission
-                Number = 0;
-                AccumulatedAmount = 0;
-                AccumulatedGallons = 0;
-                _hoseService.SelectedDispensers = null;
-                _hoseService.SelectProductType = null;
 
                 // Re-enable button
                 if (sender is HoverButton hoverButton)
