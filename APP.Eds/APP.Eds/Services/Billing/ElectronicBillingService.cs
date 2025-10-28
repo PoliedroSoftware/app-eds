@@ -15,12 +15,28 @@ public class ElectronicBillingService
 {
     private readonly string? _authToken;
 
+    public static bool UseMockData { get; set; } = true;
 
     private static string BillingApiUrl => Configuration.BillingApiUrl;
     private static string PdfApiUrl => Configuration.PdfApiUrl;
 
     private static ObservableCollection<ElectronicInvoiceModel> _invoiceHistory = new();
-    public ObservableCollection<ElectronicInvoiceModel> InvoiceHistory => _invoiceHistory;
+    public ObservableCollection<ElectronicInvoiceModel> InvoiceHistory
+    {
+        get
+        {
+            
+            if (UseMockData && !_invoiceHistory.Any())
+            {
+                var mockInvoices = MockInvoiceService.GetMockInvoices();
+                foreach (var invoice in mockInvoices)
+                {
+                    _invoiceHistory.Add(invoice);
+                }
+            }
+            return _invoiceHistory;
+        }
+    }
 
     public ElectronicBillingService()
     {
@@ -34,7 +50,7 @@ public class ElectronicBillingService
     {
         try
         {
-            
+
             if (sale == null)
                 return new BillingResult { Success = false, Message = "La venta es requerida" };
 
@@ -46,7 +62,7 @@ public class ElectronicBillingService
 
             var billingRequest = BuildBillingRequest(sale, client, whatsappNumber);
 
-            
+
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromSeconds(60);
 
@@ -70,10 +86,10 @@ public class ElectronicBillingService
                 var apiResponse = ParseBillingResponse(responseContent);
                 if (apiResponse?.Success == true && apiResponse.Data?.Cude != null)
                 {
-                   
+
                     var invoice = new ElectronicInvoiceModel
                     {
-                        InvoiceHash = apiResponse.Data.Cude, 
+                        InvoiceHash = apiResponse.Data.Cude,
                         InvoiceNumber = billingRequest.Number,
                         Prefix = billingRequest.Prefix,
                         Date = DateTime.Now,
@@ -97,8 +113,8 @@ public class ElectronicBillingService
                         Message = "Factura electrónica generada exitosamente",
                         InvoiceNumber = billingRequest.Number,
                         ResponseData = responseContent,
-                        InvoiceHash = apiResponse.Data.Cude, 
-                        QRCode = apiResponse.Data.QRCode, 
+                        InvoiceHash = apiResponse.Data.Cude,
+                        QRCode = apiResponse.Data.QRCode,
                         TechProviderFootNote = apiResponse.Data.TechProviderDefaultFootNote
                     };
                 }
@@ -426,23 +442,17 @@ public class ElectronicBillingService
     }
 }
 
-/// <summary>
-/// Resultado de la generación de factura electrónica
-/// </summary>
 public class BillingResult
 {
     public bool Success { get; set; }
     public string Message { get; set; }
     public string InvoiceNumber { get; set; }
     public string ResponseData { get; set; }
-    public string InvoiceHash { get; set; } // CUDE/CUFE de la factura
-    public string QRCode { get; set; } // ✨ NUEVO: Código QR de la factura
-    public string TechProviderFootNote { get; set; } // ✨ NUEVO: Nota del proveedor tecnológico
+    public string InvoiceHash { get; set; }
+    public string QRCode { get; set; }
+    public string TechProviderFootNote { get; set; }
 }
 
-/// <summary>
-/// Modelo para la respuesta de la API de facturación
-/// </summary>
 public class BillingApiResponse
 {
     [JsonPropertyName("code")]
@@ -461,9 +471,6 @@ public class BillingApiResponse
     public string ER { get; set; }
 }
 
-/// <summary>
-/// Datos de la respuesta de facturación
-/// </summary>
 public class BillingDataResponse
 {
     [JsonPropertyName("cude")]

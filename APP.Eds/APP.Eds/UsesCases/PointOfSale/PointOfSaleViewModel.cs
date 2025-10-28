@@ -1,7 +1,7 @@
 ﻿using APP.Eds.Models.Client;
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
-using APP.Eds.Services.Billing; 
+using APP.Eds.Services.Billing;
 using APP.Eds.Services.PointOfSale;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,18 +26,18 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService)
     {
         _pointOfSaleService = pointOfSaleService;
-        _billingService = new ElectronicBillingService(); 
+        _billingService = new ElectronicBillingService();
         Products = [];
         CartItems = [];
-Clients = [];
+        Clients = [];
 
         AddToCartCommand = new Command<ProductModel>(AddToCart);
- RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
+        RemoveFromCartCommand = new Command<SaleItemModel>(RemoveFromCart);
         IncreaseQuantityCommand = new Command<SaleItemModel>(IncreaseQuantity);
         DecreaseQuantityCommand = new Command<SaleItemModel>(DecreaseQuantity);
-      UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
-        ProcessPaymentCommand = new Command(async () => await ProcessPayment()); 
-     ClearCartCommand = new Command(ClearCart);
+        UpdateTotalAmountCommand = new Command<SaleItemModel>(UpdateTotalAmount);
+        ProcessPaymentCommand = new Command(async () => await ProcessPayment());
+        ClearCartCommand = new Command(ClearCart);
         SelectPaymentMethodCommand = new Command<string>(SelectPaymentMethod);
         SearchClientCommand = new Command(async () => await SearchClient());
 
@@ -51,7 +51,7 @@ Clients = [];
     public bool IsLoading
     {
         get => _isLoading;
-     set => SetProperty(ref _isLoading, value);
+        set => SetProperty(ref _isLoading, value);
     }
 
     public ClientLegalModel SelectedClient
@@ -59,17 +59,17 @@ Clients = [];
         get => _selectedClient;
         set
         {
-   if (SetProperty(ref _selectedClient, value))
+            if (SetProperty(ref _selectedClient, value))
             {
-           OnPropertyChanged(nameof(ClientButtonText));
-            System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
-    }
-  }
+                OnPropertyChanged(nameof(ClientButtonText));
+                System.Diagnostics.Debug.WriteLine($"Cliente seleccionado: {value?.Name ?? "Ninguno"}");
+            }
+        }
     }
 
     public string ClientSearchText
     {
-   get => _clientSearchText;
+        get => _clientSearchText;
         set => SetProperty(ref _clientSearchText, value);
     }
 
@@ -90,39 +90,39 @@ Clients = [];
         get
         {
             if (SelectedClient != null && SelectedClient.Id > 0)
-          {
-      // Mostrar: TipoDoc NumeroDoc - Nombre/Razón Social
-       var docType = SelectedClient.DocumentType;
-    var docNumber = SelectedClient.DocumentNumber;
+            {
+                // Mostrar: TipoDoc NumeroDoc - Nombre/Razón Social
+                var docType = SelectedClient.DocumentType;
+                var docNumber = SelectedClient.DocumentNumber;
 
-  // Agregar dígito de verificación si es NIT
-     if (SelectedClient.DocumentTypeId == 1 && SelectedClient.VerificationDigit > 0)
-     {
-    docNumber = $"{docNumber}-{SelectedClient.VerificationDigit}";
-        }
+                // Agregar dígito de verificación si es NIT
+                if (SelectedClient.DocumentTypeId == 1 && SelectedClient.VerificationDigit > 0)
+                {
+                    docNumber = $"{docNumber}-{SelectedClient.VerificationDigit}";
+                }
 
-          // Convertir el nombre a mayúsculas
-  var clientName = SelectedClient.Name.ToUpper();
+                // Convertir el nombre a mayúsculas
+                var clientName = SelectedClient.Name.ToUpper();
 
-     return $"{docType} {docNumber} - {clientName}";
-          }
+                return $"{docType} {docNumber} - {clientName}";
+            }
 
-         return "Sin Cliente Seleccionado";
+            return "Sin Cliente Seleccionado";
         }
     }
 
     public double SubTotal => CartItems.Sum(item => item.TotalPrice);
-    public double Tax => SubTotal * 0; 
+    public double Tax => SubTotal * 0;
     public double Total => SubTotal + Tax;
 
     public double CashReceived
     {
         get => _cashReceived;
-set
-  {
-        SetProperty(ref _cashReceived, value);
-       Change = value - Total;
-   OnPropertyChanged(nameof(Change));
+        set
+        {
+            SetProperty(ref _cashReceived, value);
+            Change = value - Total;
+            OnPropertyChanged(nameof(Change));
         }
     }
 
@@ -132,16 +132,16 @@ set
         private set => SetProperty(ref _change, value);
     }
 
-  public PaymentMethod SelectedPaymentMethod
+    public PaymentMethod SelectedPaymentMethod
     {
         get => _selectedPaymentMethod;
         set => SetProperty(ref _selectedPaymentMethod, value);
     }
 
-    public bool CanCompleteTransaction => true; 
+    public bool CanCompleteTransaction => true;
 
-  public ICommand AddToCartCommand { get; }
- public ICommand RemoveFromCartCommand { get; }
+    public ICommand AddToCartCommand { get; }
+    public ICommand RemoveFromCartCommand { get; }
     public ICommand IncreaseQuantityCommand { get; }
     public ICommand DecreaseQuantityCommand { get; }
     public ICommand UpdateTotalAmountCommand { get; }
@@ -154,23 +154,23 @@ set
     {
         IsLoading = true;
         try
-  {
-  var products = await _pointOfSaleService.GetAvailableProductsAsync();
-          Products.Clear();
-        foreach (var product in products)
-   {
-     Products.Add(product);
+        {
+            var products = await _pointOfSaleService.GetAvailableProductsAsync();
+            Products.Clear();
+            foreach (var product in products)
+            {
+                Products.Add(product);
             }
-    UpdateProductCartStatus();
+            UpdateProductCartStatus();
         }
         catch (Exception ex)
         {
-     await Application.Current.MainPage.DisplayAlert("Error",
-                "No se pudieron cargar los productos", "OK");
-    }
+            await Application.Current.MainPage.DisplayAlert("Error",
+                       "No se pudieron cargar los productos", "OK");
+        }
         finally
         {
-       IsLoading = false;
+            IsLoading = false;
         }
     }
 
@@ -178,40 +178,40 @@ set
     {
         if (string.IsNullOrWhiteSpace(ClientSearchText))
         {
-        await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
-             "Por favor ingrese un número de documento para buscar", "OK");
+            await Application.Current.MainPage.DisplayAlert("Búsqueda de Cliente",
+                 "Por favor ingrese un número de documento para buscar", "OK");
             return;
         }
 
         IsSearching = true;
-    try
+        try
         {
-       System.Diagnostics.Debug.WriteLine($"Buscando cliente con documento: {ClientSearchText}");
+            System.Diagnostics.Debug.WriteLine($"Buscando cliente con documento: {ClientSearchText}");
 
-    var client = await _pointOfSaleService.SearchClientByDocumentAsync(ClientSearchText.Trim());
+            var client = await _pointOfSaleService.SearchClientByDocumentAsync(ClientSearchText.Trim());
 
-   if (client != null)
-        {
+            if (client != null)
+            {
                 SelectedClient = client;
-ClientSearchText = string.Empty; 
-  }
-    else
-    {
-          await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
-       $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
+                ClientSearchText = string.Empty;
             }
-    }
-    catch (Exception ex)
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Cliente No Encontrado",
+             $"No se encontró ningún cliente con el documento: {ClientSearchText}", "OK");
+            }
+        }
+        catch (Exception ex)
         {
-    System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
-   await Application.Current.MainPage.DisplayAlert("Error",
-         "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
+            System.Diagnostics.Debug.WriteLine($"Error buscando cliente: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error",
+                  "Ocurrió un error al buscar el cliente. Por favor intente nuevamente.", "OK");
         }
         finally
         {
-     IsSearching = false;
+            IsSearching = false;
         }
-}
+    }
 
     private void AddToCart(ProductModel product)
     {
@@ -222,7 +222,7 @@ ClientSearchText = string.Empty;
             {
                 existingItem.Quantity++;
                 existingItem.TotalAmount = existingItem.TotalPrice;
-                existingItem.TotalAmountText = existingItem.TotalAmount.ToString("F0"); 
+                existingItem.TotalAmountText = existingItem.TotalAmount.ToString("F0");
                 OnPropertyChanged(nameof(SubTotal));
                 OnPropertyChanged(nameof(Tax));
                 OnPropertyChanged(nameof(Total));
@@ -236,8 +236,8 @@ ClientSearchText = string.Empty;
                 UnitPrice = product.SellPrice,
                 Quantity = 1,
                 Stock = product.Stock,
-                TotalAmount = product.SellPrice, 
-                TotalAmountText = product.SellPrice.ToString("F0") 
+                TotalAmount = product.SellPrice,
+                TotalAmountText = product.SellPrice.ToString("F0")
             };
             CartItems.Add(newItem);
             OnPropertyChanged(nameof(SubTotal));
@@ -262,7 +262,7 @@ ClientSearchText = string.Empty;
         if (item.Quantity < item.Stock)
         {
             item.Quantity++;
-            item.TotalAmount = item.TotalPrice; 
+            item.TotalAmount = item.TotalPrice;
             item.TotalAmountText = item.TotalAmount.ToString("F0");
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
@@ -276,7 +276,7 @@ ClientSearchText = string.Empty;
         {
             item.Quantity--;
             item.TotalAmount = item.TotalPrice;
-            item.TotalAmountText = item.TotalAmount.ToString("F0"); 
+            item.TotalAmountText = item.TotalAmount.ToString("F0");
             OnPropertyChanged(nameof(SubTotal));
             OnPropertyChanged(nameof(Tax));
             OnPropertyChanged(nameof(Total));
@@ -354,7 +354,7 @@ ClientSearchText = string.Empty;
                 return;
             }
 
-            
+
             var billingResult = await _billingService.GenerateElectronicInvoiceAsync(
                 sale,
                 SelectedClient,
@@ -368,7 +368,7 @@ ClientSearchText = string.Empty;
                      ? $"\nWhatsApp: {ClientWhatsAppNumber}"
                    : "";
 
-                
+
                 string cudeInfo = !string.IsNullOrWhiteSpace(billingResult.InvoiceHash)
                         ? $"\n🔐 CUDE: {billingResult.InvoiceHash.Substring(0, Math.Min(16, billingResult.InvoiceHash.Length))}..."
                         : "";
@@ -384,11 +384,11 @@ ClientSearchText = string.Empty;
                    "OK");
 
                 ClearCart();
-                LoadProducts(); 
+                LoadProducts();
             }
             else
             {
-               
+
                 await Application.Current.MainPage.DisplayAlert(
                     "⚠️ Venta Procesada - Error en Factura Electrónica",
                     $"La venta se procesó correctamente, pero hubo un problema al generar la factura electrónica:\n\n" +
@@ -430,9 +430,9 @@ ClientSearchText = string.Empty;
         ClientWhatsAppNumber = string.Empty;
         OnPropertyChanged(nameof(SubTotal));
         OnPropertyChanged(nameof(Tax));
-   OnPropertyChanged(nameof(Total));
+        OnPropertyChanged(nameof(Total));
         OnPropertyChanged(nameof(ClientButtonText));
-    UpdateProductCartStatus();
+        UpdateProductCartStatus();
     }
 
     private void UpdateProductCartStatus()
