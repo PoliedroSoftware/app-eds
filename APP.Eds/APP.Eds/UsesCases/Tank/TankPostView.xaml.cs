@@ -98,6 +98,13 @@ public partial class TankPostView : ContentPage
                     $"• Capacidad: {vm.Ability:F2} L\n" +
                     $"• Stock: {(vm.Stock?.ToString("F2") ?? "No especificado")} L",
                     "Tanque Registrado");
+
+                // Clear form fields after successful submission
+                Number = string.Empty;
+                Compartment = null;
+                Ability = null;
+                Stock = null;
+            
             }
             catch (Exception ex)
             {
@@ -107,11 +114,7 @@ public partial class TankPostView : ContentPage
             {
                 LoadingOverlay.HideLoading();
 
-                // Clear form fields after successful submission
-                Number = string.Empty;
-                Compartment = null;
-                Ability = null;
-                Stock = null;
+                
 
                 // Re-enable button
                 if (sender is Button button)
