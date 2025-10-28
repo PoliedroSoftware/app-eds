@@ -137,14 +137,6 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                     $"• Capacidad Operativa: {vm.Operative:F2} L\n" +
                     $"• Altura: {vm.Height:F0} cm",
                     "Compartimento Creado");
-            }
-            catch (Exception ex)
-            {
-                await CustomAlert.ShowErrorAsync($"Error al guardar el compartimento:\n\n{ex.Message}", "Error del Sistema");
-            }
-            finally
-            {
-                LoadingOverlay.HideLoading();
 
                 // Clear form fields after successful submission
                 Number = 0;
@@ -157,6 +149,14 @@ public partial class CompartimentPostView : ContentPage, INotifyPropertyChanged
                 // Clear selected items
                 _compartimentService.SelectedTank = null;
                 _compartimentService.SelectedProduct = null;
+            }
+            catch (Exception ex)
+            {
+                await CustomAlert.ShowErrorAsync($"Error al guardar el compartimento:\n\n{ex.Message}", "Error del Sistema");
+            }
+            finally
+            {
+                LoadingOverlay.HideLoading();
 
                 // Re-enable button
                 if (sender is Button button)

@@ -66,6 +66,11 @@ public partial class CompartimentCapacityPostView : ContentPage
 
             LoadingOverlay.ShowLoading();
             await _compartimentCapacityService.SaveCompartimentCapacityDataAsync();
+
+            // Clear form fields after successful submission
+            _compartimentCapacityService.SelectCapacity = null;
+            _compartimentCapacityService.SelectCompartiment = null;
+            Default = 0;
         }
         catch (Exception ex)
         {
@@ -74,11 +79,6 @@ public partial class CompartimentCapacityPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Clear form fields after successful submission
-            _compartimentCapacityService.SelectCapacity = null;
-            _compartimentCapacityService.SelectCompartiment = null;
-            Default = 0;
 
             // Re-enable button
             if (sender is Button button)
