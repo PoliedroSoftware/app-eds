@@ -206,9 +206,6 @@
     <MauiXaml Update="Components\PopUp\OkBusiness.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Components\PopUp\PointOfSaleMenuPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
     <MauiXaml Update="Resources\Custom\CustomEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
