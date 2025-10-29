@@ -20,6 +20,10 @@ public partial class AddDocuemt : Popup
 {
     private readonly CourtService _courtService;
 
+    // NUEVO: contexto del corte para asociar los archivos
+    private readonly int? _courtId;
+    private readonly string _courtIdFieldName;
+
     public class SelectedFileItem
     {
         public FileResult? File { get; init; }
@@ -83,10 +87,13 @@ public partial class AddDocuemt : Popup
     // Cache de la última selección durante la sesión
     private static readonly ObservableCollection<SelectedFileItem> _lastSelection = new();
 
-    public AddDocuemt(CourtService service)
+    public AddDocuemt(CourtService service, int? courtId = null, string courtIdFieldName = "courtId")
     {
         InitializeComponent();
         _courtService = service;
+        _courtId = courtId;
+        _courtIdFieldName = courtIdFieldName;
+
         BindingContext = this;
 
         // Restaura selección anterior si existe
@@ -266,26 +273,33 @@ public partial class AddDocuemt : Popup
             var docs = new List<CourtDocument>(SelectedFiles.Count);
             foreach (var item in SelectedFiles)
             {
-                using var s = await item.OpenReadAsync(); // <-- unificado
+                using var s = await item.OpenReadAsync();
                 using var ms = new MemoryStream();
                 await s.CopyToAsync(ms);
                 docs.Add(new CourtDocument { DocumentName = item.Name, Descripcion = Convert.ToBase64String(ms.ToArray()) });
             }
 
-            int? courtId = null;
-            var result = await upload.UploadDocumentsBatchAsync(docs, courtId);
+            var result = await upload.UploadDocumentsBatchAsync(docs, _courtId, _courtIdFieldName);
+
+            // Contar siempre los exitosos (incluye subida parcial)
+            var uploadedCount = result.SuccessfulUploads.Count;
+
+            // Guardar el contador en el servicio
+            _courtService.LastUploadedDocumentsCount = uploadedCount;
 
             if (result.Success)
             {
-                _lastSelection.Clear(); // limpiar cache tras subida exitosa
                 await CustomAlert.ShowSuccessAsync(result.Message, "Archivos subidos");
-                Close();
             }
             else
             {
+                // Si hubo fallos, mostrar detalle pero devolver los exitosos
                 var det = result.FailedUploads.FirstOrDefault()?.Message ?? "Error desconocido";
                 await CustomAlert.ShowErrorAsync($"{result.Message}\n\n{det}", "Error al subir");
             }
+
+            // Devolver el número de subidos al cerrar
+            Close(uploadedCount);
         }
         catch (Exception ex)
         {

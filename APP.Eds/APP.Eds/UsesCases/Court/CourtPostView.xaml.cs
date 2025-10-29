@@ -347,8 +347,25 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     // --- Popups
     private async Task OpenDocumentPopUp()
     {
-        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-        try { await ShowPopupSafelyAsync<object>(new AddDocuemt(_service)); }
+        if (!PuedeEditar)
+        {
+            await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+            return;
+        }
+
+        try
+        {
+            int? corteId = _service.IdCourt > 0 ? _service.IdCourt : null;
+            var popup = new AddDocuemt(_service, courtId: corteId, courtIdFieldName: "courtId");
+
+            // Capturar el resultado y actualizar el contador
+            var result = await ShowPopupSafelyAsync<object>(popup);
+            if (result is int uploaded && uploaded > 0)
+                _service.LastUploadedDocumentsCount = Math.Max(_service.LastUploadedDocumentsCount, uploaded);
+
+            // Si quieres refrescar tarjetas/resumen:
+            await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: false);
+        }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening document popup: {ex.Message}");

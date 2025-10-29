@@ -2814,23 +2814,23 @@ public class CourtService : INotifyPropertyChanged
             {
                 LastSendWasSuccessful = true;
 
-                // Usar el servicio de subida de archivos si hay documentos
+                // Si aún mantienes la subida "legacy" desde CourtService:
                 if (CourtDocuments?.Any() == true)
                 {
                     var fileUploadService = new FileUploadService(_authToken);
                     var uploadResult = await fileUploadService.UploadDocumentsAsync(CourtDocuments);
-
                     if (!uploadResult.Success)
                     {
                         System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: Advertencia - {uploadResult.Message}");
-
-                        // Log de archivos fallidos
                         foreach (var failedUpload in uploadResult.FailedUploads)
-                        {
                             System.Diagnostics.Debug.WriteLine($"  - {failedUpload.FileName}: {failedUpload.Message}");
-                        }
                     }
                 }
+
+                // NUEVO: calcular adjuntos reales (popup vs colección local)
+                var attachmentsFromPopup = LastUploadedDocumentsCount;
+                var attachmentsFromCollection = CourtDocuments?.Count ?? 0;
+                var attachmentsCount = Math.Max(attachmentsFromPopup, attachmentsFromCollection);
 
                 await Application.Current.MainPage.DisplayAlert(
                     "? Corte Enviado Exitosamente",
@@ -2838,9 +2838,12 @@ public class CourtService : INotifyPropertyChanged
                     $"• Total de ventas: ${totalVentas:N2}\n" +
                     $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
                     $"• Gastos: ${GetTotalExpenditure():N2}\n" +
-                    $"• Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
+                    $"• Documentos adjuntos: {attachmentsCount}\n\n" +
                     $"La validación de pagos fue exitosa.",
                     "Completado");
+
+                // Opcional: limpiar el contador para el siguiente corte
+                LastUploadedDocumentsCount = 0;
             }
             else
             {
@@ -3267,4 +3270,5 @@ public class CourtService : INotifyPropertyChanged
             }
         }
     }
+    public int LastUploadedDocumentsCount { get; set; }
 }
