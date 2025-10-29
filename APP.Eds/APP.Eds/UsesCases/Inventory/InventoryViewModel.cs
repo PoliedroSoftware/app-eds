@@ -207,19 +207,35 @@ namespace APP.Eds.UsesCases.Inventory
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("=== INICIO CARGA DE INVENTARIO ===");
+                System.Diagnostics.Debug.WriteLine($"Token presente: {!string.IsNullOrEmpty(_authToken)}");
+                System.Diagnostics.Debug.WriteLine($"URL: {Configuration.BaseUrl}/api/v1/inventory?PageNumber=1&PageSize=100&includeProductType=true");
+                
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/inventory?PageNumber=1&PageSize=100&includeProductType=true");
+                System.Diagnostics.Debug.WriteLine($"Response recibida, length: {response?.Length ?? 0}");
+                
+                // Log primeros 500 caracteres de la respuesta para debugging
+                if (!string.IsNullOrEmpty(response))
+                {
+                    var preview = response.Length > 500 ? response.Substring(0, 500) + "..." : response;
+                    System.Diagnostics.Debug.WriteLine($"Response preview: {preview}");
+                }
+                
                 var inventories = JsonSerializer.Deserialize<List<InventoryModel>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                System.Diagnostics.Debug.WriteLine($"Inventarios deserializados: {inventories?.Count ?? 0}");
 
                 Businesses.Clear();
 
                 if (inventories != null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Procesando {inventories.Count} inventarios...");
                     foreach (var inventory in inventories)
                     {
                         if (inventory.Businesses != null)
                         {
+                            System.Diagnostics.Debug.WriteLine($"Negocios encontrados en inventario: {inventory.Businesses.Count}");
                             foreach (var item in inventory.Businesses)
                             {
                                 // Asegurar que las propiedades nunca sean null
@@ -274,23 +290,36 @@ namespace APP.Eds.UsesCases.Inventory
                                     }
                                 }
 
+                                // Log estado antes de validación
+                                System.Diagnostics.Debug.WriteLine($"Procesando negocio: {item.BusinessName}, EDS: {item.Eds?.Count ?? 0}");
+                                
                                 // Aplicar filtros de validación para limpiar datos incompletos
                                 ValidateAndFilterEds(item);
                                 
-                                // Solo agregar el negocio si pasa la validación completa
-                                if (IsBusinessValid(item))
+                                // Log estado después de validación
+                                System.Diagnostics.Debug.WriteLine($"Después de validación - EDS restantes: {item.Eds?.Count ?? 0}");
+                                
+                                // Agregar el negocio si tiene al menos una EDS válida
+                                // CAMBIO: Validación menos estricta - permitir negocios con al menos una EDS
+                                if (item?.Eds != null && item.Eds.Count > 0)
                                 {
+                                    System.Diagnostics.Debug.WriteLine($"✓ Negocio '{item.BusinessName}' agregado al inventario con {item.Eds.Count} EDS");
                                     Businesses.Add(item);
                                 }
                                 else
                                 {
-                                    // Log para debugging (opcional)
-                                    System.Diagnostics.Debug.WriteLine($"Negocio '{item.BusinessName}' filtrado por datos incompletos");
+                                    System.Diagnostics.Debug.WriteLine($"✗ Negocio '{item.BusinessName}' sin EDS válidas - no se agrega");
                                 }
                             }
                         }
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"=== RESUMEN ===");
+                System.Diagnostics.Debug.WriteLine($"Total negocios agregados: {Businesses.Count}");
+                System.Diagnostics.Debug.WriteLine($"Total EDS: {TotalEds}");
+                System.Diagnostics.Debug.WriteLine($"Total Tanques: {TotalTanks}");
+                System.Diagnostics.Debug.WriteLine($"Total Stock: {TotalStock}");
 
                 UpdateStatistics();
                 
