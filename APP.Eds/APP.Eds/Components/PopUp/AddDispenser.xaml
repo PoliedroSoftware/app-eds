@@ -80,7 +80,15 @@
                                     SelectedItem="{Binding SelectedHose, Mode=TwoWay}"
                                     SelectedIndexChanged="HoseSelected"
                                     BackgroundColor="Transparent" FontSize="12"
-                                    HorizontalTextAlignment="Center"/>
+                                    HorizontalTextAlignment="Center">
+                                <Picker.Triggers>
+                                    <DataTrigger TargetType="Picker"
+                                                 Binding="{Binding CourtService.IsLoadingHoses}"
+                                                 Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Picker.Triggers>
+                            </Picker>
                         </Frame>
                     </StackLayout>
                 </Frame>
@@ -353,9 +361,104 @@
                             <Setter Property="IsEnabled" Value="False"/>
                             <Setter Property="Opacity" Value="0.6"/>
                         </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding CourtService.IsLoadingHoses}"
+                                     Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Opacity" Value="0.6"/>
+                        </DataTrigger>
                     </Button.Triggers>
                 </Button>
             </Frame>
+
+            <!-- Loading/Error Overlay -->
+            <Grid Grid.Row="0" Grid.RowSpan="3" 
+                  IsVisible="{Binding ShowLoadingOverlay}"
+                  BackgroundColor="#CC000000">
+                
+                <!-- Loading State -->
+                <Frame BackgroundColor="White" CornerRadius="16" 
+                       Padding="24" HasShadow="True"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       WidthRequest="280"
+                       IsVisible="{Binding CourtService.IsLoadingHoses}">
+                    <VerticalStackLayout Spacing="16">
+                        <ActivityIndicator IsRunning="True" Color="#FF9800" 
+                                         WidthRequest="48" HeightRequest="48"
+                                         HorizontalOptions="Center"/>
+                        <Label Text="Cargando mangueras…" 
+                               FontSize="16" FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#2D3436"/>
+                        <Label Text="Por favor espere" 
+                               FontSize="12"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#636E72"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Error State -->
+                <Frame BackgroundColor="White" CornerRadius="16" 
+                       Padding="24" HasShadow="True"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       WidthRequest="280"
+                       IsVisible="{Binding ShowErrorState}">
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="⚠️" FontSize="48" 
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Error al cargar" 
+                               FontSize="16" FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#D32F2F"/>
+                        <Label Text="{Binding CourtService.HoseLoadError}" 
+                               FontSize="12"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#636E72"
+                               LineBreakMode="WordWrap"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <Button Grid.Column="0" Text="Reintentar"
+                                    BackgroundColor="#FF9800"
+                                    TextColor="White"
+                                    Clicked="OnRetryLoadHoses"
+                                    CornerRadius="8"
+                                    FontSize="14"/>
+                            <Button Grid.Column="1" Text="Cerrar"
+                                    BackgroundColor="#E0E0E0"
+                                    TextColor="#2D3436"
+                                    Clicked="OnCloseTapped"
+                                    CornerRadius="8"
+                                    FontSize="14"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Empty State -->
+                <Frame BackgroundColor="White" CornerRadius="16" 
+                       Padding="24" HasShadow="True"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       WidthRequest="280"
+                       IsVisible="{Binding ShowEmptyState}">
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="📋" FontSize="48" 
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Sin mangueras" 
+                               FontSize="16" FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#FF9800"/>
+                        <Label Text="No hay mangueras disponibles para este dispensador/EDS." 
+                               FontSize="12"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#636E72"
+                               LineBreakMode="WordWrap"/>
+                        <Button Text="Cerrar"
+                                BackgroundColor="#FF9800"
+                                TextColor="White"
+                                Clicked="OnCloseTapped"
+                                CornerRadius="8"
+                                FontSize="14"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
         </Grid>
     </Frame>
 </mct:Popup>
