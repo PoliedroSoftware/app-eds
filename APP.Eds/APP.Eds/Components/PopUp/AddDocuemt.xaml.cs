@@ -67,13 +67,33 @@ public partial class AddDocuemt : Popup
                                 $"{bytes / 1024.0 / 1024.0:F2} MB") }";
         }
     }
-    public string SummaryText => SelectedCount > 0 ? "Se subirán en un solo paquete (1 petición HTTP)" : string.Empty;
+    public string SummaryText
+    {
+        get
+        {
+            return SelectedCount switch
+            {
+                0 => string.Empty,
+                1 => "Se subirá 1 archivo en una sola carga.",
+                _ => $"Se subirán {SelectedCount} archivos en una sola carga."
+            };
+        }
+    }
+
+    // Cache de la última selección durante la sesión
+    private static readonly ObservableCollection<SelectedFileItem> _lastSelection = new();
 
     public AddDocuemt(CourtService service)
     {
         InitializeComponent();
         _courtService = service;
         BindingContext = this;
+
+        // Restaura selección anterior si existe
+        foreach (var it in _lastSelection)
+            SelectedFiles.Add(it);
+
+        RefreshBindings();
     }
 
     private void RefreshBindings()
@@ -81,6 +101,13 @@ public partial class AddDocuemt : Popup
         OnPropertyChanged(nameof(SelectedCount));
         OnPropertyChanged(nameof(TotalSizeText));
         OnPropertyChanged(nameof(SummaryText));
+    }
+
+    private void SyncCache()
+    {
+        _lastSelection.Clear();
+        foreach (var it in SelectedFiles)
+            _lastSelection.Add(it);
     }
 
     // Comparador básico para evitar duplicados al acumular selección
@@ -189,6 +216,7 @@ public partial class AddDocuemt : Popup
                     SelectedFiles.Add(item);
 
             RefreshBindings();
+            SyncCache();
         }
         catch (Exception ex)
         {
@@ -198,6 +226,26 @@ public partial class AddDocuemt : Popup
         {
             _isPicking = false;
         }
+    }
+
+    // Nuevo: eliminar archivo individual (desde botón en la plantilla de la lista)
+    private void OnRemoveFile(object sender, EventArgs e)
+    {
+        if (sender is Element el && el.BindingContext is SelectedFileItem item)
+        {
+            SelectedFiles.Remove(item);
+            RefreshBindings();
+            SyncCache();
+        }
+    }
+
+    // Nuevo: quitar todos los archivos
+    private void OnClearAll(object sender, EventArgs e)
+    {
+        if (SelectedFiles.Count == 0) return;
+        SelectedFiles.Clear();
+        RefreshBindings();
+        SyncCache();
     }
 
     private async void OnUpload(object sender, EventArgs e)
@@ -229,6 +277,7 @@ public partial class AddDocuemt : Popup
 
             if (result.Success)
             {
+                _lastSelection.Clear(); // limpiar cache tras subida exitosa
                 await CustomAlert.ShowSuccessAsync(result.Message, "Archivos subidos");
                 Close();
             }

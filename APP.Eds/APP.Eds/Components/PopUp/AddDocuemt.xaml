@@ -1,95 +1,74 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolkit:Popup
     x:Class="APP.Eds.Components.PopUp.AddDocuemt"
+    x:Name="Root"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    Color="#80000000"
-    CanBeDismissedByTappingOutsideOfPopup="False">
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    Size="600,Auto">
 
-    <Border
-        StrokeThickness="0"
-        BackgroundColor="White"
-        Padding="20"
-        WidthRequest="520"
-        MaximumWidthRequest="700"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        StrokeShape="RoundRectangle 16">
-        <Grid RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*,Auto">
-            <!-- Header -->
-            <Label Grid.Row="0" Grid.ColumnSpan="2"
-                   Text="Agregar comprobante"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="#1F5EFF"
-                   Margin="0,0,0,12"/>
-            <ImageButton Grid.Row="0" Grid.Column="1"
-                         Source="close.png"
-                         BackgroundColor="Transparent"
-                         HorizontalOptions="End"
-                         Clicked="OnCloseTapped"/>
+    <!-- Layout con filas fijas + lista scrollable -->
+    <Grid Padding="16"
+          RowSpacing="12"
+          RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-            <!-- Selector múltiple -->
-            <Border Grid.Row="1" Grid.ColumnSpan="2"
-                    BackgroundColor="#F2F6FF"
-                    Stroke="#DDE6FF"
-                    StrokeThickness="1"
-                    Padding="16"
-                    Margin="0,0,0,10"
-                    StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="10">
-                    <Button Text="📁 Seleccionar documentos (múltiples)"
-                            Clicked="OnPickMultipleFiles"
-                            BackgroundColor="#EAF1FF"
-                            TextColor="#1F5EFF"
-                            CornerRadius="10"/>
-                    <Label Text="Formatos sugeridos: .jpg, .png, .pdf"
-                           FontSize="12"
-                           TextColor="#666"/>
-                </VerticalStackLayout>
-            </Border>
+        <!-- Botón seleccionar -->
+        <Border Grid.Row="0" Padding="12" BackgroundColor="{AppThemeBinding Light=#EEF3FF, Dark=#1F2A44}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="6">
+                <Button Text="Seleccionar documentos (múltiples)" Clicked="OnPickMultipleFiles" />
+                <Label Text="Formatos sugeridos: .jpg, .png, .pdf" FontSize="12" TextColor="{AppThemeBinding Light=#586174, Dark=#AAB2C0}" Margin="0,6,0,0"/>
+            </VerticalStackLayout>
+        </Border>
 
-            <!-- Lista de seleccionados -->
-            <Border Grid.Row="2" Grid.ColumnSpan="2"
-                    BackgroundColor="#FAFFFA"
-                    Stroke="#E1F3E1"
-                    StrokeThickness="1"
-                    Padding="12"
-                    StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="8">
-                    <HorizontalStackLayout Spacing="8">
-                        <Label Text="Archivos seleccionados:" FontAttributes="Bold"/>
-                        <Label Text="{Binding SelectedCount, StringFormat='({0})'}" TextColor="#0A7F2E"/>
-                        <Label Text="{Binding TotalSizeText}" TextColor="#0A7F2E"/>
-                    </HorizontalStackLayout>
-
-                    <CollectionView ItemsSource="{Binding SelectedFiles}" HeightRequest="220">
-                        <CollectionView.EmptyView>
-                            <Label Text="No hay archivos seleccionados" TextColor="#999" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
-                        </CollectionView.EmptyView>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid ColumnDefinitions="Auto,*,Auto" Padding="6,4">
-                                    <Label Text="✔" TextColor="#0A7F2E" Margin="0,0,6,0"/>
-                                    <Label Grid.Column="1" Text="{Binding Name}" LineBreakMode="TailTruncation"/>
-                                    <Label Grid.Column="2" Text="{Binding SizeText}" TextColor="#666" Margin="8,0,0,0"/>
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Botonera -->
-            <Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto,Auto" Margin="0,12,0,0">
-                <Label Grid.Column="0" Text="{Binding SummaryText}" TextColor="#666" VerticalOptions="Center"/>
-                <Button Grid.Column="1" Text="Cancelar" Clicked="OnCloseTapped"
-                        BackgroundColor="#EEE" TextColor="#333" CornerRadius="10" Margin="0,0,8,0"/>
-                <Button Grid.Column="2" Text="Subir"
-                        Clicked="OnUpload"
-                        BackgroundColor="#1F5EFF" TextColor="White" CornerRadius="10"/>
-            </Grid>
+        <!-- Cabecera + Quitar todo -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Padding="4,0">
+            <Label Text="{Binding Source={x:Reference Root}, Path=BindingContext.SelectedCount, StringFormat='Archivos seleccionados: ({0})'}" />
+            <Button Grid.Column="1" Text="Quitar todo" Clicked="OnClearAll" IsEnabled="{Binding SelectedCount, Converter={toolkit:IntToBoolConverter}}" />
         </Grid>
-    </Border>
+
+        <!-- Lista scrollable: ocupa el espacio disponible -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding SelectedFiles}"
+                        VerticalOptions="FillAndExpand"
+                        Margin="0,4,0,0">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20" Spacing="4">
+                    <Label Text="No hay archivos seleccionados." HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#586174, Dark=#AAB2C0}"/>
+                    <Label Text="Pulsa “Seleccionar documentos (múltiples)” para agregarlos." FontSize="12" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#7A8497, Dark=#8F98A8}"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="24,*,Auto" Padding="8,6">
+                        <Label Grid.Column="0" Text="✔" TextColor="ForestGreen" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="{Binding Name}" LineBreakMode="TailTruncation" MaxLines="1"/>
+                            <Label Text="{Binding SizeText}" FontSize="12" TextColor="{AppThemeBinding Light=#586174, Dark=#AAB2C0}"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="2" Text="Quitar" Padding="10,6" Clicked="OnRemoveFile"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Resumen -->
+        <VerticalStackLayout Grid.Row="3" Spacing="0">
+            <Label Text="{Binding TotalSizeText}" FontAttributes="Bold" Margin="0,6,0,0"/>
+            <Label Text="{Binding SummaryText}" FontSize="12" TextColor="{AppThemeBinding Light=#586174, Dark=#AAB2C0}"/>
+        </VerticalStackLayout>
+
+        <!-- Acciones: siempre visibles -->
+        <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto" Margin="0,8,0,0" Padding="0,0,0,8">
+            <Button Text="Cancelar" Grid.Column="0" Clicked="OnCloseTapped" />
+            <Label Grid.Column="1"/>
+            <Button Text="Subir"
+                    Grid.Column="2"
+                    Clicked="OnUpload"
+                    IsEnabled="{Binding SelectedCount, Converter={toolkit:IntToBoolConverter}}"/>
+        </Grid>
+    </Grid>
 </toolkit:Popup>
