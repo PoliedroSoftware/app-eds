@@ -227,11 +227,16 @@
                                     <StackLayout Orientation="Horizontal" Spacing="6">
                                         <CheckBox IsChecked="{Binding CanManageDispensers, Mode=TwoWay}"
                                                   Color="#6A1B9A"
-                                                  AutomationId="CheckBoxCanManageDispensers"/>
+                                                  AutomationId="CheckBoxCanManageDispensers"
+                                                  VerticalOptions="Start"
+                                                  Margin="0,2,0,0"/>
                                         <Label Text="¿Puede gestionar dispensadores?" 
                                                FontSize="13" 
                                                TextColor="#636E72"
-                                               VerticalOptions="Center"/>
+                                               VerticalOptions="Center"
+                                               LineBreakMode="WordWrap"
+                                               MaxLines="2"
+                                               HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>
