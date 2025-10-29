@@ -216,13 +216,6 @@ namespace APP.Eds.UsesCases.Inventory
                 var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/inventory?PageNumber=1&PageSize=100&includeProductType=true");
                 System.Diagnostics.Debug.WriteLine($"Response recibida, length: {response?.Length ?? 0}");
                 
-                // Log primeros 500 caracteres de la respuesta para debugging
-                if (!string.IsNullOrEmpty(response))
-                {
-                    var preview = response.Length > 500 ? response.Substring(0, 500) + "..." : response;
-                    System.Diagnostics.Debug.WriteLine($"Response preview: {preview}");
-                }
-                
                 var inventories = JsonSerializer.Deserialize<List<InventoryModel>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 System.Diagnostics.Debug.WriteLine($"Inventarios deserializados: {inventories?.Count ?? 0}");
 
