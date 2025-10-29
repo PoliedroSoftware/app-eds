@@ -287,8 +287,7 @@
                                 <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="0">
                                     <button:HoverButton
                                         Text="🚀 Enviar Datos"
-                                        TextColor="White" 
-                                        BackgroundColor="Transparent"
+                                        TextColor="White"
                                         Clicked="Button_Clicked_1"
                                         AutomationId="ButtonSendData"
                                         FontSize="16"
@@ -310,18 +309,16 @@
                                                 Radius="6" 
                                                 Opacity="0.3"/>
                                     </Border.Shadow>
-                                    <button:HoverButton
-                                        Text="📦 Compartimento"
-                                        TextColor="White" 
+                                    <Button
+                                        Text="Gestión de Compartimientos"
+                                        TextColor="White"
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
                                         AutomationId="ButtonCompartiment"
-                                        FontSize="14"
+                                        FontSize="16"
                                         FontAttributes="Bold"
                                         HeightRequest="50"
-                                        CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
+                                        CornerRadius="16"/>
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>
