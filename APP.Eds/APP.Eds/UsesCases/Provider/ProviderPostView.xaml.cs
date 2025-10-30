@@ -50,6 +50,9 @@ public partial class ProviderPostView : ContentPage
 
             // Refresh the provider list after successful save
             await _providerService.GetProvidersAsync();
+
+            // Clear form field after successful submission
+            Name = string.Empty;
         }
         catch (Exception ex)
         {
@@ -58,9 +61,6 @@ public partial class ProviderPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Clear form field after successful submission
-            Name = string.Empty;
 
             // Re-enable button
             if (sender is Button button)

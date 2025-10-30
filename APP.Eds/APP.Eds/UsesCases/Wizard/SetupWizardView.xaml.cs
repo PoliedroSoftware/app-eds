@@ -3,6 +3,7 @@ using APP.Eds.Services.Copilot;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.UsesCases.Wizard
 {
@@ -11,7 +12,6 @@ namespace APP.Eds.UsesCases.Wizard
         private WizardService _wizardService;
         private CopilotService _copilotService;
         private bool _isLoading;
-        private bool _showHelpResponse;
 
         public WizardService WizardService => _wizardService;
         public CopilotService CopilotService => _copilotService;
@@ -30,22 +30,10 @@ namespace APP.Eds.UsesCases.Wizard
             }
         }
 
-        public bool ShowHelpResponse
-        {
-            get => _showHelpResponse;
-            set
-            {
-                _showHelpResponse = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ICommand NavigateToStepCommand { get; private set; }
         public ICommand NextStepCommand { get; private set; }
         public ICommand PreviousStepCommand { get; private set; }
         public ICommand ValidateStepCommand { get; private set; }
-        public ICommand GetHelpCommand { get; private set; }
-        public ICommand GetContextualHelpCommand { get; private set; }
         public ICommand FinishWizardCommand { get; private set; }
 
         public SetupWizardView()
@@ -59,6 +47,9 @@ namespace APP.Eds.UsesCases.Wizard
             
             // Initial validation
             _ = Task.Run(async () => await _wizardService.RefreshValidationAsync());
+
+            // ✨ Animar entrada del botón flotante
+            AnimateFloatingButtonEntry();
         }
 
         private void InitializeCommands()
@@ -67,9 +58,81 @@ namespace APP.Eds.UsesCases.Wizard
             NextStepCommand = new Command(async () => await GoNextStep(), () => _wizardService.CanGoNext);
             PreviousStepCommand = new Command(async () => await GoPreviousStep(), () => _wizardService.CanGoPrevious);
             ValidateStepCommand = new Command(async () => await ValidateCurrentStep());
-            GetHelpCommand = new Command<string>(async (question) => await GetHelp(question));
-            GetContextualHelpCommand = new Command(async () => await GetContextualHelp());
             FinishWizardCommand = new Command(async () => await FinishWizard());
+        }
+
+        // ✨ MEJORADO: Animación de entrada del botón flotante
+        private async void AnimateFloatingButtonEntry()
+        {
+            await Task.Delay(500); // Esperar a que la página se cargue
+
+            if (FloatingChatButton != null)
+            {
+                FloatingChatButton.Scale = 0;
+                FloatingChatButton.Opacity = 0;
+
+                await Task.WhenAll(
+                    FloatingChatButton.ScaleTo(1, 600, Easing.SpringOut),
+                    FloatingChatButton.FadeTo(1, 400, Easing.CubicOut)
+                );
+
+                // Pequeña animación de "rebote" para llamar la atención
+                await FloatingChatButton.ScaleTo(1.1, 100, Easing.CubicOut);
+                await FloatingChatButton.ScaleTo(1, 100, Easing.CubicIn);
+            }
+        }
+
+        // ✨ MEJORADO: Manejador del botón flotante con animación
+        private async void OnFloatingChatTapped(object sender, EventArgs e)
+        {
+            try
+            {
+                // Animación de "presionar" el botón
+                if (sender is Frame button)
+                {
+                    await button.ScaleTo(0.9, 50, Easing.CubicOut);
+                    await button.ScaleTo(1, 100, Easing.SpringOut);
+                }
+
+                var currentStepContext = _wizardService.CurrentStep?.Title ?? "";
+                var chatPopup = new FloatingChatPopup(_copilotService, currentStepContext);
+                
+                await this.ShowPopupAsync(chatPopup);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"No se pudo abrir el asistente:\n\n{ex.Message}", "OK");
+            }
+        }
+
+        // ✨ NUEVO: Animación de hover/pulso para el botón flotante
+        private async void OnFloatingChatPointerEntered(object sender, PointerEventArgs e)
+        {
+            if (sender is Frame button)
+            {
+                await button.ScaleTo(1.1, 150, Easing.CubicOut);
+            }
+        }
+
+        private async void OnFloatingChatPointerExited(object sender, PointerEventArgs e)
+        {
+            if (sender is Frame button)
+            {
+                await button.ScaleTo(1, 150, Easing.CubicIn);
+            }
+        }
+
+        // ✨ NUEVO: Animación de pulso continuo para llamar la atención
+        private async void StartFloatingButtonPulseAnimation()
+        {
+            if (FloatingChatButton == null) return;
+
+            while (FloatingChatButton.IsVisible)
+            {
+                await FloatingChatButton.ScaleTo(1.05, 1000, Easing.SinInOut);
+                await FloatingChatButton.ScaleTo(1, 1000, Easing.SinInOut);
+                await Task.Delay(3000); // Pausa entre pulsos
+            }
         }
 
         private async Task NavigateToCurrentStep()
@@ -142,56 +205,6 @@ namespace APP.Eds.UsesCases.Wizard
             finally
             {
                 IsLoading = false;
-            }
-        }
-
-        private async Task GetHelp(string question)
-        {
-            if (string.IsNullOrWhiteSpace(question))
-            {
-                await CustomAlert.ShowInfoAsync("Escriba una pregunta específica sobre la configuración actual para obtener ayuda personalizada", "Pregunta Requerida");
-                return;
-            }
-
-            try
-            {
-                string currentStepContext = _wizardService.CurrentStep?.Title ?? "";
-                await _copilotService.GetHelpAsync(question, currentStepContext);
-                ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
-                
-                if (ShowHelpResponse)
-                {
-                    await CustomAlert.ShowSuccessAsync("Se ha generado una respuesta de ayuda personalizada para su consulta", "Ayuda Obtenida");
-                }
-                
-                // Clear the entry
-                if (HelpEntry != null)
-                    HelpEntry.Text = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                await CustomAlert.ShowErrorAsync($"No se pudo obtener ayuda del asistente:\n\n{ex.Message}", "Error de Ayuda");
-            }
-        }
-
-        private async Task GetContextualHelp()
-        {
-            try
-            {
-                string currentStep = _wizardService.CurrentStep?.Title ?? "configuración";
-                string contextualQuestion = $"¿Cómo configuro {currentStep}? ¿Qué debo hacer en este paso?";
-                
-                await _copilotService.GetHelpAsync(contextualQuestion, _wizardService.CurrentStep?.Title ?? "");
-                ShowHelpResponse = !string.IsNullOrEmpty(_copilotService.Response);
-                
-                if (ShowHelpResponse)
-                {
-                    await CustomAlert.ShowInfoAsync($"Se ha generado ayuda contextual para el paso: {currentStep}", "Ayuda Contextual");
-                }
-            }
-            catch (Exception ex)
-            {
-                await CustomAlert.ShowErrorAsync($"Error al obtener ayuda contextual:\n\n{ex.Message}", "Error de Ayuda");
             }
         }
 
