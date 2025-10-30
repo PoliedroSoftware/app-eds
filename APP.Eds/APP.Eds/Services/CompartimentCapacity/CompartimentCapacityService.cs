@@ -96,8 +96,8 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     }
     //AgregaDefault
 
-    private byte _default;
-    public byte Default
+    private byte? _default;
+    public byte? Default
     {
         get => _default;
         set
@@ -262,7 +262,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
                 return;
             }
 
-            if (Default <= 0)
+            if (!Default.HasValue || Default <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar un valor de capacidad válido (mayor que 0)", "Capacidad Inválida");
                 return;
@@ -278,7 +278,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
             {
                 IdCapacity = SelectCapacity.IdCapacity,
                 IdCompartiment = SelectCompartiment.Number,
-                Default = Default
+                Default = Default.Value
             };
 
             Request = new CompartimentCapacityRequest
@@ -298,7 +298,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
                 int compartmentNumber = SelectCompartiment.Number;
                 
                 await CustomAlert.ShowSuccessAsync(
-                    $"Se ha configurado exitosamente la capacidad de {Default} L para el compartimento #{compartmentNumber} del tanque {tankCode}", 
+                    $"Se ha configurado exitosamente la capacidad de {Default.Value} L para el compartimento #{compartmentNumber} del tanque {tankCode}", 
                     "Capacidad Configurada");
             }
             else
