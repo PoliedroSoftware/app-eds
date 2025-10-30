@@ -12,6 +12,7 @@ using System.Linq;
 using APP.Eds.Components.PopUp;
 using static APP.Eds.Components.PopUp.CustomAlert;
 using APP.Eds.Models.ProductCompartiment;
+using APP.Eds.Models.Product;
 
 namespace APP.Eds.Services.Compartiment
 {
