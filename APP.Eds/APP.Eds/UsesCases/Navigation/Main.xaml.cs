@@ -7,7 +7,7 @@ public partial class Main : ContentPage
 {
     private KeycloakSessionManager _sessionManager;
     public Main()
-	{
+    {
         InitializeComponent();
         BindingContext = new MainService();
         _sessionManager = new KeycloakSessionManager();

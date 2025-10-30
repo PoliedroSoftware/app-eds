@@ -5,6 +5,7 @@ using APP.Eds.Services.Authentication;
 using APP.Eds.UsesCases.Navigation;
 using APP.Eds.Services.Config;
 using APP.Eds.Helpers;
+using APP.Eds.Models.Translations;
 
 namespace APP.Eds
 {
@@ -48,7 +49,8 @@ namespace APP.Eds
 
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
-                    ShowError("Please enter both username and password");
+                    var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("invalid_input");
+                    ShowError(message, icon, bgColor, textColor);
                     return;
                 }
 
@@ -60,7 +62,8 @@ namespace APP.Eds
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    ShowError("Authentication failed. No access token returned.");
+                    var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("token_missing");
+                    ShowError(message, icon, bgColor, textColor);
                     return;
                 }
 
@@ -68,7 +71,8 @@ namespace APP.Eds
                 var tokenParts = token.Split('.');
                 if (tokenParts.Length < 2)
                 {
-                    ShowError("Token inválido.");
+                    var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("token_invalid");
+                    ShowError(message, icon, bgColor, textColor);
                     return;
                 }
 
@@ -135,7 +139,9 @@ namespace APP.Eds
             }
             catch (Exception ex)
             {
-                ShowError($"An error occurred: {ex.Message}");
+                Debug.WriteLine($"Error durante el inicio de sesión: {ex.Message}");
+                var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage(ex.Message);
+                ShowError(message, icon, bgColor, textColor);
             }
             finally
             {
@@ -147,10 +153,12 @@ namespace APP.Eds
         }
 
        
-        private void ShowError(string message, string color = "Red")
+        private void ShowError(string message, string icon, string backgroundColor, string textColor)
         {
             ErrorLabel.Text = message;
-            ErrorLabel.TextColor = color == "Red" ? Colors.Red : Colors.Green;
+            ErrorIcon.Text = icon;
+            ErrorSection.BackgroundColor = Color.FromArgb(backgroundColor);
+            ErrorLabel.TextColor = Color.FromArgb(textColor);
             ErrorSection.IsVisible = true;
         }
 
