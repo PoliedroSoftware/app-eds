@@ -23,14 +23,17 @@ public partial class HosePostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        // Store button reference before try block
+        var button = sender as HoverButton;
+        
         if (BindingContext is HoseService vm)
         {
             try
             {
                 // Disable button to prevent multiple submissions
-                if (sender is HoverButton hoverButton)
+                if (button != null)
                 {
-                    hoverButton.IsEnabled = false;
+                    button.IsEnabled = false;
                 }
 
                 // Enhanced validation with professional alerts
@@ -131,9 +134,9 @@ public partial class HosePostView : ContentPage
                 LoadingOverlay.HideLoading();
 
                 // Re-enable button
-                if (sender is HoverButton hoverButton)
+                if (button != null)
                 {
-                    hoverButton.IsEnabled = true;
+                    button.IsEnabled = true;
                 }
             }
         }
