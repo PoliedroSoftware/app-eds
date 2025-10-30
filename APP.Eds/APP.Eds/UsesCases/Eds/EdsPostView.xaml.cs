@@ -96,6 +96,13 @@ public partial class EdsPostView : ContentPage
                     $"• Dirección: {_edsService.Address}\n" +
                     $"• Negocio: {_edsService.SelectedBusiness.Name}",
                     "EDS Registrada");
+
+                // Clear form fields after successful submission
+                _edsService.Name = string.Empty;
+                _edsService.Nit = string.Empty;
+                _edsService.Address = string.Empty;
+                _edsService.Sicom = string.Empty;
+                _edsService.SelectedBusiness = null;
             }
             catch (Exception ex)
             {
@@ -104,13 +111,6 @@ public partial class EdsPostView : ContentPage
             finally
             {
                 LoadingOverlay.IsVisible = false;
-
-                // Clear form fields after successful submission
-                _edsService.Name = string.Empty;
-                _edsService.Nit = string.Empty;
-                _edsService.Address = string.Empty;
-                _edsService.Sicom = string.Empty;
-                _edsService.SelectedBusiness = null;
 
                 // Re-enable button
                 if (sender is HoverButton hoverButton)

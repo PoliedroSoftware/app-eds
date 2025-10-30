@@ -80,6 +80,9 @@ public partial class CategoryPostView : ContentPage
             await _categoryService.SaveCategoryDataAsync();
             
             await CustomAlert.ShowSuccessAsync($"La categoría '{_categoryService.Description}' ha sido creada exitosamente", "Categoría Creada");
+
+            // Clear form field after successful submission
+            Description = string.Empty;
         }
         catch (Exception ex)
         {
@@ -88,9 +91,6 @@ public partial class CategoryPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Clear form field after successful submission
-            Description = string.Empty;
 
             // Re-enable button
             if (sender is Button button)

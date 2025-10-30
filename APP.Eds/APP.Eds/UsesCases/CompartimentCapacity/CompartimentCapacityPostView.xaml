@@ -142,7 +142,7 @@
                                                VerticalOptions="Center"/>
                                         
                                         <Entry Keyboard="Numeric"
-                                               Placeholder="Ingrese la capacidad por defecto"
+                                               Placeholder="Ingrese la capacidad en litros"
                                                PlaceholderColor="#9CA3AF"
                                                Text="{Binding Default, Mode=TwoWay}"
                                                AutomationId="EntryDefault"

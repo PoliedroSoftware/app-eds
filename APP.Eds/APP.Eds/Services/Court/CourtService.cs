@@ -820,6 +820,28 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
+    private bool _isLoadingHoses;
+    public bool IsLoadingHoses
+    {
+        get => _isLoadingHoses;
+        set
+        {
+            _isLoadingHoses = value;
+            OnPropertyChanged(nameof(IsLoadingHoses));
+        }
+    }
+
+    private string? _hoseLoadError;
+    public string? HoseLoadError
+    {
+        get => _hoseLoadError;
+        set
+        {
+            _hoseLoadError = value;
+            OnPropertyChanged(nameof(HoseLoadError));
+        }
+    }
+
     //TRADUCCION
 
     private string _business = string.Empty;
@@ -3146,6 +3168,62 @@ public class CourtService : INotifyPropertyChanged
         OnPropertyChanged(nameof(HoseList));
         OnPropertyChanged(nameof(AreAvailableHoses));
         OnPropertyChanged(nameof(NewSaleEnabled));
+    }
+
+    /// <summary>
+    /// Reloads hoses from the API with loading state tracking
+    /// </summary>
+    public async Task ReloadHosesAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            HoseLoadError = "No se encontró el token de autenticación";
+            return;
+        }
+
+        IsLoadingHoses = true;
+        HoseLoadError = null;
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("CourtService.ReloadHosesAsync: Iniciando carga de mangueras");
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.Timeout = TimeSpan.FromSeconds(15);
+
+            var hoseResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/hose?PageNumber=1&PageSize=100");
+            var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
+
+            // If an EDS is selected, filter hoses by EDS
+            if (SelectedEds != null)
+            {
+                LoadHoseByEds(SelectedEds.IdEds);
+            }
+
+            System.Diagnostics.Debug.WriteLine($"CourtService.ReloadHosesAsync: Mangueras cargadas exitosamente. Total: {HoseList?.Count ?? 0}");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.ReloadHosesAsync: Error de conexión HTTP: {httpEx.Message}");
+            HoseLoadError = "No fue posible cargar las mangueras. Verifique su conexión.";
+        }
+        catch (TaskCanceledException)
+        {
+            System.Diagnostics.Debug.WriteLine("CourtService.ReloadHosesAsync: Timeout de operación");
+            HoseLoadError = "La carga de mangueras tardó demasiado. Intente nuevamente.";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.ReloadHosesAsync: Error general: {ex.Message}");
+            HoseLoadError = "Error al cargar las mangueras. Intente nuevamente.";
+        }
+        finally
+        {
+            IsLoadingHoses = false;
+        }
     }
 
     public void AddSelectedHose(HoseCourtModel hose)

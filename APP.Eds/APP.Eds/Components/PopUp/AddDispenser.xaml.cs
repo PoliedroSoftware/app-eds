@@ -113,6 +113,16 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         }
     }
 
+    // Properties for loading overlay states
+    public bool ShowLoadingOverlay => courtService.IsLoadingHoses || ShowErrorState || ShowEmptyState;
+    
+    public bool ShowErrorState => !courtService.IsLoadingHoses && 
+                                   !string.IsNullOrEmpty(courtService.HoseLoadError);
+    
+    public bool ShowEmptyState => !courtService.IsLoadingHoses && 
+                                   string.IsNullOrEmpty(courtService.HoseLoadError) &&
+                                   (courtService.HoseList == null || courtService.HoseList.Count == 0);
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public AddDispenser(CourtService courtService)
@@ -129,6 +139,55 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
         // Configure local binding context
         BindingContext = this;
+
+        // Subscribe to CourtService property changes
+        courtService.PropertyChanged += OnCourtServicePropertyChanged;
+
+        // Trigger initial hose load
+        _ = InitializeHosesAsync();
+    }
+
+    private async Task InitializeHosesAsync()
+    {
+        ExecuteSafely(() =>
+        {
+            // Update overlay visibility
+            OnPropertyChanged(nameof(ShowLoadingOverlay));
+            OnPropertyChanged(nameof(ShowErrorState));
+            OnPropertyChanged(nameof(ShowEmptyState));
+        });
+
+        // If hoses are already loaded and not empty, skip reload
+        if (courtService.HoseList != null && courtService.HoseList.Count > 0)
+        {
+            return;
+        }
+
+        // Reload hoses
+        await courtService.ReloadHosesAsync();
+
+        ExecuteSafely(() =>
+        {
+            // Update overlay visibility after load
+            OnPropertyChanged(nameof(ShowLoadingOverlay));
+            OnPropertyChanged(nameof(ShowErrorState));
+            OnPropertyChanged(nameof(ShowEmptyState));
+        });
+    }
+
+    private void OnCourtServicePropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        ExecuteSafely(() =>
+        {
+            if (e.PropertyName == nameof(CourtService.IsLoadingHoses) ||
+                e.PropertyName == nameof(CourtService.HoseLoadError) ||
+                e.PropertyName == nameof(CourtService.HoseList))
+            {
+                OnPropertyChanged(nameof(ShowLoadingOverlay));
+                OnPropertyChanged(nameof(ShowErrorState));
+                OnPropertyChanged(nameof(ShowEmptyState));
+            }
+        });
     }
 
     private void CheckUserRole()
@@ -164,6 +223,14 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             ResetViewModel();
             ClosePopupSafely();
+        });
+    }
+
+    private async void OnRetryLoadHoses(object sender, EventArgs e)
+    {
+        await ExecuteSafelyAsync(async () =>
+        {
+            await courtService.ReloadHosesAsync();
         });
     }
 
@@ -517,6 +584,12 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
             try
             {
+                // Unsubscribe from CourtService events
+                if (courtService != null)
+                {
+                    courtService.PropertyChanged -= OnCourtServicePropertyChanged;
+                }
+
                 _isDisposed = true;
                 Close();
             }
