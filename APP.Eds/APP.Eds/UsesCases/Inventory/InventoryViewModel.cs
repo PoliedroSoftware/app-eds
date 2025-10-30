@@ -176,31 +176,71 @@ namespace APP.Eds.UsesCases.Inventory
 
         /// <summary>
         /// Filters and validates EDS within a business, removing those without tanks or compartments
+        /// RELAXED: Only removes EDS/tanks that are truly empty to be more permissive with partial data
         /// </summary>
         private void ValidateAndFilterEds(Models.Inventory.Business business)
         {
             if (business?.Eds == null) return;
 
-            // Filtrar EDS que tengan al menos un tanque con al menos un compartimento
-            var validEds = business.Eds.Where(eds => 
+            // Log para debugging
+            var originalEdsCount = business.Eds.Count;
+            System.Diagnostics.Debug.WriteLine($"  ValidateAndFilterEds: Validando {originalEdsCount} EDS...");
+
+            // Filtrar EDS que tengan al menos un tanque
+            // CAMBIO: Ya no requerimos que los tanques tengan compartimentos en esta etapa
+            var validEds = new List<Models.Inventory.Eds>();
+            
+            foreach (var eds in business.Eds)
             {
-                if (eds?.Tanks == null || eds.Tanks.Count == 0) 
-                    return false;
+                if (eds == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"    ✗ EDS nula - descartada");
+                    continue;
+                }
+
+                // Si la EDS no tiene tanques, la descartamos
+                if (eds.Tanks == null || eds.Tanks.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"    ✗ EDS '{eds.EdsName}' sin tanques - descartada");
+                    continue;
+                }
 
                 // Filtrar tanques que tengan al menos un compartimento
-                var validTanks = eds.Tanks.Where(tank => 
-                    tank?.Compartments != null && tank.Compartments.Count > 0).ToList();
+                var validTanks = new List<Models.Inventory.Tank>();
+                foreach (var tank in eds.Tanks)
+                {
+                    if (tank == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      ✗ Tanque nulo en EDS '{eds.EdsName}' - descartado");
+                        continue;
+                    }
 
-                if (validTanks.Count == 0) 
-                    return false;
+                    // CAMBIO IMPORTANTE: Aceptamos tanques sin compartimentos para ser más permisivos
+                    // Esto permite mostrar la estructura incluso si los compartimentos están vacíos
+                    if (tank.Compartments == null || tank.Compartments.Count == 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      ⚠️ Tanque '{tank.TankNumber}' en EDS '{eds.EdsName}' sin compartimentos - PERO SE INCLUYE");
+                    }
+                    
+                    validTanks.Add(tank);
+                }
 
-                // Actualizar la lista de tanques con solo los válidos
-                eds.Tanks = validTanks;
-                return true;
-            }).ToList();
+                // Solo incluir la EDS si tiene al menos un tanque (con o sin compartimentos)
+                if (validTanks.Count > 0)
+                {
+                    eds.Tanks = validTanks;
+                    validEds.Add(eds);
+                    System.Diagnostics.Debug.WriteLine($"    ✓ EDS '{eds.EdsName}' incluida con {validTanks.Count} tanques");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"    ✗ EDS '{eds.EdsName}' sin tanques válidos - descartada");
+                }
+            }
 
             // Actualizar la lista de EDS con solo las válidas
             business.Eds = validEds;
+            System.Diagnostics.Debug.WriteLine($"  Resultado: {validEds.Count} de {originalEdsCount} EDS mantuvieron datos válidos");
         }
 
         public async Task LoadDataAsync()
@@ -286,14 +326,31 @@ namespace APP.Eds.UsesCases.Inventory
                                 // Log estado antes de validación
                                 System.Diagnostics.Debug.WriteLine($"Procesando negocio: {item.BusinessName}, EDS: {item.Eds?.Count ?? 0}");
                                 
-                                // Aplicar filtros de validación para limpiar datos incompletos
-                                ValidateAndFilterEds(item);
+                                // OPCIÓN 1: Aplicar filtros de validación para limpiar datos incompletos
+                                // ValidateAndFilterEds(item);
                                 
-                                // Log estado después de validación
-                                System.Diagnostics.Debug.WriteLine($"Después de validación - EDS restantes: {item.Eds?.Count ?? 0}");
+                                // OPCIÓN 2: NO FILTRAR - mostrar todo lo que el backend retorna (para debugging)
+                                // Esto ayuda a diagnosticar si el problema es el filtrado o la falta de datos del backend
                                 
-                                // Agregar el negocio si tiene al menos una EDS válida
-                                // CAMBIO: Validación menos estricta - permitir negocios con al menos una EDS
+                                // Log después de procesar
+                                System.Diagnostics.Debug.WriteLine($"EDS disponibles: {item.Eds?.Count ?? 0}");
+                                if (item?.Eds != null)
+                                {
+                                    foreach (var eds in item.Eds)
+                                    {
+                                        System.Diagnostics.Debug.WriteLine($"  - EDS: {eds?.EdsName}, Tanques: {eds?.Tanks?.Count ?? 0}");
+                                        if (eds?.Tanks != null)
+                                        {
+                                            foreach (var tank in eds.Tanks)
+                                            {
+                                                System.Diagnostics.Debug.WriteLine($"    - Tanque: {tank?.TankNumber}, Compartimentos: {tank?.Compartments?.Count ?? 0}");
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // Agregar el negocio SI TIENE EDS (sin importar si tienen datos completos)
+                                // CAMBIO CRÍTICO: Mostrar TODO lo que el backend retorna para diagnosticar
                                 if (item?.Eds != null && item.Eds.Count > 0)
                                 {
                                     System.Diagnostics.Debug.WriteLine($"✓ Negocio '{item.BusinessName}' agregado al inventario con {item.Eds.Count} EDS");
@@ -301,7 +358,7 @@ namespace APP.Eds.UsesCases.Inventory
                                 }
                                 else
                                 {
-                                    System.Diagnostics.Debug.WriteLine($"✗ Negocio '{item.BusinessName}' sin EDS válidas - no se agrega");
+                                    System.Diagnostics.Debug.WriteLine($"✗ Negocio '{item.BusinessName}' sin EDS - no se agrega");
                                 }
                             }
                         }
@@ -316,6 +373,32 @@ namespace APP.Eds.UsesCases.Inventory
 
                 UpdateStatistics();
                 
+                // Mostrar alerta si no se cargaron datos
+                if (Businesses.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("⚠️ ADVERTENCIA: No se encontraron negocios con inventario");
+                    
+                    // Verificar si la API retornó datos pero fueron filtrados
+                    if (inventories != null && inventories.Count > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ La API retornó {inventories.Count} inventarios pero fueron filtrados");
+                        await Application.Current.MainPage.DisplayAlert(
+                            "Inventario Vacío",
+                            "No se encontró inventario con datos completos (EDS, tanques y productos).\n\n" +
+                            "Verifica que las EDS tengan tanques y productos configurados.",
+                            "OK");
+                    }
+                    else if (inventories != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("⚠️ La API retornó lista vacía de inventarios");
+                        await Application.Current.MainPage.DisplayAlert(
+                            "Sin Inventario",
+                            "No hay inventario disponible para este usuario.\n\n" +
+                            "Contacta al administrador para verificar la configuración.",
+                            "OK");
+                    }
+                }
+                
                 // Debug: Mostrar cálculo detallado en consola de debug
                 #if DEBUG
                 DebugStockCalculation();
@@ -323,7 +406,17 @@ namespace APP.Eds.UsesCases.Inventory
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando inventario: {ex.Message}", "OK");
+                System.Diagnostics.Debug.WriteLine($"=== ERROR EN CARGA ===");
+                System.Diagnostics.Debug.WriteLine($"Exception: {ex.GetType().Name}");
+                System.Diagnostics.Debug.WriteLine($"Message: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error de Carga",
+                    $"No se pudo cargar el inventario.\n\n" +
+                    $"Error: {ex.Message}\n\n" +
+                    $"Por favor, verifica tu conexión e intenta nuevamente.",
+                    "OK");
             }
         }
 
