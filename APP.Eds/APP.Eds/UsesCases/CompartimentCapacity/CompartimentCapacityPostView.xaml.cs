@@ -1,6 +1,5 @@
-using System.Collections.ObjectModel;
-using APP.Eds.Services.CompartimentCapacity;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Services.CompartimentCapacity;
 
 namespace APP.Eds.UsesCases.CompartimentCapacity;
 
@@ -110,7 +109,7 @@ public partial class CompartimentCapacityPostView : ContentPage
 
     public byte? Default
     {
-        get => _compartimentCapacityService.Default;
+        get => _compartimentCapacityService.Default ?? 0;
         set
         {
             _compartimentCapacityService.Default = value;
