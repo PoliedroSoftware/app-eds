@@ -6,6 +6,21 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Capacidad del Compartimento"
     BackgroundColor="#F8F9FA">
+    
+    <Shell.TitleView>
+        <Grid>
+            <Label 
+                Text="Gestión de Capacidad del Compartimento"
+                FontSize="16"
+                FontAttributes="Bold"
+                TextColor="White"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                LineBreakMode="WordWrap"
+                MaxLines="2"
+                HorizontalTextAlignment="Center"/>
+        </Grid>
+    </Shell.TitleView>
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
