@@ -85,7 +85,7 @@
                                         Stroke="#F87171" 
                                         Padding="8"
                                         IsVisible="{Binding ShowNameError}">
-                                    <Label Text="El nombre debe tener al menos 3 caracteres y solo contener letras" 
+                                    <Label Text="El nombre debe tener al menos 3 caracteres" 
                                            FontSize="12" 
                                            TextColor="#DC2626"/>
                                 </Border>
