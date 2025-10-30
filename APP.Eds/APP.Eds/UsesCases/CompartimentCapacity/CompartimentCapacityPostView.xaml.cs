@@ -1,6 +1,5 @@
-using System.Collections.ObjectModel;
-using APP.Eds.Services.CompartimentCapacity;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Services.CompartimentCapacity;
 
 namespace APP.Eds.UsesCases.CompartimentCapacity;
 
@@ -54,7 +53,7 @@ public partial class CompartimentCapacityPostView : ContentPage
             // Show professional confirmation dialog
             string tankCode = _compartimentCapacityService.SelectCapacity.Code ?? "N/A";
             int compartmentNumber = _compartimentCapacityService.SelectCompartiment.Number;
-            byte capacity = _compartimentCapacityService.Default;
+            byte capacity = (byte)_compartimentCapacityService.Default;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
                 $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
@@ -110,7 +109,7 @@ public partial class CompartimentCapacityPostView : ContentPage
 
     public byte Default
     {
-        get => _compartimentCapacityService.Default;
+        get => _compartimentCapacityService.Default ?? 0;
         set
         {
             _compartimentCapacityService.Default = value;
