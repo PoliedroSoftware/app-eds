@@ -125,6 +125,7 @@
     <MauiImage Remove="Resources\Images\eeuu.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Models\Common\ApiResponseUnwrapper.cs~RF16fc932.TMP" />
     <None Remove="Resources\AppIcon\logoicono.svg" />
     <None Remove="Resources\Images\alemania.png" />
     <None Remove="Resources\Images\colombia.png" />
