@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.EdsTank;
 using APP.Eds.Models.Islander;
+using APP.Eds.Models.Product;
 using APP.Eds.Models.ProductCompartiment;
 using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
