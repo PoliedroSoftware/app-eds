@@ -25,6 +25,7 @@
     using APP.Eds.UsesCases.Shopping;
     using APP.Eds.UsesCases.StrongBox;
     using APP.Eds.UsesCases.Tank;
+    using APP.Eds.UsesCases.TransferValidation;
     using APP.Eds.UsesCases.TypeOfCollection;
     using APP.Eds.UsesCases.Wizard;
     using APP.Eds.Views.Popups;
@@ -117,6 +118,15 @@
                      }
                  });
 
+            // Comando directo para Listado de Pagos QR
+            var NavigateToQRPaymentsCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new QRPaymentsListView());
+                }
+            });
+
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
@@ -136,6 +146,7 @@
                         new("Facturación Electrónica", typeof(PointOfSaleView), "📝"),
                         new("Historial de Facturas", typeof(InvoiceHistoryView), "📄")
                     }),
+                    new("Listado de Pagos QR", "💳", NavigateToQRPaymentsCommand, isDirectNavigation: true),
                     new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
