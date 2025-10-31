@@ -9,6 +9,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
+using static APP.Eds.Models.Product.ProductModelResponse;
+using APP.Eds.Models.Common;
 
 namespace APP.Eds.Services.Hose;
 
@@ -20,6 +22,7 @@ public class HoseService : INotifyPropertyChanged
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<CompartimentResponse> CompartimentsList { get; set; } = [];
     public ObservableCollection<HoseResponse> HoseList { get; set; } = [];
+    public ObservableCollection<ProductModelResponse> Products { get; set; } = new();
 
     private HoseRequest Request { get; set; }
     private HoseModel _hose;
@@ -176,6 +179,7 @@ public class HoseService : INotifyPropertyChanged
         await GetHoseAsync();
         await GetAllDispensersData();
         await GetAllProductTypeData();
+        await GetAllProductData();
         await GetAllCompartimentData();
     }
 
@@ -369,10 +373,11 @@ public class HoseService : INotifyPropertyChanged
     {
         CompartimentsList.Clear();
         foreach (var eds in Data)
-        {
             CompartimentsList.Add(eds);
-        }
+
+        EnrichCompartimentsWithProductNames();
     }
+
 
     public async Task GetHoseAsync()
     {
@@ -435,6 +440,55 @@ public class HoseService : INotifyPropertyChanged
             Console.WriteLine($"Error cargando los datos: {ex.Message}");
         }
     }
+    private async Task GetAllProductData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/product";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            var httpResponse = await httpClient.GetAsync(url);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var err = await httpResponse.Content.ReadAsStringAsync();
+                Console.WriteLine($"❌ Product GET {httpResponse.StatusCode}. Body: {err}");
+                await Application.Current.MainPage.DisplayAlert("Error productos", $"Status: {httpResponse.StatusCode}", "OK");
+                UpdateProductList(Array.Empty<ProductModelResponse>());
+                return;
+            }
+
+            var response = await httpResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"🟦 Product raw (first 400): {response.Substring(0, Math.Min(400, response.Length))}");
+
+            var products = ApiResponseUnwrapper.UnwrapDataList<ProductModelResponse>(response);
+            Console.WriteLine($"✅ Products parsed: {products.Count}");
+
+            foreach (var p in products.Take(5))
+                Console.WriteLine($"   → {p.IdProduct}: {p.Name}");
+
+            UpdateProductList(products);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando productos: {ex}");
+            UpdateProductList(Array.Empty<ProductModelResponse>());
+        }
+    }
+    private void UpdateProductList(IEnumerable<ProductModelResponse> data)
+    {
+        Products.Clear();
+        foreach (var p in data)
+            Products.Add(p);
+
+        EnrichCompartimentsWithProductNames();
+    }
 
     private async Task GetAllCompartimentData()
     {
@@ -443,19 +497,54 @@ public class HoseService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
+
         try
         {
             string url = $"{Configuration.BaseUrl}/api/v1/compartiment";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync(url);
-            var compartimentList = JsonSerializer.Deserialize<CompartimentApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            UpdateCompartimentsList(compartimentList.Data);
+            var httpResponse = await httpClient.GetAsync(url);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var err = await httpResponse.Content.ReadAsStringAsync();
+                Console.WriteLine($"❌ Compartiment GET {httpResponse.StatusCode}. Body: {err}");
+                await Application.Current.MainPage.DisplayAlert("Error compartimentos", $"Status: {httpResponse.StatusCode}", "OK");
+                UpdateCompartimentsList(Array.Empty<CompartimentResponse>());
+                return;
+            }
+
+            var response = await httpResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"🟪 Compartiment raw (first 400): {response.Substring(0, Math.Min(400, response.Length))}");
+
+            var compartiments = ApiResponseUnwrapper.UnwrapDataList<CompartimentResponse>(response);
+            Console.WriteLine($"✅ Compartiments parsed: {compartiments.Count}");
+
+            foreach (var c in compartiments.Take(5))
+                Console.WriteLine($"   → CompId={c.IdCompartment}, IdProduct={c.IdProduct}");
+
+            UpdateCompartimentsList(compartiments);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            Console.WriteLine($"Error cargando compartimentos: {ex}");
+            UpdateCompartimentsList(Array.Empty<CompartimentResponse>());
+        }
+    }
+
+
+    private void EnrichCompartimentsWithProductNames()
+    {
+        if (Products.Count == 0 || CompartimentsList.Count == 0) return;
+
+        var dict = Products.ToDictionary(p => p.IdProduct, p => p.Name);
+
+        for (int i = 0; i < CompartimentsList.Count; i++)
+        {
+            var c = CompartimentsList[i];
+            c.ProductName = dict.TryGetValue(c.IdProduct, out var name) ? name : "-";
+
+            CompartimentsList[i] = c;
         }
     }
 
