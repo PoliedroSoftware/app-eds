@@ -5,7 +5,7 @@ using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using APP.Eds.Models.ProductCompartiment;
+using APP.Eds.Models.Product;
 
 
 namespace APP.Eds.UsesCases.Product;
