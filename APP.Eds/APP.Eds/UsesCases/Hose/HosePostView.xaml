@@ -294,8 +294,9 @@
                                         FontAttributes="Bold"
                                         HeightRequest="50"
                                         CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
+                                        NormalColor="{StaticResource Success}"
+                                        HoverColor="{StaticResource LoginGreenDark}"
+                                        PressedColor="{StaticResource LoginGreenDark}"/>
                                 </Border>
 
                                 <!-- Compartment Button -->
@@ -310,7 +311,7 @@
                                                 Opacity="0.3"/>
                                     </Border.Shadow>
                                     <Button
-                                        Text="Gestión de Compartimientos"
+                                        Text="Compartimento"
                                         TextColor="White"
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
