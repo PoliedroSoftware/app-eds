@@ -11,6 +11,7 @@ using APP.Eds.Helpers;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
+using APP.Eds.Models.Islander;
 
 namespace APP.Eds.Services.Shopping;
 
@@ -24,6 +25,7 @@ public class ShoppingService : INotifyPropertyChanged
     public ObservableCollection<ProviderModel> ProviderList { get; set; } = [];
     public ObservableCollection<CategoryModel> CategoryList { get; set; } = [];
     public ObservableCollection<ProductCompartimentPairModel> ProductCompartimentPairs { get; set; } = [];
+    public ObservableCollection<EdsModel> EdsList { get; set; } = [];
     private ShoppingRequest Request { get; set; }
 
 
@@ -381,6 +383,32 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    private EdsModel _selectedEds;
+    public EdsModel SelectedEds
+    {
+        get => _selectedEds;
+        set
+        {
+            _selectedEds = value;
+            OnPropertyChanged(nameof(SelectedEds));
+            if (_selectedEds != null)
+            {
+                IdEds = _selectedEds.IdEds;
+            }
+        }
+    }
+
+    private int _idEds;
+    public int IdEds
+    {
+        get => _idEds;
+        set
+        {
+            _idEds = value;
+            OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
     public ICommand GetByIdShoppingDataCommand { get; }
     public ICommand SaveShoppingDataCommand { get; }
     public Command AddShoppingProductCommand { get; }
@@ -398,6 +426,7 @@ public class ShoppingService : INotifyPropertyChanged
         GetAllProviderData();
         GetAllCategoryData();
         GetAllProductCompartimentPairsAsync();
+        GetAllEdsData();
 
         //GetByIdShoppingDataCommand = new Command<int>(async (shoppingId) => await GetByIdShoppingDataAsync(shoppingId));
         SaveShoppingDataCommand = new Command(async () => await SaveShoppingDataAsync());
@@ -448,6 +477,37 @@ public class ShoppingService : INotifyPropertyChanged
         catch (Exception ex)
         {
             Console.WriteLine($"Error cargando categorías: {ex.Message}");
+        }
+    }
+
+    private async void GetAllEdsData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/eds";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var edsList = JsonSerializer.Deserialize<EdsResponseModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateEdsList(edsList?.Data ?? new List<EdsModel>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando EDS: {ex.Message}");
+        }
+    }
+
+    private void UpdateEdsList(IEnumerable<EdsModel> edsData)
+    {
+        EdsList.Clear();
+        foreach (var eds in edsData)
+        {
+            EdsList.Add(eds);
         }
     }
 
@@ -634,6 +694,13 @@ public class ShoppingService : INotifyPropertyChanged
                 return; // Stop if invoice is invalid or user wants to modify it
             }
 
+            // Validate EDS selection
+            if (SelectedEds is null)
+            {
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un EDS (Estación de Servicio) para registrar la compra", "EDS Requerido");
+                return;
+            }
+
             if (SelectedProvider is null || SelectedCategory is null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Complete todos los campos", "OK");
@@ -657,7 +724,8 @@ public class ShoppingService : INotifyPropertyChanged
                 Amount = Amount,
                 IdProvider = SelectedProvider.IdProvider,
                 IdCategory = SelectedCategory.IdCategory,
-                ShoppingProducts = shoppingProducts
+                ShoppingProducts = shoppingProducts,
+                IdEds = SelectedEds.IdEds
             };
 
             Request = new ShoppingRequest { Request = Shopping };
@@ -676,6 +744,7 @@ public class ShoppingService : INotifyPropertyChanged
                 Amount = 0;
                 SelectedProvider = null;
                 SelectedCategory = null;
+                SelectedEds = null;
                 ShoppingProduct.Clear();
                 UpdateAccumulatedTotals();
             }
