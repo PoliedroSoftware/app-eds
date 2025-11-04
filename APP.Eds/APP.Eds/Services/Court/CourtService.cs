@@ -92,7 +92,7 @@ public class CourtService : INotifyPropertyChanged
             // Notify visibility properties after clearing collections
             _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
             _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-            // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja despu�s del reset
+            // ?? Notificar cambio en la visibilidad de la sección de Arqueo De Caja después del reset
             _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
         }
     }
@@ -123,17 +123,17 @@ public class CourtService : INotifyPropertyChanged
 
     // ?? NUEVAS PROPIEDADES PARA CONTROLAR LA VISIBILIDAD DE LAS SECCIONES
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Ventas por mangueras" bas�ndose en si hay dispensers agregados
+    /// Determina si se debe mostrar la sección "Ventas por mangueras" basándose en si hay dispensers agregados
     /// </summary>
     public bool ShouldShowDispensersSection => CourtDispensers != null && CourtDispensers.Any();
 
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Formas de pago" bas�ndose en si hay m�todos de pago agregados
+    /// Determina si se debe mostrar la sección "Formas de pago" basándose en si hay métodos de pago agregados
     /// </summary>
     public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
 
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Arqueo De Caja" bas�ndose en si hay al menos un valor diferente de cero
+    /// Determina si se debe mostrar la sección "Arqueo De Caja" basándose en si hay al menos un valor diferente de cero
     /// </summary>
     public bool ShouldShowCashCountSection =>
         TotalAmount > 0 ||
@@ -720,7 +720,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _distintic = value;
             OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
-            // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja cuando cambia el distintivo
+            // ?? Notificar cambio en la visibilidad de la sección de Arqueo De Caja cuando cambia el distintivo
             OnPropertyChanged(nameof(ShouldShowCashCountSection));
         }
     }
@@ -2177,7 +2177,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _courtDispensers = value;
             OnPropertyChanged(nameof(CourtDispensers));
-            // ?? Notificar cambio en la visibilidad cuando cambie la colecci�n
+            // ?? Notificar cambio en la visibilidad cuando cambie la colección
             OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
     }
@@ -2212,7 +2212,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _courtTypeOfCollections = value;
             OnPropertyChanged(nameof(CourtTypeOfCollections));
-            // ?? Notificar cambio en la visibilidad cuando cambie la colecci�n
+            // ?? Notificar cambio en la visibilidad cuando cambie la colección
             OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
     }
@@ -2343,7 +2343,7 @@ public class CourtService : INotifyPropertyChanged
             ExpenditureTranslation = GlobalTranslations.Get("Expenditure");
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             GlobalTranslations.SetTranslations([]);
         }
@@ -2406,8 +2406,8 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticaci�n no encontrado");
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticación no encontrado");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
 
@@ -2417,7 +2417,7 @@ public class CourtService : INotifyPropertyChanged
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos m�s lentos
+            httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos más lentos
 
             System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de business, islander y eds...");
             var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
@@ -2464,12 +2464,12 @@ public class CourtService : INotifyPropertyChanged
         }
         catch (HttpRequestException httpEx)
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexi�n HTTP: {httpEx.Message}");
-            Console.WriteLine($"Error de conexi�n cargando los datos: {httpEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexión HTTP: {httpEx.Message}");
+            Console.WriteLine($"Error de conexión cargando los datos: {httpEx.Message}");
         }
         catch (TaskCanceledException timeoutEx)
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operaci�n: {timeoutEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operación: {timeoutEx.Message}");
             Console.WriteLine($"Timeout cargando los datos: {timeoutEx.Message}");
         }
         catch (Exception ex)
@@ -2478,7 +2478,7 @@ public class CourtService : INotifyPropertyChanged
             Console.WriteLine($"Error cargando los datos: {ex.Message}");
         }
 
-        // Ejecutar la l�gica de preferencias despu�s de cargar los datos
+        // Ejecutar la lógica de preferencias después de cargar los datos
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             try
@@ -2630,7 +2630,7 @@ public class CourtService : INotifyPropertyChanged
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualizaci�n con {typeOfCollectionData?.Count() ?? 0} elementos");
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualización con {typeOfCollectionData?.Count() ?? 0} elementos");
 
             TypeOfCollectionList.Clear();
 
@@ -2643,7 +2643,7 @@ public class CourtService : INotifyPropertyChanged
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualizaci�n completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualización completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
 
             // Notificar cambio en la propiedad para refrescar la UI
             OnPropertyChanged(nameof(TypeOfCollectionList));
@@ -2682,7 +2682,7 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return new Dictionary<string, string>();
         }
         using var httpClient = new HttpClient();
@@ -2702,7 +2702,7 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
         try
@@ -2730,7 +2730,7 @@ public class CourtService : INotifyPropertyChanged
             CourtTypeOfCollections.Remove(collection);
             TotalSales = GetTotalSales();
             OnPropertyChanged(nameof(CourtTypeOfCollections));
-            // ?? Notificar cambio en la visibilidad despu�s de eliminar el m�todo de pago
+            // ?? Notificar cambio en la visibilidad después de eliminar el método de pago
             OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
     }
@@ -2740,15 +2740,15 @@ public class CourtService : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    // Implementaci�n expl�cita de INotifyPropertyChanged
+    // Implementación explícita de INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    // M�todos restantes del servicio (SendCourtDataAsync, etc.)
+    // Métodos restantes del servicio (SendCourtDataAsync, etc.)
     public async Task SendCourtDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
         try
@@ -2764,25 +2764,25 @@ public class CourtService : INotifyPropertyChanged
 
                 if (diferencia > 0)
                 {
-                    mensajeError = $"?? Validaci�n de Pagos Fallida\n\n" +
-                                  $"El total de m�todos de pago es menor al total de ventas:\n\n" +
-                                  $"� Total de ventas: ${totalVentas:N2}\n" +
-                                  $"� Total m�todos de pago: ${totalMetodosPago:N2}\n" +
-                                  $"� Faltante: ${diferencia:N2}\n\n" +
-                                  $"Por favor, agregue m�todos de pago por el monto faltante antes de enviar el corte.";
+                    mensajeError = $"?? Validación de Pagos Fallida\n\n" +
+                                  $"El total de métodos de pago es menor al total de ventas:\n\n" +
+                                  $"• Total de ventas: ${totalVentas:N2}\n" +
+                                  $"• Total métodos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"• Faltante: ${diferencia:N2}\n\n" +
+                                  $"Por favor, agregue métodos de pago por el monto faltante antes de enviar el corte.";
                 }
                 else
                 {
-                    mensajeError = $"?? Validaci�n de Pagos Fallida\n\n" +
-                                  $"El total de m�todos de pago excede al total de ventas:\n\n" +
-                                  $"� Total de ventas: ${totalVentas:N2}\n" +
-                                  $"� Total m�todos de pago: ${totalMetodosPago:N2}\n" +
-                                  $"� Excedente: ${Math.Abs(diferencia):N2}\n\n" +
-                                  $"Por favor, ajuste los m�todos de pago antes de enviar el corte.";
+                    mensajeError = $"?? Validación de Pagos Fallida\n\n" +
+                                  $"El total de métodos de pago excede al total de ventas:\n\n" +
+                                  $"• Total de ventas: ${totalVentas:N2}\n" +
+                                  $"• Total métodos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"• Excedente: ${Math.Abs(diferencia):N2}\n\n" +
+                                  $"Por favor, ajuste los métodos de pago antes de enviar el corte.";
                 }
 
                 LastSendWasSuccessful = false;
-                await Application.Current.MainPage.DisplayAlert("Validaci�n Fallida", mensajeError, "Entendido");
+                await Application.Current.MainPage.DisplayAlert("Validación Fallida", mensajeError, "Entendido");
                 return;
             }
 
@@ -2790,11 +2790,11 @@ public class CourtService : INotifyPropertyChanged
             {
                 LastSendWasSuccessful = false;
                 await Application.Current.MainPage.DisplayAlert(
-                    "M�todos de Pago Requeridos",
-                    $"No se pueden enviar datos del corte sin registrar m�todos de pago.\n\n" +
+                    "Métodos de Pago Requeridos",
+                    $"No se pueden enviar datos del corte sin registrar métodos de pago.\n\n" +
                     $"Total de ventas: ${totalVentas:N2}\n" +
-                    $"M�todos de pago registrados: 0\n\n" +
-                    $"Por favor, agregue al menos un m�todo de pago que cubra el total de ventas.",
+                    $"Métodos de pago registrados: 0\n\n" +
+                    $"Por favor, agregue al menos un método de pago que cubra el total de ventas.",
                     "Entendido");
                 return;
             }
@@ -2836,33 +2836,36 @@ public class CourtService : INotifyPropertyChanged
             {
                 LastSendWasSuccessful = true;
 
-                // Usar el servicio de subida de archivos si hay documentos
+                // Si aún mantienes la subida "legacy" desde CourtService:
                 if (CourtDocuments?.Any() == true)
                 {
                     var fileUploadService = new FileUploadService(_authToken);
                     var uploadResult = await fileUploadService.UploadDocumentsAsync(CourtDocuments);
-
                     if (!uploadResult.Success)
                     {
                         System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: Advertencia - {uploadResult.Message}");
-
-                        // Log de archivos fallidos
                         foreach (var failedUpload in uploadResult.FailedUploads)
-                        {
                             System.Diagnostics.Debug.WriteLine($"  - {failedUpload.FileName}: {failedUpload.Message}");
-                        }
                     }
                 }
 
+                // NUEVO: calcular adjuntos reales (popup vs colección local)
+                var attachmentsFromPopup = LastUploadedDocumentsCount;
+                var attachmentsFromCollection = CourtDocuments?.Count ?? 0;
+                var attachmentsCount = Math.Max(attachmentsFromPopup, attachmentsFromCollection);
+
                 await Application.Current.MainPage.DisplayAlert(
-                    "? Corte Enviado Exitosamente",
+                    "✓ Corte Enviado Exitosamente",
                     $"El corte se ha enviado correctamente:\n\n" +
-                    $"� Total de ventas: ${totalVentas:N2}\n" +
-                    $"� M�todos de pago: ${totalMetodosPago:N2}\n" +
-                    $"� Gastos: ${GetTotalExpenditure():N2}\n" +
-                    $"� Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
-                    $"La validaci�n de pagos fue exitosa.",
+                    $"• Total de ventas: ${totalVentas:N2}\n" +
+                    $"• Métodos de pago: ${totalMetodosPago:N2}\n" +
+                    $"• Gastos: ${GetTotalExpenditure():N2}\n" +
+                    $"• Documentos adjuntos: {attachmentsCount}\n\n" +
+                    $"La validación de pagos fue exitosa.",
                     "Completado");
+
+                // Opcional: limpiar el contador para el siguiente corte
+                LastUploadedDocumentsCount = 0;
             }
             else
             {
@@ -2870,17 +2873,17 @@ public class CourtService : INotifyPropertyChanged
 
                 var error = await response.Content.ReadAsStringAsync();
 
-                string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo m�s tarde.";
+                string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo más tarde.";
                 if (!string.IsNullOrEmpty(error))
                 {
 
                     if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
                     {
-                        userFriendlyError = $"Error de validaci�n: {error}";
+                        userFriendlyError = $"Error de validación: {error}";
                     }
                     else if (error.Contains("server error", StringComparison.OrdinalIgnoreCase) || error.Contains("internal server error", StringComparison.OrdinalIgnoreCase))
                     {
-                        userFriendlyError = $"Error del servidor. Por favor, intente de nuevo m�s tarde.";
+                        userFriendlyError = $"Error del servidor. Por favor, intente de nuevo más tarde.";
                     }
                     else
                     {
@@ -2899,7 +2902,7 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
-    // Resto de m�todos necesarios
+    // Resto de métodos necesarios
     public async Task AddDispenserFromPopup()
     {
         if (Court == null)
@@ -2935,7 +2938,7 @@ public class CourtService : INotifyPropertyChanged
 
         TotalSales = GetTotalSales();
 
-        // ?? Notificar cambio en la visibilidad despu�s de agregar el dispensador
+        // ?? Notificar cambio en la visibilidad después de agregar el dispensador
         OnPropertyChanged(nameof(ShouldShowDispensersSection));
     }
 
@@ -2977,11 +2980,11 @@ public class CourtService : INotifyPropertyChanged
         //  Verificar que hay suficiente efectivo para cubrir el gasto
         double montoGasto = CourtExpenditureAmount;
 
-        // Calcular el efectivo disponible en los m�todos de pago
+        // Calcular el efectivo disponible en los métodos de pago
         double efectivoDisponible = 0;
         if (CourtTypeOfCollections != null && CourtTypeOfCollections.Any())
         {
-            // Buscar m�todos de pago que sean efectivo (case-insensitive)
+            // Buscar métodos de pago que sean efectivo (case-insensitive)
             var metodosEfectivo = CourtTypeOfCollections.Where(m =>
                 m.TypeOfCollectionName != null &&
                 m.TypeOfCollectionName.Contains("Efectivo", StringComparison.OrdinalIgnoreCase));
@@ -2992,7 +2995,7 @@ public class CourtService : INotifyPropertyChanged
         // Calcular el total de gastos YA registrados
         double gastosYaRegistrados = CourtExpenditures?.Sum(g => g.Amount) ?? 0;
 
-        // Calcular el efectivo disponible despu�s de restar los gastos ya registrados
+        // Calcular el efectivo disponible después de restar los gastos ya registrados
         double efectivoRestante = efectivoDisponible - gastosYaRegistrados;
 
         // Validar que el nuevo gasto no exceda el efectivo disponible
@@ -3000,25 +3003,25 @@ public class CourtService : INotifyPropertyChanged
         {
             string mensaje = $"?? Gasto Excede Efectivo Disponible\n\n" +
                             $"El monto del gasto que intenta registrar excede el efectivo disponible:\n\n" +
-                            $"� Efectivo en m�todos de pago: ${efectivoDisponible:N2}\n" +
-                            $"� Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
-                            $"� Efectivo disponible: ${efectivoRestante:N2}\n" +
-                            $"� Monto del gasto: ${montoGasto:N2}\n" +
-                            $"� Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
+                            $"• Efectivo en métodos de pago: ${efectivoDisponible:N2}\n" +
+                            $"• Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
+                            $"• Efectivo disponible: ${efectivoRestante:N2}\n" +
+                            $"• Monto del gasto: ${montoGasto:N2}\n" +
+                            $"• Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
 
             if (efectivoDisponible == 0)
             {
-                mensaje += "No hay m�todos de pago en efectivo registrados.\n" +
-                          "Por favor, agregue un m�todo de pago en efectivo antes de registrar gastos.";
+                mensaje += "No hay métodos de pago en efectivo registrados.\n" +
+                          "Por favor, agregue un método de pago en efectivo antes de registrar gastos.";
             }
             else if (efectivoRestante <= 0)
             {
                 mensaje += "Ya se han registrado gastos por el total del efectivo disponible.\n" +
-                          "No es posible registrar m�s gastos sin agregar m�s efectivo.";
+                          "No es posible registrar más gastos sin agregar más efectivo.";
             }
             else
             {
-                mensaje += $"El monto m�ximo que puede registrar como gasto es: ${efectivoRestante:N2}";
+                mensaje += $"El monto máximo que puede registrar como gasto es: ${efectivoRestante:N2}";
             }
 
             await Application.Current.MainPage.DisplayAlert(
@@ -3072,7 +3075,7 @@ public class CourtService : INotifyPropertyChanged
         CourtTypeOfCollectionAmount = 0;
         CourtTypeOfCollectionDescription = "";
 
-        // ?? Notificar cambio en la visibilidad despu�s de agregar el m�todo de pago
+        // ?? Notificar cambio en la visibilidad después de agregar el método de pago
         OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
     }
 
@@ -3123,7 +3126,7 @@ public class CourtService : INotifyPropertyChanged
         OnPropertyChanged(nameof(TotalSales));
         OnPropertyChanged(nameof(ShouldShowCashCountSection));
 
-        // NUEVO: calcula el pendiente que usar� el popup
+        // NUEVO: calcula el pendiente que usaría el popup
         RemainingToPay = Math.Max(0, TotalAmount - TotalTypeOfCollection);
 
         return TotalAmount;
@@ -3297,7 +3300,7 @@ public class CourtService : INotifyPropertyChanged
                 GallonResults.Remove(gallonsToRemove);
             }
 
-            // Recalcular totales despu�s de remover los valores
+            // Recalcular totales después de remover los valores
             TotalAmount = GetTotalAmount();
             TotalGallons = GetTotalGallons();
             TotalSales = GetTotalSales();
@@ -3307,7 +3310,7 @@ public class CourtService : INotifyPropertyChanged
             OnPropertyChanged(nameof(TotalAmount));
             OnPropertyChanged(nameof(TotalGallons));
             OnPropertyChanged(nameof(TotalSales));
-            // ?? Notificar cambio en la visibilidad despu�s de eliminar el dispensador
+            // ?? Notificar cambio en la visibilidad después de eliminar el dispensador
             OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
     }
@@ -3331,7 +3334,7 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
-    // NUEVO: pendiente por pagar (ventas - m�todos de pago)
+    // NUEVO: pendiente por pagar (ventas - métodos de pago)
     private double _remainingToPay;
     public double RemainingToPay
     {
@@ -3345,4 +3348,7 @@ public class CourtService : INotifyPropertyChanged
             }
         }
     }
+
+    // NUEVO: contador de documentos subidos desde el popup (para calcular adjuntos reales)
+    public int LastUploadedDocumentsCount { get; set; }
 }

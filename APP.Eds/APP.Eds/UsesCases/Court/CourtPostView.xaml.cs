@@ -122,14 +122,14 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             Children =
             {
-                new Label
-                {
-                    Text = "🏪 Cierre De Turno",
-                    FontSize = 24,
-                    FontAttributes = FontAttributes.Bold,
-                    HorizontalOptions = LayoutOptions.Center,
-                    TextColor = Colors.Purple
-                }
+                            new Label
+                            {
+                                Text = "🏪 Cierre De Turno",
+                                FontSize = 24,
+                                FontAttributes = FontAttributes.Bold,
+                                HorizontalOptions = LayoutOptions.Center,
+                                TextColor = Colors.Purple
+                            }
             }
         };
 
@@ -347,8 +347,25 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     // --- Popups
     private async Task OpenDocumentPopUp()
     {
-        if (!PuedeEditar) { await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); return; }
-        try { await ShowPopupSafelyAsync<object>(new AddDocuemt(_service)); }
+        if (!PuedeEditar)
+        {
+            await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+            return;
+        }
+
+        try
+        {
+            int? corteId = _service.IdCourt > 0 ? _service.IdCourt : null;
+            var popup = new AddDocuemt(_service, courtId: corteId, courtIdFieldName: "courtId");
+
+            // Capturar el resultado y actualizar el contador
+            var result = await ShowPopupSafelyAsync<object>(popup);
+            if (result is int uploaded && uploaded > 0)
+                _service.LastUploadedDocumentsCount = Math.Max(_service.LastUploadedDocumentsCount, uploaded);
+
+            // Opcional: refrescar tarjetas/resumen
+            await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: false);
+        }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening document popup: {ex.Message}");
@@ -398,10 +415,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            if (!PuedeEditar) 
-            { 
-                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
-                return; 
+            if (!PuedeEditar)
+            {
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+                return;
             }
 
             await ShowPopupSafelyAsync<object>(new AddDispenser(_service));
@@ -433,15 +450,15 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            if (!PuedeEditar) 
-            { 
-                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
-                return; 
+            if (!PuedeEditar)
+            {
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+                return;
             }
 
             // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
             double totalSales = _service.GetTotalAmount();
-            
+
             if (totalSales <= 0)
             {
                 await CustomAlert.ShowWarningAsync(
@@ -632,7 +649,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         if (prevBusiness != null)
         {
             _service.SelectedBusiness = prevBusiness;
-            IsBusinessSelected = true; 
+            IsBusinessSelected = true;
         }
 
         if (prevEds != null) _service.SelectedEds = prevEds;
@@ -761,34 +778,34 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     }
 
 
-        private BusinessDto _selectedBusiness;
-        public BusinessDto SelectedBusiness
+    private BusinessDto _selectedBusiness;
+    public BusinessDto SelectedBusiness
+    {
+        get => _selectedBusiness;
+        set
         {
-            get => _selectedBusiness;
-            set
+            if (_selectedBusiness != value)
             {
-                if (_selectedBusiness != value)
-                {
-                    _selectedBusiness = value;
-                    OnPropertyChanged(nameof(SelectedBusiness));
-                    IsBusinessSelected = _selectedBusiness != null;
-                }
+                _selectedBusiness = value;
+                OnPropertyChanged(nameof(SelectedBusiness));
+                IsBusinessSelected = _selectedBusiness != null;
             }
         }
+    }
 
-        private bool _isBusinessSelected;
-        public bool IsBusinessSelected
+    private bool _isBusinessSelected;
+    public bool IsBusinessSelected
+    {
+        get => _isBusinessSelected;
+        set
         {
-            get => _isBusinessSelected;
-            set
+            if (_isBusinessSelected != value)
             {
-                if (_isBusinessSelected != value)
-                {
-                    _isBusinessSelected = value;
-                    OnPropertyChanged(nameof(IsBusinessSelected));
-                    OnPropertyChanged(nameof(AccionesHabilitadas));
-                    OnPropertyChanged(nameof(CanAccessFunctionality));
-                }
+                _isBusinessSelected = value;
+                OnPropertyChanged(nameof(IsBusinessSelected));
+                OnPropertyChanged(nameof(AccionesHabilitadas));
+                OnPropertyChanged(nameof(CanAccessFunctionality));
             }
         }
+    }
 }
