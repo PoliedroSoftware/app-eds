@@ -208,6 +208,16 @@
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
+                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                    <CheckBox x:Name="OvernightCheck"
+                              AutomationId="OvernightCheck"
+                              CheckedChanged="OnOvernightCheckedChanged"
+                              Color="#6A1B9A"/>
+                    <Label Text="Registrar turno sin venta de combustible"
+                            FontSize="12"
+                            TextColor="#636E72"
+                            VerticalTextAlignment="Center"/>
+                </StackLayout>
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"

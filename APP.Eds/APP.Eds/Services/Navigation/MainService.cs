@@ -200,7 +200,6 @@ using APP.Eds.UsesCases.RegisterShift;
                         new("Corte", typeof(CourtPostView), "💰"),
                         new("Negocio", typeof(BusinessPostView), "🏢"),
                         new("EDS", typeof(EdsPostView), "🏪"),
-                        new("Registrar Turno", typeof(RegisterShiftView), "⏱️"), // Added
                         new("Caja Fuerte", typeof(StrongBoxView), "💼"),
                         new("Telefonos", typeof(PhoneRegistrationView), "📱")
                     }),
@@ -249,7 +248,6 @@ using APP.Eds.UsesCases.RegisterShift;
                 Categories = new ObservableCollection<CategoryModel>
                 {
                     new("Corte del Dia", "💰", NavigateToCourtCommand, isDirectNavigation: true),
-                    new("Registrar Turno", "⏱️", NavigateToRegisterShiftCommand, isDirectNavigation: true)
                 };
             }
         }

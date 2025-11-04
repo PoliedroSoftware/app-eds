@@ -760,8 +760,24 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private void OnOvernightCheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        try
+        {
+            if (_service == null) 
+                return;
 
-        private BusinessDto _selectedBusiness;
+            // Si está marcado: fija la fecha fin al día siguiente; si no, misma fecha de inicio
+            
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error en OnOvernightCheckedChanged: {ex.Message}");
+        }
+    }
+
+
+    private BusinessDto _selectedBusiness;
         public BusinessDto SelectedBusiness
         {
             get => _selectedBusiness;
