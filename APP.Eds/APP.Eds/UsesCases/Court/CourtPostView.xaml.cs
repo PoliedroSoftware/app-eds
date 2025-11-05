@@ -11,8 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using APP.Eds.UsesCases.RegisterShift;
-using APP.Eds.Services.RegisterShift; // Added
+using APP.Eds.UsesCases.RegisterShift; // Added
 
 namespace APP.Eds.UsesCases.Court;
 
@@ -29,8 +28,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         });
     }
     private CourtService _service;
-    private RegisterShiftService _registerShiftService = RegisterShiftService.Instance;
-    private bool _registerWithoutSales = false;
     public string UserRole { get; set; } = string.Empty;
 
     // --- Estado de edición/visibilidad controlado por la página (x:Reference CortePage)
@@ -526,11 +523,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                         "Islero requerido");
                     return;
                 }
-
-                else if (UserRole == "User")
-                {
-                    _registerShiftService.SaveRegisterShiftCommand.Execute(null);
-                }
             }
 
             // --- Totales actuales ---
@@ -780,8 +772,19 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             _service.DateEndtime = e.Value ? _service.DateStarttime.AddDays(1) : _service.DateStarttime;
 
             // Si está activo, sincronizar datos al caso de uso RegisterShift (que usa el servicio internamente)
-            _registerWithoutSales = e.Value;
-
+            if (e.Value)
+            {
+                RegisterShiftView.Prefill(new RegisterShiftPrefill
+                {
+                    IdBusiness = _service.SelectedEds?.IdBusiness,
+                    IdEds = _service.SelectedEds?.IdEds,
+                    IdIslander = _service.SelectedIslander?.IdIslander,
+                    DateStart = _service.DateStarttime,
+                    StartTime = _service.Starttime,
+                    DateEnd = _service.DateEndtime,
+                    EndTime = _service.Endtime
+                });
+            }
         }
         catch (Exception ex)
         {
