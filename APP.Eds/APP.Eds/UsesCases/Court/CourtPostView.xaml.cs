@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using APP.Eds.UsesCases.RegisterShift; // Added
 
 namespace APP.Eds.UsesCases.Court;
 
@@ -764,15 +765,30 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            if (_service == null) 
+            if (_service == null)
                 return;
 
-            // Si está marcado: fija la fecha fin al día siguiente; si no, misma fecha de inicio
-            
+            // Ajustar fecha fin según el estado del checkbox
+            _service.DateEndtime = e.Value ? _service.DateStarttime.AddDays(1) : _service.DateStarttime;
+
+            // Si está activo, sincronizar datos al caso de uso RegisterShift (que usa el servicio internamente)
+            if (e.Value)
+            {
+                RegisterShiftView.Prefill(new RegisterShiftPrefill
+                {
+                    IdBusiness = _service.SelectedEds?.IdBusiness,
+                    IdEds = _service.SelectedEds?.IdEds,
+                    IdIslander = _service.SelectedIslander?.IdIslander,
+                    DateStart = _service.DateStarttime,
+                    StartTime = _service.Starttime,
+                    DateEnd = _service.DateEndtime,
+                    EndTime = _service.Endtime
+                });
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error en OnOvernightCheckedChanged: {ex.Message}");
+            Debug.WriteLine($"Error en OnOvernightCheckedChanged: {ex.Message}");
         }
     }
 

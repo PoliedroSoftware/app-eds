@@ -26,6 +26,20 @@ public class RegisterShiftService : INotifyPropertyChanged
 
     private const string RegisterShiftEndpoint = "/api/v1/registershift";
 
+    private bool _isLoading;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
+            if (_isLoading != value)
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+    }
+
     // EDS
     public ObservableCollection<EdsResponse> EdsList { get; } = [];
     private EdsResponse _selectedEds;
@@ -201,39 +215,47 @@ public class RegisterShiftService : INotifyPropertyChanged
 
     private async Task LoadAllLookupsAsync()
     {
-        await LoadBusinessAsync();
-        await LoadEdsAsync();
-        await LoadIslandersAsync();
-
-        // Defaults for normal User role
-        var role = Preferences.Get("userRole", string.Empty);
-        if (role == "User")
+        try
         {
-            var edsPref = Preferences.Get("edsId", string.Empty);
-            if (int.TryParse(edsPref, out var edsId))
-            {
-                var eds = EdsList.FirstOrDefault(e => e.IdEds == edsId);
-                if (eds != null) SelectedEds = eds;
-            }
+            IsLoading = true;
+            await LoadBusinessAsync();
+            await LoadEdsAsync();
+            await LoadIslandersAsync();
 
-            var businessPref = Preferences.Get("businessId", string.Empty);
-            if (int.TryParse(businessPref, out var businessId))
+            // Defaults for normal User role
+            var role = Preferences.Get("userRole", string.Empty);
+            if (role == "User")
             {
-                var business = BusinessList.FirstOrDefault(b => b.IdBusiness == businessId);
-                if (business != null) SelectedBusiness = business;
-            }
-            else if (SelectedEds != null)
-            {
-                var business = BusinessList.FirstOrDefault(b => b.IdBusiness == SelectedEds.IdBusiness);
-                if (business != null) SelectedBusiness = business;
-            }
+                var edsPref = Preferences.Get("edsId", string.Empty);
+                if (int.TryParse(edsPref, out var edsId))
+                {
+                    var eds = EdsList.FirstOrDefault(e => e.IdEds == edsId);
+                    if (eds != null) SelectedEds = eds;
+                }
 
-            var islanderPref = Preferences.Get("islanderId", string.Empty);
-            if (int.TryParse(islanderPref, out var islanderId))
-            {
-                var islander = IslanderList.FirstOrDefault(i => i.IdIslander == islanderId);
-                if (islander != null) SelectedIslander = islander;
+                var businessPref = Preferences.Get("businessId", string.Empty);
+                if (int.TryParse(businessPref, out var businessId))
+                {
+                    var business = BusinessList.FirstOrDefault(b => b.IdBusiness == businessId);
+                    if (business != null) SelectedBusiness = business;
+                }
+                else if (SelectedEds != null)
+                {
+                    var business = BusinessList.FirstOrDefault(b => b.IdBusiness == SelectedEds.IdBusiness);
+                    if (business != null) SelectedBusiness = business;
+                }
+
+                var islanderPref = Preferences.Get("islanderId", string.Empty);
+                if (int.TryParse(islanderPref, out var islanderId))
+                {
+                    var islander = IslanderList.FirstOrDefault(i => i.IdIslander == islanderId);
+                    if (islander != null) SelectedIslander = islander;
+                }
             }
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -366,6 +388,8 @@ public class RegisterShiftService : INotifyPropertyChanged
 
         try
         {
+            IsLoading = true;
+
             var payload = new
             {
                 request = new
@@ -404,6 +428,10 @@ public class RegisterShiftService : INotifyPropertyChanged
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al registrar el turno: {ex.Message}", "OK");
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 

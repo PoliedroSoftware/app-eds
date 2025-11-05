@@ -140,106 +140,85 @@
                         <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="16">
-                        <StackLayout Orientation="Vertical" Spacing="5">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
                             <Label Text="⏰" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Horario" 
-                     FontAttributes="Bold" 
-                     FontSize="18" 
-                     TextColor="#2D3436"
-                     VerticalOptions="Center"/>
+                            <Label Text="{Binding Time}" 
+                                   FontAttributes="Bold" 
+                                   FontSize="18" 
+                                   TextColor="#2D3436"
+                                   VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="12">
-                            <!-- Start Date -->
-                            <StackLayout Grid.Row="1" Grid.Column="0" Spacing="6">
-                                <Label Text="Fecha Inicio" 
-                         FontAttributes="Bold" 
-                         TextColor="#636E72" 
-                         HorizontalOptions="Center"/>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
+                            <!-- Date -->
+                            <StackLayout Grid.Row="0" Grid.Column="0">
+                                <Label Text="Fecha" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#FFF3CD" 
-                          StrokeShape="RoundRectangle 8"
-                          Stroke="#F39C12" 
-                          Padding="8">
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#F39C12" 
+                                        Padding="8">
                                     <DatePicker x:Name="datePicker" 
-                                  AutomationId="DatePickerStart" 
-                                  Date="{Binding DateStart, Mode=TwoWay}" 
-                                  MinimumDate="1900-01-01"
-                                  BackgroundColor="Transparent"
-                                  HorizontalOptions="Center"
-                                  TextColor="#E67E22"/>
+                                                AutomationId="DatePicker" 
+                                                Date="{Binding DateStarttime, Mode=TwoWay}" 
+                                                MinimumDate="1900-01-01"
+                                                BackgroundColor="Transparent"
+                                                HorizontalOptions="Center"
+                                                TextColor="#E67E22"/>
                                 </Border>
+                                <!-- Checkbox to mark register shift without sales -->
+                                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                                    <CheckBox x:Name="OvernightCheck"
+                                              AutomationId="OvernightCheck"
+                                              CheckedChanged="OnOvernightCheckedChanged"
+                                              Color="#6A1B9A"/>
+                                    <Label Text="Registrar turno sin ventas"
+                                           FontSize="12"
+                                           TextColor="#636E72"
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
                             </StackLayout>
 
                             <!-- Start Time -->
-                            <StackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                            <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Hora Inicio" 
-                         FontAttributes="Bold" 
-                         TextColor="#636E72" 
-                         HorizontalOptions="Center"/>
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#D4EDDA" 
-                          StrokeShape="RoundRectangle 8"
-                          Stroke="#27AE60" 
-                          Padding="8">
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#27AE60" 
+                                        Padding="8">
                                     <TimePicker AutomationId="StartTimePicker" 
-                                  Time="{Binding StartTime, Mode=TwoWay}"
-                                  Format="HH:mm"
-                                  BackgroundColor="Transparent"
-                                  HorizontalOptions="Center"
-                                  TextColor="#27AE60"/>
+                                                Time="{Binding Starttime, Mode=TwoWay}"
+                                                BackgroundColor="Transparent"
+                                                HorizontalOptions="Center"
+                                                TextColor="#27AE60"/>
                                 </Border>
                             </StackLayout>
 
                             <!-- End Time -->
-                            <StackLayout Grid.Row="0" Grid.Column="1" Spacing="6">
+                            <StackLayout Grid.Row="0" Grid.Column="2">
                                 <Label Text="Hora Fin" 
-                         FontAttributes="Bold" 
-                         TextColor="#636E72" 
-                         HorizontalOptions="Center"/>
+                                       FontAttributes="Bold" 
+                                       TextColor="#636E72" 
+                                       HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#F8D7DA" 
-                          StrokeShape="RoundRectangle 8"
-                          Stroke="#E74C3C" 
-                          Padding="8">
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="#E74C3C" 
+                                        Padding="8">
                                     <TimePicker AutomationId="EndTimePicker" 
-                                  Time="{Binding EndTime, Mode=TwoWay}"
-                                  Format="HH:mm"
-                                  BackgroundColor="Transparent"
-                                  HorizontalOptions="Center"
-                                  TextColor="#E74C3C"/>
-                                </Border>
-                            </StackLayout>
-
-                            <!-- End Date -->
-                            <StackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
-                                <Label Text="Fecha Fin" 
-                         FontAttributes="Bold" 
-                         TextColor="#636E72" 
-                         HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#FFF3CD" 
-                          StrokeShape="RoundRectangle 8"
-                          Stroke="#F39C12" 
-                          Padding="8">
-                                    <DatePicker 
-                                  AutomationId="DatePickerEnd" 
-                                  Date="{Binding DateEnd, Mode=TwoWay}" 
-                                  MinimumDate="1900-01-01"
-                                  BackgroundColor="Transparent"
-                                  HorizontalOptions="Center"
-                                  TextColor="#E67E22"/>
+                                                Time="{Binding Endtime, Mode=TwoWay}"
+                                                BackgroundColor="Transparent"
+                                                HorizontalOptions="Center"
+                                                TextColor="#E74C3C"/>
                                 </Border>
                             </StackLayout>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
-                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
-                    <CheckBox x:Name="OvernightCheck"
-                              AutomationId="OvernightCheck"
-                              CheckedChanged="OnOvernightCheckedChanged"
-                              Color="#6A1B9A"/>
-                    <Label Text="Registrar turno sin venta de combustible"
-                            FontSize="12"
-                            TextColor="#636E72"
-                            VerticalTextAlignment="Center"/>
-                </StackLayout>
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"

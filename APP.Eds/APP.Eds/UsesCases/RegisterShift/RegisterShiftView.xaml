@@ -81,10 +81,10 @@
                     </VerticalStackLayout>
                 </Border>
                 <Border x:Name="Time" 
-          BackgroundColor="White"
-          StrokeShape="RoundRectangle 12"
-          StrokeThickness="0"
-          Padding="20">
+                        BackgroundColor="White"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0"
+                        Padding="20">
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
                     </Border.Shadow>
