@@ -755,7 +755,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     public async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
     {
         _isregisterShiftChecked = e.Value;
-        if (UserRole == "User" || _isregisterShiftChecked == true)
+        if (UserRole == "User")
         {
             var sendButton = this.FindByName<Button>("SendData");
             if (sendButton != null)
@@ -782,7 +782,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 DateTime? dateEndVm = (DateTime?)vm?.GetType().GetProperty("DateEndtime")?.GetValue(vm);
                 DateTime dateEnd = dateEndVm ?? (endTime < startTime ? dateStart.AddDays(1) : dateStart);
 
-                // --- IDs desde el VM (User ya los trae por defecto en pantalla) ---
                 var selEds = vm?.GetType().GetProperty("SelectedEds")?.GetValue(vm);
                 var selBusiness = vm?.GetType().GetProperty("SelectedBusiness")?.GetValue(vm);
                 var selIslander = vm?.GetType().GetProperty("SelectedIslander")?.GetValue(vm);
@@ -791,11 +790,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 int? idBusiness = selBusiness?.GetType().GetProperty("IdBusiness")?.GetValue(selBusiness) as int?;
                 int? idIslander = selIslander?.GetType().GetProperty("IdIslander")?.GetValue(selIslander) as int?;
 
-                if (idEds is null || idIslander is null || idBusiness is null)
-                {
-                    await DisplayAlert("Error", "Datos incompletos", "OK");
-                    return;
-                }
+                //if (idEds is null || idIslander is null || idBusiness is null)
+                //{
+                //    await DisplayAlert("Error", "Datos incompletos", "OK");
+                //    return;
+                //}
 
                 _registerShiftUserService.IdEds = idEds;
                 _registerShiftUserService.IdBusiness = idBusiness;
