@@ -11,6 +11,32 @@ public class MockInvoiceService
     private static readonly Random _random = new();
     private static ObservableCollection<ElectronicInvoiceModel> _mockInvoices;
 
+    // ✨ NEW: Sample islander names for mock data
+    private static readonly string[] IslanderNames = new[]
+    {
+        "Juan Carlos Rodriguez",
+        "Maria Elena Gutierrez",
+        "Carlos Alberto Mendez",
+        "Ana Lucia Torres",
+        "Pedro Antonio Martinez",
+        "Sofia Fernanda Garcia",
+        "Luis Miguel Hernandez",
+        "Carmen Rosa Diaz"
+    };
+
+    // ✨ NEW: Sample EDS names for mock data
+    private static readonly string[] EdsNames = new[]
+    {
+        "EDS Principal Centro",
+        "EDS Norte Autopista",
+        "EDS Sur Terminal",
+        "EDS Oriente Plaza",
+        "EDS Occidente Centro",
+        "EDS Aeropuerto",
+        "EDS Industrial",
+        "EDS La Estación"
+    };
+
     /// <summary>
     /// Obtiene una colección de facturas mock de ejemplo
     /// </summary>
@@ -77,7 +103,10 @@ public class MockInvoiceService
             PaymentMethod = paymentMethods[_random.Next(paymentMethods.Length)],
             Email = client.Email,
             QRCode = GenerateMockQRCode(),
-            TechProviderFootNote = "Factura Electrónica generada por Poliedro Software - Sistema EDS"
+            TechProviderFootNote = "Factura Electrónica generada por Poliedro Software - Sistema EDS",
+            // ✨ NEW: Add mock islander and EDS information
+            IslanderName = IslanderNames[_random.Next(IslanderNames.Length)],
+            EdsName = EdsNames[_random.Next(EdsNames.Length)]
         };
     }
 
