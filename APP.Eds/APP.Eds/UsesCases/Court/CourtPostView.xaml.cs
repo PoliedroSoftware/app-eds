@@ -398,10 +398,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            if (!PuedeEditar) 
-            { 
-                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
-                return; 
+            if (!PuedeEditar)
+            {
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+                return;
             }
 
             await ShowPopupSafelyAsync<object>(new AddDispenser(_service));
@@ -433,15 +433,15 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         try
         {
-            if (!PuedeEditar) 
-            { 
-                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado"); 
-                return; 
+            if (!PuedeEditar)
+            {
+                await CustomAlert.ShowErrorAsync("El corte ya fue enviado.", "Corte cerrado");
+                return;
             }
 
             // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
             double totalSales = _service.GetTotalAmount();
-            
+
             if (totalSales <= 0)
             {
                 await CustomAlert.ShowWarningAsync(
@@ -632,7 +632,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         if (prevBusiness != null)
         {
             _service.SelectedBusiness = prevBusiness;
-            IsBusinessSelected = true; 
+            IsBusinessSelected = true;
         }
 
         if (prevEds != null) _service.SelectedEds = prevEds;
@@ -761,34 +761,61 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     }
 
 
-        private BusinessDto _selectedBusiness;
-        public BusinessDto SelectedBusiness
+    private BusinessDto _selectedBusiness;
+    public BusinessDto SelectedBusiness
+    {
+        get => _selectedBusiness;
+        set
         {
-            get => _selectedBusiness;
-            set
+            if (_selectedBusiness != value)
             {
-                if (_selectedBusiness != value)
-                {
-                    _selectedBusiness = value;
-                    OnPropertyChanged(nameof(SelectedBusiness));
-                    IsBusinessSelected = _selectedBusiness != null;
-                }
+                _selectedBusiness = value;
+                OnPropertyChanged(nameof(SelectedBusiness));
+                IsBusinessSelected = _selectedBusiness != null;
             }
         }
+    }
 
-        private bool _isBusinessSelected;
-        public bool IsBusinessSelected
+    private bool _isBusinessSelected;
+    public bool IsBusinessSelected
+    {
+        get => _isBusinessSelected;
+        set
         {
-            get => _isBusinessSelected;
-            set
+            if (_isBusinessSelected != value)
             {
-                if (_isBusinessSelected != value)
-                {
-                    _isBusinessSelected = value;
-                    OnPropertyChanged(nameof(IsBusinessSelected));
-                    OnPropertyChanged(nameof(AccionesHabilitadas));
-                    OnPropertyChanged(nameof(CanAccessFunctionality));
-                }
+                _isBusinessSelected = value;
+                OnPropertyChanged(nameof(IsBusinessSelected));
+                OnPropertyChanged(nameof(AccionesHabilitadas));
+                OnPropertyChanged(nameof(CanAccessFunctionality));
             }
         }
+    }
+
+    private async void OnRemoveAllDocumentsClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (_service.CourtDocuments == null || !_service.CourtDocuments.Any())
+                return;
+
+            _service.CourtDocuments.Clear();
+
+            // Alinear el modelo Court
+            if (_service.Court != null)
+                _service.Court.CourtDocuments = _service.CourtDocuments.ToList();
+
+            // Ocultar la sección si quedó vacía
+            _service.VisibleDocuments = false;
+
+            await CustomAlert.ShowSuccessAsync("Todos los comprobantes fueron eliminados.", "Comprobantes");
+        }
+        catch (Exception ex)
+        {
+            await CustomAlert.ShowErrorAsync($"No se pudieron eliminar los documentos:\n\n{ex.Message}", "Error");
+        }
+    }
 }
+
+
+
