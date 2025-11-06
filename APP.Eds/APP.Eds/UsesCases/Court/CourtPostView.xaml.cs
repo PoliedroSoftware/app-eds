@@ -560,8 +560,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             // 4) Validar tamaño de archivos adjuntos antes de enviar
             if (vm.CourtDocuments != null && vm.CourtDocuments.Any())
             {
-                const long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB por archivo
-                const long MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10 MB total
+                const long MAX_FILE_SIZE = 25 * 1024 * 1024; // 5 MB por archivo
+                const long MAX_TOTAL_SIZE = 25 * 1024 * 1024; // 10 MB total
                 long totalDocumentsSize = 0;
 
                 foreach (var doc in vm.CourtDocuments)
