@@ -10,6 +10,12 @@ namespace APP.Eds.Components.PopUp
     {
         private readonly CourtService _courtService;
 
+        // Límites de tamaño de archivos (configurables)
+        private const long MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 5 MB por archivo
+        private const long MAX_TOTAL_SIZE_BYTES = 25 * 1024 * 1024; // 10 MB total
+        private const double MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024.0 * 1024.0);
+        private const double MAX_TOTAL_SIZE_MB = MAX_TOTAL_SIZE_BYTES / (1024.0 * 1024.0);
+
         // ======== NUEVO: caché estática para conservar la selección entre aperturas ========
         private static readonly ObservableCollection<SelectedFileItem> SelectionCache = new();
 
@@ -104,17 +110,52 @@ namespace APP.Eds.Components.PopUp
                 var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                 { ".pdf", ".jpg", ".jpeg", ".png", ".doc", ".docx", ".txt" };
 
+                var skippedFiles = new List<string>();
+                var oversizedFiles = new List<(string Name, long Size)>();
+
                 foreach (var r in results)
                 {
                     var ext = Path.GetExtension(r.FileName)?.ToLowerInvariant() ?? "";
-                    if (!allowedExtensions.Contains(ext)) continue;
+                    
+                    // Verificar extensión permitida
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        skippedFiles.Add($"{r.FileName} (formato no permitido)");
+                        continue;
+                    }
 
                     var fileSize = new FileInfo(r.FullPath).Length;
-                    if (fileSize > 5 * 1024 * 1024) continue; // 5MB por archivo
+                    
+                    // Verificar tamaño del archivo individual
+                    if (fileSize > MAX_FILE_SIZE_BYTES)
+                    {
+                        oversizedFiles.Add((r.FileName, fileSize));
+                        continue;
+                    }
 
                     // Evitar duplicados por nombre dentro de la selección del popup
                     if (SelectedFiles.Any(f => string.Equals(f.Name, r.FileName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        skippedFiles.Add($"{r.FileName} (ya agregado)");
                         continue;
+                    }
+
+                    // Verificar que no se exceda el tamaño total permitido
+                    var currentTotalSize = SelectedFiles.Sum(f => f.Size);
+                    if (currentTotalSize + fileSize > MAX_TOTAL_SIZE_BYTES)
+                    {
+                        var remainingMB = (MAX_TOTAL_SIZE_BYTES - currentTotalSize) / (1024.0 * 1024.0);
+                        await CustomAlert.ShowWarningAsync(
+                            $"⚠️ Límite de Tamaño Total Alcanzado\n\n" +
+                            $"No se puede agregar '{r.FileName}' porque excedería el límite total permitido.\n\n" +
+                            $"• Tamaño actual: {currentTotalSize / (1024.0 * 1024.0):0.##} MB\n" +
+                            $"• Tamaño del archivo: {fileSize / (1024.0 * 1024.0):0.##} MB\n" +
+                            $"• Límite total: {MAX_TOTAL_SIZE_MB:0.##} MB\n" +
+                            $"• Espacio disponible: {remainingMB:0.##} MB\n\n" +
+                            $"💡 Sugerencia: Elimine algunos archivos o comprima las imágenes antes de agregar más.",
+                            "Límite de Tamaño");
+                        break;
+                    }
 
                     string base64 = await Task.Run(async () =>
                     {
@@ -133,7 +174,31 @@ namespace APP.Eds.Components.PopUp
                     });
                 }
 
-                // Sin confirmaciones aquí: la lista previa del popup es suficiente
+                // Mostrar advertencias sobre archivos que exceden el tamaño permitido
+                if (oversizedFiles.Any())
+                {
+                    var fileList = string.Join("\n", oversizedFiles.Select(f => 
+                        $"  • {f.Name} ({f.Size / (1024.0 * 1024.0):0.##} MB)"));
+                    
+                    await CustomAlert.ShowWarningAsync(
+                        $"⚠️ Archivos Demasiado Grandes\n\n" +
+                        $"Los siguientes archivos exceden el límite de {MAX_FILE_SIZE_MB:0.##} MB por archivo y no fueron agregados:\n\n" +
+                        $"{fileList}\n\n" +
+                        $"💡 Sugerencias:\n" +
+                        $"• Para imágenes: use una resolución menor o comprima el archivo\n" +
+                        $"• Para PDFs: reduzca la calidad o divida en archivos más pequeños\n" +
+                        $"• Para documentos: guarde en formato comprimido",
+                        "Tamaño de Archivo Excedido");
+                }
+                
+                // Mostrar información sobre archivos omitidos por otras razones
+                if (skippedFiles.Any() && !oversizedFiles.Any())
+                {
+                    var fileList = string.Join("\n", skippedFiles.Select(f => $"  • {f}"));
+                    await CustomAlert.ShowWarningAsync(
+                        $"Algunos archivos no fueron agregados:\n\n{fileList}",
+                        "Archivos Omitidos");
+                }
             }
             catch (Exception ex)
             {
@@ -170,6 +235,41 @@ namespace APP.Eds.Components.PopUp
                     return;
                 }
 
+                // Validación final: verificar tamaño total antes de enviar
+                var totalSize = SelectedFiles.Sum(f => f.Size);
+                var totalSizeMB = totalSize / (1024.0 * 1024.0);
+
+                if (totalSize > MAX_TOTAL_SIZE_BYTES)
+                {
+                    await CustomAlert.ShowErrorAsync(
+                        $"⚠️ El Tamaño Total Excede el Límite Permitido\n\n" +
+                        $"No se pueden enviar los archivos porque el tamaño total supera el límite máximo.\n\n" +
+                        $"• Tamaño total actual: {totalSizeMB:0.##} MB\n" +
+                        $"• Límite máximo: {MAX_TOTAL_SIZE_MB:0.##} MB\n" +
+                        $"• Debe reducir: {(totalSizeMB - MAX_TOTAL_SIZE_MB):0.##} MB\n\n" +
+                        $"💡 Opciones:\n" +
+                        $"• Elimine algunos archivos de la lista\n" +
+                        $"• Comprima las imágenes o archivos PDF\n" +
+                        $"• Divida los documentos en envíos más pequeños\n\n" +
+                        $"Use el botón 'Limpiar Todo' para empezar de nuevo o elimine archivos individuales.",
+                        "Tamaño Excedido");
+                    return;
+                }
+
+                // Verificar que cada archivo individual no exceda el límite
+                var oversizedFile = SelectedFiles.FirstOrDefault(f => f.Size > MAX_FILE_SIZE_BYTES);
+                if (oversizedFile != null)
+                {
+                    await CustomAlert.ShowErrorAsync(
+                        $"⚠️ Archivo Individual Demasiado Grande\n\n" +
+                        $"El archivo '{oversizedFile.Name}' excede el límite permitido.\n\n" +
+                        $"• Tamaño del archivo: {oversizedFile.Size / (1024.0 * 1024.0):0.##} MB\n" +
+                        $"• Límite por archivo: {MAX_FILE_SIZE_MB:0.##} MB\n\n" +
+                        $"Por favor, elimine este archivo o cargue una versión más pequeña.",
+                        "Archivo Muy Grande");
+                    return;
+                }
+
                 var filesBase64 = SelectedFiles.Select(f => f.Base64).ToList();
                 var names = SelectedFiles.Select(f => f.Name).ToList();
 
@@ -179,10 +279,13 @@ namespace APP.Eds.Components.PopUp
                 SelectedFiles.Clear();
                 SelectionCache.Clear();
 
-                // Mensaje único al finalizar
-                // (Si no quieres ningún mensaje aquí, puedes eliminar este bloque)
-                // var totalMB = filesBase64.Sum(b64 => GetApproxBytesFromBase64(b64)) / 1024.0 / 1024.0;
-                // await CustomAlert.ShowSuccessAsync($"Se agregaron {names.Count} archivo(s) ({totalMB:0.##} MB) al cierre.","Documentos agregados");
+                // Mensaje de confirmación con información del tamaño
+                await CustomAlert.ShowSuccessAsync(
+                    $"✅ Documentos Agregados Exitosamente\n\n" +
+                    $"• Archivos agregados: {names.Count}\n" +
+                    $"• Tamaño total: {totalSizeMB:0.##} MB\n\n" +
+                    $"Los documentos se enviarán cuando complete el cierre de turno.",
+                    "Documentos Adjuntos");
 
                 await CloseAsync();
             }
