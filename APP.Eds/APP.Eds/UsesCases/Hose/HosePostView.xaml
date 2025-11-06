@@ -288,6 +288,7 @@
                                     <button:HoverButton
                                         Text="🚀 Enviar Datos"
                                         TextColor="White"
+                                        BackgroundColor="{StaticResource Success}"
                                         Clicked="Button_Clicked_1"
                                         AutomationId="ButtonSendData"
                                         FontSize="16"
