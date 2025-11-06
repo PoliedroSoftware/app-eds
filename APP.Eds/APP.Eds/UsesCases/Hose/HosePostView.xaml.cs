@@ -23,39 +23,42 @@ public partial class HosePostView : ContentPage
 
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
+        // Store button reference before try block
+        var button = sender as HoverButton;
+        
         if (BindingContext is HoseService vm)
         {
             try
             {
                 // Disable button to prevent multiple submissions
-                if (sender is HoverButton hoverButton)
+                if (button != null)
                 {
-                    hoverButton.IsEnabled = false;
+                    button.IsEnabled = false;
                 }
 
                 // Enhanced validation with professional alerts
                 if (vm.Number <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un número de manguera válido (mayor que 0)", "Número Inválido");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un nï¿½mero de manguera vï¿½lido (mayor que 0)", "Nï¿½mero Invï¿½lido");
                     return;
                 }
 
                 if (vm.Number > 20)
                 {
-                    await CustomAlert.ShowErrorAsync("El número de manguera no puede exceder 20", "Número Excesivo");
+                    await CustomAlert.ShowErrorAsync("El nï¿½mero de manguera no puede exceder 20", "Nï¿½mero Excesivo");
                     return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado válido (mayor que 0)", "Monto Acumulado Inválido");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado vï¿½lido (mayor que 0)", "Monto Acumulado Invï¿½lido");
                     return;
                 }
 
                 if (vm.AccumulatedAmount > 10000000)
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
+                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\nï¿½Confirma que este valor es correcto?",
                         "Monto Elevado",
                         "Confirmar",
                         "Revisar");
@@ -65,7 +68,7 @@ public partial class HosePostView : ContentPage
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados válidos (mayor que 0)", "Galones Inválidos");
+                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados vï¿½lidos (mayor que 0)", "Galones Invï¿½lidos");
                     return;
                 }
 
@@ -91,11 +94,11 @@ public partial class HosePostView : ContentPage
                 if (pricePerGallon < 1000 || pricePerGallon > 20000)
                 {
                     bool confirmPrice = await CustomAlert.ShowConfirmAsync(
-                        $"El precio por galón calculado (${pricePerGallon:F0}) parece inusual.\n\n" +
-                        $"• Monto: ${vm.AccumulatedAmount:F2}\n" +
-                        $"• Galones: {vm.AccumulatedGallons:F2}\n" +
-                        $"• Precio/Galón: ${pricePerGallon:F0}\n\n" +
-                        $"¿Desea continuar con estos valores?",
+                        $"El precio por galï¿½n calculado (${pricePerGallon:F0}) parece inusual.\n\n" +
+                        $"ï¿½ Monto: ${vm.AccumulatedAmount:F2}\n" +
+                        $"ï¿½ Galones: {vm.AccumulatedGallons:F2}\n" +
+                        $"ï¿½ Precio/Galï¿½n: ${pricePerGallon:F0}\n\n" +
+                        $"ï¿½Desea continuar con estos valores?",
                         "Precio Inusual",
                         "Continuar",
                         "Revisar");
@@ -108,11 +111,11 @@ public partial class HosePostView : ContentPage
                 
                 await CustomAlert.ShowSuccessAsync(
                     $"Manguera #{vm.Number} registrada exitosamente:\n\n" +
-                    $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
-                    $"• Tipo de Producto: {vm.SelectProductType.Description}\n" +
-                    $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
-                    $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
-                    $"• Precio por Galón: ${pricePerGallon:F0}",
+                    $"ï¿½ Dispensador: {vm.SelectedDispensers.Code}\n" +
+                    $"ï¿½ Tipo de Producto: {vm.SelectProductType.Description}\n" +
+                    $"ï¿½ Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
+                    $"ï¿½ Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
+                    $"ï¿½ Precio por Galï¿½n: ${pricePerGallon:F0}",
                     "Manguera Registrada");
 
                 // Clear form fields after successful submission
@@ -131,9 +134,9 @@ public partial class HosePostView : ContentPage
                 LoadingOverlay.HideLoading();
 
                 // Re-enable button
-                if (sender is HoverButton hoverButton)
+                if (button != null)
                 {
-                    hoverButton.IsEnabled = true;
+                    button.IsEnabled = true;
                 }
             }
         }
