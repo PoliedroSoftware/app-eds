@@ -11,8 +11,8 @@ namespace APP.Eds.Components.PopUp
         private readonly CourtService _courtService;
 
         // Límites de tamaño de archivos (configurables)
-        private const long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB por archivo
-        private const long MAX_TOTAL_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB total
+        private const long MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 5 MB por archivo
+        private const long MAX_TOTAL_SIZE_BYTES = 25 * 1024 * 1024; // 10 MB total
         private const double MAX_FILE_SIZE_MB = MAX_FILE_SIZE_BYTES / (1024.0 * 1024.0);
         private const double MAX_TOTAL_SIZE_MB = MAX_TOTAL_SIZE_BYTES / (1024.0 * 1024.0);
 
