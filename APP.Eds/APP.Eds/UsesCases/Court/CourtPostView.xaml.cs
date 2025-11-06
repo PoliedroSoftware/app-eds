@@ -557,6 +557,63 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
+            // 4) Validar tamaño de archivos adjuntos antes de enviar
+            if (vm.CourtDocuments != null && vm.CourtDocuments.Any())
+            {
+                const long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB por archivo
+                const long MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10 MB total
+                long totalDocumentsSize = 0;
+
+                foreach (var doc in vm.CourtDocuments)
+                {
+                    try
+                    {
+                        // Calcular tamaño aproximado del archivo desde Base64
+                        var base64Length = doc.Descripcion?.Length ?? 0;
+                        if (base64Length == 0) continue;
+
+                        int padding = doc.Descripcion.EndsWith("==") ? 2 : doc.Descripcion.EndsWith("=") ? 1 : 0;
+                        long fileSize = (long)((base64Length * 3) / 4) - padding;
+                        totalDocumentsSize += fileSize;
+
+                        // Validar tamaño individual
+                        if (fileSize > MAX_FILE_SIZE)
+                        {
+                            await CustomAlert.ShowErrorAsync(
+                                $"⚠️ Archivo Demasiado Grande\n\n" +
+                                $"El archivo '{doc.DocumentName}' excede el límite permitido.\n\n" +
+                                $"• Tamaño del archivo: {fileSize / (1024.0 * 1024.0):0.##} MB\n" +
+                                $"• Límite por archivo: {MAX_FILE_SIZE / (1024.0 * 1024.0):0.##} MB\n\n" +
+                                $"Por favor, elimine este archivo o cargue una versión más pequeña antes de enviar el cierre.",
+                                "Validación de Archivos");
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error validating document size: {ex.Message}");
+                    }
+                }
+
+                // Validar tamaño total
+                if (totalDocumentsSize > MAX_TOTAL_SIZE)
+                {
+                    await CustomAlert.ShowErrorAsync(
+                        $"⚠️ Tamaño Total de Archivos Excedido\n\n" +
+                        $"El tamaño total de los archivos adjuntos supera el límite permitido por el servidor.\n\n" +
+                        $"• Tamaño total: {totalDocumentsSize / (1024.0 * 1024.0):0.##} MB\n" +
+                        $"• Límite máximo: {MAX_TOTAL_SIZE / (1024.0 * 1024.0):0.##} MB\n" +
+                        $"• Archivos adjuntos: {vm.CourtDocuments.Count}\n\n" +
+                        $"💡 Para continuar:\n" +
+                        $"• Elimine algunos documentos adjuntos\n" +
+                        $"• Comprima las imágenes o archivos PDF\n" +
+                        $"• Divida los documentos en múltiples cierres\n\n" +
+                        $"Use el botón 'Eliminar Todos' en la sección de comprobantes para limpiar los adjuntos.",
+                        "Validación de Tamaño");
+                    return;
+                }
+            }
+
             // --- Envío ---
             var overlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
             try { overlay?.ShowLoading(); } catch { }
