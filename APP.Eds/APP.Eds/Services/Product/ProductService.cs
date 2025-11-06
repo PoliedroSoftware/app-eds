@@ -552,6 +552,12 @@ public class ProductService : INotifyPropertyChanged
             }
         }
 
+        // ✅ NUEVA VALIDACIÓN: EDS es obligatoria
+        if (SelectedEds == null)
+        {
+            errors.Add("• Debe seleccionar una Estación de Servicio (EDS)");
+        }
+
         // Validaciones numéricas
         if (PurchasePrice < 0) errors.Add("• El precio de compra no puede ser negativo");
         if (SellPrice < 0) errors.Add("• El precio de venta no puede ser negativo");
@@ -1202,7 +1208,7 @@ public class ProductService : INotifyPropertyChanged
         PurchasePrice = 0;
         SellPrice = 0;
         Stock = 0;
-        SelectedEds = null;
+        SelectedEds = null;  // ✅ Resetear selección de EDS
     }
 
     public async Task RefreshProductTypesAsync()
@@ -1335,6 +1341,10 @@ public class ProductService : INotifyPropertyChanged
                     .FirstOrDefault(pt => pt.IdProductType == product.IdProductType)
                     ?.CategoryDescription ?? "Categoría general";
             }
+            
+            // ✅ Agregar el nombre de la EDS
+            var edsInfo = EdsList.FirstOrDefault(eds => eds.IdEds == product.IdEds);
+            product.EdsName = edsInfo?.Name ?? "Sin EDS asignada";
         }
     }
     protected void OnPropertyChanged(string propertyName)

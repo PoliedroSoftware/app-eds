@@ -25,6 +25,11 @@ public class ProductResponse
 
     [JsonPropertyName("stock")]
     public double Stock { get; set; }
-    // Propiedad para mostrar el nombre del tipo de combustible
+    
+    [JsonPropertyName("idEds")]
+    public int IdEds { get; set; }
+    
+    // Propiedades para mostrar información enriquecida
     public string ProductTypeName { get; set; }
+    public string EdsName { get; set; }
 }
