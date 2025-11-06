@@ -3,19 +3,24 @@ using APP.Eds.Models.Court;
 using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Services.Court;
+using APP.Eds.Services.RegisterShift;
 using APP.Eds.UsesCases.Court.APP.Eds.Models.Business;
 using APP.Eds.UsesCases.LoadingView;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
+using Microsoft.Maui.Storage;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
+    private readonly RegisterShiftUserService _registerShiftUserService = RegisterShiftUserService.Instance;
+
     private async Task ShowOperationalSectionsAsync()
     {
         // 🔥 MÉTODO SIMPLIFICADO: Ya no se necesita manipular manualmente la visibilidad
@@ -65,6 +70,20 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             _activeNavItem = value;
             OnPropertyChanged();
             _ = AnimateToActiveItem(value);
+        }
+    }
+
+    private bool _isregisterShiftChecked;
+    public bool IsRegisterShiftChecked
+    {
+               get => _isregisterShiftChecked;
+        set
+        {
+            if (_isregisterShiftChecked != value)
+            {
+                _isregisterShiftChecked = value;
+                OnPropertyChanged(nameof(IsRegisterShiftChecked));
+            }
         }
     }
 
@@ -731,6 +750,72 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 Debug.WriteLine($"Error in OnIslanderSelected: {ex.Message}");
             }
         });
+    }
+
+    public async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
+    {
+        _isregisterShiftChecked = e.Value;
+        if (UserRole == "User" || _isregisterShiftChecked == true)
+        {
+            var sendButton = this.FindByName<Button>("SendData");
+            if (sendButton != null)
+            {
+                sendButton.Text = _isregisterShiftChecked ? "Registrar Turno sin Ventas" : "Enviar";
+            }
+
+            try
+            {
+                var vm = this.BindingContext;
+                DateTime dateStart = (DateTime?)vm?.GetType().GetProperty("DateStarttime")?.GetValue(vm)
+                    ?? this.FindByName<DatePicker>("datePicker")?.Date
+                    ?? DateTime.Today;
+
+                var startTimeObj = vm?.GetType().GetProperty("StartTime")?.GetValue(vm);
+                var endTimeObj = vm?.GetType().GetProperty("EndTime")?.GetValue(vm);
+
+                TimeSpan startTime = startTimeObj is TimeSpan ts1 ? ts1
+                            : this.FindByName<TimePicker>("StartTimePicker")?.Time ?? new TimeSpan(6, 0, 0);
+
+                TimeSpan endTime = endTimeObj is TimeSpan ts2 ? ts2
+                                      : this.FindByName<TimePicker>("EndTimePicker")?.Time ?? new TimeSpan(18, 0, 0);
+
+                DateTime? dateEndVm = (DateTime?)vm?.GetType().GetProperty("DateEndtime")?.GetValue(vm);
+                DateTime dateEnd = dateEndVm ?? (endTime < startTime ? dateStart.AddDays(1) : dateStart);
+
+                // --- IDs desde el VM (User ya los trae por defecto en pantalla) ---
+                var selEds = vm?.GetType().GetProperty("SelectedEds")?.GetValue(vm);
+                var selBusiness = vm?.GetType().GetProperty("SelectedBusiness")?.GetValue(vm);
+                var selIslander = vm?.GetType().GetProperty("SelectedIslander")?.GetValue(vm);
+
+                int? idEds = selEds?.GetType().GetProperty("IdEds")?.GetValue(selEds) as int?;
+                int? idBusiness = selBusiness?.GetType().GetProperty("IdBusiness")?.GetValue(selBusiness) as int?;
+                int? idIslander = selIslander?.GetType().GetProperty("IdIslander")?.GetValue(selIslander) as int?;
+
+                if (idEds is null || idIslander is null || idBusiness is null)
+                {
+                    await DisplayAlert("Error", "Datos incompletos", "OK");
+                    return;
+                }
+
+                _registerShiftUserService.IdEds = idEds;
+                _registerShiftUserService.IdBusiness = idBusiness;
+                _registerShiftUserService.IdIslander = idIslander;
+
+                _registerShiftUserService.DateStart = dateStart;
+                _registerShiftUserService.DateEnd = dateEnd;
+                _registerShiftUserService.StartTime = startTime;
+                _registerShiftUserService.EndTime = endTime;
+
+                await _registerShiftUserService.SaveRegisterShiftAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in OnRegisterShiftCheckChanged: {ex.Message}");
+                await CustomAlert.ShowErrorAsync("No se pudo registrar el turno", "Error de Registro");
+            }
+        } 
+        
+        
     }
 
 

@@ -15,4 +15,7 @@ public class IslanderApiResponse
 
     [JsonProperty("data")]
     public List<IslanderResponse> Data { get; set; }
+
+    [JsonProperty("dataUser")]
+    public List<IslanderRequestModel> DataUser { get; set; }
 }

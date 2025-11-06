@@ -168,6 +168,18 @@
                                                 HorizontalOptions="Center"
                                                 TextColor="#E67E22"/>
                                 </Border>
+                                <!-- Checkbox para registrar turno sin ventas -->
+                                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                                    <CheckBox x:Name="RegisterShiftCheck"
+                                              IsChecked="{Binding IsRegisterShiftChecked, Mode=TwoWay}"
+                                              Color="#6A1B9A"
+                                              CheckedChanged="OnRegisterShiftCheckChanged"/>
+                                    <Label Text="Registrar turno sin ventas"
+                                           FontSize="12"
+                                           TextColor="#636E72"
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+
                             </StackLayout>
 
                             <!-- Start Time -->
