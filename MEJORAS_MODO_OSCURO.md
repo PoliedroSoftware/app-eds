@@ -190,7 +190,7 @@ Aunque este PR se enfoca en las pantallas "Cierre de Turno" y relacionadas, cons
 ## 🤝 Contribuciones
 
 Solicitante: Luis Felipe Usma Cardona  
-Fecha: 26 de septiembre de 2025  
+Fecha: 26 de septiembre de 2024  
 Implementado por: GitHub Copilot
 
 ---

@@ -48,7 +48,7 @@
                 <Border x:Name="Business"
                         BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark={StaticResource DarkBorder}}"
                         StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
@@ -135,7 +135,7 @@
                 <Border x:Name="Time" 
                         BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark={StaticResource DarkBorder}}"
                         StrokeThickness="1"
                         Padding="20">
                     <Border.Shadow>
@@ -215,7 +215,7 @@
                 <Border x:Name="CashCount"
                         BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark={StaticResource DarkBorder}}"
                         StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding ShouldShowCashCountSection}">
