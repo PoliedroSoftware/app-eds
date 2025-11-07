@@ -7,7 +7,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkBackground}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -46,9 +46,10 @@
 
                 <!-- Business Selection Card -->
                 <Border x:Name="Business"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
                     <Border.Shadow>
@@ -60,7 +61,7 @@
                             <Label Text="{Binding Business}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkTextPrimary}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -68,12 +69,12 @@
                             <!-- Business -->
                             <Label Text="Negocio" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="0" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorder}}" 
                                     Grid.Row="0" Grid.Column="1">
                                 <Picker Title="{Binding SelectaBusiness}"
                                         AutomationId="BusinessPicker"
@@ -88,12 +89,12 @@
                             <!-- EDS -->
                             <Label Text="EDS" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="1" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorder}}" 
                                     Grid.Row="1" Grid.Column="1">
                                 <Picker Title="{Binding SelectaEds}"
                                         AutomationId="EdsPicker"
@@ -109,12 +110,12 @@
                             <!-- Islander -->
                             <Label Text="Islero" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="2" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark={StaticResource DarkBorder}}" 
                                     Grid.Row="2" Grid.Column="1">
                                 <Picker Title="{Binding SelectAnIslander}"
                                         AutomationId="IslanderPicker"
@@ -132,9 +133,10 @@
 
                 <!-- Time Card -->
                 <Border x:Name="Time" 
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        StrokeThickness="1"
                         Padding="20">
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
@@ -145,7 +147,7 @@
                             <Label Text="{Binding Time}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkTextPrimary}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -154,7 +156,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Fecha" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#FFF3CD" 
                                         StrokeShape="RoundRectangle 8"
@@ -174,7 +176,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Hora Inicio" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#D4EDDA" 
                                         StrokeShape="RoundRectangle 8"
@@ -192,7 +194,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="2">
                                 <Label Text="Hora Fin" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark={StaticResource DarkTextSecondary}}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#F8D7DA" 
                                         StrokeShape="RoundRectangle 8"
@@ -211,9 +213,10 @@
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}"
+                        StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding ShouldShowCashCountSection}">
                     <Border.Shadow>
@@ -225,7 +228,7 @@
                             <Label Text="{Binding CashCount}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark={StaticResource DarkTextPrimary}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -330,20 +333,20 @@
                                 </StackLayout>
                             </Border>
 
-                            <Border BackgroundColor="#F5F5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark={StaticResource DarkInputBackground}}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9E9E9E"
+                                    Stroke="{AppThemeBinding Light=#9E9E9E, Dark={StaticResource DarkBorder}}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding DistinticDescription}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#616161"
+                                           TextColor="{AppThemeBinding Light=#616161, Dark={StaticResource DarkTextSecondary}}"
                                            HorizontalOptions="Center"/>
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkInputBackground}}"
                                             StrokeShape="RoundRectangle 6"
-                                            Stroke="#BDBDBD"
+                                            Stroke="{AppThemeBinding Light=#BDBDBD, Dark={StaticResource DarkBorder}}"
                                             Padding="8">
                                         <Entry Keyboard="Numeric" 
                                                Placeholder="Ingrese distintivo" 
