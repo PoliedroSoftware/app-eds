@@ -121,7 +121,7 @@
                                     
                                     <Picker x:Name="ProductCompartimentPicker" 
                                             Title="Seleccione producto y compartimento"
-                                            ItemsSource="{Binding ProductCompartimentPairs}" 
+                                            ItemsSource="{Binding FilteredProductCompartimentPairs}" 
                                             ItemDisplayBinding="{Binding Display}" 
                                             SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}" 
                                             SelectedIndexChanged="ProductCompartimentPickerSelected"
