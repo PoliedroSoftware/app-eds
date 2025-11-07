@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="APP.Eds.UsesCases.Shopping.ShoppingListView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
+    Title="Listado de Compras"
+    BackgroundColor="#F8F9FA">
+
+    <AbsoluteLayout>
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <VerticalStackLayout Padding="16" Spacing="20">
+
+                <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
+                    <StackLayout Spacing="8">
+                        <Label Text="Listado de Compras" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Historial de compras registradas" 
+                               FontSize="14" 
+                               TextColor="#E1BEE7" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Border>
+
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border BackgroundColor="#E3F2FD" 
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="#2196F3"
+                                Padding="12"
+                                Grid.Column="0">
+                            <StackLayout Spacing="4">
+                                <Label Text="Total Compras" 
+                                       FontSize="11"
+                                       TextColor="#1976D2"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="TotalCountLabel"
+                                       Text="0" 
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#0D47A1"
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+
+                        <Border BackgroundColor="#E8F5E8" 
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="#4CAF50"
+                                Padding="12"
+                                Grid.Column="1">
+                            <StackLayout Spacing="4">
+                                <Label Text="Monto Total" 
+                                       FontSize="11"
+                                       TextColor="#2E7D32"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="TotalAmountLabel"
+                                       Text="$ 0.00" 
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#1B5E20"
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <StackLayout Spacing="12">
+                        <Label Text="Buscar por Factura" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="#2D3436"/>
+                        <Entry x:Name="SearchEntry"
+                               Placeholder="Ingrese numero de factura..."
+                               TextChanged="OnSearchTextChanged"
+                               BackgroundColor="White"/>
+                    </StackLayout>
+                </Border>
+
+                <Border Style="{StaticResource ModernCardStyle}">
+                    <StackLayout Spacing="16">
+                        <Label Text="Compras Registradas" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="#2D3436"/>
+
+                        <StackLayout x:Name="EmptyStateView" 
+                                     IsVisible="False"
+                                     Spacing="16" 
+                                     Padding="32">
+                            <Label Text="No hay compras registradas" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#636E72"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+
+                        <CollectionView x:Name="ShoppingCollectionView">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="#FAFAFA" 
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E0E0E0"
+                                            Margin="0,4"
+                                            Padding="16">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnShoppingItemTapped" 
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding Invoice}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="#2D3436"/>
+
+                                            <Label Grid.Row="1" Grid.Column="0"
+                                                   Text="{Binding Date, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                                   FontSize="12" 
+                                                   TextColor="#636E72"/>
+
+                                            <Label Grid.Row="2" Grid.Column="0"
+                                                   FontSize="12" 
+                                                   TextColor="#636E72">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Proveedor: " FontAttributes="Bold"/>
+                                                        <Span Text="{Binding IdProvider}"/>
+                                                        <Span Text=" | Categoria: " FontAttributes="Bold"/>
+                                                        <Span Text="{Binding IdCategory}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"
+                                                    BackgroundColor="#E8F5E8" 
+                                                    StrokeShape="RoundRectangle 12"
+                                                    Stroke="#4CAF50"
+                                                    Padding="12,8"
+                                                    VerticalOptions="Center">
+                                                <StackLayout Spacing="4">
+                                                    <Label Text="Monto" 
+                                                           FontSize="10"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#2E7D32"
+                                                           HorizontalOptions="Center"/>
+                                                    <Label Text="{Binding Amount, StringFormat='${0:N2}'}" 
+                                                           FontSize="14"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#1B5E20"
+                                                           HorizontalOptions="Center"/>
+                                                </StackLayout>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Border>
+
+                <Border BackgroundColor="#6A1B9A" 
+                        StrokeShape="RoundRectangle 16"
+                        StrokeThickness="0">
+                    <Button Text="Actualizar Listado" 
+                            TextColor="White" 
+                            BackgroundColor="Transparent"
+                            Clicked="OnRefreshClicked"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            HeightRequest="50"/>
+                </Border>
+
+                <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:LoadingView x:Name="LoadingOverlay"
+                              AbsoluteLayout.LayoutBounds="0,0,1,1"
+                              AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>

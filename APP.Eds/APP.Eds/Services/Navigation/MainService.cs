@@ -158,6 +158,7 @@
                     {
                         new("Productos", typeof(ProductPostView), "➕"),
                         new("Compras", typeof(ShoppingPostView), "🛒"),
+                        new("Listado de Compras", typeof(ShoppingListView), "📋"),
                         new("Proveedor", typeof(ProviderPostView), "🏭"),
                         new("Categoría", typeof(CategoryPostView), "📂")
                     }),
