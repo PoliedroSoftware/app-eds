@@ -391,9 +391,9 @@
                     <CollectionView ItemsSource="{Binding CourtDispensers}" x:Name="CourtDispensers">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorder}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -403,19 +403,19 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkTextSecondary}}" VerticalOptions="Center"/>
                                             <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Money Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Monto acumulado" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto acumulado" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en dinero" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en dinero" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -424,12 +424,12 @@
                                         <!-- Gallons Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Galones acumulados" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Galones acumulados" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en galones" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en galones" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -490,9 +490,9 @@
                     <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" x:Name="CourtTypeOfCollections">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorder}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -502,31 +502,31 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkTextSecondary}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Método" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Método" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding TypeOfCollectionName}" 
                                                        FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                       FontSize="10" TextColor="#666666" FontAttributes="Italic"
+                                                       FontSize="10" TextColor="{AppThemeBinding Light=#666666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Italic"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark={StaticResource DarkTextSecondary}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
@@ -649,9 +649,9 @@
                     <CollectionView ItemsSource="{Binding CourtExpenditures}" x:Name="CourtExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource DarkCardBackground}}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark={StaticResource DarkBorder}}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -661,18 +661,18 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark={StaticResource DarkTextSecondary}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Tipo" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Tipo" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding ExpenditureName}" 
                                                        FontSize="14" TextColor="#F44336" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -680,9 +680,9 @@
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark={StaticResource DarkTextSecondary}}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark={StaticResource DarkTextSecondary}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
