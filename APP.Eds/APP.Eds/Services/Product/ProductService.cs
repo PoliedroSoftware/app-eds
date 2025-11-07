@@ -5,6 +5,7 @@ using APP.Eds.Models.Product;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Models.Islander;
+using APP.Eds.Models.Business;
 using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -859,17 +860,83 @@ public class ProductService : INotifyPropertyChanged
     private async Task HandleErrorAsync(HttpResponseMessage response)
     {
         var serverError = await response.Content.ReadAsStringAsync();
-        var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+        
+        // Try to parse as ErrorResponse to detect ValidationFailed errors
+        ErrorResponse? errorResponse = null;
+        try
+        {
+            errorResponse = JsonSerializer.Deserialize<ErrorResponse>(serverError, new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+        }
+        catch
+        {
+            // If parsing fails, fall through to regular error handling
+        }
 
-        var title = response.RequestMessage?.Method == HttpMethod.Post
+        // Check if this is a ValidationFailed error
+        if (errorResponse?.Type == "ValidationFailed" || 
+            (errorResponse != null && errorResponse.Detail?.Contains("FluentValidation") == true))
+        {
+            var userFriendlyError = TranslateValidationFailedError(errorResponse, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+            var title = response.RequestMessage?.Method == HttpMethod.Post
+                ? "Error al Registrar Producto"
+                : "Error al Actualizar Producto";
+            await CustomAlert.ShowErrorAsync(userFriendlyError, title);
+            return;
+        }
+
+        // Standard error handling
+        var standardError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+        var standardTitle = response.RequestMessage?.Method == HttpMethod.Post
             ? "Error al Registrar Producto"
             : "Error al Actualizar Producto";
 
-        await CustomAlert.ShowErrorAsync(userFriendlyError, title);
+        await CustomAlert.ShowErrorAsync(standardError, standardTitle);
     }
 
     private Task CreateAsync() => SaveProductAsync(false);
     private Task UpdateAsync() => SaveProductAsync(true);
+
+    private string TranslateValidationFailedError(ErrorResponse errorResponse, string productName, string productType, string productSubtype)
+    {
+        // This method handles ValidationFailed errors from FluentValidation
+        // The backend sends validation errors but sometimes the detail is not properly formatted
+        
+        var detail = errorResponse?.Detail ?? string.Empty;
+        
+        // Check if the detail contains the FluentValidation list error
+        if (detail.Contains("System.Collections.Generic.List") || detail.Contains("FluentValidation"))
+        {
+            // The backend is not properly serializing validation errors
+            // Provide a comprehensive user-friendly message
+            return "❌ Error de Validación\n\n" +
+                   "El sistema detectó que algunos campos no cumplen con los requisitos necesarios.\n\n" +
+                   "📋 Por favor, verifique lo siguiente:\n\n" +
+                   "✅ Campos obligatorios:\n" +
+                   "• Nombre del producto: debe estar completo\n" +
+                   "• Tipo de producto: debe estar seleccionado\n" +
+                   "• Estación de Servicio (EDS): debe estar seleccionada\n\n" +
+                   "📋 Campos opcionales:\n" +
+                   "• Precios: deben ser números positivos (en pesos)\n" +
+                   "• Stock: debe ser número entero positivo (en galones)\n\n" +
+                   "💡 Sugerencia de valores:\n" +
+                   $"• Nombre: '{productName}'\n" +
+                   $"• Tipo: '{productType ?? "Seleccione un tipo"}'\n" +
+                   "• Precio de compra: Ejemplo 9000 pesos\n" +
+                   "• Precio de venta: Ejemplo 10000 pesos\n" +
+                   "• Stock inicial: Ejemplo 1000 galones\n\n" +
+                   "🔧 Si el problema persiste después de verificar todos los campos, " +
+                   "contacte al soporte técnico con esta información.";
+        }
+        
+        // If the detail has readable information, show it
+        return $"❌ Error de Validación\n\n" +
+               $"Los datos ingresados no cumplen con los requisitos:\n\n" +
+               $"{detail}\n\n" +
+               $"Por favor, revise la información e intente nuevamente.";
+    }
 
     private string TranslateServerError(string serverError, string productName, string productType, string productSubtype)
     {
