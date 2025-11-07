@@ -1,4 +1,4 @@
-﻿namespace APP.Eds.Models.Shopping;
+namespace APP.Eds.Models.Shopping;
 
 public class ShoppingModel
 {
@@ -7,8 +7,8 @@ public class ShoppingModel
     public double? Amount { get; set; }
     public int IdProvider { get; set; }
     public int IdCategory { get; set; }
-    public List<ShoppingProductNestedModel> ShoppingProducts { get; set; } = new();
     public int IdEds { get; set; }
+    public List<ShoppingProductNestedModel> ShoppingProducts { get; set; } = new();
 }
 
 public class ShoppingProductNestedModel
@@ -21,5 +21,4 @@ public class ShoppingProductNestedModel
     public string Name { get; set; }
     public double? TotalPrice { get; set; }
     public int IdCompartment { get; set; }
-    
 }
