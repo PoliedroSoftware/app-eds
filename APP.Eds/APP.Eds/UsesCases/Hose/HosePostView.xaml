@@ -312,7 +312,7 @@
                                                 Opacity="0.3"/>
                                     </Border.Shadow>
                                     <button:HoverButton
-                                        Text="📦 Compartimento"
+                                        Text="📦 gestion de compartimento"
                                         TextColor="white" 
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
