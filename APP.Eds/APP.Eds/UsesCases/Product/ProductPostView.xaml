@@ -293,6 +293,52 @@
                                        TextColor="#636E72"
                                        Margin="4,0,0,0"/>
                             </VerticalStackLayout>
+
+                            <!-- EDS Selection (NUEVO) -->
+                            <VerticalStackLayout Spacing="8">
+                                <StackLayout Orientation="Horizontal" Spacing="4">
+                                    <Label Text="Estación de Servicio (EDS)" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                    <Label Text="*" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#E74C3C"
+                                           VerticalOptions="Start"/>
+                                </StackLayout>
+
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏪" 
+                                               FontSize="18" 
+                                               TextColor="#8B5CF6" 
+                                               VerticalOptions="Center"/>
+
+                                        <Picker x:Name="EdsPicker"
+                                                Title="Seleccione una estación de servicio"
+                                                ItemsSource="{Binding EdsList}"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                AutomationId="PickerEds"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+
+                                <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
+                                       FontSize="12"
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
 
                         <!-- Action Button Section -->
@@ -319,7 +365,7 @@
 
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
-                                <Button Text="🚀 Registrar Producto"
+                                <Button Text="✅ Registrar Producto"
                                         TextColor="White" 
                                         BackgroundColor="Transparent"
                                         Clicked="Button_Clicked"
@@ -370,12 +416,12 @@
                                             <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
                                         </Border.Shadow>
 
-                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
                                             <!-- Product Icon -->
                                             <Border BackgroundColor="#E3F2FD" 
                                                      StrokeShape="RoundRectangle 16"
                                                      WidthRequest="40" HeightRequest="40"
-                                                     Grid.RowSpan="5" Grid.Column="0"
+                                                     Grid.RowSpan="6" Grid.Column="0"
                                                      VerticalOptions="Start">
                                                 <Label Text="📦" 
                                                         FontSize="18" 
@@ -394,23 +440,29 @@
                                                 <Label Text="{Binding Name}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 
+                                            <!-- ✅ NUEVA FILA: EDS -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
+                                                <Label Text="🏪 EDS:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding EdsName}" FontSize="12" TextColor="#8B5CF6" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
                                                 <Label Text="Precio de Compra:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#9C27B0" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 
-                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
                                                 <Label Text="Precio de Venta:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding SellPrice, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 
-                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
+                                            <Grid ColumnDefinitions="Auto,*" Grid.Row="5" Grid.Column="1">
                                                 <Label Text="Stock Inicial:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding Stock, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 
                                             <!-- Action Buttons -->
-                                            <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
+                                            <StackLayout Grid.Column="2" Grid.RowSpan="6" VerticalOptions="Center" Spacing="8">
                                                 <!-- Edit Button -->
                                                 <Border BackgroundColor="#FFF3E0" 
                                                          StrokeShape="RoundRectangle 15"

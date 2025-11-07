@@ -1,6 +1,6 @@
-﻿using APP.Eds.Services.PointOfSale;
+﻿using APP.Eds.Models.Client;
 using APP.Eds.Models.PointOfSale;
-using APP.Eds.Models.Client;
+using APP.Eds.Services.PointOfSale;
 using Microsoft.Maui.Controls.Shapes;
 using System.Globalization;
 
@@ -51,66 +51,66 @@ public partial class PointOfSaleView : ContentPage
 
     private Frame CreateClientSelectorSection()
     {
-     var frame = new Frame
+        var frame = new Frame
         {
-     BackgroundColor = Colors.White,
-  CornerRadius = 16,
+            BackgroundColor = Colors.White,
+            CornerRadius = 16,
             HasShadow = true,
-      Padding = new Thickness(20),
+            Padding = new Thickness(20),
             BorderColor = Color.FromArgb("#E2E8F0")
         };
 
         var stackLayout = new StackLayout
-{
+        {
             Spacing = 12
-  };
+        };
 
         // Header
         var headerLabel = new Label
         {
             Text = "👤 Cliente",
             FontSize = 20,
-  FontAttributes = FontAttributes.Bold,
-       TextColor = Color.FromArgb("#374151"),
-          HorizontalOptions = LayoutOptions.Start,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#374151"),
+            HorizontalOptions = LayoutOptions.Start,
             Margin = new Thickness(0, 0, 0, 8)
         };
         stackLayout.Add(headerLabel);
 
         // Selected client display with search integrated
-   var clientDisplayFrame = new Frame
+        var clientDisplayFrame = new Frame
         {
             BackgroundColor = Color.FromArgb("#F8FAFC"),
-  CornerRadius = 12,
-     HasShadow = false,
-   Padding = new Thickness(16, 12),
+            CornerRadius = 12,
+            HasShadow = false,
+            Padding = new Thickness(16, 12),
             BorderColor = Color.FromArgb("#3B82F6")
- };
+        };
 
         var clientStack = new StackLayout
-  {
+        {
             Spacing = 8
         };
 
         // Cliente seleccionado (visible cuando hay cliente)
-      var selectedClientLabel = new Label
- {
+        var selectedClientLabel = new Label
+        {
             FontSize = 16,
-      FontAttributes = FontAttributes.Bold,
-          TextColor = Color.FromArgb("#374151"),
-         LineBreakMode = LineBreakMode.WordWrap
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#374151"),
+            LineBreakMode = LineBreakMode.WordWrap
         };
         selectedClientLabel.SetBinding(Label.TextProperty, "ClientButtonText");
-        selectedClientLabel.SetBinding(VisualElement.IsVisibleProperty, new Binding("SelectedClient", 
+        selectedClientLabel.SetBinding(VisualElement.IsVisibleProperty, new Binding("SelectedClient",
           converter: new FuncConverter<ClientLegalModel, bool>(client => client != null && client.Id > 0)));
-  clientStack.Add(selectedClientLabel);
+        clientStack.Add(selectedClientLabel);
 
         // Separator line (visible cuando hay cliente)
         var separator = new BoxView
-     {
-       Color = Color.FromArgb("#E2E8F0"),
-         HeightRequest = 1,
- Margin = new Thickness(0, 4, 0, 4)
+        {
+            Color = Color.FromArgb("#E2E8F0"),
+            HeightRequest = 1,
+            Margin = new Thickness(0, 4, 0, 4)
         };
         separator.SetBinding(VisualElement.IsVisibleProperty, new Binding("SelectedClient",
      converter: new FuncConverter<ClientLegalModel, bool>(client => client != null && client.Id > 0)));
@@ -118,62 +118,62 @@ public partial class PointOfSaleView : ContentPage
 
         // Search section
         var searchLabel = new Label
-{
-       Text = "🔍 Buscar por Número de Documento:",
-    FontSize = 13,
+        {
+            Text = "🔍 Buscar por Número de Documento:",
+            FontSize = 13,
             TextColor = Color.FromArgb("#6B7280"),
             FontAttributes = FontAttributes.Bold
-   };
+        };
         clientStack.Add(searchLabel);
 
         var searchGrid = new Grid
         {
-  ColumnDefinitions = new ColumnDefinitionCollection
+            ColumnDefinitions = new ColumnDefinitionCollection
    {
       new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
          new ColumnDefinition { Width = GridLength.Auto }
   },
-      ColumnSpacing = 8
+            ColumnSpacing = 8
         };
 
         var searchEntry = new Entry
-  {
-    Placeholder = "Ej: 123456789",
- FontSize = 15,
+        {
+            Placeholder = "Ej: 123456789",
+            FontSize = 15,
             BackgroundColor = Colors.White,
-     TextColor = Color.FromArgb("#374151"),
-    PlaceholderColor = Color.FromArgb("#9CA3AF"),
-         HeightRequest = 45
-   };
+            TextColor = Color.FromArgb("#374151"),
+            PlaceholderColor = Color.FromArgb("#9CA3AF"),
+            HeightRequest = 45
+        };
         searchEntry.SetBinding(Entry.TextProperty, "ClientSearchText");
- searchGrid.SetColumn(searchEntry, 0);
+        searchGrid.SetColumn(searchEntry, 0);
         searchGrid.Add(searchEntry);
 
-     var searchButton = new Button
+        var searchButton = new Button
         {
-        Text = "Buscar",
+            Text = "Buscar",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
             BackgroundColor = Color.FromArgb("#3B82F6"),
-     TextColor = Colors.White,
-     CornerRadius = 10,
-      WidthRequest = 90,
+            TextColor = Colors.White,
+            CornerRadius = 10,
+            WidthRequest = 90,
             HeightRequest = 45
         };
-  searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
-  searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching",
-            converter: new FuncConverter<bool, bool>(searching => !searching)));
+        searchButton.SetBinding(Button.CommandProperty, "SearchClientCommand");
+        searchButton.SetBinding(VisualElement.IsEnabledProperty, new Binding("IsSearching",
+                  converter: new FuncConverter<bool, bool>(searching => !searching)));
         searchGrid.SetColumn(searchButton, 1);
         searchGrid.Add(searchButton);
 
-  clientStack.Add(searchGrid);
+        clientStack.Add(searchGrid);
 
         // Loading indicator
-   var activityIndicator = new ActivityIndicator
+        var activityIndicator = new ActivityIndicator
         {
-         Color = Color.FromArgb("#3B82F6"),
+            Color = Color.FromArgb("#3B82F6"),
             IsRunning = false,
-  HeightRequest = 25
+            HeightRequest = 25
         };
         activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsSearching");
         activityIndicator.SetBinding(VisualElement.IsVisibleProperty, "IsSearching");
@@ -181,17 +181,17 @@ public partial class PointOfSaleView : ContentPage
 
         // Hint label
         var hintLabel = new Label
-  {
-   Text = "💡 Busca en persona jurídica (empresas) y naturales (personas)",
-         FontSize = 11,
+        {
+            Text = "💡 Busca en persona jurídica (empresas) y naturales (personas)",
+            FontSize = 11,
             TextColor = Color.FromArgb("#6B7280"),
             FontAttributes = FontAttributes.Italic,
-   HorizontalOptions = LayoutOptions.Start
-     };
+            HorizontalOptions = LayoutOptions.Start
+        };
         clientStack.Add(hintLabel);
 
         clientDisplayFrame.Content = clientStack;
-     stackLayout.Add(clientDisplayFrame);
+        stackLayout.Add(clientDisplayFrame);
 
         frame.Content = stackLayout;
         return frame;
@@ -812,29 +812,29 @@ public partial class PointOfSaleView : ContentPage
         // ✅ REMOVED: Clear button - eliminado completamente
 
         var processButton = new Button
-  {
+        {
             Text = "Facturar", // ✅ Changed from "Procesar Pago" to "Facturar"
-         FontSize = 18,
+            FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-        BackgroundColor = Color.FromArgb("#059669"),
+            BackgroundColor = Color.FromArgb("#059669"),
             TextColor = Colors.White,
             CornerRadius = 12,
-          HeightRequest = 55
+            HeightRequest = 55
         };
-   processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
+        processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
         processButton.SetBinding(Button.IsEnabledProperty, "CanCompleteTransaction");
         grid.SetColumn(processButton, 0);
         grid.Add(processButton);
 
-     return grid;
+        return grid;
     }
 
     private Frame CreatePaymentSection()
     {
-      // ✅ MÉTODO ELIMINADO - Ya no se usa la sección de métodos de pago
-  // Este método puede ser eliminado completamente o dejarlo comentado por si se necesita en el futuro
-    return null;
-}
+        // ✅ MÉTODO ELIMINADO - Ya no se usa la sección de métodos de pago
+        // Este método puede ser eliminado completamente o dejarlo comentado por si se necesita en el futuro
+        return null;
+    }
 }
 
 // Helper converter for toggle button

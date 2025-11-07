@@ -50,9 +50,21 @@ public class ElectronicInvoiceModel
     [JsonPropertyName("techProviderFootNote")]
     public string TechProviderFootNote { get; set; }
 
+    // ✨ NEW: Islander and EDS information
+    [JsonPropertyName("islanderName")]
+    public string IslanderName { get; set; }
+
+    [JsonPropertyName("edsName")]
+    public string EdsName { get; set; }
+
     public string DateFormatted => Date.ToString("dd/MM/yyyy HH:mm");
     public string TotalAmountFormatted => $"${TotalAmount:N2}";
-    public string StatusIcon => Status == "Emitida" ? "✅" : "⚠️";
+    public string StatusIcon => Status switch
+    {
+        "Emitida" => "✅",
+        "Anulada" => "❌",
+        _ => "⚠️"
+    };
     public string PaymentMethodIcon => PaymentMethod switch
     {
         "Efectivo" => "💵",
@@ -64,4 +76,13 @@ public class ElectronicInvoiceModel
     public string CudeInfo => !string.IsNullOrEmpty(InvoiceHash)
         ? $"CUDE: {InvoiceHash.Substring(0, Math.Min(16, InvoiceHash.Length))}..."
       : "Sin CUDE";
+
+    // ✨ NEW: Formatted display properties
+    public string IslanderInfo => !string.IsNullOrWhiteSpace(IslanderName) 
+        ? $"👤 {IslanderName}" 
+        : "👤 No registrado";
+
+    public string EdsInfo => !string.IsNullOrWhiteSpace(EdsName) 
+        ? $"🏪 {EdsName}" 
+        : "🏪 No registrado";
 }

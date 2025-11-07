@@ -4,6 +4,7 @@ using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
+using APP.Eds.Models.Islander;
 using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -109,6 +110,7 @@ public class ProductService : INotifyPropertyChanged
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
     public ObservableCollection<ProductResponse> ProductList { get; set; } = [];
+    public ObservableCollection<EdsModel> EdsList { get; set; } = [];
 
     // Nuevas colecciones para el sistema de productos específicos
     public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
@@ -340,6 +342,33 @@ public class ProductService : INotifyPropertyChanged
         }
     }
 
+    // EDS Selection Properties
+    private EdsModel _selectedEds;
+    public EdsModel SelectedEds
+    {
+        get => _selectedEds;
+        set
+        {
+            _selectedEds = value;
+            OnPropertyChanged(nameof(SelectedEds));
+            if (_selectedEds != null)
+            {
+                IdEds = _selectedEds.IdEds;
+            }
+        }
+    }
+
+    private int _idEds;
+    public int IdEds
+    {
+        get => _idEds;
+        set
+        {
+            _idEds = value;
+            OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
     // Nueva propiedad para mostrar la unidad de medida del stock
     public string StockUnit => "galones";
     public string StockPlaceholder => "Ingrese el stock inicial en galones";
@@ -354,6 +383,7 @@ public class ProductService : INotifyPropertyChanged
         GetProducstAsync();
         InitializeProductOptions();
         GetAllProductTypeData();
+        GetAllEdsData();
         GetByIdProductDataCommand = new Command<int>(async (productId) => await GetByIdProductDataAsync(productId));
         SaveProductDataCommand = new Command(async () => await SaveProductDataAsync(), () => IsFormValid);
         EditProductDataCommand = new Command<ProductResponse>(async (dispenser) => await EditProductAsync(dispenser));
@@ -522,6 +552,12 @@ public class ProductService : INotifyPropertyChanged
             }
         }
 
+        // ✅ NUEVA VALIDACIÓN: EDS es obligatoria
+        if (SelectedEds == null)
+        {
+            errors.Add("• Debe seleccionar una Estación de Servicio (EDS)");
+        }
+
         // Validaciones numéricas
         if (PurchasePrice < 0) errors.Add("• El precio de compra no puede ser negativo");
         if (SellPrice < 0) errors.Add("• El precio de venta no puede ser negativo");
@@ -592,6 +628,37 @@ public class ProductService : INotifyPropertyChanged
         {
             System.Diagnostics.Debug.WriteLine($"General error loading product types: {ex.Message}");
             AddSampleData();
+        }
+    }
+
+    private async void GetAllEdsData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("No authentication token found for EDS data");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/eds";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var edsList = JsonSerializer.Deserialize<EdsResponseModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateEdsList(edsList?.Data ?? new List<EdsModel>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando EDS: {ex.Message}");
+        }
+    }
+
+    private void UpdateEdsList(IEnumerable<EdsModel> edsData)
+    {
+        EdsList.Clear();
+        foreach (var eds in edsData)
+        {
+            EdsList.Add(eds);
         }
     }
 
@@ -721,13 +788,21 @@ public class ProductService : INotifyPropertyChanged
 
     private async Task SaveProductAsync(bool isUpdate)
     {
+        // Validar EDS selection (required field)
+        if (SelectedEds is null)
+        {
+            await CustomAlert.ShowErrorAsync("Debe seleccionar un EDS (Estación de Servicio) para registrar el producto", "EDS Requerido");
+            return;
+        }
+
         var product = new ProductModel
         {
             Name = Name.Trim(),
             IdProductType = IdProductType,
             SellPrice = SellPrice,
             PurchasePrice = PurchasePrice,
-            Stock = Stock
+            Stock = Stock,
+            IdEds = SelectedEds.IdEds
         };
         if(isUpdate)
             product.IdProduct = IdProduct;
@@ -1133,6 +1208,7 @@ public class ProductService : INotifyPropertyChanged
         PurchasePrice = 0;
         SellPrice = 0;
         Stock = 0;
+        SelectedEds = null;  // ✅ Resetear selección de EDS
     }
 
     public async Task RefreshProductTypesAsync()
@@ -1265,6 +1341,10 @@ public class ProductService : INotifyPropertyChanged
                     .FirstOrDefault(pt => pt.IdProductType == product.IdProductType)
                     ?.CategoryDescription ?? "Categoría general";
             }
+            
+            // ✅ Agregar el nombre de la EDS
+            var edsInfo = EdsList.FirstOrDefault(eds => eds.IdEds == product.IdEds);
+            product.EdsName = edsInfo?.Name ?? "Sin EDS asignada";
         }
     }
     protected void OnPropertyChanged(string propertyName)

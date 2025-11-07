@@ -13,6 +13,7 @@ public class ProductModel : INotifyPropertyChanged
     public double SellPrice { get; set; }
     public double PurchasePrice { get; set; }
     public int Stock { get; set; }
+    public int IdEds { get; set; }
 
     public bool IsInCart
     {

@@ -76,10 +76,11 @@ public partial class InvoiceHistoryView : ContentPage
             {
                 RowDefinitions =
        {
-          new RowDefinition { Height = GridLength.Auto },
-          new RowDefinition { Height = GridLength.Auto },
-          new RowDefinition { Height = GridLength.Auto },
-          new RowDefinition { Height = GridLength.Auto }
+          new RowDefinition { Height = GridLength.Auto }, // Header
+          new RowDefinition { Height = GridLength.Auto }, // Client
+          new RowDefinition { Height = GridLength.Auto }, // Islander & EDS (NEW)
+          new RowDefinition { Height = GridLength.Auto }, // Totals
+          new RowDefinition { Height = GridLength.Auto }  // Actions
   },
                 ColumnDefinitions =
       {
@@ -90,15 +91,18 @@ public partial class InvoiceHistoryView : ContentPage
                 Children =
           {
      // Fila 1: Número de factura y estado
-   CreateHeaderRow(),
+     CreateHeaderRow(),
   
- // Fila 2: Cliente
-        CreateClientRow(),
+     // Fila 2: Cliente
+     CreateClientRow(),
         
-     // Fila 3: Totales
- CreateTotalsRow(),
+     // Fila 3: Islandero y EDS (NEW)
+     CreateIslanderEdsRow(),
+
+     // Fila 4: Totales
+     CreateTotalsRow(),
       
-          // Fila 4: Botones de acción
+      // Fila 5: Botones de acción
      CreateActionsRow()
       }
             }
@@ -183,6 +187,16 @@ public partial class InvoiceHistoryView : ContentPage
             Spacing = 2
         };
 
+        // Cliente label
+        var clientLabel = new Label
+        {
+            Text = "Tercero:",
+            FontSize = 10,
+            TextColor = Color.FromArgb("#999999"),
+            FontAttributes = FontAttributes.Bold
+        };
+        clientStack.Add(clientLabel);
+
         var clientName = new Label
         {
             FontSize = 14,
@@ -217,6 +231,115 @@ public partial class InvoiceHistoryView : ContentPage
         return grid;
     }
 
+    // ✨ NEW: Islander and EDS row
+    private Grid CreateIslanderEdsRow()
+    {
+        var grid = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            },
+            ColumnSpacing = 8
+        };
+
+        // Islander info (left side)
+        var islanderStack = new VerticalStackLayout
+        {
+            Spacing = 2
+        };
+
+        var islanderTitleStack = new HorizontalStackLayout
+        {
+            Spacing = 4
+        };
+
+        var islanderIcon = new Label
+        {
+            Text = "👤",
+            FontSize = 12,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var islanderTitle = new Label
+        {
+            Text = "Islandero:",
+            FontSize = 9,
+            TextColor = Color.FromArgb("#999999"),
+            FontAttributes = FontAttributes.Bold,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        islanderTitleStack.Add(islanderIcon);
+        islanderTitleStack.Add(islanderTitle);
+
+        var islanderLabel = new Label
+        {
+            FontSize = 11,
+            TextColor = Color.FromArgb("#6B7280"),
+            LineBreakMode = LineBreakMode.TailTruncation,
+            MaxLines = 1
+        };
+        islanderLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.IslanderName));
+
+        islanderStack.Add(islanderTitleStack);
+        islanderStack.Add(islanderLabel);
+
+        // EDS info (right side)
+        var edsStack = new VerticalStackLayout
+        {
+            Spacing = 2,
+            HorizontalOptions = LayoutOptions.End
+        };
+
+        var edsTitleStack = new HorizontalStackLayout
+        {
+            Spacing = 4,
+            HorizontalOptions = LayoutOptions.End
+        };
+
+        var edsIcon = new Label
+        {
+            Text = "🏪",
+            FontSize = 12,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var edsTitle = new Label
+        {
+            Text = "EDS:",
+            FontSize = 9,
+            TextColor = Color.FromArgb("#999999"),
+            FontAttributes = FontAttributes.Bold,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        edsTitleStack.Add(edsIcon);
+        edsTitleStack.Add(edsTitle);
+
+        var edsLabel = new Label
+        {
+            FontSize = 11,
+            TextColor = Color.FromArgb("#6B7280"),
+            LineBreakMode = LineBreakMode.TailTruncation,
+            MaxLines = 1,
+            HorizontalTextAlignment = TextAlignment.End
+        };
+        edsLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.EdsName));
+
+        edsStack.Add(edsTitleStack);
+        edsStack.Add(edsLabel);
+
+        grid.Add(islanderStack, 0, 0);
+        grid.Add(edsStack, 1, 0);
+
+        Grid.SetRow(grid, 2); // Row 2 (after client row)
+        Grid.SetColumnSpan(grid, 2);
+
+        return grid;
+    }
+
     private Grid CreateTotalsRow()
     {
         var grid = new Grid
@@ -224,8 +347,21 @@ public partial class InvoiceHistoryView : ContentPage
             ColumnDefinitions =
          {
    new ColumnDefinition { Width = GridLength.Star },
-     new ColumnDefinition { Width = GridLength.Star }
+     new ColumnDefinition { Width = GridLength.Auto }
  }
+        };
+
+        var paymentContainer = new VerticalStackLayout
+        {
+            Spacing = 2
+        };
+
+        var paymentTitleLabel = new Label
+        {
+            Text = "Método de Pago:",
+            FontSize = 9,
+            TextColor = Color.FromArgb("#999999"),
+            FontAttributes = FontAttributes.Bold
         };
 
         var paymentStack = new HorizontalStackLayout
@@ -249,6 +385,24 @@ public partial class InvoiceHistoryView : ContentPage
         paymentStack.Add(paymentIcon);
         paymentStack.Add(paymentLabel);
 
+        paymentContainer.Add(paymentTitleLabel);
+        paymentContainer.Add(paymentStack);
+
+        var totalContainer = new VerticalStackLayout
+        {
+            Spacing = 2,
+            HorizontalOptions = LayoutOptions.End
+        };
+
+        var totalTitleLabel = new Label
+        {
+            Text = "Total:",
+            FontSize = 9,
+            TextColor = Color.FromArgb("#999999"),
+            FontAttributes = FontAttributes.Bold,
+            HorizontalTextAlignment = TextAlignment.End
+        };
+
         var totalLabel = new Label
         {
             FontSize = 18,
@@ -258,9 +412,12 @@ public partial class InvoiceHistoryView : ContentPage
         };
         totalLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.TotalAmountFormatted));
 
-        grid.Add(paymentStack, 0, 0);
-        grid.Add(totalLabel, 1, 0);
-        Grid.SetRow(grid, 2);
+        totalContainer.Add(totalTitleLabel);
+        totalContainer.Add(totalLabel);
+
+        grid.Add(paymentContainer, 0, 0);
+        grid.Add(totalContainer, 1, 0);
+        Grid.SetRow(grid, 3);
         Grid.SetColumnSpan(grid, 2);
 
         return grid;
@@ -270,44 +427,131 @@ public partial class InvoiceHistoryView : ContentPage
     {
         var grid = new Grid
         {
-            ColumnDefinitions =
+            ColumnDefinitions = new ColumnDefinitionCollection
  {
-        new ColumnDefinition { Width = GridLength.Star },
- new ColumnDefinition { Width = GridLength.Star }
-  },
-            ColumnSpacing = 8
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+},
+            ColumnSpacing = 6
         };
 
-        var viewButton = new Button
+        // ✅ View PDF Button
+        var viewButton = CreateActionButton(
+            icon: "📄",
+            text: "Ver PDF",
+            backgroundColor: "#6200E8",
+            commandBinding: nameof(InvoiceHistoryViewModel.ViewPdfCommand)
+        );
+        grid.SetColumn(viewButton, 0);
+        grid.Add(viewButton);
+
+        // ✅ Share Button
+        var shareButton = CreateActionButton(
+            icon: "📤",
+            text: "Compartir",
+            backgroundColor: "#4CAF50",
+            commandBinding: nameof(InvoiceHistoryViewModel.SharePdfCommand)
+        );
+        grid.SetColumn(shareButton, 1);
+        grid.Add(shareButton);
+
+        // ✨ Credit Note Button
+        var creditNoteButton = CreateActionButton(
+            icon: "📝",
+            text: "Nota Crédito",
+            backgroundColor: "#FF9800",
+            commandBinding: nameof(InvoiceHistoryViewModel.CreditNoteCommand),
+            fontSize: 9
+        );
+
+        // Trigger para deshabilitar si está anulada
+        var trigger = new DataTrigger(typeof(Frame))
         {
-            Text = "📄 Ver PDF",
-            BackgroundColor = Color.FromArgb("#6200E8"),
-            TextColor = Colors.White,
-            CornerRadius = 8,
-            FontSize = 12,
-            Padding = new Thickness(12, 8)
+            Binding = new Binding("Status"),
+            Value = "Anulada"
         };
-        viewButton.SetBinding(Button.CommandProperty, new Binding(nameof(InvoiceHistoryViewModel.ViewPdfCommand), source: _viewModel));
-        viewButton.SetBinding(Button.CommandParameterProperty, ".");
-
-        var shareButton = new Button
+        trigger.Setters.Add(new Setter
         {
-            Text = "📤 Compartir",
-            BackgroundColor = Color.FromArgb("#4CAF50"),
-            TextColor = Colors.White,
-            CornerRadius = 8,
-            FontSize = 12,
-            Padding = new Thickness(12, 8)
-        };
-        shareButton.SetBinding(Button.CommandProperty, new Binding(nameof(InvoiceHistoryViewModel.SharePdfCommand), source: _viewModel));
-        shareButton.SetBinding(Button.CommandParameterProperty, ".");
+            Property = VisualElement.OpacityProperty,
+            Value = 0.5
+        });
+        trigger.Setters.Add(new Setter
+        {
+            Property = VisualElement.IsEnabledProperty,
+            Value = false
+        });
+        creditNoteButton.Triggers.Add(trigger);
 
-        grid.Add(viewButton, 0, 0);
-        grid.Add(shareButton, 1, 0);
-        Grid.SetRow(grid, 3);
+        grid.SetColumn(creditNoteButton, 2);
+        grid.Add(creditNoteButton);
+
+        Grid.SetRow(grid, 4);
         Grid.SetColumnSpan(grid, 2);
 
         return grid;
+    }
+
+    private Frame CreateActionButton(
+        string icon,
+        string text,
+        string backgroundColor,
+        string commandBinding,
+        int fontSize = 11)
+    {
+        var container = new Frame
+        {
+            BackgroundColor = Color.FromArgb(backgroundColor),
+            Padding = new Thickness(4, 8),
+            HeightRequest = 62,
+            CornerRadius = 8,
+            HasShadow = false,
+            BorderColor = Colors.Transparent
+        };
+
+        var stackLayout = new VerticalStackLayout
+        {
+            Spacing = 4,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        // Icono
+        var iconLabel = new Label
+        {
+            Text = icon,
+            FontSize = 20,
+            HorizontalOptions = LayoutOptions.Center,
+            HorizontalTextAlignment = TextAlignment.Center
+        };
+        stackLayout.Add(iconLabel);
+
+        // Texto
+        var textLabel = new Label
+        {
+            Text = text,
+            FontSize = fontSize,
+            TextColor = Colors.White,
+            FontAttributes = FontAttributes.Bold,
+            HorizontalOptions = LayoutOptions.Center,
+            HorizontalTextAlignment = TextAlignment.Center,
+            VerticalTextAlignment = TextAlignment.Center,
+            LineBreakMode = LineBreakMode.WordWrap,
+            MaxLines = 2,
+            Margin = new Thickness(2, 0)
+        };
+        stackLayout.Add(textLabel);
+
+        container.Content = stackLayout;
+
+        // Agregar TapGestureRecognizer
+        var tapGesture = new TapGestureRecognizer();
+        tapGesture.SetBinding(TapGestureRecognizer.CommandProperty,
+            new Binding(commandBinding, source: _viewModel));
+        tapGesture.SetBinding(TapGestureRecognizer.CommandParameterProperty, ".");
+        container.GestureRecognizers.Add(tapGesture);
+
+        return container;
     }
 
     private View CreateEmptyView()

@@ -8,7 +8,7 @@ public class ShoppingModel
     public int IdProvider { get; set; }
     public int IdCategory { get; set; }
     public List<ShoppingProductNestedModel> ShoppingProducts { get; set; } = new();
-    
+    public int IdEds { get; set; }
 }
 
 public class ShoppingProductNestedModel

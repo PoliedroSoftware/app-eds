@@ -302,7 +302,7 @@ public class PointOfSaleService : IPointOfSaleService
 
             // Buscar por número de documento en clientes jurídicos
             var legalClient = legalClientResponse?.Data?.FirstOrDefault(c =>
-     c.DocumentNumber?.Trim().Equals(documentNumber, StringComparison.OrdinalIgnoreCase) == true);
+             c.DocumentNumber?.Trim().Equals(documentNumber, StringComparison.OrdinalIgnoreCase) == true);
 
             if (legalClient != null)
             {
