@@ -107,6 +107,11 @@ public class EnhancedProductTypeItem : ProductTypeModelResponse
 
 public class ProductService : INotifyPropertyChanged
 {
+    // Constants for error detection
+    private const string ValidationFailedErrorType = "ValidationFailed";
+    private const string FluentValidationMarker = "FluentValidation";
+    private const string ListSerializationMarker = "System.Collections.Generic.List";
+
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
@@ -876,8 +881,8 @@ public class ProductService : INotifyPropertyChanged
         }
 
         // Check if this is a ValidationFailed error
-        if (errorResponse?.Type == "ValidationFailed" || 
-            (errorResponse != null && errorResponse.Detail?.Contains("FluentValidation") == true))
+        if (errorResponse?.Type == ValidationFailedErrorType || 
+            (errorResponse != null && errorResponse.Detail?.Contains(FluentValidationMarker) == true))
         {
             var userFriendlyError = TranslateValidationFailedError(errorResponse, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
             var title = response.RequestMessage?.Method == HttpMethod.Post
@@ -907,7 +912,7 @@ public class ProductService : INotifyPropertyChanged
         var detail = errorResponse?.Detail ?? string.Empty;
         
         // Check if the detail contains the FluentValidation list error
-        if (detail.Contains("System.Collections.Generic.List") || detail.Contains("FluentValidation"))
+        if (detail.Contains(ListSerializationMarker) || detail.Contains(FluentValidationMarker))
         {
             // The backend is not properly serializing validation errors
             // Provide a comprehensive user-friendly message
