@@ -295,8 +295,9 @@
                                         FontAttributes="Bold"
                                         HeightRequest="50"
                                         CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
+                                       NormalColor="{StaticResource Success}"
+                                        HoverColor="{StaticResource LoginGreenDark}"
+                                        PressedColor="{StaticResource LoginGreenDark}"/>
                                 </Border>
 
                                 <!-- Compartment Button -->
@@ -312,11 +313,11 @@
                                     </Border.Shadow>
                                     <button:HoverButton
                                         Text="📦 Compartimento"
-                                        TextColor="White" 
+                                        TextColor="white" 
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
                                         AutomationId="ButtonCompartiment"
-                                        FontSize="14"
+                                        FontSize="16"
                                         FontAttributes="Bold"
                                         HeightRequest="50"
                                         CornerRadius="16"
