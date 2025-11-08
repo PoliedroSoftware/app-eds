@@ -127,7 +127,7 @@ public partial class ShoppingPostView : ContentPage
 
             if (vm.Invoice.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("El número de factura debe tener al menos 3 caracteres", "Factura Inválida");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese un número de factura válido (mínimo 3 caracteres)", "Factura Inválida");
                 return;
             }
 
@@ -238,6 +238,50 @@ public partial class ShoppingPostView : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error in InvoiceEntryCompleted: {ex.Message}");
+        }
+    }
+
+    private void InvoiceEntryTextChanged(object sender, TextChangedEventArgs e)
+    {
+        try
+        {
+            if (sender is Entry entry)
+            {
+                string invoiceText = entry.Text ?? string.Empty;
+                
+                // Update visual feedback based on invoice length
+                if (string.IsNullOrWhiteSpace(invoiceText))
+                {
+                    // Empty state - show neutral help text
+                    InvoiceBorder.Stroke = Color.FromArgb("#DDD6FE");
+                    InvoiceHelpIcon.Text = "ℹ️";
+                    InvoiceHelpIcon.TextColor = Color.FromArgb("#6B7280");
+                    InvoiceHelpText.Text = "El número de factura debe tener al menos 3 caracteres";
+                    InvoiceHelpText.TextColor = Color.FromArgb("#6B7280");
+                }
+                else if (invoiceText.Length < 3)
+                {
+                    // Invalid state - show warning
+                    InvoiceBorder.Stroke = Color.FromArgb("#F59E0B");
+                    InvoiceHelpIcon.Text = "⚠️";
+                    InvoiceHelpIcon.TextColor = Color.FromArgb("#F59E0B");
+                    InvoiceHelpText.Text = $"Faltan {3 - invoiceText.Length} caracteres para completar el mínimo requerido";
+                    InvoiceHelpText.TextColor = Color.FromArgb("#F59E0B");
+                }
+                else
+                {
+                    // Valid state - show success
+                    InvoiceBorder.Stroke = Color.FromArgb("#10B981");
+                    InvoiceHelpIcon.Text = "✅";
+                    InvoiceHelpIcon.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpText.Text = "Número de factura válido";
+                    InvoiceHelpText.TextColor = Color.FromArgb("#10B981");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in InvoiceEntryTextChanged: {ex.Message}");
         }
     }
 
