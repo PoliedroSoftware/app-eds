@@ -1,286 +1,322 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="APP.Eds.UsesCases.Wizard.SetupWizardView"
-   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
- xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:APP.Eds.Converters.Wizard"
     xmlns:controls="clr-namespace:APP.Eds.Controls"
              Title="Configuración del Sistema">
- 
+
     <ContentPage.Resources>
         <ResourceDictionary>
- <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
     <Grid>
-    <ScrollView>
-      <VerticalStackLayout Padding="20" Spacing="20">
-     
-  <Frame BackgroundColor="{AppThemeBinding Light=#F3E8FF, Dark=#2A263B}"
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <Frame BackgroundColor="{AppThemeBinding Light=#F3E8FF, Dark=#2A263B}"
        BorderColor="{AppThemeBinding Light=#E9D5FF, Dark=#3B3757}"
             HasShadow="False"
                 CornerRadius="12">
-  <VerticalStackLayout Spacing="10">
-    <Label Text="⭐ Asistente de Configuración ⭐"
-       FontSize="18"
-             FontAttributes="Bold"
-         TextColor="{AppThemeBinding Light=#3B0764, Dark=#EDE9FE}"
-      HorizontalOptions="Center" />
-         <Label Text="Complete todos los pasos para configurar su sistema EDS"
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label Text="Complete todos los pasos para configurar su sistema EDS"
            FontSize="16"
    TextColor="{AppThemeBinding Light=#5B21B6, Dark=#C4B5FD}"
                 HorizontalOptions="Center" />
-     <Label Text="{Binding CompletedSteps, StringFormat='Pasos completados: {0} de 10'}"
-         FontSize="18"
- FontAttributes="Bold"
-        TextColor="{AppThemeBinding Light=#4C1D95, Dark=#DDD6FE}"
-     HorizontalOptions="Center" />
- <ProgressBar x:Name="OverallProgressBar"
- Progress="0.0"
-             ProgressColor="{AppThemeBinding Light=#86EFAC, Dark=#34D399}"
-    BackgroundColor="{AppThemeBinding Light=#EDE9FE, Dark=#3B3757}"
-           HeightRequest="6" />
-           </VerticalStackLayout>
-    </Frame>
 
-             <Frame BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1F2937}"
-    BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
-           CornerRadius="12" Padding="15">
-            <VerticalStackLayout Spacing="10">
-    <Label Text="📋 Progreso de Configuración"
-               FontSize="18"
-          FontAttributes="Bold"
-         TextColor="{AppThemeBinding Light=#0F172A, Dark=#E5E7EB}"
-              HorizontalOptions="Center" />
-       
-             <CollectionView ItemsSource="{Binding WizardService.Steps}"
-                 BackgroundColor="Transparent">
-      <CollectionView.ItemsLayout>
-       <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
-           </CollectionView.ItemsLayout>
-         <CollectionView.ItemTemplate>
-          <DataTemplate>
-              <Grid Padding="10,5">
-    <Grid.ColumnDefinitions>
-   <ColumnDefinition Width="30" />
-         <ColumnDefinition Width="40" />
-    <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="30" />
-    </Grid.ColumnDefinitions>
- 
-  <Frame Grid.Column="0"
- WidthRequest="30"
-      HeightRequest="30"
-      CornerRadius="15"
-           Padding="0"
- HasShadow="False">
-  <Frame.Triggers>
-              <DataTrigger TargetType="Frame" Binding="{Binding IsCompleted}" Value="True">
-         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10B981, Dark=#059669}" />
-          </DataTrigger>
-     <DataTrigger TargetType="Frame" Binding="{Binding IsActive}" Value="True">
-    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#8B5CF6, Dark=#7C3AED}" />
-              </DataTrigger>
-    <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="True">
-       <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F59E0B, Dark=#D97706}" />
-           </DataTrigger>
-                <DataTrigger TargetType="Frame" Binding="{Binding IsEnabled}" Value="False">
-         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#CBD5E1, Dark=#475569}" />
-           </DataTrigger>
-  </Frame.Triggers>
-       
-   <Label Text="{Binding Order}"
-     FontSize="12"
-           FontAttributes="Bold"
-   TextColor="White"
-       HorizontalOptions="Center"
-  VerticalOptions="Center" />
-           </Frame>
-      
-           <Label Grid.Column="1"
-    Text="{Binding Icon}"
-      FontSize="20"
-     VerticalOptions="Center"
-     HorizontalOptions="Center" />
-  
-            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
-             <Label Text="{Binding Title}"
- FontSize="16"
-      FontAttributes="Bold"
-               TextColor="{AppThemeBinding Light=#0F172A, Dark=#F3F4F6}">
-     <Label.Triggers>
-      <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
-          <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
-        </DataTrigger>
-   <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
-    <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
-         </DataTrigger>
-   <DataTrigger TargetType="Label" Binding="{Binding IsEnabled}" Value="False">
-       <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
-         </DataTrigger>
-        </Label.Triggers>
- </Label>
- <Label Text="{Binding Description}"
-              FontSize="12"
-  TextColor="{AppThemeBinding Light=#475569, Dark=#94A3B8}" />
-          </VerticalStackLayout>
-      
-  <Label Grid.Column="3"
-     VerticalOptions="Center"
-   HorizontalOptions="Center"
-   FontSize="16"
- TextColor="{AppThemeBinding Light=#16A34A, Dark=#22C55E}">
-               <Label.Triggers>
- <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
-           <Setter Property="Text" Value="✓" />
-   <Setter Property="TextColor" Value="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
-   </DataTrigger>
-     <DataTrigger TargetType="Label" Binding="{Binding IsActive}" Value="True">
-       <Setter Property="Text" Value="▶" />
-         <Setter Property="TextColor" Value="{AppThemeBinding Light=#7C3AED, Dark=#A78BFA}" />
-               </DataTrigger>
-            <MultiTrigger TargetType="Label">
-      <MultiTrigger.Conditions>
-       <BindingCondition Binding="{Binding IsCompleted}" Value="False" />
-   <BindingCondition Binding="{Binding IsActive}" Value="False" />
-         </MultiTrigger.Conditions>
-      <Setter Property="Text" Value="" />
-    <Setter Property="TextColor" Value="{AppThemeBinding Light=#94A3B8, Dark=#64748B}" />
-           </MultiTrigger>
-</Label.Triggers>
-            </Label>
-    </Grid>
-         </DataTemplate>
-        </CollectionView.ItemTemplate>
-  </CollectionView>
-    </VerticalStackLayout>
-          </Frame>
+                    </VerticalStackLayout>
+                </Frame>
 
-  <Frame BackgroundColor="White" HasShadow="True" CornerRadius="10" Padding="20">
-         <VerticalStackLayout Spacing="15">
-         <Label Text="{Binding WizardService.CurrentStep.Title, StringFormat='📌 Paso Actual: {0}'}"
- FontSize="18"
-   FontAttributes="Bold"
-   TextColor="Purple" />
-            
-   <Label Text="{Binding WizardService.CurrentStep.Description}"
-          FontSize="14"
-  TextColor="Gray" />
-          
-   <Button Text="📝 Ir al Formulario"
-           Command="{Binding NavigateToStepCommand}"
-   BackgroundColor="Purple"
-    TextColor="White"
-           CornerRadius="20"
-   HeightRequest="45"
-         IsEnabled="{Binding WizardService.CurrentStep.IsEnabled}" />
-             </VerticalStackLayout>
-           </Frame>
+                <ScrollView>
+                    <VerticalStackLayout Padding="20" Spacing="20">
 
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-       <Button Grid.Column="0"
-       Text="← Anterior"
-           Command="{Binding PreviousStepCommand}"
-        BackgroundColor="Gray"
-             TextColor="White"
-      CornerRadius="20"
-  HeightRequest="45"
-     IsEnabled="{Binding WizardService.CanGoPrevious}" />
-          
-   <Button Grid.Column="1"
-          Text="🔍 Validar Paso"
-    Command="{Binding ValidateStepCommand}"
-         BackgroundColor="Orange"
-       TextColor="White"
-             CornerRadius="20"
-     HeightRequest="45" />
-          
-            <Button Grid.Column="2"
-Text="Siguiente →"
-               Command="{Binding NextStepCommand}"
-        BackgroundColor="Green"
-    TextColor="White"
-            CornerRadius="20"
- HeightRequest="45"
-     IsEnabled="{Binding WizardService.CanGoNext}" />
-         </Grid>
+                        <!-- Business Section -->
+                        <Label Text="Business Information"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="#1565C0"/>    
+                        <Entry Placeholder="Business Name" Text="{Binding Bussiness.Name}" />
+                        <Entry Placeholder="Context" Text="{Binding Bussiness.Context}" />
+                        <Entry Placeholder="Keycloak ID" Text="{Binding Bussiness.KeycloakId}" />
 
-       <Frame BackgroundColor="Green"
-     IsVisible="{Binding WizardService.IsComplete}"
-    CornerRadius="10"
-       Padding="15">
-              <VerticalStackLayout Spacing="10">
-   <Label Text="🎉 ¡Configuración Completada!"
+                        <!-- EDS -->
+                        <toolkit:Expander IsExpanded="True">
+                            <toolkit:Expander.Header>
+                                <Label Text="EDS (Gas Stations)"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       TextColor="Black"
+                                       Padding="10,5" />        
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding EdsList}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame BorderColor="#E0E0E0" Padding="10" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
+                                                    <Entry Placeholder="NIT" Text="{Binding Nit}" />
+                                                    <Entry Placeholder="Address" Text="{Binding Address}" />
+                                                    <Entry Placeholder="SICOM" Text="{Binding Sicom}" />
+                                                    <Button Text="Remove"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveEdsCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White" />
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add EDS" Command="{Binding AddEdsCommand}" BackgroundColor="#2196F3" TextColor="White" />
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Islands -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                    Text="Islands"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    TextColor="Black"
+                                    Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Islands}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Description" Text="{Binding Description}" />
+                                                    <Button Text="Remove" 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveIslandCommand}" 
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Island" Command="{Binding AddIslandCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Tanks -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                    Text="Tanks"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    TextColor="Black"
+                                    Padding="10,5" />   
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Tanks}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Number" Text="{Binding Number}" />
+                                                    <Entry Placeholder="Compartments" Keyboard="Numeric" Text="{Binding Compartment}" />
+                                                    <Entry Placeholder="Ability" Keyboard="Numeric" Text="{Binding Ability}" />
+                                                    <Button Text="Remove" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveTankCommand}" 
+                                                CommandParameter="{Binding .}" 
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Tank" Command="{Binding AddTankCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Compartiments -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                    Text="Compartiments"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    TextColor="Black"
+                                    Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Compartiments}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Number" Keyboard="Numeric" Text="{Binding Number}" />
+                                                    <Entry Placeholder="Nominal" Keyboard="Numeric" Text="{Binding Nominal}" />
+                                                    <Entry Placeholder="Operative" Keyboard="Numeric" Text="{Binding Operative}" />
+                                                    <Entry Placeholder="Height" Keyboard="Numeric" Text="{Binding Height}" />
+                                                    <Entry Placeholder="Tank Number" Text="{Binding NumberTank}" />
+                                                    <Entry Placeholder="Product Name" Text="{Binding NameProduct}" />
+                                                    <Button Text="Remove" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveCompartimentCommand}" 
+                                                CommandParameter="{Binding .}" 
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Compartiment" Command="{Binding AddCompartimentCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Products -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                    Text="Products"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    TextColor="Black"
+                                    Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Products}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
+                                                    <Entry Placeholder="Product Type ID" Keyboard="Numeric" Text="{Binding IdProductType}" />
+                                                    <Entry Placeholder="Sell Price" Keyboard="Numeric" Text="{Binding SellPrice}" />
+                                                    <Entry Placeholder="Purchase Price" Keyboard="Numeric" Text="{Binding PurchasePrice}" />
+                                                    <Entry Placeholder="Stock" Keyboard="Numeric" Text="{Binding Stock}" />
+                                                    <Button Text="Remove" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveProductCommand}" 
+                                                CommandParameter="{Binding .}" 
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Product" Command="{Binding AddProductCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Islanders -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                 Text="Islanders (Operators)"
+                                 FontAttributes="Bold"
+                                 FontSize="18"
+                                 TextColor="Black"
+                                 Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Islanders}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
+                                                    <Entry Placeholder="Email" Text="{Binding Email}" />
+                                                    <Entry Placeholder="Password" Text="{Binding Password}" IsPassword="True" />
+                                                    <Entry Placeholder="First Name" Text="{Binding FirstName}" />
+                                                    <Entry Placeholder="Last Name" Text="{Binding LastName}" />
+                                                    <Entry Placeholder="EDS Name" Text="{Binding NameEDS}" />
+                                                    <Button Text="Remove" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveIslanderCommand}" 
+                                                CommandParameter="{Binding .}" 
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Islander" Command="{Binding AddIslanderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Providers -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                     Text="Providers"
+                                     FontAttributes="Bold"
+                                     FontSize="18"
+                                     TextColor="Black"
+                                     Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Providers}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout>
+                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
+                                                    <Button Text="Remove" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveProviderCommand}" 
+                                                CommandParameter="{Binding .}" 
+                                                BackgroundColor="IndianRed"
+                                                TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Provider" Command="{Binding AddProviderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Submit -->
+                        <Button Text="Submit Setup"
+                    Command="{Binding SubmitCommand}"
+                    BackgroundColor="#2E7D32"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Margin="0,30,0,0"/>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Frame BackgroundColor="Green"
+                       IsVisible="{Binding WizardService.IsComplete}"
+                       CornerRadius="10"
+                       Padding="15">    
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="🎉 ¡Configuración Completada!"
        FontSize="18"
       FontAttributes="Bold"
  TextColor="White"
  HorizontalOptions="Center" />
-      
-            <Label Text="Su sistema EDS ha sido configurado correctamente. Ya puede comenzar a utilizarlo."
+
+                        <Label Text="Su sistema EDS ha sido configurado correctamente. Ya puede comenzar a utilizarlo."
        FontSize="14"
             TextColor="White"
           HorizontalOptions="Center" />
-    
-             <Button Text="✅ Finalizar"
+
+                        <Button Text="✅ Finalizar"
          Command="{Binding FinishWizardCommand}"
     BackgroundColor="DarkGreen"
           TextColor="White"
    CornerRadius="20"
          HeightRequest="45" />
-              </VerticalStackLayout>
-        </Frame>
+                    </VerticalStackLayout>
+                </Frame>
 
-      </VerticalStackLayout>
+            </VerticalStackLayout>
         </ScrollView>
-
-        <!-- ✨ Botón Flotante del Asistente IA - MEJORADO -->
-<Frame x:Name="FloatingChatButton"
-       BackgroundColor="#6A1B9A"
-    CornerRadius="32"
-       Padding="0"
-       HasShadow="True"
-   WidthRequest="64"
-  HeightRequest="64"
- HorizontalOptions="End"
-  VerticalOptions="End"
-       Margin="0,0,20,20"
-       ZIndex="200">
-  <Frame.GestureRecognizers>
-  <TapGestureRecognizer Tapped="OnFloatingChatTapped" />
-  </Frame.GestureRecognizers>
-    
-        <Grid>
-   <!-- Icono del chat con sombra interna -->
-     <Label Text="💬"
-    FontSize="32"
-     HorizontalOptions="Center"
-         VerticalOptions="Center"
-    Margin="0,2,0,0" />
-      
-        <!-- Indicador de notificación (opcional) -->
-   <Frame x:Name="NotificationDot"
-  IsVisible="False"
-    BackgroundColor="#FF5252"
-     CornerRadius="8"
- Padding="0"
-      WidthRequest="18"
-            HeightRequest="18"
-  HorizontalOptions="End"
-  VerticalOptions="Start"
-  Margin="0,2,2,0"
-      HasShadow="False"
-    ZIndex="1">
-   <Label Text="!"
- FontSize="12"
-FontAttributes="Bold"
-   TextColor="White"
-     HorizontalOptions="Center"
-  VerticalOptions="Center" />
-     </Frame>
-   </Grid>
-</Frame>
-
-<Grid x:Name="LoadingOverlay"
+        <Grid x:Name="LoadingOverlay"
       BackgroundColor="#80000000"
         IsVisible="{Binding IsLoading}"
      VerticalOptions="Fill"

@@ -1,9 +1,16 @@
-using APP.Eds.Services.Wizard;
-using APP.Eds.Services.Copilot;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Models.Compartiment;
+using APP.Eds.Models.Island;
+using APP.Eds.Models.Islander;
+using APP.Eds.Models.Product;
+using APP.Eds.Models.Provider;
+using APP.Eds.Models.Tank;
+using APP.Eds.Services.Copilot;
+using APP.Eds.Services.Wizard;
+using CommunityToolkit.Maui.Views;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.UsesCases.Wizard
 {
@@ -12,6 +19,19 @@ namespace APP.Eds.UsesCases.Wizard
         private WizardService _wizardService;
         private CopilotService _copilotService;
         private bool _isLoading;
+
+       
+        public ObservableCollection<EdsModel> EdsList { get; set; } = new();
+        public ObservableCollection<IslandModel> Islands { get; set; } = new();
+        public ObservableCollection<TankModel> Tanks { get; set; } = new();
+        public ObservableCollection<CompartimentModel> Compartiments { get; set; } = new();
+        public ObservableCollection<ProductModel> Products { get; set; } = new();
+        public ObservableCollection<IslanderModel> Islanders { get; set; } = new();
+        public ObservableCollection<ProviderModel> Providers { get; set; } = new();
+        
+            
+            
+            
 
         public WizardService WizardService => _wizardService;
         public CopilotService CopilotService => _copilotService;
@@ -30,6 +50,15 @@ namespace APP.Eds.UsesCases.Wizard
             }
         }
 
+        public ICommand AddEdsCommand { get; private set; }
+        public ICommand AddIslandCommand { get; private set; }
+        public ICommand AddTankCommand { get; private set; }
+        public ICommand AddCompartimentCommand { get; private set; }
+        public ICommand AddProductCommand { get; private set; }
+        public ICommand AddIslanderCommand { get; private set; }
+        public ICommand AddProviderCommand { get; private set; }
+
+
         public ICommand NavigateToStepCommand { get; private set; }
         public ICommand NextStepCommand { get; private set; }
         public ICommand PreviousStepCommand { get; private set; }
@@ -47,39 +76,76 @@ namespace APP.Eds.UsesCases.Wizard
             
             // Initial validation
             _ = Task.Run(async () => await _wizardService.RefreshValidationAsync());
-
-            // ✨ Animar entrada del botón flotante
-            AnimateFloatingButtonEntry();
         }
 
         private void InitializeCommands()
         {
+            AddEdsCommand = new Command(()=>AddEds());
+            AddIslandCommand = new Command(() => AddIsland());
+            AddTankCommand = new Command(() => AddTank());
+            AddCompartimentCommand = new Command(() => AddCompartiment());
+            AddProductCommand = new Command(() => AddProduct());
+            AddIslanderCommand = new Command(() => AddIslander());
+            AddProviderCommand = new Command(() => AddProvider());
+
             NavigateToStepCommand = new Command(async () => await NavigateToCurrentStep());
             NextStepCommand = new Command(async () => await GoNextStep(), () => _wizardService.CanGoNext);
             PreviousStepCommand = new Command(async () => await GoPreviousStep(), () => _wizardService.CanGoPrevious);
             ValidateStepCommand = new Command(async () => await ValidateCurrentStep());
             FinishWizardCommand = new Command(async () => await FinishWizard());
         }
-
-        // ✨ MEJORADO: Animación de entrada del botón flotante
-        private async void AnimateFloatingButtonEntry()
+        private void AddEds()
         {
-            await Task.Delay(500); // Esperar a que la página se cargue
-
-            if (FloatingChatButton != null)
+            EdsList.Add(new EdsModel
             {
-                FloatingChatButton.Scale = 0;
-                FloatingChatButton.Opacity = 0;
+                Name = "",
+                Nit = "",
+                Address = "",
+                Sicom = ""
+            });
+        }
 
-                await Task.WhenAll(
-                    FloatingChatButton.ScaleTo(1, 600, Easing.SpringOut),
-                    FloatingChatButton.FadeTo(1, 400, Easing.CubicOut)
-                );
-
-                // Pequeña animación de "rebote" para llamar la atención
-                await FloatingChatButton.ScaleTo(1.1, 100, Easing.CubicOut);
-                await FloatingChatButton.ScaleTo(1, 100, Easing.CubicIn);
-            }
+        private void AddIsland()
+        {
+            Islands.Add(new IslandModel
+            {
+                Description = ""
+            });
+        }
+        private void AddTank()
+        {
+            Tanks.Add(new TankModel
+            {
+            });
+        }
+        private void AddCompartiment()
+        {
+            Compartiments.Add(new CompartimentModel
+            {
+            });
+        }
+        private void AddProduct()
+        {
+            Products.Add(new ProductModel
+            {
+            });
+        }
+        private void AddIslander()
+        {
+            Islanders.Add(new IslanderModel
+            {
+                Email = string.Empty,
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                Name = string.Empty,
+                Password = string.Empty,
+            });
+        }
+        private void AddProvider()
+        {
+            Providers.Add(new ProviderModel
+            {
+            });
         }
 
         // ✨ MEJORADO: Manejador del botón flotante con animación
@@ -119,19 +185,6 @@ namespace APP.Eds.UsesCases.Wizard
             if (sender is Frame button)
             {
                 await button.ScaleTo(1, 150, Easing.CubicIn);
-            }
-        }
-
-        // ✨ NUEVO: Animación de pulso continuo para llamar la atención
-        private async void StartFloatingButtonPulseAnimation()
-        {
-            if (FloatingChatButton == null) return;
-
-            while (FloatingChatButton.IsVisible)
-            {
-                await FloatingChatButton.ScaleTo(1.05, 1000, Easing.SinInOut);
-                await FloatingChatButton.ScaleTo(1, 1000, Easing.SinInOut);
-                await Task.Delay(3000); // Pausa entre pulsos
             }
         }
 
@@ -270,10 +323,10 @@ namespace APP.Eds.UsesCases.Wizard
             OnPropertyChanged(nameof(CompletionPercentage));
             
             // Update progress bar
-            if (OverallProgressBar != null)
+          /*  if (OverallProgressBar != null)
             {
                 OverallProgressBar.Progress = CompletionPercentage / 100.0;
-            }
+            }*/
         }
 
         public new event PropertyChangedEventHandler? PropertyChanged;
