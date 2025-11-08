@@ -92,6 +92,47 @@
                                 </Border>
                             </VerticalStackLayout>
 
+                            <!-- EDS Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <StackLayout Orientation="Horizontal" Spacing="4">
+                                    <Label Text="Estación de Servicio (EDS)" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                    <Label Text="*" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#E74C3C"
+                                           VerticalOptions="Start"/>
+                                </StackLayout>
+
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏪" 
+                                               FontSize="18" 
+                                               TextColor="#E74C3C" 
+                                               VerticalOptions="Center"/>
+
+                                        <Picker x:Name="EdsPicker"
+                                                Title="Seleccione una estación de servicio"
+                                                ItemsSource="{Binding EdsList}"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                AutomationId="PickerEds"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
                             <!-- Date Field -->
                             <VerticalStackLayout Spacing="8">
                                 <Label Text="Fecha de Compra" 

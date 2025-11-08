@@ -4,6 +4,8 @@ using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
+using APP.Eds.Models.Islander;
+using APP.Eds.Models.Business;
 using APP.Eds.Services.Config;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -105,10 +107,16 @@ public class EnhancedProductTypeItem : ProductTypeModelResponse
 
 public class ProductService : INotifyPropertyChanged
 {
+    // Constants for error detection
+    private const string ValidationFailedErrorType = "ValidationFailed";
+    private const string FluentValidationMarker = "FluentValidation";
+    private const string ListSerializationMarker = "System.Collections.Generic.List";
+
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
     public ObservableCollection<ProductResponse> ProductList { get; set; } = [];
+    public ObservableCollection<EdsModel> EdsList { get; set; } = [];
 
     // Nuevas colecciones para el sistema de productos específicos
     public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
@@ -340,6 +348,33 @@ public class ProductService : INotifyPropertyChanged
         }
     }
 
+    // EDS Selection Properties
+    private EdsModel _selectedEds;
+    public EdsModel SelectedEds
+    {
+        get => _selectedEds;
+        set
+        {
+            _selectedEds = value;
+            OnPropertyChanged(nameof(SelectedEds));
+            if (_selectedEds != null)
+            {
+                IdEds = _selectedEds.IdEds;
+            }
+        }
+    }
+
+    private int _idEds;
+    public int IdEds
+    {
+        get => _idEds;
+        set
+        {
+            _idEds = value;
+            OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
     // Nueva propiedad para mostrar la unidad de medida del stock
     public string StockUnit => "galones";
     public string StockPlaceholder => "Ingrese el stock inicial en galones";
@@ -354,6 +389,7 @@ public class ProductService : INotifyPropertyChanged
         GetProducstAsync();
         InitializeProductOptions();
         GetAllProductTypeData();
+        GetAllEdsData();
         GetByIdProductDataCommand = new Command<int>(async (productId) => await GetByIdProductDataAsync(productId));
         SaveProductDataCommand = new Command(async () => await SaveProductDataAsync(), () => IsFormValid);
         EditProductDataCommand = new Command<ProductResponse>(async (dispenser) => await EditProductAsync(dispenser));
@@ -522,6 +558,12 @@ public class ProductService : INotifyPropertyChanged
             }
         }
 
+        // ✅ NUEVA VALIDACIÓN: EDS es obligatoria
+        if (SelectedEds == null)
+        {
+            errors.Add("• Debe seleccionar una Estación de Servicio (EDS)");
+        }
+
         // Validaciones numéricas
         if (PurchasePrice < 0) errors.Add("• El precio de compra no puede ser negativo");
         if (SellPrice < 0) errors.Add("• El precio de venta no puede ser negativo");
@@ -592,6 +634,37 @@ public class ProductService : INotifyPropertyChanged
         {
             System.Diagnostics.Debug.WriteLine($"General error loading product types: {ex.Message}");
             AddSampleData();
+        }
+    }
+
+    private async void GetAllEdsData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("No authentication token found for EDS data");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/eds";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var edsList = JsonSerializer.Deserialize<EdsResponseModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateEdsList(edsList?.Data ?? new List<EdsModel>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando EDS: {ex.Message}");
+        }
+    }
+
+    private void UpdateEdsList(IEnumerable<EdsModel> edsData)
+    {
+        EdsList.Clear();
+        foreach (var eds in edsData)
+        {
+            EdsList.Add(eds);
         }
     }
 
@@ -721,13 +794,21 @@ public class ProductService : INotifyPropertyChanged
 
     private async Task SaveProductAsync(bool isUpdate)
     {
+        // Validar EDS selection (required field)
+        if (SelectedEds is null)
+        {
+            await CustomAlert.ShowErrorAsync("Debe seleccionar un EDS (Estación de Servicio) para registrar el producto", "EDS Requerido");
+            return;
+        }
+
         var product = new ProductModel
         {
             Name = Name.Trim(),
             IdProductType = IdProductType,
             SellPrice = SellPrice,
             PurchasePrice = PurchasePrice,
-            Stock = Stock
+            Stock = Stock,
+            IdEds = SelectedEds.IdEds
         };
         if(isUpdate)
             product.IdProduct = IdProduct;
@@ -784,17 +865,83 @@ public class ProductService : INotifyPropertyChanged
     private async Task HandleErrorAsync(HttpResponseMessage response)
     {
         var serverError = await response.Content.ReadAsStringAsync();
-        var userFriendlyError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+        
+        // Try to parse as ErrorResponse to detect ValidationFailed errors
+        ErrorResponse? errorResponse = null;
+        try
+        {
+            errorResponse = JsonSerializer.Deserialize<ErrorResponse>(serverError, new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+        }
+        catch
+        {
+            // If parsing fails, fall through to regular error handling
+        }
 
-        var title = response.RequestMessage?.Method == HttpMethod.Post
+        // Check if this is a ValidationFailed error
+        if (errorResponse?.Type == ValidationFailedErrorType || 
+            (errorResponse != null && errorResponse.Detail?.Contains(FluentValidationMarker) == true))
+        {
+            var userFriendlyError = TranslateValidationFailedError(errorResponse, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+            var title = response.RequestMessage?.Method == HttpMethod.Post
+                ? "Error al Registrar Producto"
+                : "Error al Actualizar Producto";
+            await CustomAlert.ShowErrorAsync(userFriendlyError, title);
+            return;
+        }
+
+        // Standard error handling
+        var standardError = TranslateServerError(serverError, Name, SelectedProductOption?.Name, SelectedSpecificProductType?.Description);
+        var standardTitle = response.RequestMessage?.Method == HttpMethod.Post
             ? "Error al Registrar Producto"
             : "Error al Actualizar Producto";
 
-        await CustomAlert.ShowErrorAsync(userFriendlyError, title);
+        await CustomAlert.ShowErrorAsync(standardError, standardTitle);
     }
 
     private Task CreateAsync() => SaveProductAsync(false);
     private Task UpdateAsync() => SaveProductAsync(true);
+
+    private string TranslateValidationFailedError(ErrorResponse errorResponse, string productName, string productType, string productSubtype)
+    {
+        // This method handles ValidationFailed errors from FluentValidation
+        // The backend sends validation errors but sometimes the detail is not properly formatted
+        
+        var detail = errorResponse?.Detail ?? string.Empty;
+        
+        // Check if the detail contains the FluentValidation list error
+        if (detail.Contains(ListSerializationMarker) || detail.Contains(FluentValidationMarker))
+        {
+            // The backend is not properly serializing validation errors
+            // Provide a comprehensive user-friendly message
+            return "❌ Error de Validación\n\n" +
+                   "El sistema detectó que algunos campos no cumplen con los requisitos necesarios.\n\n" +
+                   "📋 Por favor, verifique lo siguiente:\n\n" +
+                   "✅ Campos obligatorios:\n" +
+                   "• Nombre del producto: debe estar completo\n" +
+                   "• Tipo de producto: debe estar seleccionado\n" +
+                   "• Estación de Servicio (EDS): debe estar seleccionada\n\n" +
+                   "📋 Campos opcionales:\n" +
+                   "• Precios: deben ser números positivos (en pesos)\n" +
+                   "• Stock: debe ser número entero positivo (en galones)\n\n" +
+                   "💡 Sugerencia de valores:\n" +
+                   $"• Nombre: '{productName}'\n" +
+                   $"• Tipo: '{productType ?? "Seleccione un tipo"}'\n" +
+                   "• Precio de compra: Ejemplo 9000 pesos\n" +
+                   "• Precio de venta: Ejemplo 10000 pesos\n" +
+                   "• Stock inicial: Ejemplo 1000 galones\n\n" +
+                   "🔧 Si el problema persiste después de verificar todos los campos, " +
+                   "contacte al soporte técnico con esta información.";
+        }
+        
+        // If the detail has readable information, show it
+        return $"❌ Error de Validación\n\n" +
+               $"Los datos ingresados no cumplen con los requisitos:\n\n" +
+               $"{detail}\n\n" +
+               $"Por favor, revise la información e intente nuevamente.";
+    }
 
     private string TranslateServerError(string serverError, string productName, string productType, string productSubtype)
     {
@@ -1133,6 +1280,7 @@ public class ProductService : INotifyPropertyChanged
         PurchasePrice = 0;
         SellPrice = 0;
         Stock = 0;
+        SelectedEds = null;  // ✅ Resetear selección de EDS
     }
 
     public async Task RefreshProductTypesAsync()
@@ -1265,6 +1413,10 @@ public class ProductService : INotifyPropertyChanged
                     .FirstOrDefault(pt => pt.IdProductType == product.IdProductType)
                     ?.CategoryDescription ?? "Categoría general";
             }
+            
+            // ✅ Agregar el nombre de la EDS
+            var edsInfo = EdsList.FirstOrDefault(eds => eds.IdEds == product.IdEds);
+            product.EdsName = edsInfo?.Name ?? "Sin EDS asignada";
         }
     }
     protected void OnPropertyChanged(string propertyName)
