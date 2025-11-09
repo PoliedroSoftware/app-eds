@@ -38,7 +38,7 @@
                                FontSize="22"
                                FontAttributes="Bold"
                                TextColor="#1565C0"/>
-                                <Label Text="Nombre del Negocio" 
+                        <Label Text="Nombre del Negocio" 
                                         FontAttributes="Bold" 
                                         TextColor="#636E72" 
                                         FontSize="14"/>
@@ -48,7 +48,7 @@
                                          Padding="4">
                             <Entry Keyboard="Text"
                                             Placeholder="Ingrese el nombre completo del negocio"
-                                            Text="{Binding Bussiness.Name}"
+                                            Text="{Binding Name}"
                                             BackgroundColor="Transparent"
                                             AutomationId="EntryBusinessName"
                                             PlaceholderColor="#9CA3AF">
@@ -75,7 +75,7 @@
                                        FontAttributes="Bold"
                                        FontSize="18"
                                        TextColor="Black"
-                                       Padding="10,5" />        
+                                       Padding="10,5" />
                             </toolkit:Expander.Header>
                             <VerticalStackLayout>
                                 <CollectionView ItemsSource="{Binding EdsList}">
@@ -89,7 +89,7 @@
                                                                FontSize="15" 
                                                                FontAttributes="Bold" 
                                                                TextColor="{StaticResource Gray900}"
-                                                               Margin="4,0,0,0"/>   
+                                                               Margin="4,0,0,0"/>
 
                                                         <Border BackgroundColor="{StaticResource Gray50}" 
                                                                 StrokeShape="RoundRectangle 15"
@@ -240,7 +240,7 @@
                                                             </Grid>
                                                         </Border>
                                                     </StackLayout>
-                                                    <Button Text="Remove"
+                                                    <Button Text="Eliminar"
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveEdsCommand}"
                                                             CommandParameter="{Binding .}"
                                                             BackgroundColor="IndianRed"
@@ -250,7 +250,7 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add EDS" Command="{Binding AddEdsCommand}" BackgroundColor="#2196F3" TextColor="White" />
+                                <Button Text="Agregar EDS" Command="{Binding AddEdsCommand}" BackgroundColor="#2196F3" TextColor="White" />
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
@@ -294,7 +294,7 @@
                                                            VerticalOptions="Center"
                                                            BackgroundColor="Transparent"
                                                            Placeholder="Núm"
-                                                           AutomationId="EntryIslandNumber" />  
+                                                           AutomationId="EntryIslandNumber" />
                                                 </Frame>
 
                                                 <Label Grid.Column="2" 
@@ -320,7 +320,7 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Island" Command="{Binding AddIslandCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agregar Isla" Command="{Binding AddIslandCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
@@ -332,7 +332,7 @@
                                     FontAttributes="Bold"
                                     FontSize="18"
                                     TextColor="Black"
-                                    Padding="10,5" />   
+                                    Padding="10,5" />
                             </toolkit:Expander.Header>
                             <VerticalStackLayout>
                                 <CollectionView ItemsSource="{Binding Tanks}">
@@ -358,7 +358,7 @@
                                                                 <Label Text="🔢" 
                                                                        FontSize="18" 
                                                                        TextColor="#6A1B9A" 
-                                                                       VerticalOptions="Center"/>   
+                                                                       VerticalOptions="Center"/>
 
                                                                 <Entry Keyboard="Text"
                                                                        Placeholder="Ingrese el número de tanque"
@@ -443,7 +443,7 @@
                                                             </Border>
                                                         </VerticalStackLayout>
                                                     </Grid>
-                                                    <Button Text="Remove" 
+                                                    <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveTankCommand}"
                                                             CommandParameter="{Binding .}" 
                                                             BackgroundColor="IndianRed"
@@ -453,7 +453,7 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Tank" Command="{Binding AddTankCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agregar Tanque" Command="{Binding AddTankCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
@@ -465,7 +465,7 @@
                                       FontAttributes="Bold"
                                       FontSize="18"
                                       TextColor="Black"
-                                      Padding="10,5" /> 
+                                      Padding="10,5" />
                             </toolkit:Expander.Header>
                             <VerticalStackLayout>
                                 <CollectionView ItemsSource="{Binding Products}">
@@ -761,7 +761,7 @@
                                                                    Margin="4,0,0,0"/>
                                                         </VerticalStackLayout>
                                                     </VerticalStackLayout>
-                                                    <Button Text="Remove" 
+                                                    <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveProductCommand}"
                                                             CommandParameter="{Binding .}" 
                                                             BackgroundColor="IndianRed"
@@ -771,10 +771,10 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Product" Command="{Binding AddProductCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agregar Producto" Command="{Binding AddProductCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
-                        
+
                         <!-- Compartiments -->
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
@@ -847,7 +847,7 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Selecciona un producto"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ProductList}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Products}"
                                                                             ItemDisplayBinding="{Binding Name}" 
                                                                             SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
                                                                             AutomationId="PickerProduct"
@@ -1011,7 +1011,7 @@
                                                             </Grid>
                                                         </VerticalStackLayout>
                                                     </VerticalStackLayout>
-                                                    <Button Text="Remove" 
+                                                    <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveCompartimentCommand}"
                                                             CommandParameter="{Binding .}" 
                                                             BackgroundColor="IndianRed"
@@ -1021,9 +1021,397 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Compartiment" Command="{Binding AddCompartimentCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agregar Compartimiento" Command="{Binding AddCompartimentCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
+
+                        <!-- Dispensers -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                    Text="🔧 Dispensadores"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    TextColor="Black"
+                                    Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Dispensers}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout Spacing="20">
+                                                    <!-- Form Fields -->
+                                                    <!-- Dispenser Information Grid -->
+                                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
+
+                                                        <!-- Code -->
+                                                        <StackLayout Grid.Row="0" Grid.Column="0">
+                                                            <Label Text="Codigo del Dispensador" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#636E72" 
+                                                                   FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                        StrokeShape="RoundRectangle 8"
+                                                                        Stroke="#FFE0B2" 
+                                                                        Padding="4">
+                                                                <Entry Keyboard="Text"
+                                                                       Placeholder="Ej: DISP-001, A-01"
+                                                                       Text="{Binding Code, Mode=TwoWay}"
+                                                                       BackgroundColor="Transparent"
+                                                                       AutomationId="EntryDispenserCode"
+                                                                       PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Number -->
+                                                        <StackLayout Grid.Row="0" Grid.Column="1">
+                                                            <Label Text="Numero del Dispensador" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#636E72" 
+                                                                   FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Stroke="#FFE0B2" 
+                                                                    Padding="4">
+                                                                <Entry Keyboard="Numeric"
+                                                                       Placeholder="Numero secuencial"
+                                                                       Text="{Binding Number, Mode=TwoWay}"
+                                                                       BackgroundColor="Transparent"
+                                                                       AutomationId="EntryDispenserNumber"
+                                                                       PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Dispenser Type -->
+                                                        <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
+                                                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                                                <Label Text="Tipo de Dispensador" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#636E72" 
+                                                                       FontSize="14"
+                                                                       VerticalOptions="Center"/>
+
+                                                            </StackLayout>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Stroke="#FFE0B2" 
+                                                                    Padding="4">
+                                                                <Picker Title="Seleccione tipo de dispensador"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DispenserTypeList}"
+                                                                        ItemDisplayBinding="{Binding Description}"
+                                                                        SelectedItem="{Binding SelectedDispenserType, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="PickerDispenserType"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- EDS and Island -->
+                                                        <StackLayout Grid.Row="2" Grid.Column="0">
+                                                            <Label Text="Estacion de Servicio (EDS)" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#636E72" 
+                                                                   FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Stroke="#FFE0B2" 
+                                                                    Padding="4">
+                                                                <Picker Title="Seleccione EDS"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
+                                                                        ItemDisplayBinding="{Binding Name}"
+                                                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="PickerEds"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <StackLayout Grid.Row="2" Grid.Column="1">
+                                                            <Label Text="Isla de Combustible" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#636E72" 
+                                                                   FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Stroke="#FFE0B2" 
+                                                                    Padding="4">
+                                                                <Picker Title="Seleccione isla"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Islands}"
+                                                                        ItemDisplayBinding="{Binding Name}"
+                                                                        SelectedItem="{Binding SelectedIsland, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="PickerIsland"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Hose Configuration -->
+                                                        <StackLayout Grid.Row="3" Grid.Column="0">
+                                                            <Label Text="Numero de Mangueras" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#636E72" 
+                                                                   FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Stroke="#FFE0B2" 
+                                                                    Padding="4">
+                                                                <Entry Keyboard="Numeric"
+                                                                       Placeholder="Cantidad de mangueras"
+                                                                       Text="{Binding HoseNumber, Mode=TwoWay}"
+                                                                       BackgroundColor="Transparent"
+                                                                       AutomationId="EntryHoseNumber"
+                                                                       PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+                                                    </Grid>
+
+                                                    <Button Text="Eliminar" 
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveDispenserCommand}"
+                                                        CommandParameter="{Binding .}" 
+                                                        BackgroundColor="IndianRed"
+                                                        TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Agregar dispensador" Command="{Binding AddDispenserCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
+                        <!-- Hoses -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                     Text="📎 Mangueras"
+                                     FontAttributes="Bold"
+                                     FontSize="18"
+                                     TextColor="Black"
+                                     Padding="10,5" />
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Hoses}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout Spacing="20">
+                                                    <!-- Form Fields -->
+                                                    <VerticalStackLayout Spacing="16">
+
+                                                        <!-- Number Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Número de Manguera" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🔢" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#6A1B9A" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="Ingrese número de manguera"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding Number, Mode=TwoWay}"
+                                                                           AutomationId="EntryNumber"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="16"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Grid for Amount and Gallons -->
+                                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                                                            <!-- Accumulated Amount Field -->
+                                                            <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                                                <Label Text="Monto Acumulado" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+
+                                                                <Border BackgroundColor="#F8F9FA" 
+                                                                        StrokeShape="RoundRectangle 12"
+                                                                        Stroke="#DDD6FE"
+                                                                        StrokeThickness="2"
+                                                                        Padding="0">
+                                                                    <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                        <Label Text="💰" 
+                                                                               FontSize="16" 
+                                                                               TextColor="#4CAF50" 
+                                                                               VerticalOptions="Center"/>
+
+                                                                        <Entry Keyboard="Numeric"
+                                                                               Placeholder="0.00"
+                                                                               PlaceholderColor="#9CA3AF"
+                                                                               Text="{Binding AccumulatedAmount, Mode=TwoWay}"
+                                                                               AutomationId="EntryAccumulatedAmount"
+                                                                               BackgroundColor="Transparent"
+                                                                               FontSize="14"
+                                                                               TextColor="#374151"
+                                                                               VerticalOptions="Center"
+                                                                               HorizontalOptions="FillAndExpand"/>
+                                                                    </StackLayout>
+                                                                </Border>
+                                                            </VerticalStackLayout>
+
+                                                            <!-- Accumulated Gallons Field -->
+                                                            <VerticalStackLayout Spacing="8" Grid.Column="1">
+                                                                <Label Text="Galones Acumulados" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+
+                                                                <Border BackgroundColor="#F8F9FA" 
+                                                                        StrokeShape="RoundRectangle 12"
+                                                                        Stroke="#DDD6FE"
+                                                                        StrokeThickness="2"
+                                                                        Padding="0">
+                                                                    <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                        <Label Text="⛽" 
+                                                                               FontSize="16" 
+                                                                               TextColor="#2196F3" 
+                                                                               VerticalOptions="Center"/>
+
+                                                                        <Entry Keyboard="Numeric"
+                                                                               Placeholder="0.000"
+                                                                               PlaceholderColor="#9CA3AF"
+                                                                               Text="{Binding AccumulatedGallons, Mode=TwoWay}"
+                                                                               AutomationId="EntryAccumulatedGallons"
+                                                                               BackgroundColor="Transparent"
+                                                                               FontSize="14"
+                                                                               TextColor="#374151"
+                                                                               VerticalOptions="Center"
+                                                                               HorizontalOptions="FillAndExpand"/>
+                                                                    </StackLayout>
+                                                                </Border>
+                                                            </VerticalStackLayout>
+                                                        </Grid>
+
+                                                        <!-- Dispenser Selection -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Dispensador" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🔧" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#FF9800" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccione un Dispensador"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dispensers}"
+                                                                            ItemDisplayBinding="{Binding DisplayName}"
+                                                                            SelectedItem="{Binding SelectedDispenser, Mode=TwoWay}"
+                                                                            AutomationId="PickerDispensers"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Product Type Selection -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Tipo de Producto" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🛢️" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#9C27B0" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccione un Tipo de Producto"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ProductTypeList}"
+                                                                            ItemDisplayBinding="{Binding Description}"
+                                                                            SelectedItem="{Binding SelectProductType, Mode=TwoWay}"
+                                                                            AutomationId="PickerProductType"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+                                                        <!-- Compartiment Selection -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Compartimiento" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🔧" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#FF9800" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccione un Compartimiento"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Compartiments}"
+                                                                            ItemDisplayBinding="{Binding DisplayCompartiment}"
+                                                                            SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
+                                                                            AutomationId="PickerCompartiments"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+                                                    </VerticalStackLayout>
+
+                                                    <Button Text="Eliminar" 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveHoseCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Agregar Manguera" Command="{Binding AddHoseCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+
 
                         <!-- Islanders -->
                         <toolkit:Expander>
@@ -1120,26 +1508,8 @@
                                                             </Border>
                                                         </StackLayout>
 
-                                                        <!-- Role/Position -->
-                                                        <StackLayout Grid.Row="2" Grid.Column="0">
-                                                            <Label Text="Posicion/Rol" 
-                                                                    FontAttributes="Bold" 
-                                                                    TextColor="#636E72" 
-                                                                    FontSize="14"/>
-                                                            <Border BackgroundColor="#F8F9FA" 
-                                                                     StrokeShape="RoundRectangle 8"
-                                                                     Stroke="#DDD6FE" 
-                                                                     Padding="4">
-                                                                <Picker Title="Seleccione rol"
-                                                                         ItemsSource="{Binding RoleOptions}"
-                                                                         SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
-                                                                         BackgroundColor="Transparent"
-                                                                         AutomationId="PickerRole"/>
-                                                            </Border>
-                                                        </StackLayout>
-
                                                         <!-- Password -->
-                                                        <StackLayout Grid.Row="2" Grid.Column="1">
+                                                        <StackLayout Grid.Row="2" Grid.Column="0">
                                                             <Label Text="Contraseña" 
                                                                     FontAttributes="Bold" 
                                                                     TextColor="#636E72" 
@@ -1158,7 +1528,7 @@
                                                         </StackLayout>
 
                                                         <!-- Phone -->
-                                                        <StackLayout Grid.Row="3" Grid.Column="0">
+                                                        <StackLayout Grid.Row="2" Grid.Column="1">
                                                             <Label Text="Telefono de Contacto" 
                                                                     FontAttributes="Bold" 
                                                                     TextColor="#636E72" 
@@ -1175,6 +1545,34 @@
                                                                         PlaceholderColor="#9CA3AF"/>
                                                             </Border>
                                                         </StackLayout>
+                                                        <!-- EDS Selection (NUEVO) -->
+                                                        <StackLayout Grid.Row="3" Grid.Column="0">
+                                                            <Label Text="EDS 🏪" 
+                                                                     FontAttributes="Bold" 
+                                                                     TextColor="#636E72" 
+                                                                     FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                      StrokeShape="RoundRectangle 8"
+                                                                      Stroke="#DDD6FE" 
+                                                                      Padding="4">
+
+                                                                <Picker x:Name="EdsPicker"
+                                                                        Title="Seleccione una estación de servicio"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
+                                                                        ItemDisplayBinding="{Binding Name}"
+                                                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                        AutomationId="PickerEds"
+                                                                        BackgroundColor="Transparent"
+                                                                        FontSize="16"
+                                                                        TextColor="#374151"
+                                                                        VerticalOptions="Center"
+                                                                        HorizontalOptions="FillAndExpand"/>
+                                                            </Border>
+                                                            <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
+                                                                    FontSize="12"
+                                                                    TextColor="#636E72"
+                                                                    Margin="4,0,0,0"/>
+                                                        </StackLayout>
 
                                                         <!-- Additional Options -->
                                                         <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
@@ -1186,7 +1584,7 @@
                                                                 <StackLayout Orientation="Horizontal" Spacing="6">
                                                                     <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
                                                                                Color="#6A1B9A"
-                                                                               AutomationId="CheckBoxIsActive"/>    
+                                                                               AutomationId="CheckBoxIsActive"/>
                                                                     <Label Text="Usuario Activo" 
                                                                             FontSize="13" 
                                                                             TextColor="#636E72"
@@ -1198,7 +1596,7 @@
                                                                                Color="#6A1B9A"
                                                                                AutomationId="CheckBoxCanManageDispensers"
                                                                                VerticalOptions="Start"
-                                                                               Margin="0,2,0,0"/>   
+                                                                               Margin="0,2,0,0"/>
                                                                     <Label Text="¿Puede gestionar dispensadores?" 
                                                                             FontSize="13" 
                                                                             TextColor="#636E72"
@@ -1209,55 +1607,10 @@
                                                                 </StackLayout>
                                                             </StackLayout>
                                                         </StackLayout>
-                                                        
-                                                        <!-- EDS Selection (NUEVO) -->
-                                                        <VerticalStackLayout Spacing="8">
-                                                            <StackLayout Orientation="Horizontal" Spacing="4">
-                                                                <Label Text="Estación de Servicio (EDS)" 
-                                                                       FontSize="14" 
-                                                                       FontAttributes="Bold" 
-                                                                       TextColor="#2D3436"
-                                                                       Margin="4,0,0,0"/>
-                                                                <Label Text="*" 
-                                                                       FontSize="14" 
-                                                                       FontAttributes="Bold" 
-                                                                       TextColor="#E74C3C"
-                                                                       VerticalOptions="Start"/>
-                                                            </StackLayout>
 
-                                                            <Border BackgroundColor="#F8F9FA" 
-                                                                    StrokeShape="RoundRectangle 12"
-                                                                    Stroke="#DDD6FE"
-                                                                    StrokeThickness="2"
-                                                                    Padding="0">
-                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                                                    <Label Text="🏪" 
-                                                                           FontSize="18" 
-                                                                           TextColor="#8B5CF6" 
-                                                                           VerticalOptions="Center"/>
-
-                                                                    <Picker x:Name="EdsPicker"
-                                                                            Title="Seleccione una estación de servicio"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                            ItemDisplayBinding="{Binding Name}"
-                                                                            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
-                                                                            AutomationId="PickerEds"
-                                                                            BackgroundColor="Transparent"
-                                                                            FontSize="16"
-                                                                            TextColor="#374151"
-                                                                            VerticalOptions="Center"
-                                                                            HorizontalOptions="FillAndExpand"/>
-                                                                </StackLayout>
-                                                            </Border>
-
-                                                            <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
-                                                                   FontSize="12"
-                                                                   TextColor="#636E72"
-                                                                   Margin="4,0,0,0"/>
-                                                        </VerticalStackLayout>
 
                                                     </Grid>
-                                                    <Button Text="Remove" 
+                                                    <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslanderCommand}"
                                                             CommandParameter="{Binding .}" 
                                                             BackgroundColor="IndianRed"
@@ -1267,7 +1620,7 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Islander" Command="{Binding AddIslanderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agragar Islero" Command="{Binding AddIslanderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
@@ -1320,7 +1673,7 @@
                                                             </StackLayout>
                                                         </Border>
                                                     </VerticalStackLayout>
-                                                    <Button Text="Remove" 
+                                                    <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveProviderCommand}"
                                                             CommandParameter="{Binding .}" 
                                                             BackgroundColor="IndianRed"
@@ -1330,7 +1683,7 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
-                                <Button Text="Add Provider" Command="{Binding AddProviderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                                <Button Text="Agregar proveedor" Command="{Binding AddProviderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
@@ -1345,32 +1698,6 @@
 
                     </VerticalStackLayout>
                 </ScrollView>
-
-                <Frame BackgroundColor="Green"
-                       IsVisible="{Binding WizardService.IsComplete}"
-                       CornerRadius="10"
-                       Padding="15">    
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="🎉 ¡Configuración Completada!"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               HorizontalOptions="Center" />
-
-                        <Label Text="Su sistema EDS ha sido configurado correctamente. Ya puede comenzar a utilizarlo."
-                               FontSize="14"
-                               TextColor="White"
-                               HorizontalOptions="Center" />
-
-                        <Button Text="✅ Finalizar"
-                                Command="{Binding FinishWizardCommand}"
-                                BackgroundColor="DarkGreen"
-                                TextColor="White"
-                                CornerRadius="20"
-                                HeightRequest="45" />  
-                    </VerticalStackLayout>
-                </Frame>
-
             </VerticalStackLayout>
         </ScrollView>
         <!--<Grid x:Name="LoadingOverlay"

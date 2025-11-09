@@ -3,6 +3,7 @@ using APP.Eds.Models.Business;
 using APP.Eds.Models.Compartiment;
 using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
+using APP.Eds.Models.Hose;
 using APP.Eds.Models.Island;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Product;
@@ -11,6 +12,8 @@ using APP.Eds.Models.Setup;
 using APP.Eds.Models.Tank;
 using APP.Eds.Services.Compartiment;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Dispensers;
+using APP.Eds.Services.Hose;
 using APP.Eds.Services.Island;
 using APP.Eds.Services.Islander;
 using APP.Eds.Services.Product;
@@ -43,22 +46,15 @@ public class SetupService : INotifyPropertyChanged
     public ObservableCollection<EditablePendingProduct> Products { get; set; } = new();
     public ObservableCollection<EditablePendingIslander> Islanders { get; set; } = new();
     public ObservableCollection<ProviderModel> Providers { get; set; } = new();
+    public ObservableCollection<EditablePendingDispenser> Dispensers { get; set; } = new();
+    public ObservableCollection<EditablePendingHose> Hoses { get; set; } = new();
 
     // help collections
-    public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
+    public ObservableCollection<ProductOption> ProductOptions { get; set; } = []; 
+    public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
+    public ObservableCollection<DisperserTypeResponse> DispenserTypeList { get; set; } = [];
 
     private SetupRequest Request { get; set; }
-    private BusinessModel _business;
-
-    public BusinessModel Business
-    {
-        get => _business;
-        set
-        {
-            _business = value;
-            OnPropertyChanged(nameof(Business));
-        }
-    }
 
     private SetupModel _setup;
 
@@ -224,6 +220,7 @@ public class SetupService : INotifyPropertyChanged
 
     // Commands
     public ICommand SaveDataCommand { get; }
+
     // Add commands 
     public ICommand AddEdsCommand { get; private set; }
     public ICommand AddIslandCommand { get; private set; }
@@ -232,6 +229,8 @@ public class SetupService : INotifyPropertyChanged
     public ICommand AddProductCommand { get; private set; }
     public ICommand AddIslanderCommand { get; private set; }
     public ICommand AddProviderCommand { get; private set; }
+    public ICommand AddDispenserCommand { get; private set; }
+    public ICommand AddHoseCommand { get; private set; }
 
     //REMOVE COMMANDS
     public ICommand RemoveEdsCommand { get; private set; }
@@ -241,6 +240,8 @@ public class SetupService : INotifyPropertyChanged
     public ICommand RemoveProductCommand { get; private set; }
     public ICommand RemoveIslanderCommand { get; private set; }
     public ICommand RemoveProviderCommand { get; private set; }
+    public ICommand RemoveDispenserCommand { get; private set; }
+    public ICommand RemoveHoseCommand { get; private set; }
 
     public SetupService()
     {
@@ -248,6 +249,8 @@ public class SetupService : INotifyPropertyChanged
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         SaveDataCommand = new Command(async () => await SaveDataAsync());
         InitializeProductOptions();
+        GetAllProductTypeData();
+        GetAllDispenserTypeData();
         LoadTraslationsAsync();
     }
 
@@ -261,6 +264,8 @@ public class SetupService : INotifyPropertyChanged
         AddProductCommand = new Command(() => AddProduct());
         AddIslanderCommand = new Command(() => AddIslander());
         AddProviderCommand = new Command(() => AddProvider());
+        AddDispenserCommand = new Command(() => AddDispenser());
+        AddHoseCommand = new Command(() => AddHose());
         //removes
         RemoveEdsCommand = new Command<Models.Eds.EdsModel>(RemoveEds);
         RemoveIslandCommand = new Command<EditablePendingIsland>(RemoveIsland);
@@ -269,6 +274,8 @@ public class SetupService : INotifyPropertyChanged
         RemoveProductCommand = new Command<EditablePendingProduct>(RemoveProduct);
         RemoveIslanderCommand = new Command<EditablePendingIslander>(RemoveIslander);
         RemoveProviderCommand = new Command<ProviderModel>(RemoveProvider);
+        RemoveDispenserCommand = new Command<EditablePendingDispenser>(RemoveDispenser);
+        RemoveHoseCommand = new Command<EditablePendingHose>(RemoveHose);
     }
 
     private void InitializeProductOptions()
@@ -358,6 +365,32 @@ public class SetupService : INotifyPropertyChanged
         }).ToList();
     }
 
+    private List<DispensersModel> GetDispensers()
+    {
+        return Dispensers.Select(x => new DispensersModel()
+        {
+            Code = x.Code,
+            Number = x.Number,
+            DispenserTypeId = x.DispenserTypeId,
+            HoseNumber = x.HoseNumber,
+            NumberIsland = x.SelectedIsland.Number,
+            NameEDS = x.SelectedEds.Name
+        }).ToList();
+    }
+
+    private List<HoseModel> GetHoses()
+    {
+        return Hoses.Select(x => new HoseModel()
+        {
+            Number = x.Number,
+            AccumulatedAmount = x.AccumulatedAmount,
+            AccumulatedGallons = x.AccumulatedGallons,
+            IdProductType = x.IdProductType,
+            CodeDispenser = x.SelectedDispenser.Code,
+            NumberCompartiment = x.SelectedCompartiment.Number
+        }).ToList();
+    }
+
     public async Task SaveDataAsync()
     {
         ValidateName();
@@ -376,13 +409,16 @@ public class SetupService : INotifyPropertyChanged
         {
             Setup = new SetupModel
             {
-                Bussiness = Business,
+                Bussiness = new BusinessModel()
+                {
+                    Name = Name,
+                },
                 EDS = GetEds(),
                 Islands = GetIslands(),
                 Tanks = GetTanks(),
                 Compartiments = GetCompartiments(),
-                // Dispensers = GetDispensers()
-                //Hoses =GetHoses()
+                Dispensers = GetDispensers(),
+                Hoses = GetHoses(),
                 Products = GetProducts(),
                 Islanders = GetIslanders(),
                 Providers = GetProviders()
@@ -492,6 +528,25 @@ public class SetupService : INotifyPropertyChanged
         });
     }
 
+    private void AddDispenser()
+    {
+        Dispensers.Add(new EditablePendingDispenser
+        {
+        });
+        OnPropertyChanged(nameof(EdsList));
+        OnPropertyChanged(nameof(Islands));
+    }
+
+    private void AddHose()
+    {
+        Hoses.Add(new EditablePendingHose
+        {
+        });
+
+        OnPropertyChanged(nameof(Dispensers));
+        OnPropertyChanged(nameof(Compartiments));
+    }
+
     private void RemoveEds(Models.Eds.EdsModel eds)
     {
         if (EdsList.Contains(eds))
@@ -539,6 +594,85 @@ public class SetupService : INotifyPropertyChanged
         if (Providers.Contains(provider))
         {
             Providers.Remove(provider);
+        }
+    }
+
+    private void RemoveDispenser(EditablePendingDispenser dispenser)
+    {
+        if (Dispensers.Contains(dispenser))
+        {
+            Dispensers.Remove(dispenser);
+        }
+    }
+
+    private void RemoveHose(EditablePendingHose hose)
+    {
+        if (Hoses.Contains(hose))
+        {
+            Hoses.Remove(hose);
+        }
+    }
+
+    private async Task GetAllProductTypeData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/producttype";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var ProductTypeList = JsonSerializer.Deserialize<ProductTypeResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            UpdateProducTypeList(ProductTypeList.Data);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+        }
+    }
+
+    private void UpdateProducTypeList(IEnumerable<ProductTypeModelResponse> Data)
+    {
+        ProductTypeList.Clear();
+        foreach (var eds in Data)
+        {
+            ProductTypeList.Add(eds);
+        }
+    }
+
+    private async void GetAllDispenserTypeData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/dispenser-type";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var dispenserTypeList = JsonSerializer.Deserialize<DispenserTypeResponseApi>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateDispenserTypeList(dispenserTypeList?.Data ?? new List<DisperserTypeResponse>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando los datos: {ex.Message}");
+        }
+    }
+
+    private void UpdateDispenserTypeList(IEnumerable<DisperserTypeResponse> disperserTypes)
+    {
+        DispenserTypeList.Clear();
+        foreach (var item in disperserTypes)
+        {
+            DispenserTypeList.Add(item);
         }
     }
 

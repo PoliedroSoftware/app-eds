@@ -27,6 +27,13 @@ namespace APP.Eds.Services.Compartiment
         public EditablePendingTank SelectedTank { get; set; }
         public EditablePendingProduct SelectedProduct { get; set; }
 
+        public string DisplayCompartiment =>
+           $"Compartimento: {Number}\n" +
+           $"Capacidad nominal: {Nominal}\n" +
+           $"Capacidad operativa: {Operative}\n" +
+           $"Altura: {Height}\n" +
+           "-------------------------------------------------";
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)

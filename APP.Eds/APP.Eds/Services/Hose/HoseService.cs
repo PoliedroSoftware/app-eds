@@ -11,9 +11,27 @@ using System.Text.Json;
 using System.Windows.Input;
 using static APP.Eds.Models.Product.ProductModelResponse;
 using APP.Eds.Models.Common;
+using APP.Eds.Services.Compartiment;
+using APP.Eds.Services.Dispensers;
 
 namespace APP.Eds.Services.Hose;
 
+public class EditablePendingHose : INotifyPropertyChanged
+{
+    public int Number { get; set; }
+    public double AccumulatedAmount { get; set; }
+    public double AccumulatedGallons { get; set; }
+    public int IdProductType { get; set; }
+    public EditablePendingCompartiment SelectedCompartiment { get; set; }
+    public EditablePendingDispenser SelectedDispenser { get; set; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
 public class HoseService : INotifyPropertyChanged
 {
     private string? _authToken;

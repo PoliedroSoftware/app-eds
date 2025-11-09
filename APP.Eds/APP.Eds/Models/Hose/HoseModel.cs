@@ -10,5 +10,7 @@
         public int IdProductType { get; set; } 
         public int IdCompartiment { get; set; }
         public double Price { get; set; }
+        public string? CodeDispenser { get; set; }
+        public int? NumberCompartiment { get; set; }
     }
 }

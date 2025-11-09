@@ -11,9 +11,29 @@ using APP.Eds.Helpers;
 using System.Net.Http.Headers;
 using APP.Eds.Models.Island;
 using System.Linq;
+using APP.Eds.Services.Island;
 
 namespace APP.Eds.Services.Dispensers
 {
+    public class EditablePendingDispenser : INotifyPropertyChanged
+    {
+        public string Code { get; set; }
+        public int Number { get; set; }
+        public int DispenserTypeId { get; set; }
+        public int HoseNumber { get; set; }
+        public Models.Eds.EdsModel SelectedEds { get; set; }
+        public EditablePendingIsland SelectedIsland { get; set; }
+
+        public string DisplayName => $" Número:{Number} - Código:{Code} ";
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     public class EnhancedDispenserItem
     {
         public int Id { get; set; }
