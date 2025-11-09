@@ -11,6 +11,7 @@ using APP.Eds.Services.Config;
 using APP.Eds.Services.Island;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -201,6 +202,7 @@ public class SetupService : INotifyPropertyChanged
     }
 
     // Commands
+    // Add commands 
     public ICommand SaveDataCommand { get; }
     public ICommand AddEdsCommand { get; private set; }
     public ICommand AddIslandCommand { get; private set; }
@@ -209,6 +211,15 @@ public class SetupService : INotifyPropertyChanged
     public ICommand AddProductCommand { get; private set; }
     public ICommand AddIslanderCommand { get; private set; }
     public ICommand AddProviderCommand { get; private set; }
+
+    //REMOVE COMMANDS
+    public ICommand RemoveEdsCommand { get; private set; }
+    public ICommand RemoveIslandCommand { get; private set; }
+    public ICommand RemoveTankCommand { get; private set; }
+    public ICommand RemoveCompartimentCommand { get; private set; }
+    public ICommand RemoveProductCommand { get; private set; }
+    public ICommand RemoveIslanderCommand { get; private set; }
+    public ICommand RemoveProviderCommand { get; private set; }
 
     public SetupService()
     {
@@ -220,6 +231,7 @@ public class SetupService : INotifyPropertyChanged
 
     private void InitializeCommands()
     {
+        //adds
         AddEdsCommand = new Command(() => AddEds());
         AddIslandCommand = new Command(() => AddIsland());
         AddTankCommand = new Command(() => AddTank());
@@ -227,6 +239,14 @@ public class SetupService : INotifyPropertyChanged
         AddProductCommand = new Command(() => AddProduct());
         AddIslanderCommand = new Command(() => AddIslander());
         AddProviderCommand = new Command(() => AddProvider());
+        //removes
+        RemoveEdsCommand = new Command<Models.Eds.EdsModel>(RemoveEds);
+        RemoveIslandCommand = new Command<EditablePendingIsland>(RemoveIsland);
+        RemoveTankCommand = new Command<TankModel>(RemoveTank);
+        RemoveCompartimentCommand = new Command<CompartimentModel>(RemoveCompartiment);
+        RemoveProductCommand = new Command<ProductModel>(RemoveProduct);
+        RemoveIslanderCommand = new Command<IslanderModel>(RemoveIslander);
+        RemoveProviderCommand = new Command<ProviderModel>(RemoveProvider);
     }
 
     public async Task SaveDataAsync()
@@ -349,6 +369,56 @@ public class SetupService : INotifyPropertyChanged
         Providers.Add(new ProviderModel
         {
         });
+    }
+
+    private void RemoveEds(Models.Eds.EdsModel eds)
+    {
+        if (EdsList.Contains(eds))
+        {
+            EdsList.Remove(eds);
+        }
+    }
+    private void RemoveIsland(EditablePendingIsland island)
+    {
+        if (Islands.Contains(island))
+        {
+            Islands.Remove(island);
+        }
+    }
+    private void RemoveTank(TankModel tank)
+    {
+        if (Tanks.Contains(tank))
+        {
+            Tanks.Remove(tank);
+        }
+    }
+    private void RemoveCompartiment(CompartimentModel compartiment)
+    {
+        if (Compartiments.Contains(compartiment))
+        {
+            Compartiments.Remove(compartiment);
+        }
+    }
+    private void RemoveProduct(ProductModel product)
+    {
+        if (Products.Contains(product))
+        {
+            Products.Remove(product);
+        }
+    }
+    private void RemoveIslander(IslanderModel islander)
+    {
+        if (Islanders.Contains(islander))
+        {
+            Islanders.Remove(islander);
+        }
+    }
+    private void RemoveProvider(ProviderModel provider)
+    {
+        if (Providers.Contains(provider))
+        {
+            Providers.Remove(provider);
+        }
     }
 
     private async Task HandleBusinessErrorAsync(System.Net.HttpStatusCode statusCode, string errorResponse)

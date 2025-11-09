@@ -34,7 +34,7 @@
                     <VerticalStackLayout Padding="20" Spacing="20">
 
                         <!-- Business Section -->
-                        <Label Text="Business Information"
+                        <Label Text="🏢 Negocio"
                                FontSize="22"
                                FontAttributes="Bold"
                                TextColor="#1565C0"/>
@@ -71,7 +71,7 @@
                         <!-- EDS -->
                         <toolkit:Expander IsExpanded="True">
                             <toolkit:Expander.Header>
-                                <Label Text="EDS (Gas Stations)"
+                                <Label Text="⛽ EDS"
                                        FontAttributes="Bold"
                                        FontSize="18"
                                        TextColor="Black"
@@ -112,7 +112,7 @@
 
                                                                 <Entry Grid.Column="1"
                                                                        Keyboard="Text"
-                                                                       Placeholder="{Binding NamePlaceHolder}"
+                                                                       Placeholder="Ingrese el nombre"
                                                                        PlaceholderColor="{StaticResource Gray400}"
                                                                        Text="{Binding Name, Mode=TwoWay}"
                                                                        AutomationId="EntryName"
@@ -153,7 +153,7 @@
 
                                                                 <Entry Grid.Column="1"
                                                                        Keyboard="Text"
-                                                                       Placeholder="{Binding NitPlaceHolder}"
+                                                                       Placeholder="Ingrese el NIT"
                                                                        PlaceholderColor="{StaticResource Gray400}"
                                                                        Text="{Binding Nit, Mode=TwoWay}"
                                                                        AutomationId="EntryNit"
@@ -191,7 +191,7 @@
 
                                                                 <Entry Grid.Column="1"
                                                                        Keyboard="Text"
-                                                                       Placeholder="{Binding AdreessPlaceHolder}"
+                                                                       Placeholder="Ingrese la dirección"
                                                                        PlaceholderColor="{StaticResource Gray400}"
                                                                        Text="{Binding Address, Mode=TwoWay}"
                                                                        AutomationId="EntryAddress"
@@ -229,7 +229,7 @@
 
                                                                 <Entry Grid.Column="1"
                                                                        Keyboard="Text"
-                                                                       Placeholder="{Binding SicomPlaceHolder}"
+                                                                       Placeholder="Ingrese SITCOM"
                                                                        PlaceholderColor="{StaticResource Gray400}"
                                                                        Text="{Binding Sicom, Mode=TwoWay}"
                                                                        AutomationId="EntrySicom"
@@ -241,7 +241,7 @@
                                                         </Border>
                                                     </StackLayout>
                                                     <Button Text="Remove"
-                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveEdsCommand}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveEdsCommand}"
                                                             CommandParameter="{Binding .}"
                                                             BackgroundColor="IndianRed"
                                                             TextColor="White" />
@@ -258,7 +258,7 @@
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
                                 <Label 
-                                    Text="Islands"
+                                    Text="🏝️ Islas"
                                     FontAttributes="Bold"
                                     FontSize="18"
                                     TextColor="Black"
@@ -328,7 +328,7 @@
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
                                 <Label 
-                                    Text="Tanks"
+                                    Text="🛢️ Tanques"
                                     FontAttributes="Bold"
                                     FontSize="18"
                                     TextColor="Black"
@@ -339,15 +339,115 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
-                                                <VerticalStackLayout>
-                                                    <Entry Placeholder="Number" Text="{Binding Number}" />
-                                                    <Entry Placeholder="Compartments" Keyboard="Numeric" Text="{Binding Compartment}" />
-                                                    <Entry Placeholder="Ability" Keyboard="Numeric" Text="{Binding Ability}" />
+                                                <VerticalStackLayout Spacing="16">
+
+                                                    <!-- Tank Number Field -->
+                                                    <VerticalStackLayout Spacing="8">
+                                                        <Label Text="Número" 
+                                                               FontSize="14" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#2D3436"
+                                                               Margin="4,0,0,0"/>
+
+                                                        <Border BackgroundColor="#F8F9FA" 
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Stroke="#DDD6FE"
+                                                                StrokeThickness="2"
+                                                                Padding="0">
+                                                            <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                <Label Text="🔢" 
+                                                                       FontSize="18" 
+                                                                       TextColor="#6A1B9A" 
+                                                                       VerticalOptions="Center"/>   
+
+                                                                <Entry Keyboard="Text"
+                                                                       Placeholder="Ingrese el número de tanque"
+                                                                       PlaceholderColor="#9CA3AF"
+                                                                       Text="{Binding Number, Mode=TwoWay}"
+                                                                       AutomationId="EntryTankNumber"
+                                                                       BackgroundColor="Transparent"
+                                                                       FontSize="16"
+                                                                       TextColor="#374151"
+                                                                       VerticalOptions="Center"
+                                                                       HorizontalOptions="FillAndExpand"/>
+                                                            </StackLayout>
+                                                        </Border>
+                                                    </VerticalStackLayout>
+
+                                                    <!-- Grid for Compartment and Capacity -->
+                                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                                                        <!-- Compartment Field -->
+                                                        <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                                            <Label Text="Compartimiento" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                    <Label Text="📦" 
+                                                                           FontSize="16" 
+                                                                           TextColor="#2196F3" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="Ingresa Cantidad"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding Compartment, Mode=TwoWay}"
+                                                                           AutomationId="EntryCompartment"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="14"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Capacity Field -->
+                                                        <VerticalStackLayout Spacing="8" Grid.Column="1">
+                                                            <Label Text="Capacidad" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                    <Label Text="📏" 
+                                                                           FontSize="16" 
+                                                                           TextColor="#FF9800" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="Ingresa La Capacidad"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding Ability, Mode=TwoWay}"
+                                                                           AutomationId="EntryCapacity"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="14"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+                                                    </Grid>
                                                     <Button Text="Remove" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveTankCommand}" 
-                                                CommandParameter="{Binding .}" 
-                                                BackgroundColor="IndianRed"
-                                                TextColor="White"/>
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveTankCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
                                                 </VerticalStackLayout>
                                             </Frame>
                                         </DataTemplate>
@@ -357,11 +457,329 @@
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
+                        <!-- Products -->
+                        <toolkit:Expander>
+                            <toolkit:Expander.Header>
+                                <Label 
+                                      Text="📦 Productos"
+                                      FontAttributes="Bold"
+                                      FontSize="18"
+                                      TextColor="Black"
+                                      Padding="10,5" /> 
+                            </toolkit:Expander.Header>
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Products}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
+                                                <VerticalStackLayout Spacing="20">
+
+                                                    <!-- Form Fields -->
+                                                    <VerticalStackLayout Spacing="16">
+
+                                                        <!-- Product Category Selection -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Tipo de Producto" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="⛽" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#6A1B9A" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccione el tipo de producto"
+                                                                            ItemsSource="{Binding ProductOptions}"
+                                                                            ItemDisplayBinding="{Binding Name}"
+                                                                            SelectedItem="{Binding SelectedProductOption, Mode=TwoWay}"
+                                                                            AutomationId="PickerProductCategory"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="Seleccione el tipo principal de combustible que desea registrar" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Product Subtype Selection (Only for Gasolina) -->
+                                                        <VerticalStackLayout Spacing="8" IsVisible="{Binding IsProductTypeSelectionVisible}">
+                                                            <Label Text="Tipo de Gasolina" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="✨" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#4CAF50" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccione el tipo de gasolina"
+                                                                            ItemsSource="{Binding FilteredProductTypes}"
+                                                                            ItemDisplayBinding="{Binding Description}"
+                                                                            SelectedItem="{Binding SelectedSpecificProductType, Mode=TwoWay}"
+                                                                            AutomationId="PickerProductSubtype"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="Seleccione si es gasolina corriente o extra" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- ACPM Automatic Selection Message -->
+                                                        <Border BackgroundColor="#E8F5E8" 
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Stroke="#4CAF50"
+                                                                Padding="16"
+                                                                IsVisible="{Binding IsAcpmSelected}">
+                                                            <StackLayout Orientation="Horizontal" Spacing="12">
+                                                                <Label Text="🚛" 
+                                                                       FontSize="16" 
+                                                                       VerticalOptions="Start"
+                                                                       Margin="0,2,0,0"/>
+                                                                <Label Text="ACPM seleccionado automáticamente. El tipo de producto se asignará como ACPM."
+                                                                       FontSize="12"
+                                                                       TextColor="#2E7D32"
+                                                                       VerticalOptions="Center"
+                                                                       HorizontalOptions="FillAndExpand"/>
+                                                            </StackLayout>
+                                                        </Border>
+
+                                                        <!-- Product Name Display (Read-only) -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Nombre del Producto" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F0F0F0" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#E0E0E0"
+                                                                    StrokeThickness="1"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🏷️" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#757575" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Label Text="{Binding Name}"
+                                                                           AutomationId="LabelProductName"
+                                                                           FontSize="16"
+                                                                           TextColor="#424242"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"
+                                                                           BackgroundColor="Transparent"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="El nombre se genera automáticamente basado en su selección" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Purchase Price Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Precio de Compra" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🛒" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#FF6B35" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="0.00 (opcional)"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding PurchasePrice, Mode=TwoWay}"
+                                                                           AutomationId="EntryPurchasePrice"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="16"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="Precio al cual compra el producto a su proveedor (opcional, se guardará como 0 si está vacío)" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Sell Price Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Precio de Venta" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="💰" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#4CAF50" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="0.00 (opcional)"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding SellPrice, Mode=TwoWay}"
+                                                                           AutomationId="EntrySellPrice"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="16"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="Precio al cual venderá el producto a sus clientes (opcional, se guardará como 0 si está vacío)" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Stock Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="{Binding StockLabel}" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="📦" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#9C27B0" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Entry Keyboard="Numeric"
+                                                                           Placeholder="{Binding StockPlaceholder}"
+                                                                           PlaceholderColor="#9CA3AF"
+                                                                           Text="{Binding Stock, Mode=TwoWay}"
+                                                                           AutomationId="EntryStock"
+                                                                           BackgroundColor="Transparent"
+                                                                           FontSize="16"
+                                                                           TextColor="#374151"
+                                                                           VerticalOptions="Center"
+                                                                           HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                            <Label Text="{Binding StockHint}" 
+                                                                   FontSize="12" 
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- EDS Selection (NUEVO) -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                                                <Label Text="Estación de Servicio (EDS)" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+                                                                <Label Text="*" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#E74C3C"
+                                                                       VerticalOptions="Start"/>
+                                                            </StackLayout>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🏪" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#8B5CF6" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker x:Name="EdsPicker"
+                                                                            Title="Seleccione una estación de servicio"
+                                                                            ItemsSource="{Binding EdsList}"
+                                                                            ItemDisplayBinding="{Binding Name}"
+                                                                            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                            AutomationId="PickerEds"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+
+                                                            <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
+                                                                   FontSize="12"
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+                                                    </VerticalStackLayout>
+                                                    <Button Text="Remove" 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveProductCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="Add Product" Command="{Binding AddProductCommand}" BackgroundColor="#2196F3" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+                        
                         <!-- Compartiments -->
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
                                 <Label 
-                                    Text="Compartiments"
+                                    Text="📦 Compartimientos"
                                     FontAttributes="Bold"
                                     FontSize="18"
                                     TextColor="Black"
@@ -372,18 +790,232 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
-                                                <VerticalStackLayout>
-                                                    <Entry Placeholder="Number" Keyboard="Numeric" Text="{Binding Number}" />
-                                                    <Entry Placeholder="Nominal" Keyboard="Numeric" Text="{Binding Nominal}" />
-                                                    <Entry Placeholder="Operative" Keyboard="Numeric" Text="{Binding Operative}" />
-                                                    <Entry Placeholder="Height" Keyboard="Numeric" Text="{Binding Height}" />
-                                                    <Entry Placeholder="Tank Number" Text="{Binding NumberTank}" />
-                                                    <Entry Placeholder="Product Name" Text="{Binding NameProduct}" />
+                                                <VerticalStackLayout Spacing="20">
+                                                    <!-- Form Fields -->
+                                                    <VerticalStackLayout Spacing="16">
+
+                                                        <!-- Tank Selection Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Seleccionar tanque" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🛢️" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#6A1B9A" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Seleccionar tanque"
+                                                                            ItemsSource="{Binding Tanks}" 
+                                                                            ItemDisplayBinding="{Binding DisplayText}" 
+                                                                            SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                                                                            AutomationId="PickerTank"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Product Selection Field -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <Label Text="Seleccionar producto" 
+                                                                   FontSize="14" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   Margin="4,0,0,0"/>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="⛽" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#FF9800" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker Title="Selecciona un producto"
+                                                                            ItemsSource="{Binding ProductList}" 
+                                                                            ItemDisplayBinding="{Binding Name}" 
+                                                                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                                                            AutomationId="PickerProduct"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+                                                        </VerticalStackLayout>
+
+                                                        <!-- Grid for Number and Height -->
+                                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                                                            <!-- Number Field -->
+                                                            <VerticalStackLayout Spacing="8" Grid.Column="0">
+                                                                <Label Text="Número" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+
+                                                                <Border BackgroundColor="#F8F9FA" 
+                                                                        StrokeShape="RoundRectangle 12"
+                                                                        Stroke="#DDD6FE"
+                                                                        StrokeThickness="2"
+                                                                        Padding="0">
+                                                                    <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                        <Label Text="🔢" 
+                                                                               FontSize="16" 
+                                                                               TextColor="#2196F3" 
+                                                                               VerticalOptions="Center"/>
+
+                                                                        <Entry Keyboard="Numeric"
+                                                                               Placeholder="{Binding EnterNumber}"
+                                                                               PlaceholderColor="#9CA3AF"
+                                                                               Text="{Binding Number, Mode=TwoWay}"
+                                                                               TextChanged="NumericEntry_TextChanged"
+                                                                               AutomationId="EntryCompartimentNumber"
+                                                                               BackgroundColor="Transparent"
+                                                                               FontSize="14"
+                                                                               TextColor="#374151"
+                                                                               VerticalOptions="Center"
+                                                                               HorizontalOptions="FillAndExpand"/>
+                                                                    </StackLayout>
+                                                                </Border>
+                                                            </VerticalStackLayout>
+
+                                                            <!-- Height Field -->
+                                                            <VerticalStackLayout Spacing="8" Grid.Column="1">
+                                                                <Label Text="Altura (cm)" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+
+                                                                <Border BackgroundColor="#F8F9FA" 
+                                                                        StrokeShape="RoundRectangle 12"
+                                                                        Stroke="#DDD6FE"
+                                                                        StrokeThickness="2"
+                                                                        Padding="0">
+                                                                    <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
+                                                                        <Label Text="📏" 
+                                                                               FontSize="16" 
+                                                                               TextColor="#FF9800" 
+                                                                               VerticalOptions="Center"/>
+
+                                                                        <Entry Keyboard="Numeric"
+                                                                               Placeholder="{Binding EnterHeight}"
+                                                                               PlaceholderColor="#9CA3AF"
+                                                                               Text="{Binding Height, Mode=TwoWay}"
+                                                                               TextChanged="NumericEntry_TextChanged"
+                                                                               AutomationId="EntryCompartimentHeight"
+                                                                               BackgroundColor="Transparent"
+                                                                               FontSize="14"
+                                                                               TextColor="#374151"
+                                                                               VerticalOptions="Center"
+                                                                               HorizontalOptions="FillAndExpand"/>
+                                                                    </StackLayout>
+                                                                </Border>
+                                                            </VerticalStackLayout>
+                                                        </Grid>
+
+                                                        <!-- Capacities Section -->
+                                                        <VerticalStackLayout Spacing="12">
+                                                            <Label Text="Capacidades" 
+                                                                   FontSize="16" 
+                                                                   FontAttributes="Bold" 
+                                                                   TextColor="#2D3436"
+                                                                   HorizontalOptions="Center"/>
+
+                                                            <!-- Grid for Capacities -->
+                                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto" RowSpacing="12">
+
+                                                                <!-- Nominal Capacity -->
+                                                                <VerticalStackLayout Spacing="8" Grid.Column="0" Grid.Row="0">
+                                                                    <Label Text="Capacidad Nominal" 
+                                                                           FontSize="13" 
+                                                                           FontAttributes="Bold" 
+                                                                           TextColor="#2D3436"
+                                                                           HorizontalOptions="Center"/>
+
+                                                                    <Border BackgroundColor="#E8F5E8" 
+                                                                            StrokeShape="RoundRectangle 12"
+                                                                            Stroke="#4CAF50"
+                                                                            StrokeThickness="2"
+                                                                            Padding="0">
+                                                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,10">
+                                                                            <Label Text="🟢" 
+                                                                                   FontSize="14" 
+                                                                                   VerticalOptions="Center"/>
+
+                                                                            <Entry Keyboard="Numeric"
+                                                                                   Placeholder="{Binding EnterNominal}"
+                                                                                   PlaceholderColor="#9CA3AF"
+                                                                                   Text="{Binding Nominal, Mode=TwoWay}"
+                                                                                   TextChanged="NumericEntry_TextChanged"
+                                                                                   AutomationId="EntryCompartimentNominal"
+                                                                                   BackgroundColor="Transparent"
+                                                                                   FontSize="13"
+                                                                                   TextColor="#2E7D32"
+                                                                                   VerticalOptions="Center"
+                                                                                   HorizontalOptions="FillAndExpand"/>
+                                                                        </StackLayout>
+                                                                    </Border>
+                                                                </VerticalStackLayout>
+
+                                                                <!-- Operative Capacity -->
+                                                                <VerticalStackLayout Spacing="8" Grid.Column="1" Grid.Row="0">
+                                                                    <Label Text="Capacidad Operativa" 
+                                                                           FontSize="13" 
+                                                                           FontAttributes="Bold" 
+                                                                           TextColor="#2D3436"
+                                                                           HorizontalOptions="Center"/>
+
+                                                                    <Border BackgroundColor="#E3F2FD" 
+                                                                            StrokeShape="RoundRectangle 12"
+                                                                            Stroke="#2196F3"
+                                                                            StrokeThickness="2"
+                                                                            Padding="0">
+                                                                        <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,10">
+                                                                            <Label Text="🔵" 
+                                                                                   FontSize="14" 
+                                                                                   VerticalOptions="Center"/>
+
+                                                                            <Entry Keyboard="Numeric"
+                                                                                   Placeholder="{Binding EnterOperative}"
+                                                                                   PlaceholderColor="#9CA3AF"
+                                                                                   Text="{Binding Operative, Mode=TwoWay}"
+                                                                                   TextChanged="NumericEntry_TextChanged"
+                                                                                   AutomationId="EntryCompartimentOperative"
+                                                                                   BackgroundColor="Transparent"
+                                                                                   FontSize="13"
+                                                                                   TextColor="#1976D2"
+                                                                                   VerticalOptions="Center"
+                                                                                   HorizontalOptions="FillAndExpand"/>
+                                                                        </StackLayout>
+                                                                    </Border>
+                                                                </VerticalStackLayout>
+                                                            </Grid>
+                                                        </VerticalStackLayout>
+                                                    </VerticalStackLayout>
                                                     <Button Text="Remove" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveCompartimentCommand}" 
-                                                CommandParameter="{Binding .}" 
-                                                BackgroundColor="IndianRed"
-                                                TextColor="White"/>
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveCompartimentCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
                                                 </VerticalStackLayout>
                                             </Frame>
                                         </DataTemplate>
@@ -393,46 +1025,11 @@
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
-                        <!-- Products -->
-                        <toolkit:Expander>
-                            <toolkit:Expander.Header>
-                                <Label 
-                                    Text="Products"
-                                    FontAttributes="Bold"
-                                    FontSize="18"
-                                    TextColor="Black"
-                                    Padding="10,5" />
-                            </toolkit:Expander.Header>
-                            <VerticalStackLayout>
-                                <CollectionView ItemsSource="{Binding Products}">
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
-                                                <VerticalStackLayout>
-                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
-                                                    <Entry Placeholder="Product Type ID" Keyboard="Numeric" Text="{Binding IdProductType}" />
-                                                    <Entry Placeholder="Sell Price" Keyboard="Numeric" Text="{Binding SellPrice}" />
-                                                    <Entry Placeholder="Purchase Price" Keyboard="Numeric" Text="{Binding PurchasePrice}" />
-                                                    <Entry Placeholder="Stock" Keyboard="Numeric" Text="{Binding Stock}" />
-                                                    <Button Text="Remove" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveProductCommand}" 
-                                                CommandParameter="{Binding .}" 
-                                                BackgroundColor="IndianRed"
-                                                TextColor="White"/>
-                                                </VerticalStackLayout>
-                                            </Frame>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                                <Button Text="Add Product" Command="{Binding AddProductCommand}" BackgroundColor="#2196F3" TextColor="White"/>
-                            </VerticalStackLayout>
-                        </toolkit:Expander>
-
                         <!-- Islanders -->
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
                                 <Label 
-                                 Text="Islanders (Operators)"
+                                 Text="👷 Isleros"
                                  FontAttributes="Bold"
                                  FontSize="18"
                                  TextColor="Black"
@@ -443,18 +1040,181 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
-                                                <VerticalStackLayout>
-                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
-                                                    <Entry Placeholder="Email" Text="{Binding Email}" />
-                                                    <Entry Placeholder="Password" Text="{Binding Password}" IsPassword="True" />
-                                                    <Entry Placeholder="First Name" Text="{Binding FirstName}" />
-                                                    <Entry Placeholder="Last Name" Text="{Binding LastName}" />
-                                                    <Entry Placeholder="EDS Name" Text="{Binding NameEDS}" />
+                                                <VerticalStackLayout Spacing="20">
+                                                    <!-- Personal Information Grid -->
+                                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
+
+                                                        <!-- Name -->
+                                                        <StackLayout Grid.Row="0" Grid.Column="0">
+                                                            <Label Text="Usuario" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Keyboard="Text"
+                                                                        Placeholder="Usuario del islero"
+                                                                        Text="{Binding Name, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryName"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- First Name -->
+                                                        <StackLayout Grid.Row="0" Grid.Column="1">
+                                                            <Label Text="Nombre completo" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Keyboard="Text"
+                                                                        Placeholder="Nombre completo"
+                                                                        Text="{Binding FirstName, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryFirstName"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Last Name -->
+                                                        <StackLayout Grid.Row="1" Grid.Column="0">
+                                                            <Label Text="Apellidos completos" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Keyboard="Text"
+                                                                        Placeholder="Apellidos completos"
+                                                                        Text="{Binding LastName, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryLastName"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Email -->
+                                                        <StackLayout Grid.Row="1" Grid.Column="1">
+                                                            <Label Text="Correo Electronico" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Keyboard="Text"
+                                                                        Placeholder="correo@ejemplo.com"
+                                                                        Text="{Binding Email, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryEmail"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Role/Position -->
+                                                        <StackLayout Grid.Row="2" Grid.Column="0">
+                                                            <Label Text="Posicion/Rol" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Picker Title="Seleccione rol"
+                                                                         ItemsSource="{Binding RoleOptions}"
+                                                                         SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
+                                                                         BackgroundColor="Transparent"
+                                                                         AutomationId="PickerRole"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Password -->
+                                                        <StackLayout Grid.Row="2" Grid.Column="1">
+                                                            <Label Text="Contraseña" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Placeholder="Contraseña de acceso (min. 6 caracteres)"
+                                                                        Text="{Binding Password, Mode=TwoWay}"
+                                                                        IsPassword="True"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryPassword"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Phone -->
+                                                        <StackLayout Grid.Row="3" Grid.Column="0">
+                                                            <Label Text="Telefono de Contacto" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                     StrokeShape="RoundRectangle 8"
+                                                                     Stroke="#DDD6FE" 
+                                                                     Padding="4">
+                                                                <Entry Keyboard="Telephone"
+                                                                        Placeholder="Numero de contacto"
+                                                                        Text="{Binding PhoneNumber, Mode=TwoWay}"
+                                                                        BackgroundColor="Transparent"
+                                                                        AutomationId="EntryPhone"
+                                                                        PlaceholderColor="#9CA3AF"/>
+                                                            </Border>
+                                                        </StackLayout>
+
+                                                        <!-- Additional Options -->
+                                                        <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
+                                                            <Label Text="Configuraciones de Acceso" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#636E72" 
+                                                                    FontSize="14"/>
+                                                            <StackLayout Orientation="Horizontal" Spacing="20">
+                                                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                                                    <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
+                                                                               Color="#6A1B9A"
+                                                                               AutomationId="CheckBoxIsActive"/>    
+                                                                    <Label Text="Usuario Activo" 
+                                                                            FontSize="13" 
+                                                                            TextColor="#636E72"
+                                                                            VerticalOptions="Center"/>
+                                                                </StackLayout>
+
+                                                                <StackLayout Orientation="Horizontal" Spacing="6">
+                                                                    <CheckBox IsChecked="{Binding CanManageDispensers, Mode=TwoWay}"
+                                                                               Color="#6A1B9A"
+                                                                               AutomationId="CheckBoxCanManageDispensers"
+                                                                               VerticalOptions="Start"
+                                                                               Margin="0,2,0,0"/>   
+                                                                    <Label Text="¿Puede gestionar dispensadores?" 
+                                                                            FontSize="13" 
+                                                                            TextColor="#636E72"
+                                                                            VerticalOptions="Center"
+                                                                            LineBreakMode="WordWrap"
+                                                                            MaxLines="2"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </StackLayout>
+                                                        </StackLayout>
+                                                    </Grid>
                                                     <Button Text="Remove" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveIslanderCommand}" 
-                                                CommandParameter="{Binding .}" 
-                                                BackgroundColor="IndianRed"
-                                                TextColor="White"/>
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslanderCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
                                                 </VerticalStackLayout>
                                             </Frame>
                                         </DataTemplate>
@@ -468,7 +1228,7 @@
                         <toolkit:Expander>
                             <toolkit:Expander.Header>
                                 <Label 
-                                     Text="Providers"
+                                     Text="🚚 Proveedores"
                                      FontAttributes="Bold"
                                      FontSize="18"
                                      TextColor="Black"
@@ -479,13 +1239,45 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Frame Padding="10" BorderColor="#E0E0E0" Margin="0,5">
-                                                <VerticalStackLayout>
-                                                    <Entry Placeholder="Name" Text="{Binding Name}" />
+                                                <VerticalStackLayout Spacing="16">
+
+                                                    <!-- Provider Name Field -->
+                                                    <VerticalStackLayout Spacing="8">
+                                                        <Label Text="Nombre del Proveedor" 
+                                                               FontSize="14" 
+                                                               FontAttributes="Bold" 
+                                                               TextColor="#2D3436"
+                                                               Margin="4,0,0,0"/>
+
+                                                        <Border BackgroundColor="#F8F9FA" 
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Stroke="#DDD6FE"
+                                                                StrokeThickness="2"
+                                                                Padding="0">
+                                                            <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                <Label Text="🏷️" 
+                                                                       FontSize="18" 
+                                                                       TextColor="#FF9800" 
+                                                                       VerticalOptions="Center"/>
+
+                                                                <Entry Keyboard="Text"
+                                                                       Placeholder="Ingrese el nombre del proveedor"
+                                                                       PlaceholderColor="#9CA3AF"
+                                                                       Text="{Binding Name, Mode=TwoWay}"
+                                                                       AutomationId="EntryProvider"
+                                                                       BackgroundColor="Transparent"
+                                                                       FontSize="16"
+                                                                       TextColor="#374151"
+                                                                       VerticalOptions="Center"
+                                                                       HorizontalOptions="FillAndExpand"/>
+                                                            </StackLayout>
+                                                        </Border>
+                                                    </VerticalStackLayout>
                                                     <Button Text="Remove" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=RemoveProviderCommand}" 
-                                                CommandParameter="{Binding .}" 
-                                                BackgroundColor="IndianRed"
-                                                TextColor="White"/>
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveProviderCommand}"
+                                                            CommandParameter="{Binding .}" 
+                                                            BackgroundColor="IndianRed"
+                                                            TextColor="White"/>
                                                 </VerticalStackLayout>
                                             </Frame>
                                         </DataTemplate>
@@ -496,13 +1288,13 @@
                         </toolkit:Expander>
 
                         <!-- Submit -->
-                        <Button Text="Submit Setup"
-                    Command="{Binding SubmitCommand}"
-                    BackgroundColor="#2E7D32"
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    CornerRadius="10"
-                    Margin="0,30,0,0"/>
+                        <Button Text="Crear configuración inicial"
+                                Command="{Binding SaveDataCommand}"
+                                BackgroundColor="#2E7D32"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                Margin="0,30,0,0"/>
 
                     </VerticalStackLayout>
                 </ScrollView>
