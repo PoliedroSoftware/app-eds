@@ -371,7 +371,7 @@ public class SetupService : INotifyPropertyChanged
         {
             Code = x.Code,
             Number = x.Number,
-            DispenserTypeId = x.DispenserTypeId,
+            DispenserTypeId = x.SelectedDispenserType.IdType,
             HoseNumber = x.HoseNumber,
             NumberIsland = x.SelectedIsland.Number,
             NameEDS = x.SelectedEds.Name
@@ -385,7 +385,7 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             AccumulatedAmount = x.AccumulatedAmount,
             AccumulatedGallons = x.AccumulatedGallons,
-            IdProductType = x.IdProductType,
+            IdProductType = x.SelectProductType.IdProductType,
             CodeDispenser = x.SelectedDispenser.Code,
             NumberCompartiment = x.SelectedCompartiment.Number
         }).ToList();

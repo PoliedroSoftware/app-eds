@@ -1,6 +1,5 @@
 ﻿using APP.Eds.Components.PopUp;
 using APP.Eds.Models.Product;
-using APP.Eds.Services.Alert;
 using APP.Eds.Services.Product;
 using APP.Eds.UsesCases.ProductType;
 using System.Collections.ObjectModel;
@@ -20,6 +19,7 @@ public class EditablePendingProduct : INotifyPropertyChanged
         AvailableProductTypes.Add(new SpecificProductType(1, "Corriente", 1, "⛽")); // Gasolina Corriente
         AvailableProductTypes.Add(new SpecificProductType(2, "Extra", 1, "✨"));     // Gasolina Extra
         AvailableProductTypes.Add(new SpecificProductType(3, "ACPM", 2, "🚛"));     // ACPM
+        AddSampleData();
     }
     public int IdProduct { get; set; }
     public int IdProductType { get; set; }
@@ -32,6 +32,7 @@ public class EditablePendingProduct : INotifyPropertyChanged
 
     public ObservableCollection<SpecificProductType> AvailableProductTypes { get; set; } = [];
     public ObservableCollection<SpecificProductType> FilteredProductTypes { get; set; } = [];
+    public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
     public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
     public bool IsProductTypeSelectionVisible => SelectedProductOption?.Id == 1; // Gasolina
     public bool IsAcpmSelected => SelectedProductOption?.Id == 2; // ACPM
@@ -47,6 +48,8 @@ public class EditablePendingProduct : INotifyPropertyChanged
             OnPropertyChanged(nameof(IsFormValid)); // Notificar cambio en validez del formulario
         }
     }
+
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -196,6 +199,53 @@ public class EditablePendingProduct : INotifyPropertyChanged
         OnPropertyChanged(nameof(FilteredProductTypes));
         OnPropertyChanged(nameof(IsProductTypeSelectionVisible));
         OnPropertyChanged(nameof(IsAcpmSelected));
+    }
+
+    private void AddSampleData()
+    {
+        try
+        {
+            var sampleTypes = new List<ProductTypeModelResponse>
+            {
+                new ProductTypeModelResponse { IdProductType = 1, Description = "Gasolina Corriente" },
+                new ProductTypeModelResponse { IdProductType = 2, Description = "Gasolina Extra" },
+                new ProductTypeModelResponse { IdProductType = 3, Description = "ACPM" },
+                new ProductTypeModelResponse { IdProductType = 5, Description = "Urea" },
+                new ProductTypeModelResponse { IdProductType = 4, Description = "Lubricantes" }
+            };
+            UpdateProductTypeList(sampleTypes);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error adding sample data: {ex.Message}");
+        }
+    }
+
+
+    private void UpdateProductTypeList(IEnumerable<ProductTypeModelResponse> data)
+    {
+        try
+        {
+            ProductTypeList.Clear();
+            EnhancedProductTypeList.Clear();
+
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    ProductTypeList.Add(item);
+                    EnhancedProductTypeList.Add(new EnhancedProductTypeItem(item));
+                }
+            }
+
+            // Notify that collections have changed
+            OnPropertyChanged(nameof(ProductTypeList));
+            OnPropertyChanged(nameof(EnhancedProductTypeList));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating product type list: {ex.Message}");
+        }
     }
 
     private ProductOption _selectedProductOption;

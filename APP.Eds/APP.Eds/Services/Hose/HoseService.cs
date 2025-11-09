@@ -21,9 +21,9 @@ public class EditablePendingHose : INotifyPropertyChanged
     public int Number { get; set; }
     public double AccumulatedAmount { get; set; }
     public double AccumulatedGallons { get; set; }
-    public int IdProductType { get; set; }
     public EditablePendingCompartiment SelectedCompartiment { get; set; }
     public EditablePendingDispenser SelectedDispenser { get; set; }
+    public ProductTypeModelResponse SelectProductType { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
