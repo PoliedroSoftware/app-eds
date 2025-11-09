@@ -314,7 +314,4 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Setup\" />
-  </ItemGroup>
 </Project>

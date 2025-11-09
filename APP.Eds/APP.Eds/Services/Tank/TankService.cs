@@ -11,6 +11,23 @@ using System.Windows.Input;
 
 namespace APP.Eds.Services.Tank;
 
+public class EditablePendingTank : INotifyPropertyChanged
+{
+    public int? Compartment { get; set; }
+    public string? Number { get; set; }
+    public double? Ability { get; set; }
+    public double? Stock { get; set; }
+
+    public string DisplayText => $"Tanque {Number} - Capacidad {Ability:N0} L";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
 public class TankService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,14 +1,21 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Business;
 using APP.Eds.Models.Compartiment;
+using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Island;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.Provider;
+using APP.Eds.Models.Setup;
 using APP.Eds.Models.Tank;
+using APP.Eds.Services.Compartiment;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Island;
+using APP.Eds.Services.Islander;
+using APP.Eds.Services.Product;
+using APP.Eds.Services.Tank;
+using APP.Eds.UsesCases.Product;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -31,14 +38,16 @@ public class SetupService : INotifyPropertyChanged
     // Collections
     public ObservableCollection<Models.Eds.EdsModel> EdsList { get; set; } = new();
     public ObservableCollection<EditablePendingIsland> Islands { get; set; } = new();
-    public ObservableCollection<TankModel> Tanks { get; set; } = new();
-    public ObservableCollection<CompartimentModel> Compartiments { get; set; } = new();
-    public ObservableCollection<ProductModel> Products { get; set; } = new();
-    public ObservableCollection<IslanderModel> Islanders { get; set; } = new();
+    public ObservableCollection<EditablePendingTank> Tanks { get; set; } = new();
+    public ObservableCollection<EditablePendingCompartiment> Compartiments { get; set; } = new();
+    public ObservableCollection<EditablePendingProduct> Products { get; set; } = new();
+    public ObservableCollection<EditablePendingIslander> Islanders { get; set; } = new();
     public ObservableCollection<ProviderModel> Providers { get; set; } = new();
 
+    // help collections
+    public ObservableCollection<ProductOption> ProductOptions { get; set; } = [];
 
-    private BusinessRequest Request { get; set; }
+    private SetupRequest Request { get; set; }
     private BusinessModel _business;
 
     public BusinessModel Business
@@ -48,6 +57,18 @@ public class SetupService : INotifyPropertyChanged
         {
             _business = value;
             OnPropertyChanged(nameof(Business));
+        }
+    }
+
+    private SetupModel _setup;
+
+    public SetupModel Setup
+    {
+        get => _setup;
+        set
+        {
+            _setup = value;
+            OnPropertyChanged(nameof(Setup));
         }
     }
 
@@ -202,8 +223,8 @@ public class SetupService : INotifyPropertyChanged
     }
 
     // Commands
-    // Add commands 
     public ICommand SaveDataCommand { get; }
+    // Add commands 
     public ICommand AddEdsCommand { get; private set; }
     public ICommand AddIslandCommand { get; private set; }
     public ICommand AddTankCommand { get; private set; }
@@ -226,6 +247,7 @@ public class SetupService : INotifyPropertyChanged
         InitializeCommands();
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         SaveDataCommand = new Command(async () => await SaveDataAsync());
+        InitializeProductOptions();
         LoadTraslationsAsync();
     }
 
@@ -242,11 +264,98 @@ public class SetupService : INotifyPropertyChanged
         //removes
         RemoveEdsCommand = new Command<Models.Eds.EdsModel>(RemoveEds);
         RemoveIslandCommand = new Command<EditablePendingIsland>(RemoveIsland);
-        RemoveTankCommand = new Command<TankModel>(RemoveTank);
-        RemoveCompartimentCommand = new Command<CompartimentModel>(RemoveCompartiment);
-        RemoveProductCommand = new Command<ProductModel>(RemoveProduct);
-        RemoveIslanderCommand = new Command<IslanderModel>(RemoveIslander);
+        RemoveTankCommand = new Command<EditablePendingTank>(RemoveTank);
+        RemoveCompartimentCommand = new Command<EditablePendingCompartiment>(RemoveCompartiment);
+        RemoveProductCommand = new Command<EditablePendingProduct>(RemoveProduct);
+        RemoveIslanderCommand = new Command<EditablePendingIslander>(RemoveIslander);
         RemoveProviderCommand = new Command<ProviderModel>(RemoveProvider);
+    }
+
+    private void InitializeProductOptions()
+    {
+        // Inicializar las opciones de producto principales
+        ProductOptions.Clear();
+        ProductOptions.Add(new ProductOption(1, "Gasolina", "⛽"));
+        ProductOptions.Add(new ProductOption(2, "ACPM", "🚛"));
+        ProductOptions.Add(new ProductOption(3, "Urea", "🧪"));
+
+        OnPropertyChanged(nameof(ProductOptions));
+    }
+
+    private List<Models.Eds.EdsModel> GetEds()
+    {
+        return EdsList.Select(x => new Models.Eds.EdsModel()
+        {
+            Name = x.Name,
+            Nit = x.Nit,
+            Address = x.Address,
+            Sicom = x.Sicom,
+        }).ToList();
+    }
+
+    private List<IslandModel> GetIslands()
+    {
+        return Islands.Select(x => new IslandModel()
+        {
+            Description = x.Name,
+        }).ToList();
+    }
+
+    private List<TankModel> GetTanks()
+    {
+        return Tanks.Select(x => new TankModel()
+        {
+            Number = x.Number,
+            Compartment = x.Compartment,
+            Ability = x.Ability,
+        }).ToList();
+    }
+
+    private List<CompartimentModel> GetCompartiments()
+    {
+        return Compartiments.Select(x => new CompartimentModel()
+        {
+            Number = x.Number,
+            Nominal = x.Nominal,
+            Operative = x.Operative,
+            Height = x.Height,
+            NumberTank = x.SelectedTank?.Number,
+            NameProduct = x.SelectedProduct?.Name,
+        }).ToList();
+    }
+
+    private List<ProductModel> GetProducts()
+    {
+        return Products.Select(x => new ProductModel()
+        {
+            Name = x.Name,
+            IdProductType = x.IdProductType,
+            SellPrice = x.SellPrice,
+            PurchasePrice = x.PurchasePrice,
+            Stock = x.Stock,
+        }).ToList();
+    }
+
+    private List<IslanderModel> GetIslanders()
+    {
+        return Islanders.Select(x => new IslanderModel()
+        {
+            Name = x.Name,
+            Email = x.Email,
+            FirstName = x.FirstName,
+            LastName = x.LastName,
+            Password = x.Password,
+            NameClaimToken = "OPERARIO",
+            NameEDS = x.SelectedEds.Name
+        }).ToList();
+    }
+
+    private List<ProviderModel> GetProviders()
+    {
+        return Providers.Select(x => new ProviderModel()
+        {
+            Name = x.Name
+        }).ToList();
     }
 
     public async Task SaveDataAsync()
@@ -265,21 +374,30 @@ public class SetupService : INotifyPropertyChanged
 
         try
         {
-            Business = new BusinessModel
+            Setup = new SetupModel
             {
-                Name = Name
+                Bussiness = Business,
+                EDS = GetEds(),
+                Islands = GetIslands(),
+                Tanks = GetTanks(),
+                Compartiments = GetCompartiments(),
+                // Dispensers = GetDispensers()
+                //Hoses =GetHoses()
+                Products = GetProducts(),
+                Islanders = GetIslanders(),
+                Providers = GetProviders()
             };
 
-            Request = new BusinessRequest
+            Request = new SetupRequest
             {
-                Request = Business
+                Request = Setup
             };
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/business", content);
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -337,25 +455,28 @@ public class SetupService : INotifyPropertyChanged
     }
     private void AddTank()
     {
-        Tanks.Add(new TankModel
+        Tanks.Add(new EditablePendingTank
         {
         });
     }
     private void AddCompartiment()
     {
-        Compartiments.Add(new CompartimentModel
+        Compartiments.Add(new EditablePendingCompartiment
         {
         });
+        OnPropertyChanged(nameof(Tanks));
+        OnPropertyChanged(nameof(Products));
     }
     private void AddProduct()
     {
-        Products.Add(new ProductModel
+        Products.Add(new EditablePendingProduct
         {
         });
+        OnPropertyChanged(nameof(EdsList));
     }
     private void AddIslander()
     {
-        Islanders.Add(new IslanderModel
+        Islanders.Add(new EditablePendingIslander
         {
             Email = string.Empty,
             FirstName = string.Empty,
@@ -385,28 +506,28 @@ public class SetupService : INotifyPropertyChanged
             Islands.Remove(island);
         }
     }
-    private void RemoveTank(TankModel tank)
+    private void RemoveTank(EditablePendingTank tank)
     {
         if (Tanks.Contains(tank))
         {
             Tanks.Remove(tank);
         }
     }
-    private void RemoveCompartiment(CompartimentModel compartiment)
+    private void RemoveCompartiment(EditablePendingCompartiment compartiment)
     {
         if (Compartiments.Contains(compartiment))
         {
             Compartiments.Remove(compartiment);
         }
     }
-    private void RemoveProduct(ProductModel product)
+    private void RemoveProduct(EditablePendingProduct product)
     {
         if (Products.Contains(product))
         {
             Products.Remove(product);
         }
     }
-    private void RemoveIslander(IslanderModel islander)
+    private void RemoveIslander(EditablePendingIslander islander)
     {
         if (Islanders.Contains(islander))
         {

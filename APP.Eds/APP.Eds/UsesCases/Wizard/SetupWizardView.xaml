@@ -497,7 +497,7 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Seleccione el tipo de producto"
-                                                                            ItemsSource="{Binding ProductOptions}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ProductOptions}"
                                                                             ItemDisplayBinding="{Binding Name}"
                                                                             SelectedItem="{Binding SelectedProductOption, Mode=TwoWay}"
                                                                             AutomationId="PickerProductCategory"
@@ -680,7 +680,7 @@
 
                                                         <!-- Stock Field -->
                                                         <VerticalStackLayout Spacing="8">
-                                                            <Label Text="{Binding StockLabel}" 
+                                                            <Label Text="Stock inicial (Galones)" 
                                                                    FontSize="14" 
                                                                    FontAttributes="Bold" 
                                                                    TextColor="#2D3436"
@@ -709,7 +709,7 @@
                                                                            HorizontalOptions="FillAndExpand"/>
                                                                 </StackLayout>
                                                             </Border>
-                                                            <Label Text="{Binding StockHint}" 
+                                                            <Label Text="El stock debe ser especificado en galones(G). Ejemplo: 1000 Galones" 
                                                                    FontSize="12" 
                                                                    TextColor="#636E72"
                                                                    Margin="4,0,0,0"/>
@@ -743,7 +743,7 @@
 
                                                                     <Picker x:Name="EdsPicker"
                                                                             Title="Seleccione una estación de servicio"
-                                                                            ItemsSource="{Binding EdsList}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
                                                                             ItemDisplayBinding="{Binding Name}"
                                                                             SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
                                                                             AutomationId="PickerEds"
@@ -814,7 +814,7 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Seleccionar tanque"
-                                                                            ItemsSource="{Binding Tanks}" 
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Tanks}"
                                                                             ItemDisplayBinding="{Binding DisplayText}" 
                                                                             SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
                                                                             AutomationId="PickerTank"
@@ -847,7 +847,7 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Selecciona un producto"
-                                                                            ItemsSource="{Binding ProductList}" 
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ProductList}"
                                                                             ItemDisplayBinding="{Binding Name}" 
                                                                             SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
                                                                             AutomationId="PickerProduct"
@@ -1209,6 +1209,53 @@
                                                                 </StackLayout>
                                                             </StackLayout>
                                                         </StackLayout>
+                                                        
+                                                        <!-- EDS Selection (NUEVO) -->
+                                                        <VerticalStackLayout Spacing="8">
+                                                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                                                <Label Text="Estación de Servicio (EDS)" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#2D3436"
+                                                                       Margin="4,0,0,0"/>
+                                                                <Label Text="*" 
+                                                                       FontSize="14" 
+                                                                       FontAttributes="Bold" 
+                                                                       TextColor="#E74C3C"
+                                                                       VerticalOptions="Start"/>
+                                                            </StackLayout>
+
+                                                            <Border BackgroundColor="#F8F9FA" 
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#DDD6FE"
+                                                                    StrokeThickness="2"
+                                                                    Padding="0">
+                                                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                    <Label Text="🏪" 
+                                                                           FontSize="18" 
+                                                                           TextColor="#8B5CF6" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Picker x:Name="EdsPicker"
+                                                                            Title="Seleccione una estación de servicio"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
+                                                                            ItemDisplayBinding="{Binding Name}"
+                                                                            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                            AutomationId="PickerEds"
+                                                                            BackgroundColor="Transparent"
+                                                                            FontSize="16"
+                                                                            TextColor="#374151"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="FillAndExpand"/>
+                                                                </StackLayout>
+                                                            </Border>
+
+                                                            <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
+                                                                   FontSize="12"
+                                                                   TextColor="#636E72"
+                                                                   Margin="4,0,0,0"/>
+                                                        </VerticalStackLayout>
+
                                                     </Grid>
                                                     <Button Text="Remove" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslanderCommand}"

@@ -1,3 +1,4 @@
+using APP.Eds.Services.Product;
 using APP.Eds.Services.Setup;
 using System.ComponentModel;
 
@@ -6,6 +7,7 @@ namespace APP.Eds.UsesCases.Wizard
     public partial class SetupWizardView : ContentPage, INotifyPropertyChanged
     {
         private SetupService _setupService;
+        private ProductService _productService;
 
         public SetupWizardView()
         {
