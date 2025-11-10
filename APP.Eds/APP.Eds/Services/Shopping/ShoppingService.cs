@@ -418,6 +418,29 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    // Filter properties for ShoppingListView
+    private ProviderModel _selectedProviderFilter;
+    public ProviderModel SelectedProviderFilter
+    {
+        get => _selectedProviderFilter;
+        set
+        {
+            _selectedProviderFilter = value;
+            OnPropertyChanged(nameof(SelectedProviderFilter));
+        }
+    }
+
+    private CategoryModel _selectedCategoryFilter;
+    public CategoryModel SelectedCategoryFilter
+    {
+        get => _selectedCategoryFilter;
+        set
+        {
+            _selectedCategoryFilter = value;
+            OnPropertyChanged(nameof(SelectedCategoryFilter));
+        }
+    }
+
     public ICommand GetByIdShoppingDataCommand { get; }
     public ICommand SaveShoppingDataCommand { get; }
     public Command AddShoppingProductCommand { get; }
@@ -493,7 +516,7 @@ public class ShoppingService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron los datos de configuración", "OK");
             return;
         }
         try
@@ -520,7 +543,7 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
-    public async Task GetAllShoppingAsync()
+    public async Task GetAllShoppingAsync(int pageNumber = 1, int pageSize = 5)
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -529,7 +552,7 @@ public class ShoppingService : INotifyPropertyChanged
         }
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/shopping";
+            string url = $"{Configuration.BaseUrl}/api/v1/shopping?PageNumber={pageNumber}&PageSize={pageSize}";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);

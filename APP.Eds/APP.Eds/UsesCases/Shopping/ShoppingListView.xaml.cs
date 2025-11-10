@@ -1,21 +1,27 @@
-using APP.Eds.Services.Shopping;
+ï»¿using APP.Eds.Services.Shopping;
 using APP.Eds.Models.ShoppingProduct;
 using System.Collections.ObjectModel;
 using System.Linq;
+using APP.Eds.Models.Shopping;
 
 namespace APP.Eds.UsesCases.Shopping;
 
 public partial class ShoppingListView : ContentPage
 {
     private ShoppingService _shoppingService;
-    private ObservableCollection<ShoppingResponse> _filteredShoppingList;
+    private ObservableCollection<ShoppingResponseViewModel> _filteredShoppingList;
+    private int _currentPage = 1;
+    private const int _pageSize = 5;
+    private string _currentSearchText = "";
+    private ProviderModel _selectedProviderFilter;
+    private CategoryModel _selectedCategoryFilter;
 
     public ShoppingListView()
     {
         InitializeComponent();
         _shoppingService = ShoppingService.Instance;
         BindingContext = _shoppingService;
-        _filteredShoppingList = new ObservableCollection<ShoppingResponse>();
+        _filteredShoppingList = new ObservableCollection<ShoppingResponseViewModel>();
     }
 
     protected override async void OnAppearing()
@@ -30,11 +36,12 @@ public partial class ShoppingListView : ContentPage
         {
             LoadingOverlay?.ShowLoading();
             
-            await _shoppingService.GetAllShoppingAsync();
+            await _shoppingService.GetAllShoppingAsync(_currentPage, _pageSize);
             
-            UpdateFilteredList();
+            ApplyFilters();
             UpdateStatistics();
             UpdateEmptyState();
+            UpdatePaginationButtons();
         }
         catch (Exception ex)
         {
@@ -46,21 +53,53 @@ public partial class ShoppingListView : ContentPage
         }
     }
 
-    private void UpdateFilteredList(string searchText = "")
+    private void ApplyFilters()
     {
         _filteredShoppingList.Clear();
         
-        var items = string.IsNullOrWhiteSpace(searchText)
-            ? _shoppingService.ShoppingList
-            : _shoppingService.ShoppingList.Where(s => 
-                s.Invoice?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true);
+        var items = _shoppingService.ShoppingList.AsEnumerable();
         
+        // Filter by invoice search text
+        if (!string.IsNullOrWhiteSpace(_currentSearchText))
+        {
+            items = items.Where(s => 
+                s.Invoice?.Contains(_currentSearchText, StringComparison.OrdinalIgnoreCase) == true);
+        }
+        
+        // Filter by provider
+        if (_selectedProviderFilter != null)
+        {
+            items = items.Where(s => s.IdProvider == _selectedProviderFilter.IdProvider);
+        }
+        
+        // Filter by category
+        if (_selectedCategoryFilter != null)
+        {
+            items = items.Where(s => s.IdCategory == _selectedCategoryFilter.IdCategory);
+        }
+        
+        // Add filtered items to collection
         foreach (var item in items.OrderByDescending(s => s.Date))
         {
-            _filteredShoppingList.Add(item);
+            _filteredShoppingList.Add(new ShoppingResponseViewModel(item));
         }
         
         ShoppingCollectionView.ItemsSource = _filteredShoppingList;
+        
+        // Show/hide clear filters button
+        UpdateClearFiltersButtonVisibility();
+    }
+
+    private void UpdateClearFiltersButtonVisibility()
+    {
+        bool hasFilters = !string.IsNullOrWhiteSpace(_currentSearchText) || 
+                         _selectedProviderFilter != null || 
+                         _selectedCategoryFilter != null;
+        
+        if (ClearFiltersButton != null)
+        {
+            ClearFiltersButton.IsVisible = hasFilters;
+        }
     }
 
     private void UpdateStatistics()
@@ -81,7 +120,7 @@ public partial class ShoppingListView : ContentPage
             TotalCountLabel.Text = totalCount.ToString();
             TotalAmountLabel.Text = $"$ {totalAmount:N2}";
             
-            System.Diagnostics.Debug.WriteLine($"?? Estadísticas del listado:");
+            System.Diagnostics.Debug.WriteLine($"ðŸ“Š EstadÃ­sticas del listado:");
             System.Diagnostics.Debug.WriteLine($"   - Total compras: {totalCount}");
             System.Diagnostics.Debug.WriteLine($"   - Total productos: {totalProducts}");
             System.Diagnostics.Debug.WriteLine($"   - Total galones: {totalGallons:N2}");
@@ -101,72 +140,130 @@ public partial class ShoppingListView : ContentPage
         ShoppingCollectionView.IsVisible = !isEmpty;
     }
 
+    private void UpdatePaginationButtons()
+    {
+        // Update pagination info label
+        if (PageInfoLabel != null)
+        {
+            var totalItems = _filteredShoppingList.Count;
+            PageInfoLabel.Text = $"PÃ¡gina {_currentPage} ({totalItems} registros)";
+        }
+
+        // Disable previous button on first page
+        if (PreviousPageButton != null)
+        {
+            PreviousPageButton.IsEnabled = _currentPage > 1;
+        }
+
+        // Disable next button if we received less than pageSize items
+        if (NextPageButton != null)
+        {
+            NextPageButton.IsEnabled = _filteredShoppingList.Count >= _pageSize;
+        }
+    }
+
     private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     {
-        UpdateFilteredList(e.NewTextValue);
+        _currentSearchText = e.NewTextValue;
+        ApplyFilters();
+        UpdateEmptyState();
+    }
+
+    private void OnProviderFilterChanged(object sender, EventArgs e)
+    {
+        if (ProviderFilterPicker.SelectedItem is ProviderModel selectedProvider)
+        {
+            _selectedProviderFilter = selectedProvider;
+        }
+        else
+        {
+            _selectedProviderFilter = null;
+        }
+        
+        ApplyFilters();
+        UpdateEmptyState();
+    }
+
+    private void OnCategoryFilterChanged(object sender, EventArgs e)
+    {
+        if (CategoryFilterPicker.SelectedItem is CategoryModel selectedCategory)
+        {
+            _selectedCategoryFilter = selectedCategory;
+        }
+        else
+        {
+            _selectedCategoryFilter = null;
+        }
+        
+        ApplyFilters();
+        UpdateEmptyState();
+    }
+
+    private void OnClearFiltersClicked(object sender, EventArgs e)
+    {
+        // Clear all filters
+        _currentSearchText = "";
+        _selectedProviderFilter = null;
+        _selectedCategoryFilter = null;
+        
+        // Reset UI controls
+        if (SearchEntry != null)
+            SearchEntry.Text = string.Empty;
+        
+        if (ProviderFilterPicker != null)
+            ProviderFilterPicker.SelectedIndex = -1;
+        
+        if (CategoryFilterPicker != null)
+            CategoryFilterPicker.SelectedIndex = -1;
+        
+        // Reapply filters (which will now show all)
+        ApplyFilters();
         UpdateEmptyState();
     }
 
     private async void OnRefreshClicked(object sender, EventArgs e)
     {
+        _currentPage = 1; // Reset to first page
         await LoadShoppingData();
         await DisplayAlert("Actualizado", "El listado de compras se actualizo correctamente", "OK");
     }
 
-    private async void OnShoppingItemTapped(object sender, EventArgs e)
+    private async void OnPreviousPageClicked(object sender, EventArgs e)
     {
-        if (sender is Border border && border.GestureRecognizers[0] is TapGestureRecognizer tapGesture)
+        if (_currentPage > 1)
         {
-            if (tapGesture.CommandParameter is ShoppingResponse shopping)
-            {
-                try
-                {
-                    // Construir mensaje con información de productos
-                    var message = $"?? Fecha: {shopping.Date:dd/MM/yyyy}\n" +
-                                 $"?? Proveedor ID: {shopping.IdProvider}\n" +
-                                 $"?? Categoria ID: {shopping.IdCategory}\n" +
-                                 $"?? Monto Total: $ {shopping.Amount:N2}\n\n";
-
-                    if (shopping.ShoppingProducts != null && shopping.ShoppingProducts.Any())
-                    {
-                        message += $"?? PRODUCTOS ({shopping.ShoppingProducts.Count}):\n";
-                        message += new string('?', 40) + "\n";
-
-                        var totalQuantity = 0.0;
-                        var totalPurchaseValue = 0.0;
-
-                        foreach (var product in shopping.ShoppingProducts)
-                        {
-                            message += $"\n??? Producto ID: {product.IdProduct}\n";
-                            message += $"   ?? Cantidad: {product.Quantity:N2} gal\n";
-                            message += $"   ?? P. Compra: $ {product.PurchasePrice:N2}\n";
-                            message += $"   ?? P. Venta: $ {product.SellPrice:N2}\n";
-                            message += $"   ?? Subtotal: $ {product.TotalPrice:N2}\n";
-
-                            totalQuantity += product.Quantity;
-                            totalPurchaseValue += product.TotalPrice;
-                        }
-
-                        message += "\n" + new string('?', 40) + "\n";
-                        message += $"?? RESUMEN:\n";
-                        message += $"   • Total Galones: {totalQuantity:N2} gal\n";
-                        message += $"   • Total Compra: $ {totalPurchaseValue:N2}";
-                    }
-                    else
-                    {
-                        message += "?? No hay productos registrados para esta compra.";
-                    }
-
-                    await DisplayAlert(
-                        $"?? Compra: {shopping.Invoice}",
-                        message,
-                        "Cerrar");
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Error", $"Error al mostrar detalles: {ex.Message}", "OK");
-                }
-            }
+            _currentPage--;
+            await LoadShoppingData();
         }
+    }
+
+    private async void OnNextPageClicked(object sender, EventArgs e)
+    {
+        _currentPage++;
+        await LoadShoppingData();
+    }
+}
+
+// ViewModel wrapper to add calculated properties
+public class ShoppingResponseViewModel : ShoppingResponse
+{
+    public string TotalGallonsText { get; set; }
+    
+    public ShoppingResponseViewModel(ShoppingResponse response)
+    {
+        // Copy all properties
+        IdShopping = response.IdShopping;
+        Invoice = response.Invoice;
+        Date = response.Date;
+        IdProvider = response.IdProvider;
+        IdCategory = response.IdCategory;
+        Amount = response.Amount;
+        Provider = response.Provider;
+        Category = response.Category;
+        ShoppingProducts = response.ShoppingProducts;
+        
+        // Calculate total gallons
+        var totalGallons = ShoppingProducts?.Sum(p => p.Quantity) ?? 0;
+        TotalGallonsText = $"{totalGallons:N2} gal";
     }
 }

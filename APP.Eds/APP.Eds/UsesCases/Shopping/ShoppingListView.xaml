@@ -71,14 +71,59 @@
 
                 <Border Style="{StaticResource ModernCardStyle}">
                     <StackLayout Spacing="12">
-                        <Label Text="Buscar por Factura" 
+                        <Label Text="Buscar y Filtrar Compras" 
                                FontSize="14" 
                                FontAttributes="Bold" 
                                TextColor="#2D3436"/>
+                        
+                        <!-- Search by Invoice -->
                         <Entry x:Name="SearchEntry"
-                               Placeholder="Ingrese numero de factura..."
+                               Placeholder="Buscar por número de factura..."
                                TextChanged="OnSearchTextChanged"
                                BackgroundColor="White"/>
+                        
+                        <!-- Filter by Provider -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Grid.Column="0"
+                                   Text="🏢"
+                                   FontSize="20"
+                                   VerticalOptions="Center"/>
+                            <Picker x:Name="ProviderFilterPicker"
+                                    Grid.Column="1"
+                                    Title="Filtrar por Proveedor"
+                                    ItemsSource="{Binding ProviderList}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedProviderFilter}"
+                                    SelectedIndexChanged="OnProviderFilterChanged"
+                                    BackgroundColor="White"/>
+                        </Grid>
+                        
+                        <!-- Filter by Category -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <Label Grid.Column="0"
+                                   Text="📦"
+                                   FontSize="20"
+                                   VerticalOptions="Center"/>
+                            <Picker x:Name="CategoryFilterPicker"
+                                    Grid.Column="1"
+                                    Title="Filtrar por Categoría"
+                                    ItemsSource="{Binding CategoryList}"
+                                    ItemDisplayBinding="{Binding Description}"
+                                    SelectedItem="{Binding SelectedCategoryFilter}"
+                                    SelectedIndexChanged="OnCategoryFilterChanged"
+                                    BackgroundColor="White"/>
+                        </Grid>
+                        
+                        <!-- Clear Filters Button -->
+                        <Button x:Name="ClearFiltersButton"
+                                Text="🔄 Limpiar Filtros"
+                                BackgroundColor="#FF9800"
+                                TextColor="White"
+                                FontSize="12"
+                                HeightRequest="36"
+                                CornerRadius="8"
+                                Clicked="OnClearFiltersClicked"
+                                IsVisible="False"/>
                     </StackLayout>
                 </Border>
 
@@ -103,80 +148,244 @@
                         <CollectionView x:Name="ShoppingCollectionView">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="#FAFAFA" 
-                                            StrokeShape="RoundRectangle 12"
+                                    <Border BackgroundColor="White" 
+                                            StrokeShape="RoundRectangle 16"
                                             Stroke="#E0E0E0"
-                                            Margin="0,4"
-                                            Padding="16">
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnShoppingItemTapped" 
-                                                                  CommandParameter="{Binding .}"/>
-                                        </Border.GestureRecognizers>
+                                            StrokeThickness="1"
+                                            Margin="0,8"
+                                            Padding="0">
+                                        <VerticalStackLayout Spacing="0">
+                                            <!-- Header Section -->
+                                            <Border BackgroundColor="#6A1B9A" 
+                                                    StrokeShape="RoundRectangle 16,16,0,0"
+                                                    Padding="16,12">
+                                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                                    <Label Grid.Row="0" Grid.Column="0"
+                                                           Text="{Binding Invoice, StringFormat='🧾 Compra: {0}'}" 
+                                                           FontSize="18" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="White"/>
+                                                    
+                                                    <Label Grid.Row="1" Grid.Column="0"
+                                                           Text="{Binding IdShopping, StringFormat='🔢 ID: {0}'}"
+                                                           FontSize="12" 
+                                                           TextColor="#E1BEE7"/>
+                                                    
+                                                    <Label Grid.Row="2" Grid.Column="0"
+                                                           Text="{Binding Date, StringFormat='📅 {0:dd/MM/yyyy}'}"
+                                                           FontSize="13" 
+                                                           TextColor="#E1BEE7"/>
+                                                
+                                                    <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"
+                                                            BackgroundColor="#4CAF50" 
+                                                            StrokeShape="RoundRectangle 12"
+                                                            Padding="12,8"
+                                                            VerticalOptions="Center">
+                                                        <StackLayout Spacing="2">
+                                                            <Label Text="💰 Monto" 
+                                                                   FontSize="10"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="White"
+                                                                   HorizontalOptions="Center"/>
+                                                            <Label Text="{Binding Amount, StringFormat='${0:N2}'}" 
+                                                                   FontSize="15"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="White"
+                                                                   HorizontalOptions="Center"/>
+                                                        </StackLayout>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
 
-                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
-                                            <Label Grid.Row="0" Grid.Column="0"
-                                                   Text="{Binding Invoice}" 
-                                                   FontSize="16" 
-                                                   FontAttributes="Bold" 
-                                                   TextColor="#2D3436"/>
-
-                                            <Label Grid.Row="1" Grid.Column="0"
-                                                   Text="{Binding Date, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
-                                                   FontSize="12" 
-                                                   TextColor="#636E72"/>
-
-                                            <Label Grid.Row="2" Grid.Column="0"
-                                                   FontSize="12" 
-                                                   TextColor="#636E72">
-                                                <Label.FormattedText>
-                                                    <FormattedString>
-                                                        <Span Text="Proveedor: " FontAttributes="Bold"/>
-                                                        <Span Text="{Binding IdProvider}"/>
-                                                        <Span Text=" | Categoria: " FontAttributes="Bold"/>
-                                                        <Span Text="{Binding IdCategory}"/>
-                                                    </FormattedString>
-                                                </Label.FormattedText>
-                                            </Label>
-
-                                            <StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                                                <Border BackgroundColor="#E3F2FD"
-                                                        StrokeShape="RoundRectangle 8"
-                                                        Padding="6,3">
-                                                    <Label FontSize="11" TextColor="#1976D2">
-                                                        <Label.FormattedText>
-                                                            <FormattedString>
-                                                                <Span Text="Productos: " FontAttributes="Bold"/>
-                                                                <Span Text="{Binding ShoppingProducts.Count}"/>
-                                                            </FormattedString>
-                                                        </Label.FormattedText>
-                                                    </Label>
-                                                </Border>
+                                            <!-- Info Section -->
+                                            <StackLayout Padding="16,12" Spacing="10" BackgroundColor="#F5F5F5">
+                                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                                    <Label Grid.Row="0" Grid.Column="0"
+                                                           Text="🏢 Proveedor:"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#424242"/>
+                                                    <Label Grid.Row="0" Grid.Column="1"
+                                                           Text="{Binding Provider.Name}"
+                                                           FontSize="13"
+                                                           TextColor="#616161"/>
+                                                
+                                                    <Label Grid.Row="1" Grid.Column="0"
+                                                           Text="📦 Categoría:"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#424242"/>
+                                                    <Label Grid.Row="1" Grid.Column="1"
+                                                           Text="{Binding Category.Description}"
+                                                           FontSize="13"
+                                                           TextColor="#616161"/>
+                                                </Grid>
                                             </StackLayout>
 
-                                            <Border Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
-                                                    BackgroundColor="#E8F5E8" 
-                                                    StrokeShape="RoundRectangle 12"
-                                                    Stroke="#4CAF50"
-                                                    Padding="12,8"
-                                                    VerticalOptions="Center">
-                                                <StackLayout Spacing="4">
-                                                    <Label Text="Monto" 
-                                                           FontSize="10"
-                                                           FontAttributes="Bold"
-                                                           TextColor="#2E7D32"
-                                                           HorizontalOptions="Center"/>
-                                                    <Label Text="{Binding Amount, StringFormat='${0:N2}'}" 
-                                                           FontSize="14"
-                                                           FontAttributes="Bold"
-                                                           TextColor="#1B5E20"
-                                                           HorizontalOptions="Center"/>
-                                                </StackLayout>
-                                            </Border>
-                                        </Grid>
+                                            <!-- Products Section -->
+                                            <StackLayout Padding="16" Spacing="12" BackgroundColor="White" x:Name="ProductsSection" BindingContext="{Binding .}">
+                                                <Label Text="{Binding ShoppingProducts.Count, StringFormat='📦 PRODUCTOS ({0}):'}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2D3436"/>
+                                                
+                                                <BoxView HeightRequest="1" BackgroundColor="#E0E0E0"/>
+
+                                                <!-- Products List -->
+                                                <CollectionView ItemsSource="{Binding ShoppingProducts}">
+                                                    <CollectionView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BackgroundColor="#FAFAFA"
+                                                                    StrokeShape="RoundRectangle 12"
+                                                                    Stroke="#E0E0E0"
+                                                                    Padding="12"
+                                                                    Margin="0,4">
+                                                                <VerticalStackLayout Spacing="8">
+                                                                    <Label Text="{Binding Product.Name, StringFormat='▪️ {0}'}"
+                                                                           FontSize="15"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#2D3436"/>
+                                                                
+                                                                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                                                          ColumnSpacing="8" RowSpacing="4">
+                                                                        
+                                                                        <Label Grid.Row="0" Grid.Column="0"
+                                                                               Text="📊 Cantidad:"
+                                                                               FontSize="12"
+                                                                               TextColor="#616161"/>
+                                                                        <Label Grid.Row="0" Grid.Column="1"
+                                                                               Text="{Binding Quantity, StringFormat='{0:N2} gal'}"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#424242"/>
+                                                                        
+                                                                        <Label Grid.Row="1" Grid.Column="0"
+                                                                               Text="💵 P. Compra:"
+                                                                               FontSize="12"
+                                                                               TextColor="#616161"/>
+                                                                        <Label Grid.Row="1" Grid.Column="1"
+                                                                               Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#424242"/>
+                                                                        
+                                                                        <Label Grid.Row="2" Grid.Column="0"
+                                                                               Text="💸 P. Venta:"
+                                                                               FontSize="12"
+                                                                               TextColor="#616161"/>
+                                                                        <Label Grid.Row="2" Grid.Column="1"
+                                                                               Text="{Binding SellPrice, StringFormat='$ {0:N2}'}"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#424242"/>
+                                                                        
+                                                                        <Label Grid.Row="3" Grid.Column="0"
+                                                                               Text="📦 Stock:"
+                                                                               FontSize="12"
+                                                                               TextColor="#616161"/>
+                                                                        <Label Grid.Row="3" Grid.Column="1"
+                                                                               Text="{Binding Product.Stock, StringFormat='{0:N2} gal'}"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#424242"/>
+                                                                        
+                                                                        <Label Grid.Row="4" Grid.Column="0"
+                                                                               Text="💰 Subtotal:"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#1B5E20"/>
+                                                                        <Label Grid.Row="4" Grid.Column="1"
+                                                                               Text="{Binding TotalPrice, StringFormat='$ {0:N2}'}"
+                                                                               FontSize="12"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="#2E7D32"/>
+                                                                    </Grid>
+                                                                </VerticalStackLayout>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </CollectionView.ItemTemplate>
+                                                </CollectionView>
+
+                                                <!-- Summary Section -->
+                                                <BoxView HeightRequest="1" BackgroundColor="#E0E0E0" Margin="0,8,0,0"/>
+                                                
+                                                <Border BackgroundColor="#E8F5E8"
+                                                        StrokeShape="RoundRectangle 12"
+                                                        Stroke="#4CAF50"
+                                                        Padding="12">
+                                                    <StackLayout Spacing="6">
+                                                        <Label Text="📊 RESUMEN:"
+                                                               FontSize="13"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#1B5E20"/>
+                                                
+                                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" 
+                                                              ColumnSpacing="8" RowSpacing="4">
+                                                            <Label Grid.Row="0" Grid.Column="0"
+                                                                   Text="∑ Total Galones:"
+                                                                   FontSize="12"
+                                                                   TextColor="#2E7D32"/>
+                                                            <Label Grid.Row="0" Grid.Column="1"
+                                                                   Text="{Binding TotalGallonsText}"
+                                                                   FontSize="12"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="#1B5E20"/>
+                                                            
+                                                            <Label Grid.Row="1" Grid.Column="0"
+                                                                   Text="∑ Total Compra:"
+                                                                   FontSize="12"
+                                                                   TextColor="#2E7D32"/>
+                                                            <Label Grid.Row="1" Grid.Column="1"
+                                                                   Text="{Binding Amount, StringFormat='$ {0:N2}'}"
+                                                                   FontSize="12"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="#1B5E20"/>
+                                                        </Grid>
+                                                    </StackLayout>
+                                                </Border>
+                                            </StackLayout>
+                                        </VerticalStackLayout>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+
+                        <!-- Pagination Controls -->
+                        <Border BackgroundColor="#F5F5F5"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="#E0E0E0"
+                                Padding="12">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Button x:Name="PreviousPageButton"
+                                        Grid.Column="0"
+                                        Text="◀ Anterior"
+                                        BackgroundColor="#6A1B9A"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        HeightRequest="40"
+                                        CornerRadius="8"
+                                        Clicked="OnPreviousPageClicked"/>
+                                
+                                <Label x:Name="PageInfoLabel"
+                                       Grid.Column="1"
+                                       Text="Página 1"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#2D3436"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                                
+                                <Button x:Name="NextPageButton"
+                                        Grid.Column="2"
+                                        Text="Siguiente ▶"
+                                        BackgroundColor="#6A1B9A"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        HeightRequest="40"
+                                        CornerRadius="8"
+                                        Clicked="OnNextPageClicked"/>
+                            </Grid>
+                        </Border>
                     </StackLayout>
                 </Border>
 
