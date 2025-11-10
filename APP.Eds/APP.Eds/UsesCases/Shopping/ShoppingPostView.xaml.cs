@@ -7,6 +7,7 @@ namespace APP.Eds.UsesCases.Shopping;
 public partial class ShoppingPostView : ContentPage
 {
     private ShoppingService _shoppingService;
+    private bool _isInvoiceDuplicate = false;
 
     public ShoppingPostView()
     {
@@ -131,10 +132,29 @@ public partial class ShoppingPostView : ContentPage
                 return;
             }
 
-            // STRICT validation: Check if invoice exists BEFORE proceeding
+            // Check if we already detected a duplicate during inline validation
+            if (_isInvoiceDuplicate)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    $"❌ No se puede proceder con el guardado.\n\n" +
+                    $"El número de factura '{vm.Invoice}' ya existe en la base de datos.\n\n" +
+                    $"Debe modificar el número de factura para continuar.",
+                    "Factura Duplicada - Operación Bloqueada");
+
+                // Focus back to invoice field
+                if (FirstEntry != null)
+                {
+                    await Task.Delay(100);
+                    FirstEntry.Focus();
+                }
+                return;
+            }
+
+            // STRICT validation: Check if invoice exists BEFORE proceeding (as backup)
             bool invoiceExists = await vm.CheckInvoiceExistsAsync(vm.Invoice);
             if (invoiceExists)
             {
+                _isInvoiceDuplicate = true;
                 await CustomAlert.ShowErrorAsync(
                     $"❌ No se puede proceder con el guardado.\n\n" +
                     $"El número de factura '{vm.Invoice}' ya existe en la base de datos.\n\n" +
@@ -211,14 +231,34 @@ public partial class ShoppingPostView : ContentPage
         {
             if (sender is Entry entry && !string.IsNullOrWhiteSpace(entry.Text))
             {
-                // Validate invoice when user finishes entering it
-                bool isInvoiceValid = await _shoppingService.ValidateInvoiceAsync(entry.Text);
-                if (!isInvoiceValid)
+                // Check if invoice meets minimum length requirement first
+                if (entry.Text.Length < 3)
                 {
-                    // If validation failed (including duplicate invoice), focus back on the entry
-                    await Task.Delay(200); // Small delay to ensure alert is dismissed
-                    entry.Focus();
-                    entry.CursorPosition = entry.Text.Length; // Position cursor at end
+                    _isInvoiceDuplicate = false;
+                    return; // Don't check for duplicates if length is invalid
+                }
+
+                // Check for duplicate invoice
+                bool isDuplicate = await _shoppingService.CheckInvoiceExistsAsync(entry.Text);
+                _isInvoiceDuplicate = isDuplicate;
+                
+                if (isDuplicate)
+                {
+                    // Show inline error for duplicate
+                    InvoiceBorder.Stroke = Color.FromArgb("#EF4444"); // Red
+                    InvoiceHelpIcon.Text = "❌";
+                    InvoiceHelpIcon.TextColor = Color.FromArgb("#EF4444");
+                    InvoiceHelpText.Text = "Este número de factura ya existe en el sistema";
+                    InvoiceHelpText.TextColor = Color.FromArgb("#EF4444");
+                }
+                else
+                {
+                    // Keep the valid state (green)
+                    InvoiceBorder.Stroke = Color.FromArgb("#10B981");
+                    InvoiceHelpIcon.Text = "✅";
+                    InvoiceHelpIcon.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpText.Text = "Número de factura válido";
+                    InvoiceHelpText.TextColor = Color.FromArgb("#10B981");
                 }
             }
         }
@@ -249,6 +289,9 @@ public partial class ShoppingPostView : ContentPage
             {
                 string invoiceText = entry.Text ?? string.Empty;
                 
+                // Reset duplicate flag when user types
+                _isInvoiceDuplicate = false;
+                
                 // Update visual feedback based on invoice length
                 if (string.IsNullOrWhiteSpace(invoiceText))
                 {
@@ -270,7 +313,7 @@ public partial class ShoppingPostView : ContentPage
                 }
                 else
                 {
-                    // Valid state - show success
+                    // Valid state - show success (will check for duplicates on Unfocused)
                     InvoiceBorder.Stroke = Color.FromArgb("#10B981");
                     InvoiceHelpIcon.Text = "✅";
                     InvoiceHelpIcon.TextColor = Color.FromArgb("#10B981");

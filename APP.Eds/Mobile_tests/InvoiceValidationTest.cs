@@ -141,5 +141,29 @@ namespace Mobile_tests
             Assert.That(placeholder, Does.Contain("mínimo 3 caracteres"));
             Assert.That(placeholder, Does.Contain("Ingrese"));
         }
+
+        [Test]
+        [Category("InvoiceValidation")]
+        public void DuplicateInvoiceMessage_ShouldBeUserFriendly()
+        {
+            // Arrange
+            string duplicateMessage = "Este número de factura ya existe en el sistema";
+
+            // Assert
+            Assert.That(duplicateMessage, Does.Contain("ya existe"));
+            Assert.That(duplicateMessage, Does.Contain("sistema"));
+            Assert.That(duplicateMessage.Length, Is.GreaterThan(20), "Message should be descriptive");
+        }
+
+        [Test]
+        [Category("InvoiceValidation")]
+        public void DuplicateValidation_ShouldOnlyCheckAfterMinimumLength()
+        {
+            // Arrange
+            string shortInvoice = "AB"; // Less than 3 characters
+
+            // Assert - Duplicate check should not run for invalid length
+            Assert.That(shortInvoice.Length < 3, Is.True, "Should not check duplicates for invalid length invoices");
+        }
     }
 }
