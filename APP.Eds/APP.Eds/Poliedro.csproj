@@ -313,4 +313,7 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\Shopping\" />
+  </ItemGroup>
 </Project>
