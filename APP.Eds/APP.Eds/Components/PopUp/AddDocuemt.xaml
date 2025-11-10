@@ -7,7 +7,7 @@
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
 
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             WidthRequest="420" 
@@ -82,7 +82,7 @@
                     </Border>
 
                     <!-- Lista previa de selección -->
-                    <Border BackgroundColor="White" StrokeShape="RoundRectangle 12" Stroke="#E8F2FF" Padding="8,6">
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" StrokeShape="RoundRectangle 12" Stroke="#E8F2FF" Padding="8,6">
                         <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" Padding="6,2">
                                 <Label Text="Archivos seleccionados" FontAttributes="Bold" TextColor="#1976D2"/>
@@ -137,7 +137,7 @@
 
             <!-- Actions -->
             <Grid Grid.Row="2" Padding="16,10" ColumnDefinitions="*,*" ColumnSpacing="12"
-                  BackgroundColor="White">
+                  BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}">
                 <Border BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 12">
                     <Button BackgroundColor="Transparent"
                             Text="Seleccionar más"

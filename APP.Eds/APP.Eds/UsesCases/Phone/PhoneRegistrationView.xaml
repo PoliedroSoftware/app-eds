@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters.Wizard"
     Title="Registrar Telefonos"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -37,7 +37,7 @@
             </Border>
 
             <!-- Statistics -->
-            <Border BackgroundColor="White"
+            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"
                     Padding="20">
@@ -45,7 +45,7 @@
                     <Label Text="Estadisticas de Registro" 
                            FontAttributes="Bold" 
                            FontSize="18" 
-                           TextColor="#2D3436"/>
+                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Border BackgroundColor="#E3F2FD" 
@@ -90,7 +90,7 @@
             </Border>
 
             <!-- Registration Form -->
-            <Border BackgroundColor="White"
+            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"
                     Padding="24">
@@ -99,16 +99,16 @@
                     <Label Text="Registrar Nuevo Telefono" 
                            FontAttributes="Bold" 
                            FontSize="20" 
-                           TextColor="#2D3436"/>
+                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
 
                     <!-- Owner Name Input -->
                     <StackLayout Spacing="12">
                         <Label Text="Nombre del Propietario" 
                                FontAttributes="Bold" 
-                               TextColor="#636E72" 
+                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                FontSize="16"/>
                         
-                        <Border BackgroundColor="#F8F9FA" 
+                        <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                 StrokeShape="RoundRectangle 8"
                                 Stroke="#2196F3" 
                                 Padding="12">
@@ -137,7 +137,7 @@
                     <StackLayout Spacing="12">
                         <Label Text="Numero de Telefono" 
                                FontAttributes="Bold" 
-                               TextColor="#636E72" 
+                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                FontSize="16"/>
                         
                         <!-- Preview of full number -->
@@ -159,7 +159,7 @@
                         </Border>
                         
                         <!-- Phone input with +57 prefix -->
-                        <Border BackgroundColor="#F8F9FA" 
+                        <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                 StrokeShape="RoundRectangle 8"
                                 Stroke="#2196F3" 
                                 Padding="4">
@@ -245,7 +245,7 @@
             </Border>
 
             <!-- Phone List -->
-            <Border BackgroundColor="White"
+            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"
                     Padding="20">
@@ -254,7 +254,7 @@
                     <Label Text="Lista de Telefonos a Enviar" 
                            FontAttributes="Bold" 
                            FontSize="18" 
-                           TextColor="#2D3436"/>
+                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
 
                     <CollectionView ItemsSource="{Binding PhonesList}">
                         <CollectionView.ItemTemplate>
@@ -340,7 +340,7 @@
             </Border>
 
             <!-- Database Phones List -->
-            <Border BackgroundColor="White"
+            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0"
                     Padding="20">
@@ -352,7 +352,7 @@
                                Text="Telefonos Guardados" 
                                FontAttributes="Bold" 
                                FontSize="18" 
-                               TextColor="#2D3436"
+                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                VerticalOptions="Center"/>
                         
                         <Border Grid.Column="1"

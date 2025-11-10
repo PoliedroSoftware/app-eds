@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding CompartimentManagement}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nuevo Compartimento" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Configure un nuevo compartimento del tanque" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,10 +61,10 @@
                                 <Label Text="{Binding SelectTank}" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -82,7 +82,7 @@
                                                 AutomationId="PickerTank"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -94,10 +94,10 @@
                                 <Label Text="Seleccionar producto" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -115,7 +115,7 @@
                                                 AutomationId="PickerProduct"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -130,10 +130,10 @@
                                     <Label Text="Número" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -152,7 +152,7 @@
                                                    AutomationId="EntryCompartimentNumber"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -164,10 +164,10 @@
                                     <Label Text="Altura (cm)" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -186,7 +186,7 @@
                                                    AutomationId="EntryCompartimentHeight"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -199,7 +199,7 @@
                                 <Label Text="Capacidades" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        HorizontalOptions="Center"/>
 
                                 <!-- Grid for Capacities -->
@@ -210,7 +210,7 @@
                                         <Label Text="Capacidad Nominal" 
                                                FontSize="13" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"/>
                                                
                                         <Border BackgroundColor="#E8F5E8" 
@@ -243,7 +243,7 @@
                                         <Label Text="Capacidad Operativa" 
                                                FontSize="13" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"/>
                                                
                                         <Border BackgroundColor="#E3F2FD" 
@@ -331,10 +331,10 @@
                                 <Label Text="Lista de Compartimentos" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Compartimentos registrados en el sistema" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -369,7 +369,7 @@
                                                 <Label Text="{Binding Number, StringFormat='Compartimento #{0}'}" 
                                                        FontSize="16" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#2D3436"/>
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                                 <StackLayout Orientation="Horizontal" Spacing="8">
                                                     <Label Text="{Binding Number, StringFormat='Tanque #: {0}'}" 
                                                            FontSize="12" 

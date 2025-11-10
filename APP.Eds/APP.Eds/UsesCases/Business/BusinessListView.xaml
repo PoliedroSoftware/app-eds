@@ -84,7 +84,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <!-- Enhanced Business Card -->
-                        <Border BackgroundColor="White"
+                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                 StrokeShape="RoundRectangle 20"
                                 Stroke="#E2E8F0"
                                 StrokeThickness="1"
@@ -245,7 +245,7 @@
                 <!-- Enhanced Empty State -->
                 <CollectionView.EmptyView>
                     <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
-                        <Border BackgroundColor="White"
+                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                 StrokeShape="RoundRectangle 24"
                                 Stroke="#E2E8F0"
                                 StrokeThickness="1"
@@ -273,7 +273,7 @@
                                     <Label Text="No hay negocios registrados" 
                                            FontSize="22" 
                                            FontAttributes="Bold" 
-                                           TextColor="#374151" 
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" 
                                            HorizontalOptions="Center"/>
                                     <Label Text="Comience creando su primer negocio para administrar sus estaciones de servicio" 
                                            FontSize="14" 

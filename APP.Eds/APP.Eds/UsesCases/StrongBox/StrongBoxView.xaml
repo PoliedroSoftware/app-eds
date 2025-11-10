@@ -4,7 +4,7 @@
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.StrongBox.StrongBoxView"
              Title="Caja Fuerte"
-             BackgroundColor="#F8F9FA">
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
@@ -43,7 +43,7 @@
                 <VerticalStackLayout Padding="20,24,20,20" Spacing="20">
                     
                     <!-- Tarjeta de saldo actual -->
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0"
                             Padding="24,20">
@@ -65,7 +65,7 @@
                                 <Label Text="Saldo actual:" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="#374151"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
@@ -82,7 +82,7 @@
                                 <Label Text="Monto a retirar" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#374151"/>
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
                                 
                                 <Border BackgroundColor="#F9FAFB"
                                         StrokeShape="RoundRectangle 12"
@@ -176,7 +176,7 @@
                             <Label Text="Movimientos recientes" 
                                    FontSize="18" 
                                    FontAttributes="Bold" 
-                                   TextColor="#374151"
+                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -185,7 +185,7 @@
                                         MaximumHeightRequest="400">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#E5E7EB"
                                             StrokeThickness="1"
@@ -325,7 +325,7 @@
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" 
                                              Spacing="16" Padding="32">
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                             StrokeShape="RoundRectangle 16"
                                             Stroke="#E5E7EB"
                                             Padding="32,24">

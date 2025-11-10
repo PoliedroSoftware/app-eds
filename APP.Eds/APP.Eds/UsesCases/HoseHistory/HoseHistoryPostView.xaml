@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="Gestión Historial De Mangueras"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -47,10 +47,10 @@
                                 <Label Text="Nuevo Registro de Historial" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Ingrese los datos de lectura de la manguera" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -62,7 +62,7 @@
                                 <Label Text="Fecha de Registro" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
                                 <Border BackgroundColor="#FFF3CD" 
@@ -96,10 +96,10 @@
                                     <Label Text="Monto Acumulado" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -117,7 +117,7 @@
                                                    AutomationId="EntryAccumulatedAmount"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -129,10 +129,10 @@
                                     <Label Text="Galones Acumulados" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -150,7 +150,7 @@
                                                    AutomationId="EntryAccumulatedGallons"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -163,10 +163,10 @@
                                 <Label Text="Dispensador" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -184,7 +184,7 @@
                                                 AutomationId="PickerDispensers"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -196,10 +196,10 @@
                                 <Label Text="Manguera" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -217,7 +217,7 @@
                                                 AutomationId="PickerHose"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -285,10 +285,10 @@
                                 <Label Text="Historial de Mangueras" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Registros históricos de lecturas" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -321,7 +321,7 @@
                                             <!-- History Info -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
                                                 <Label Text="ID:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Id}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="{Binding Id}" FontSize="13" TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">

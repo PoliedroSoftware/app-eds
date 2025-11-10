@@ -587,7 +587,7 @@
                     <CollectionView ItemsSource="{Binding CourtDocuments}" x:Name="CourtDocuments">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#E0E0E0"
                                         Margin="0,4"

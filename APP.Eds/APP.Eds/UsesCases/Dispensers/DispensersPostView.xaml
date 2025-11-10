@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestion de Dispensadores"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -34,7 +34,7 @@
                 </Border>
 
                 <!-- Dispenser Registration Form Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -49,7 +49,7 @@
                             <Label Text="Configuracion de Nuevo Dispensador" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -60,9 +60,9 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Codigo del Dispensador" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -79,9 +79,9 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Numero del Dispensador" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -99,7 +99,7 @@
                                 <StackLayout Orientation="Horizontal" Spacing="10">
                                     <Label Text="Tipo de Dispensador" 
                                            FontAttributes="Bold" 
-                                           TextColor="#636E72" 
+                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                            FontSize="14"
                                            VerticalOptions="Center"/>
                                     <Button Text="+ Nuevo Tipo" 
@@ -113,7 +113,7 @@
                                             BorderWidth="1"
                                             AutomationId="ButtonAddDispenserType"/>
                                 </StackLayout>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -130,9 +130,9 @@
                             <StackLayout Grid.Row="2" Grid.Column="0">
                                 <Label Text="Estacion de Servicio (EDS)" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -148,9 +148,9 @@
                             <StackLayout Grid.Row="2" Grid.Column="1">
                                 <Label Text="Isla de Combustible" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -167,9 +167,9 @@
                             <StackLayout Grid.Row="3" Grid.Column="0">
                                 <Label Text="Numero de Mangueras" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -186,9 +186,9 @@
                             <StackLayout Grid.Row="3" Grid.Column="1">
                                 <Label Text="Estado Operativo" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -204,7 +204,7 @@
                             <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
                                 <Label Text="Configuraciones Adicionales" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
                                 <StackLayout Orientation="Horizontal" Spacing="20">
                                     <StackLayout Orientation="Horizontal" Spacing="6">
@@ -213,7 +213,7 @@
                                                   AutomationId="CheckBoxIsActive"/>
                                         <Label Text="Activo para Ventas" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                     
@@ -223,7 +223,7 @@
                                                   AutomationId="CheckBoxRequiresMaintenance"/>
                                         <Label Text="Requiere Mantenimiento" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                 </StackLayout>
@@ -231,10 +231,10 @@
                                 <!-- Description/Notes -->
                                 <Label Text="Observaciones/Notas" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"
                                        Margin="0,10,0,5"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#FFE0B2" 
                                         Padding="4">
@@ -269,7 +269,7 @@
                 </Border>
 
                 <!-- Dispensers Statistics Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -284,7 +284,7 @@
                             <Label Text="Resumen de Dispensadores" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -374,7 +374,7 @@
                 </Border>
 
                 <!-- Dispensers List Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -389,7 +389,7 @@
                             <Label Text="Lista de Dispensadores Configurados" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -483,7 +483,7 @@
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="🏝️" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding IslandDescription}" FontSize="13" TextColor="#374151" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                                <Label Text="{Binding IslandDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" LineBreakMode="TailTruncation" MaxLines="1"/>
                                             </StackLayout>
 
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">

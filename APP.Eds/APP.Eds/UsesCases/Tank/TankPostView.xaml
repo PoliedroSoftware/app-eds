@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding GestionTankTitle}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nuevo Tanque" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Registre un nuevo tanque de almacenamiento" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,10 +61,10 @@
                                 <Label Text="{Binding TankNumberLabel}" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -82,7 +82,7 @@
                                                AutomationId="EntryTankNumber"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
+                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -97,10 +97,10 @@
                                     <Label Text="{Binding TankCompartmentLabel}" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -118,7 +118,7 @@
                                                    AutomationId="EntryCompartment"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -130,10 +130,10 @@
                                     <Label Text="{Binding Capacity}" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#DDD6FE"
                                             StrokeThickness="2"
@@ -151,7 +151,7 @@
                                                    AutomationId="EntryCapacity"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -217,10 +217,10 @@
                                 <Label Text="Lista de Tanques" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Tanques registrados en el sistema" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -254,7 +254,7 @@
                                             <!-- Tank Info -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
                                                 <Label Text="ID:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Id}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="{Binding Id}" FontSize="13" TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">

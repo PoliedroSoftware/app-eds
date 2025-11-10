@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="Gestion de Formas de Pago"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -35,7 +35,7 @@
                 </Border>
 
                 <!-- Payment Method Registration Form Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -50,7 +50,7 @@
                             <Label Text="Configurar Nueva Forma de Pago" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -61,9 +61,9 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Tipo de Pago" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -79,9 +79,9 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Metodo de Pago" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -97,9 +97,9 @@
                             <StackLayout Grid.Row="1" Grid.Column="0">
                                 <Label Text="Nombre/Descripcion" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -116,9 +116,9 @@
                             <StackLayout Grid.Row="1" Grid.Column="1">
                                 <Label Text="Proveedor/Procesador" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -135,9 +135,9 @@
                             <StackLayout Grid.Row="2" Grid.Column="0">
                                 <Label Text="Comision (%)" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -154,9 +154,9 @@
                             <StackLayout Grid.Row="2" Grid.Column="1">
                                 <Label Text="Estado" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -172,7 +172,7 @@
                             <StackLayout Grid.Row="3" Grid.ColumnSpan="2">
                                 <Label Text="Configuraciones Especiales" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
                                 <StackLayout Orientation="Horizontal" Spacing="16">
                                     <StackLayout Orientation="Horizontal" Spacing="6">
@@ -181,7 +181,7 @@
                                                   AutomationId="CheckBoxRequiresAuth"/>
                                         <Label Text="Requiere Autorizacion" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                     
@@ -191,7 +191,7 @@
                                                   AutomationId="CheckBoxIsDefault"/>
                                         <Label Text="Metodo por Defecto" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                 </StackLayout>
@@ -201,9 +201,9 @@
                             <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
                                 <Label Text="Observaciones/Notas" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#C8E6C9" 
                                         Padding="4">
@@ -238,7 +238,7 @@
                 </Border>
 
                 <!-- Payment Methods Statistics Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -253,7 +253,7 @@
                             <Label Text="Resumen de Formas de Pago" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -343,7 +343,7 @@
                 </Border>
 
                 <!-- Payment Methods List Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -358,7 +358,7 @@
                             <Label Text="Formas de Pago Configuradas" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -452,7 +452,7 @@
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="📄" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Description}" FontSize="13" TextColor="#374151" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                                <Label Text="{Binding Description}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" LineBreakMode="TailTruncation" MaxLines="1"/>
                                             </StackLayout>
 
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">

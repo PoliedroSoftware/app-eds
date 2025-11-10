@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding GestionCapacityLabel}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nueva Capacidad" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Registre las especificaciones de capacidad" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,10 +61,10 @@
                                 <Label Text="{Binding CodeLabel}" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -82,7 +82,7 @@
                                                AutomationId="EntryCode"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
+                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -94,7 +94,7 @@
                                 <Label Text="{Binding HeightLabel}" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
                                 <Border BackgroundColor="#E8F5E8" 
@@ -133,7 +133,7 @@
                                 <Label Text="Medidas de Volumen" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        HorizontalOptions="Center"/>
 
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
@@ -143,7 +143,7 @@
                                         <Label Text="{Binding GallonLabel}" 
                                                FontSize="14" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"
                                                Margin="4,0,0,0"/>
                                                
@@ -184,7 +184,7 @@
                                         <Label Text="{Binding LitersLabel}" 
                                                FontSize="14" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"
                                                Margin="4,0,0,0"/>
                                                
@@ -280,10 +280,10 @@
                                 <Label Text="Guía de Conversiones" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Equivalencias entre unidades de medida" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 

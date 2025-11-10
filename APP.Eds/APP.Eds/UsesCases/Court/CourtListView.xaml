@@ -53,7 +53,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <!-- Enhanced Court Card with Better Differentiation -->
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 16"
                             Stroke="#E2E8F0"
                             StrokeThickness="1"
@@ -330,7 +330,7 @@
             <!-- Enhanced Empty State -->
             <CollectionView.EmptyView>
                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 20"
                             Stroke="#E2E8F0"
                             StrokeThickness="1"
