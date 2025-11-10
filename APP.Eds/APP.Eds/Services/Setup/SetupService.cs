@@ -411,8 +411,7 @@ public class SetupService : INotifyPropertyChanged
             {
                 Bussiness = new BusinessModel()
                 {
-                    Name = Name,
-                    Context = Description
+                    Name = Name
                 },
                 EDS = GetEds(),
                 Islands = GetIslands(),

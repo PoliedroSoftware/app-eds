@@ -68,24 +68,6 @@
                                    TextColor="#DC2626"/>
                         </Border>
 
-                        <!-- Description -->
-                        <StackLayout Grid.Row="1" Grid.Column="0">
-                            <Label Text="Descripcion Corta" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#636E72" 
-                                   FontSize="14"/>
-                            <Border BackgroundColor="#F8F9FA" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="#BFDBFE" 
-                                    Padding="4">
-                                <Entry Keyboard="Text"
-                                       Placeholder="Ej: Red de estaciones del norte"
-                                       Text="{Binding Description, Mode=TwoWay}"
-                                       BackgroundColor="Transparent"
-                                       AutomationId="EntryBusinessDescription"
-                                       PlaceholderColor="#9CA3AF"/>
-                            </Border>
-                        </StackLayout>
                         <!-- EDS -->
                         <toolkit:Expander IsExpanded="True">
                             <toolkit:Expander.Header>
