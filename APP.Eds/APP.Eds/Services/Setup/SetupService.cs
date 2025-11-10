@@ -373,7 +373,7 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             DispenserTypeId = x.SelectedDispenserType.IdType,
             HoseNumber = x.HoseNumber,
-            NumberIsland = x.SelectedIsland.Number,
+            NumberIsland = Islands.ToList().FindIndex(y=> y.Number == x.SelectedIsland.Number),
             NameEDS = x.SelectedEds.Name
         }).ToList();
     }
@@ -412,6 +412,7 @@ public class SetupService : INotifyPropertyChanged
                 Bussiness = new BusinessModel()
                 {
                     Name = Name,
+                    Context = Description
                 },
                 EDS = GetEds(),
                 Islands = GetIslands(),
@@ -439,10 +440,18 @@ public class SetupService : INotifyPropertyChanged
             {
                 await Application.Current.MainPage.DisplayAlert("Exito", "Negocio registrado correctamente", "OK");
 
-              
-
                 // Clear form
                 Name = string.Empty;
+                Description = string.Empty;
+                EdsList = new();
+                Islands = new();
+                Tanks = new();
+                Compartiments = new();
+                Products = new();
+                Islanders = new();
+                Providers = new();
+                Dispensers = new();
+                Hoses = new();
                 IsActive = true;
             }
             else
