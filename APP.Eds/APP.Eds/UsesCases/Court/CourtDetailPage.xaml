@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Detalle Del Corte"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark={StaticResource DarkBackground}}">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <ContentPage.Resources>
         <ResourceDictionary>

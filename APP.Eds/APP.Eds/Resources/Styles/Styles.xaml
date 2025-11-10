@@ -16,14 +16,14 @@
 
     <Style TargetType="Border">
         <!-- Improved border contrast for dark mode: changed from Gray500 to DarkBorder for better visibility -->
-        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkBorder}}" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark=#3D3D3D}" />
         <Setter Property="StrokeShape" Value="Rectangle"/>
         <Setter Property="StrokeThickness" Value="1"/>
     </Style>
 
     <Style TargetType="BoxView">
         <!-- Enhanced background contrast for dark mode: changed from Gray900 to DarkSurface -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource DarkSurface}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray50}, Dark=#1E1E1E}" />
     </Style>
 
     <Style TargetType="Button">
@@ -44,8 +44,8 @@
                     <!-- Enhanced disabled state visibility in dark mode -->
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource DarkDisabledText}}" />
-                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkInputBackground}}" />
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark=#707070}" />
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#2C2C2C}" />
                             <Setter Property="Opacity" Value="0.6" />
                         </VisualState.Setters>
                     </VisualState>
@@ -84,24 +84,24 @@
 
     <Style TargetType="Editor">
         <!-- Improved text contrast for dark mode -->
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
         <!-- Enhanced placeholder contrast in dark mode: changed from Gray500 to DarkTextSecondary -->
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkTextSecondary}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#B8B8B8}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
     </Style>
 
     <Style TargetType="Entry">
         <!-- Improved text contrast for dark mode -->
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
         <!-- Enhanced placeholder contrast in dark mode: changed from Gray500 to DarkTextSecondary -->
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkTextSecondary}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#B8B8B8}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
     </Style>
@@ -109,15 +109,15 @@
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
         <!-- Enhanced border contrast for dark mode: changed from Gray600 to DarkBorder -->
-        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkBorder}}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#3D3D3D}" />
         <Setter Property="CornerRadius" Value="8" />
         <!-- Improved card background for dark mode: changed from Black to DarkCardBackground for better hierarchy -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCardBackground}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#252525}" />
     </Style>
 
     <Style TargetType="Label">
         <!-- Improved text contrast for dark mode -->
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
         <Setter Property="FontSize" Value="14" />
@@ -125,13 +125,13 @@
 
     <Style TargetType="Span">
         <!-- Improved text contrast for dark mode -->
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
     </Style>
 
     <Style TargetType="Picker">
         <!-- Improved text contrast for dark mode -->
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource DarkTextPrimary}}" />
-        <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource DarkTextSecondary}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark=#E8E8E8}" />
+        <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark=#B8B8B8}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14"/>
@@ -142,24 +142,24 @@
     <Style TargetType="Page" ApplyToDerivedTypes="True">
         <Setter Property="Padding" Value="0"/>
         <!-- Improved page background for dark mode: changed from OffBlack to DarkBackground -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkBackground}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#121212}" />
     </Style>
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
         <!-- Improved Shell backgrounds for dark mode -->
-        <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkBackground}}" />
-        <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
-        <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource DarkTextPrimary}}" />
+        <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#121212}" />
+        <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
+        <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark=#E8E8E8}" />
         <!-- Enhanced disabled state contrast in dark mode -->
-        <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkDisabledText}}" />
+        <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#707070}" />
         <!-- Better unselected item visibility in dark mode -->
-        <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource DarkTextSecondary}}" />
+        <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark=#B8B8B8}" />
         <Setter Property="Shell.NavBarHasShadow" Value="False" />
         <!-- Improved TabBar contrast for dark mode -->
-        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkSurface}}" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource DarkTextPrimary}}" />
-        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource DarkTextPrimary}}" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource DarkTextSecondary}}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#1E1E1E}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark=#E8E8E8}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark=#E8E8E8}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark=#B8B8B8}" />
     </Style>
 
     <!-- Custom Login Styles -->
@@ -315,10 +315,10 @@
     <!-- Bottom Navigation Styles -->
     <Style x:Key="BottomNavContainerStyle" TargetType="Border">
         <!-- Improved navigation background for dark mode -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkSurface}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#1E1E1E}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 24, 24, 0, 0" />
         <!-- Enhanced border for better visual separation in dark mode -->
-        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark=#3D3D3D}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Shadow">
             <Setter.Value>
@@ -399,10 +399,10 @@
     <!-- Enhanced Card Styles -->
     <Style x:Key="ModernCardStyle" TargetType="Border">
         <!-- Improved card background for dark mode with better contrast -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCardBackground}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#252525}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 12" />
         <!-- Enhanced stroke visibility in dark mode -->
-        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark=#3D3D3D}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Padding" Value="20" />
         <Setter Property="Shadow">
@@ -433,10 +433,10 @@
     <!-- Enhanced Bottom Navigation Styles -->
     <Style x:Key="EnhancedBottomNavContainerStyle" TargetType="Border">
         <!-- Improved background for dark mode -->
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkSurface}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark=#1E1E1E}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 28, 28, 0, 0" />
         <!-- Enhanced border for better separation in dark mode -->
-        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource DarkBorder}}" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark=#3D3D3D}" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Shadow">
             <Setter.Value>
