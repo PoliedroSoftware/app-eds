@@ -67,7 +67,7 @@
                                        
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -103,7 +103,7 @@
                                            
                                     <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -136,7 +136,7 @@
                                            
                                     <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -170,7 +170,7 @@
                                        
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -203,7 +203,7 @@
                                        
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -235,7 +235,7 @@
 
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -360,7 +360,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -382,27 +382,27 @@
 
                                             <!-- Hose Info -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
-                                                <Label Text="N° Manguera:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="N° Manguera:" FontSize="13" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding Number}" FontSize="13" TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
-                                                <Label Text="Dispensador:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Dispensador:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding DispenserName}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
-                                                <Label Text="Producto:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Producto:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding ProductTypeName}" FontSize="12" TextColor="#9C27B0" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
-                                                <Label Text="Dinero:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Dinero:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
-                                                <Label Text="Galones:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Galones:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 

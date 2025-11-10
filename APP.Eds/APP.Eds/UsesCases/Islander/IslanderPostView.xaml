@@ -64,7 +64,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Usuario del islero"
@@ -83,7 +83,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Nombre completo"
@@ -102,7 +102,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Apellidos completos"
@@ -121,7 +121,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="correo@ejemplo.com"
@@ -140,7 +140,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Picker Title="Seleccione EDS asignada"
                                             ItemsSource="{Binding EdsList}"
@@ -159,7 +159,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Picker Title="Seleccione rol"
                                             ItemsSource="{Binding RoleOptions}"
@@ -177,7 +177,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Placeholder="Contraseña de acceso (min. 6 caracteres)"
                                            Text="{Binding Password, Mode=TwoWay}"
@@ -196,7 +196,7 @@
                                        FontSize="14"/>
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Telephone"
                                            Placeholder="Numero de contacto"

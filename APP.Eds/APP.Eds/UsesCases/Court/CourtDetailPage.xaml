@@ -260,7 +260,7 @@
                     <!-- Show message when no collections -->
                     <Border BackgroundColor="#FAFAFA"
                             StrokeShape="RoundRectangle 6"
-                            Stroke="#E0E0E0"
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                             Padding="16,12"
                             IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=inverse}">
                         <StackLayout Spacing="8" HorizontalOptions="Center">
@@ -268,7 +268,7 @@
                             <Label Text="No hay medios de pago registrados" 
                                    FontSize="13" 
                                    FontAttributes="Bold"
-                                   TextColor="#666666"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                    HorizontalOptions="Center"/>
                             <Label Text="Los métodos de pago se mostrarán aquí cuando estén disponibles" 
                                    FontSize="11" 
@@ -285,7 +285,7 @@
                             <DataTemplate>
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="12,8">
                                     <Border.Shadow>
@@ -332,7 +332,7 @@
                                                    TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Description}"
                                                    FontSize="10"
-                                                   TextColor="#757575"
+                                                   TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                                    AutomationId="LabelDescriptionValue"/>
                                         </StackLayout>
                                     </Grid>
@@ -360,7 +360,7 @@
                             <DataTemplate>
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="12,8">
                                     <Border.Shadow>
@@ -436,7 +436,7 @@
                                                            TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                            FontSize="11" 
-                                                           TextColor="#757575"/>
+                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                                 </StackLayout>
 
                                                 <StackLayout Grid.Column="1" Spacing="1">
@@ -446,7 +446,7 @@
                                                            TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N1}'}" 
                                                            FontSize="11" 
-                                                           TextColor="#757575"/>
+                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                                 </StackLayout>
                                             </Grid>
                                         </StackLayout>
@@ -475,7 +475,7 @@
                             <DataTemplate>
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="10,6">
                                     <Border.Shadow>

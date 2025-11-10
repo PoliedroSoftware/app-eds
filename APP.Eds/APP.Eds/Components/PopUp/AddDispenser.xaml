@@ -276,7 +276,7 @@
                                    FontSize="10" Grid.Row="3" Grid.Column="0"/>
                             <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource NumberToWordsConverter}}"
                                    VerticalOptions="Center" HorizontalOptions="Start"
-                                   FontAttributes="Italic" FontSize="9" TextColor="#666666"
+                                   FontAttributes="Italic" FontSize="9" TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                    Grid.Row="3" Grid.Column="2" LineBreakMode="WordWrap"/>
                         </Grid>
                     </StackLayout>

@@ -93,7 +93,7 @@
                 <Border x:Name="CancelButtonBorder"
                         BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="#E0E0E0"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                         StrokeThickness="1"
                         IsVisible="False"
                         Padding="2">

@@ -147,7 +147,7 @@
                                                        TextColor="#1976D2"/>
                                                 <Label Text="Método de pago"
                                                        FontSize="11"
-                                                       TextColor="#757575"/>
+                                                       TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                             </StackLayout>
                                         </Grid>
 
@@ -217,7 +217,7 @@
                                                 <!-- Amount in Words -->
                                                 <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
                                                        FontSize="10"
-                                                       TextColor="#666666"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                                        FontAttributes="Italic"
                                                        VerticalOptions="Center"
                                                        LineBreakMode="TailTruncation"
@@ -276,7 +276,7 @@
                                 FontSize="15" 
                                 FontAttributes="Bold"
                                 Text="Borrar" 
-                                TextColor="#757575"
+                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                 HeightRequest="44"
                                 AutomationId="ButtonClearTypeOfCollection"/>
                     </Border>

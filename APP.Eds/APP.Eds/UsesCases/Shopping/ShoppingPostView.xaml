@@ -67,7 +67,7 @@
                                 <Border x:Name="InvoiceBorder"
                                         BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -126,7 +126,7 @@
 
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -193,7 +193,7 @@
 
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -228,7 +228,7 @@
 
                                 <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -319,7 +319,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -352,28 +352,28 @@
                                             <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="16">
                                                 <!-- Gallons -->
                                                 <StackLayout Grid.Row="0" Grid.Column="0">
-                                                    <Label Text="Galones" FontSize="11" TextColor="#666" FontAttributes="Bold" AutomationId="LabelProductQuantity"/>
+                                                    <Label Text="Galones" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" AutomationId="LabelProductQuantity"/>
                                                     <Label Text="{Binding Quantity, StringFormat='{0:N2}'}" 
                                                            FontSize="13" TextColor="#2196F3" FontAttributes="Bold" AutomationId="LabelProductQuantityValue"/>
                                                 </StackLayout>
 
                                                 <!-- Purchase Price -->
                                                 <StackLayout Grid.Row="1" Grid.Column="0">
-                                                    <Label Text="Precio Compra" FontSize="11" TextColor="#666" FontAttributes="Bold" AutomationId="LabelProductPrice"/>
+                                                    <Label Text="Precio Compra" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" AutomationId="LabelProductPrice"/>
                                                     <Label Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#4CAF50" FontAttributes="Bold" AutomationId="LabelProductPriceValue"/>
                                                 </StackLayout>
 
                                                 <!-- Sell Price -->
                                                 <StackLayout Grid.Row="0" Grid.Column="1">
-                                                    <Label Text="Precio Venta" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Precio Venta" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding SellPrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#FF9800" FontAttributes="Bold"/>
                                                 </StackLayout>
 
                                                 <!-- Total -->
                                                 <StackLayout Grid.Row="1" Grid.Column="1">
-                                                    <Label Text="Total" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Total" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding TotalPrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#9C27B0" FontAttributes="Bold"/>
                                                 </StackLayout>

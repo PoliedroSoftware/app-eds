@@ -110,7 +110,7 @@
                             <!-- Picker Container -->
                             <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#DDD6FE"
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                     StrokeThickness="2"
                                     Padding="0">
                                 <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -174,7 +174,7 @@
                                 <!-- Entry Container -->
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="1"
                                         Padding="12,10">
                                     <Entry x:Name="FirstEntry" 
@@ -223,7 +223,7 @@
                                 <!-- Entry Container -->
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="1"
                                         Padding="12,10">
                                     <Entry x:Name="SecondEntry" 
@@ -272,7 +272,7 @@
                                 <!-- Entry Container -->
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="16,12">
                                     <Entry x:Name="ThirdEntry" 

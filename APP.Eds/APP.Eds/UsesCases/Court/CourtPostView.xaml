@@ -589,7 +589,7 @@
                             <DataTemplate>
                                 <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -599,7 +599,7 @@
                                         <!-- Document Info -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="📎" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                             <Label Text="{Binding DocumentName}" 
                                                    FontSize="14" TextColor="#FF9800" FontAttributes="Bold" VerticalOptions="Center"/>
                                         </StackLayout>

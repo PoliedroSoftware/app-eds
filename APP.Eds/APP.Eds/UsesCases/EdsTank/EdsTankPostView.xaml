@@ -63,7 +63,7 @@
                                TextColor="#1A1A1A"/>
                         <Label Text="Asigne tanques a las estaciones de servicio" 
                                FontSize="14" 
-                               TextColor="#666666"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                LineBreakMode="WordWrap"/>
                     </StackLayout>
                 </Grid>
@@ -99,14 +99,14 @@
                                    TextColor="#1A1A1A"/>
                             <Label Text="Seleccione la EDS donde asignar el tanque" 
                                    FontSize="12" 
-                                   TextColor="#666666"/>
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"/>
                         </StackLayout>
                     </Grid>
 
                     <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
-                            Stroke="#E0E0E0">
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}">
                         <Picker x:Name="EdsPicker"
                                 Title="? Seleccionar EDS"
                                 ItemsSource="{Binding EdsList}"
@@ -179,14 +179,14 @@
                                    TextColor="#1A1A1A"/>
                             <Label Text="Seleccione el tanque a asignar a la EDS" 
                                    FontSize="12" 
-                                   TextColor="#666666"/>
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"/>
                         </StackLayout>
                     </Grid>
 
                     <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="1"
-                            Stroke="#E0E0E0">
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}">
                         <Picker x:Name="TankPicker"
                                 Title="? Seleccionar Tanque"
                                 ItemsSource="{Binding TankList}"
@@ -336,13 +336,13 @@
                 <Border BackgroundColor="#F5F5F5"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
-                        Stroke="#E0E0E0"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                         HeightRequest="48">
                     
                     <Button x:Name="ClearButton"
                             BackgroundColor="Transparent"
                             Text="Limpiar Seleccion"
-                            TextColor="#666666"
+                            TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                             FontSize="14"
                             Clicked="OnClearClicked"/>
                 </Border>

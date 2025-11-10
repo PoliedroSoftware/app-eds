@@ -60,7 +60,7 @@
                                    FontSize="14"/>
                             <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                     Padding="4">
                                 <Grid ColumnDefinitions="Auto,*" Padding="12">
                                     <Label Grid.Column="0" 

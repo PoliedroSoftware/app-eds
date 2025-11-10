@@ -151,7 +151,7 @@
                                 FontSize="16" 
                                 FontAttributes="Bold"
                                 Text="Cancelar" 
-                                TextColor="#757575"
+                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                 HeightRequest="46"
                                 AutomationId="ButtonCancelAddInfo"/>
                     </Border>

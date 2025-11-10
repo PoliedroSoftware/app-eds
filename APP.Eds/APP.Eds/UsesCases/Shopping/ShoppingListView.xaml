@@ -150,7 +150,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                             StrokeShape="RoundRectangle 16"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             StrokeThickness="1"
                                             Margin="0,8"
                                             Padding="0">
@@ -204,7 +204,7 @@
                                                            Text="🏢 Proveedor:"
                                                            FontSize="13"
                                                            FontAttributes="Bold"
-                                                           TextColor="#424242"/>
+                                                           TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                     <Label Grid.Row="0" Grid.Column="1"
                                                            Text="{Binding Provider.Name}"
                                                            FontSize="13"
@@ -214,7 +214,7 @@
                                                            Text="📦 Categoría:"
                                                            FontSize="13"
                                                            FontAttributes="Bold"
-                                                           TextColor="#424242"/>
+                                                           TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                     <Label Grid.Row="1" Grid.Column="1"
                                                            Text="{Binding Category.Description}"
                                                            FontSize="13"
@@ -237,7 +237,7 @@
                                                         <DataTemplate>
                                                             <Border BackgroundColor="#FAFAFA"
                                                                     StrokeShape="RoundRectangle 12"
-                                                                    Stroke="#E0E0E0"
+                                                                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                                                     Padding="12"
                                                                     Margin="0,4">
                                                                 <VerticalStackLayout Spacing="8">
@@ -257,7 +257,7 @@
                                                                                Text="{Binding Quantity, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="1" Grid.Column="0"
                                                                                Text="💵 P. Compra:"
@@ -267,7 +267,7 @@
                                                                                Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="2" Grid.Column="0"
                                                                                Text="💸 P. Venta:"
@@ -277,7 +277,7 @@
                                                                                Text="{Binding SellPrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="3" Grid.Column="0"
                                                                                Text="📦 Stock:"
@@ -287,7 +287,7 @@
                                                                                Text="{Binding Product.Stock, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="4" Grid.Column="0"
                                                                                Text="💰 Subtotal:"
@@ -353,7 +353,7 @@
                         <!-- Pagination Controls -->
                         <Border BackgroundColor="#F5F5F5"
                                 StrokeShape="RoundRectangle 12"
-                                Stroke="#E0E0E0"
+                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                 Padding="12">
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                 <Button x:Name="PreviousPageButton"
