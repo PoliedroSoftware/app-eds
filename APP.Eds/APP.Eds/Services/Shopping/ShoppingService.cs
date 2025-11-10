@@ -27,6 +27,7 @@ public class ShoppingService : INotifyPropertyChanged
     public ObservableCollection<ProductCompartimentPairModel> ProductCompartimentPairs { get; set; } = [];
     public ObservableCollection<ProductCompartimentPairModel> FilteredProductCompartimentPairs { get; set; } = [];
     public ObservableCollection<EdsModel> EdsList { get; set; } = [];
+    public ObservableCollection<ShoppingResponse> ShoppingList { get; set; } = [];
     private ShoppingRequest Request { get; set; }
 
 
@@ -417,6 +418,29 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    // Filter properties for ShoppingListView
+    private ProviderModel _selectedProviderFilter;
+    public ProviderModel SelectedProviderFilter
+    {
+        get => _selectedProviderFilter;
+        set
+        {
+            _selectedProviderFilter = value;
+            OnPropertyChanged(nameof(SelectedProviderFilter));
+        }
+    }
+
+    private CategoryModel _selectedCategoryFilter;
+    public CategoryModel SelectedCategoryFilter
+    {
+        get => _selectedCategoryFilter;
+        set
+        {
+            _selectedCategoryFilter = value;
+            OnPropertyChanged(nameof(SelectedCategoryFilter));
+        }
+    }
+
     public ICommand GetByIdShoppingDataCommand { get; }
     public ICommand SaveShoppingDataCommand { get; }
     public Command AddShoppingProductCommand { get; }
@@ -492,7 +516,7 @@ public class ShoppingService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron los datos de configuración", "OK");
             return;
         }
         try
@@ -516,6 +540,38 @@ public class ShoppingService : INotifyPropertyChanged
         foreach (var eds in edsData)
         {
             EdsList.Add(eds);
+        }
+    }
+
+    public async Task GetAllShoppingAsync(int pageNumber = 1, int pageSize = 5)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/shopping?PageNumber={pageNumber}&PageSize={pageSize}";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var shoppingApiResponse = JsonSerializer.Deserialize<ShoppingApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateShoppingList(shoppingApiResponse?.Data ?? new List<ShoppingResponse>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando compras: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al cargar compras: {ex.Message}", "OK");
+        }
+    }
+
+    private void UpdateShoppingList(IEnumerable<ShoppingResponse> shoppingData)
+    {
+        ShoppingList.Clear();
+        foreach (var shopping in shoppingData)
+        {
+            ShoppingList.Add(shopping);
         }
     }
 
