@@ -51,7 +51,7 @@
     <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
     <AndroidPackageFormat>aab</AndroidPackageFormat>
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
     <AndroidPackageFormat>aab</AndroidPackageFormat>
@@ -59,31 +59,31 @@
     <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
     <AndroidLinkTool>r8</AndroidLinkTool>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-maccatalyst|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-maccatalyst|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.19041.0|AnyCPU'">
     <ApplicationId>com.companyname.app.EDS</ApplicationId>
-    <ApplicationVersion>9</ApplicationVersion>
+    <ApplicationVersion>71</ApplicationVersion>
   </PropertyGroup>
 
   <ItemGroup>
