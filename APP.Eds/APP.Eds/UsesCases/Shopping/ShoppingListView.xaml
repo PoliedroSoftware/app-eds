@@ -208,7 +208,7 @@
                                                     <Label Grid.Row="0" Grid.Column="1"
                                                            Text="{Binding Provider.Name}"
                                                            FontSize="13"
-                                                           TextColor="#616161"/>
+                                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                 
                                                     <Label Grid.Row="1" Grid.Column="0"
                                                            Text="📦 Categoría:"
@@ -218,7 +218,7 @@
                                                     <Label Grid.Row="1" Grid.Column="1"
                                                            Text="{Binding Category.Description}"
                                                            FontSize="13"
-                                                           TextColor="#616161"/>
+                                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                 </Grid>
                                             </StackLayout>
 
@@ -252,7 +252,7 @@
                                                                         <Label Grid.Row="0" Grid.Column="0"
                                                                                Text="📊 Cantidad:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="0" Grid.Column="1"
                                                                                Text="{Binding Quantity, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"
@@ -262,7 +262,7 @@
                                                                         <Label Grid.Row="1" Grid.Column="0"
                                                                                Text="💵 P. Compra:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="1" Grid.Column="1"
                                                                                Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
@@ -272,7 +272,7 @@
                                                                         <Label Grid.Row="2" Grid.Column="0"
                                                                                Text="💸 P. Venta:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="2" Grid.Column="1"
                                                                                Text="{Binding SellPrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
@@ -282,7 +282,7 @@
                                                                         <Label Grid.Row="3" Grid.Column="0"
                                                                                Text="📦 Stock:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="3" Grid.Column="1"
                                                                                Text="{Binding Product.Stock, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"

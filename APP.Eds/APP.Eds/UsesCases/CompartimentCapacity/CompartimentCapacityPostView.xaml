@@ -143,7 +143,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="Ingrese la capacidad en litros"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Default, Mode=TwoWay}"
                                                AutomationId="EntryDefault"
                                                BackgroundColor="Transparent"

@@ -204,7 +204,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="0.00 (opcional)"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding PurchasePrice, Mode=TwoWay}"
                                                AutomationId="EntryPurchasePrice"
                                                BackgroundColor="Transparent"
@@ -241,7 +241,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="0.00 (opcional)"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding SellPrice, Mode=TwoWay}"
                                                AutomationId="EntrySellPrice"
                                                BackgroundColor="Transparent"
@@ -278,7 +278,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="{Binding StockPlaceholder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Stock, Mode=TwoWay}"
                                                AutomationId="EntryStock"
                                                BackgroundColor="Transparent"

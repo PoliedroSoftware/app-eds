@@ -77,7 +77,7 @@
                                         
                                         <Entry Keyboard="Text"
                                                Placeholder="{Binding TankNumberPlaceholder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Number, Mode=TwoWay}"
                                                AutomationId="EntryTankNumber"
                                                BackgroundColor="Transparent"
@@ -113,7 +113,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="{Binding CompartmentPlacheholder}"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Compartment, Mode=TwoWay}"
                                                    AutomationId="EntryCompartment"
                                                    BackgroundColor="Transparent"
@@ -146,7 +146,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="Ingresa La Capacidad"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Ability, Mode=TwoWay}"
                                                    AutomationId="EntryCapacity"
                                                    BackgroundColor="Transparent"

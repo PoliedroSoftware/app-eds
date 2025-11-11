@@ -78,7 +78,7 @@
                                         <Entry x:Name="CategoryEntry"
                                                Keyboard="Text"
                                                Placeholder="{Binding EnterCategory, Mode=TwoWay}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Description, Mode=TwoWay}"
                                                TextChanged="CategoryEntry_TextChanged"
                                                AutomationId="EntryCategoryDescription"

@@ -146,7 +146,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="{Binding EnterNumber}"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Number, Mode=TwoWay}"
                                                    TextChanged="NumericEntry_TextChanged"
                                                    AutomationId="EntryCompartimentNumber"
@@ -180,7 +180,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="{Binding EnterHeight}"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Height, Mode=TwoWay}"
                                                    TextChanged="NumericEntry_TextChanged"
                                                    AutomationId="EntryCompartimentHeight"
@@ -225,7 +225,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding EnterNominal}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Nominal, Mode=TwoWay}"
                                                        TextChanged="NumericEntry_TextChanged"
                                                        AutomationId="EntryCompartimentNominal"
@@ -258,7 +258,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding EnterOperative}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Operative, Mode=TwoWay}"
                                                        TextChanged="NumericEntry_TextChanged"
                                                        AutomationId="EntryCompartimentOperative"

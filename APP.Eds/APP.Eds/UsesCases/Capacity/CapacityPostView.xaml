@@ -77,7 +77,7 @@
                                         
                                         <Entry Keyboard="Text"
                                                Placeholder="{Binding CodePlaceholder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Code, Mode=TwoWay}"
                                                AutomationId="EntryCode"
                                                BackgroundColor="Transparent"
@@ -110,7 +110,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="{Binding HeightPlaceholder}"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Height, Mode=TwoWay}"
                                                AutomationId="EntryHeight"
                                                BackgroundColor="Transparent"
@@ -160,7 +160,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding GallonPlaceholder}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Gallon, Mode=TwoWay, UpdateSourceEventName=TextChanged}"
                                                        TextChanged="EntryGallon_TextChanged"
                                                        AutomationId="EntryGallon"
@@ -201,7 +201,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding LitersPlaceholder}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Liters, Mode=TwoWay, UpdateSourceEventName=TextChanged}"
                                                        TextChanged="EntryGallon_TextChanged"
                                                        AutomationId="EntryLiters"

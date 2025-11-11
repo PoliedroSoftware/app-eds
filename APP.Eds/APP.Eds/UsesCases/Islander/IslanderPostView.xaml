@@ -71,7 +71,7 @@
                                            Text="{Binding Name, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -90,7 +90,7 @@
                                            Text="{Binding FirstName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryFirstName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -109,7 +109,7 @@
                                            Text="{Binding LastName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryLastName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -128,7 +128,7 @@
                                            Text="{Binding Email, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryEmail"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -184,7 +184,7 @@
                                            IsPassword="True"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPassword"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -203,7 +203,7 @@
                                            Text="{Binding PhoneNumber, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPhone"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -470,7 +470,7 @@
 
                                             <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="📧" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Email}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="{Binding Email}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
@@ -487,7 +487,7 @@
                                                 
                                                 <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
                                                     <Label Text="📞" FontSize="11" VerticalOptions="Center"/>
-                                                    <Label Text="{Binding PhoneNumber, FallbackValue='N/D'}" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding PhoneNumber, FallbackValue='N/D'}" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                                 </StackLayout>
                                             </Grid>
 
@@ -529,15 +529,15 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="👷" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="👷" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                     <Label Text="No hay isleros registrados" 
                                            FontSize="16" 
-                                           TextColor="#6B7280" 
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            FontAttributes="Bold"/>
                                     <Label Text="Registre el primer islero usando el formulario superior" 
                                            FontSize="14" 
-                                           TextColor="#9CA3AF" 
+                                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>

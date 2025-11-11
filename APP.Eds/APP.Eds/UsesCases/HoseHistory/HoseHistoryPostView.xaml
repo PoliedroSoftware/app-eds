@@ -112,7 +112,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="0.00"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding AccumulatedAmount, Mode=TwoWay}"
                                                    AutomationId="EntryAccumulatedAmount"
                                                    BackgroundColor="Transparent"
@@ -145,7 +145,7 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="0.000"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding AccumulatedGallons, Mode=TwoWay}"
                                                    AutomationId="EntryAccumulatedGallons"
                                                    BackgroundColor="Transparent"

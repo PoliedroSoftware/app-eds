@@ -75,7 +75,7 @@
                                            Text="{Binding Description, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryProductType"
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            FontSize="16"
                                            TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
                                 </Grid>

@@ -127,7 +127,7 @@
                                             SelectedIndexChanged="ProductCompartimentPickerSelected"
                                             BackgroundColor="Transparent"
                                             FontSize="14"
-                                            TextColor="#374151"
+                                            TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                             VerticalOptions="Center"
                                             HorizontalOptions="FillAndExpand"
                                             AutomationId="PickerProductCompartimentPair"/>
@@ -166,7 +166,7 @@
                                                AutomationId="LabelPrice"/>
                                         <Label Text="Incluye transporte" 
                                                FontSize="11" 
-                                               TextColor="#6B7280"
+                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                                Margin="0,-2,0,0"/>
                                     </StackLayout>
                                 </StackLayout>
@@ -180,13 +180,13 @@
                                     <Entry x:Name="FirstEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.00" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding PurchasePrice, Mode=TwoWay}"
                                            Completed="EntryPurchasePriceCompleted"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryPrice"/>
                                 </Border>
@@ -229,13 +229,13 @@
                                     <Entry x:Name="SecondEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.00" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding SellPrice, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="EntrySellPriceCompleted"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntrySellPrice"/>
                                 </Border>
@@ -278,13 +278,13 @@
                                     <Entry x:Name="ThirdEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.000" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding Quantity, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="Add_Product"
                                            BackgroundColor="Transparent"
                                            FontSize="16"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryQuantity"/>
                                 </Border>

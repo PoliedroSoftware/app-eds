@@ -108,7 +108,7 @@
                                            Text="{Binding PaymentName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPaymentName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -127,7 +127,7 @@
                                            Text="{Binding PaymentProvider, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPaymentProvider"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -146,7 +146,7 @@
                                            Text="{Binding ProcessingFee, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryProcessingFee"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -211,7 +211,7 @@
                                             Text="{Binding Description, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
                                             AutomationId="EditorDescription"
-                                            PlaceholderColor="#9CA3AF"
+                                            PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                             HeightRequest="80"/>
                                 </Border>
                             </StackLayout>
@@ -445,9 +445,9 @@
 
                                             <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="🏦" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Type}" FontSize="13" TextColor="#6B7280"/>
-                                                <Label Text="•" FontSize="12" TextColor="#6B7280" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Provider}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="{Binding Type}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
+                                                <Label Text="•" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Provider}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
@@ -458,7 +458,7 @@
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
                                                 <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
                                                     <Label Text="💰" FontSize="11" VerticalOptions="Center"/>
-                                                    <Label Text="Comision:" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="Comision:" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                                     <Label Text="{Binding ProcessingFee, StringFormat='{0}%'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold"/>
                                                 </StackLayout>
                                                 
@@ -506,15 +506,15 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="💳" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="💳" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                     <Label Text="No hay formas de pago configuradas" 
                                            FontSize="16" 
-                                           TextColor="#6B7280" 
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            FontAttributes="Bold"/>
                                     <Label Text="Configure la primera forma de pago usando el formulario superior" 
                                            FontSize="14" 
-                                           TextColor="#9CA3AF" 
+                                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>

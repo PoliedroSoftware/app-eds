@@ -77,7 +77,7 @@
                                         
                                         <Entry Keyboard="Text"
                                                Placeholder="Ingrese el nombre del proveedor"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Name, Mode=TwoWay}"
                                                AutomationId="EntryProvider"
                                                BackgroundColor="Transparent"

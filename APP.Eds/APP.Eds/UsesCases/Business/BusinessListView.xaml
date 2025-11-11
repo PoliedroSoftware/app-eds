@@ -277,7 +277,7 @@
                                            HorizontalOptions="Center"/>
                                     <Label Text="Comience creando su primer negocio para administrar sus estaciones de servicio" 
                                            FontSize="14" 
-                                           TextColor="#6B7280" 
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"
                                            MaximumWidthRequest="300"

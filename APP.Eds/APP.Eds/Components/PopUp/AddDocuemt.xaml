@@ -76,7 +76,7 @@
                                 <Label Text="Toque para seleccionar archivos" 
                                        FontSize="14" FontAttributes="Bold" TextColor="#1976D2"/>
                                 <Label Text="PDF, JPG, PNG, DOC, TXT (máx. 5MB c/u)" 
-                                       FontSize="11" TextColor="#616161"/>
+                                       FontSize="11" TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </Grid>
                     </Border>

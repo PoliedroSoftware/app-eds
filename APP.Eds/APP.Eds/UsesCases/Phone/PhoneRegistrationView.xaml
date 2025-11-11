@@ -116,7 +116,7 @@
                                    Placeholder="Ej: Juan Pérez"
                                    Text="{Binding OwnerName, Mode=TwoWay}"
                                    BackgroundColor="Transparent"
-                                   PlaceholderColor="#9CA3AF"
+                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                    FontSize="16"
                                    MaxLength="50"/>
                         </Border>
@@ -177,7 +177,7 @@
                                        Placeholder="Ej: 3001234567"
                                        Text="{Binding PhoneNumber, Mode=TwoWay}"
                                        BackgroundColor="Transparent"
-                                       PlaceholderColor="#9CA3AF"
+                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                        FontSize="16"
                                        Grid.Column="1"
                                        MaxLength="12"/>
@@ -322,15 +322,15 @@
                         </CollectionView.ItemTemplate>
                         <CollectionView.EmptyView>
                             <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16" Margin="0,40">
-                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF" FontAttributes="Bold"/>
+                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                 <Label Text="No hay telefonos en la lista" 
                                        FontSize="18" 
-                                       TextColor="#6B7280" 
+                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"
                                        FontAttributes="Bold"/>
                                 <Label Text="Agrega numeros con propietarios usando el formulario superior" 
                                        FontSize="14" 
-                                       TextColor="#9CA3AF" 
+                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
                             </StackLayout>
@@ -402,7 +402,7 @@
                                            HeightRequest="40"/>
                         <Label Text="Cargando telefonos guardados..." 
                                FontSize="14" 
-                               TextColor="#6B7280" 
+                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                HorizontalOptions="Center"/>
                     </StackLayout>
 
@@ -473,15 +473,15 @@
                         <CollectionView.EmptyView>
                             <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16" Margin="0,40"
                                          IsVisible="{Binding IsLoadingDatabasePhones, Converter={StaticResource InvertedBoolConverter}}">
-                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF" FontAttributes="Bold"/>
+                                <Label Text="TEL" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                 <Label Text="No hay telefonos guardados" 
                                        FontSize="18" 
-                                       TextColor="#6B7280" 
+                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"
                                        FontAttributes="Bold"/>
                                 <Label Text="Los telefonos aparecerán aquí una vez que los guardes usando el boton 'Guardar'" 
                                        FontSize="14" 
-                                       TextColor="#9CA3AF" 
+                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
                             </StackLayout>
