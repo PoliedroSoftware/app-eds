@@ -64,7 +64,8 @@
                                        TextColor="#2D3436"
                                        Margin="4,0,0,0"/>
 
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border x:Name="InvoiceBorder"
+                                        BackgroundColor="#F8F9FA" 
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#DDD6FE"
                                         StrokeThickness="2"
@@ -77,9 +78,10 @@
 
                                         <Entry x:Name="FirstEntry"
                                                Keyboard="Text"
-                                               Placeholder="Ingrese número de factura"
+                                               Placeholder="Ingrese número de factura (mínimo 3 caracteres)"
                                                PlaceholderColor="#9CA3AF"
                                                Text="{Binding Invoice, Mode=TwoWay}"
+                                               TextChanged="InvoiceEntryTextChanged"
                                                Completed="InvoiceEntryCompleted"
                                                Unfocused="InvoiceEntryUnfocused"
                                                AutomationId="EntryInvoice"
@@ -88,6 +90,62 @@
                                                TextColor="#374151"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </Border>
+                                
+                                <!-- Contextual Help and Validation Message -->
+                                <StackLayout Orientation="Horizontal" Spacing="8" Margin="8,0,0,0">
+                                    <Label x:Name="InvoiceHelpIcon"
+                                           Text="ℹ️" 
+                                           FontSize="12" 
+                                           VerticalOptions="Center"
+                                           IsVisible="True"/>
+                                    <Label x:Name="InvoiceHelpText"
+                                           Text="El número de factura debe tener al menos 3 caracteres"
+                                           FontSize="12"
+                                           TextColor="#6B7280"
+                                           VerticalOptions="Center"
+                                           IsVisible="True"/>
+                                </StackLayout>
+                            </VerticalStackLayout>
+
+                            <!-- EDS Selection -->
+                            <VerticalStackLayout Spacing="8">
+                                <StackLayout Orientation="Horizontal" Spacing="4">
+                                    <Label Text="Estación de Servicio (EDS)" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#2D3436"
+                                           Margin="4,0,0,0"/>
+                                    <Label Text="*" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#E74C3C"
+                                           VerticalOptions="Start"/>
+                                </StackLayout>
+
+                                <Border BackgroundColor="#F8F9FA" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="#DDD6FE"
+                                        StrokeThickness="2"
+                                        Padding="0">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                        <Label Text="🏪" 
+                                               FontSize="18" 
+                                               TextColor="#E74C3C" 
+                                               VerticalOptions="Center"/>
+
+                                        <Picker x:Name="EdsPicker"
+                                                Title="Seleccione una estación de servicio"
+                                                ItemsSource="{Binding EdsList}"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                AutomationId="PickerEds"
+                                                BackgroundColor="Transparent"
+                                                FontSize="16"
+                                                TextColor="#374151"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
                             </VerticalStackLayout>

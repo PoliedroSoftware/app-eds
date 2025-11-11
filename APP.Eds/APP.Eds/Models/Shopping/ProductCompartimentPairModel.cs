@@ -8,6 +8,7 @@ public class ProductCompartimentPairModel
     public int Number { get; set; }
     public double Operative { get; set; }
     public double Stock { get; set; }
+    public int IdTank { get; set; }  // ? Agregar IdTank para poder filtrar por EDS
 
     public string Display => $"{ProductName} - Compartimento {Number}\nCapacidad: {Operative:N0} | Stock: {Stock:N0}";
 }

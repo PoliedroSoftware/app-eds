@@ -21,6 +21,7 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         // Comandos
         ViewPdfCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await ViewPdf(invoice));
         SharePdfCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await SharePdf(invoice));
+        CreditNoteCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await GenerateCreditNote(invoice)); // ✨ NEW
         RefreshCommand = new Command(async () => await Refresh());
 
         // Cargar datos iniciales
@@ -49,6 +50,7 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
 
     public ICommand ViewPdfCommand { get; }
     public ICommand SharePdfCommand { get; }
+    public ICommand CreditNoteCommand { get; } // ✨ NEW
     public ICommand RefreshCommand { get; }
 
     private void LoadInvoices()
@@ -126,6 +128,94 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert(
                 "Error",
                 $"No se pudo compartir el PDF: {ex.Message}",
+                "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    // ✨ NEW: Generate Credit Note
+    private async Task GenerateCreditNote(ElectronicInvoiceModel invoice)
+    {
+        if (invoice == null)
+        {
+            return;
+        }
+
+        try
+        {
+            // Confirmar acción con el usuario
+            var confirmed = await Application.Current.MainPage.DisplayAlert(
+                "Generar Nota Crédito",
+                $"¿Está seguro de generar una nota crédito para la factura {invoice.FullInvoiceNumber}?\n\n" +
+                $"Cliente: {invoice.ClientName}\n" +
+                $"Total: {invoice.TotalAmountFormatted}\n\n" +
+                $"Esta acción anulará la factura seleccionada.",
+                "Generar",
+                "Cancelar");
+
+            if (!confirmed)
+            {
+                return;
+            }
+
+            IsLoading = true;
+
+            // Solicitar motivo de la nota crédito
+            var reason = await Application.Current.MainPage.DisplayPromptAsync(
+                "Motivo de la Nota Crédito",
+                "Por favor, indique el motivo de la nota crédito:",
+                placeholder: "Ej: Error en la facturación, Devolución de producto, etc.",
+                maxLength: 200);
+
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Motivo Requerido",
+                    "Debe proporcionar un motivo para generar la nota crédito.",
+                    "OK");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"📝 Generando nota crédito para factura {invoice.FullInvoiceNumber}");
+            System.Diagnostics.Debug.WriteLine($"   Motivo: {reason}");
+
+            // Generar nota crédito
+            var result = await _billingService.GenerateCreditNoteAsync(invoice, reason);
+
+            if (result.Success)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "✅ Nota Crédito Generada",
+                    $"La nota crédito ha sido generada exitosamente.\n\n" +
+                    $"📄 Número: {result.CreditNoteNumber}\n" +
+                    $"💰 Monto: {invoice.TotalAmountFormatted}\n" +
+                    $"📅 Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}\n\n" +
+                    $"La factura {invoice.FullInvoiceNumber} ha sido anulada.",
+                    "OK");
+
+                // Recargar lista de facturas
+                await Refresh();
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "⚠️ Error al Generar Nota Crédito",
+                    $"No se pudo generar la nota crédito.\n\n" +
+                    $"Error: {result.Message}\n\n" +
+                    $"Por favor, intente nuevamente o contacte soporte técnico.",
+                    "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error generando nota crédito: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert(
+                "Error del Sistema",
+                $"Ocurrió un error al generar la nota crédito.\n\n" +
+                $"Error: {ex.Message}",
                 "OK");
         }
         finally
