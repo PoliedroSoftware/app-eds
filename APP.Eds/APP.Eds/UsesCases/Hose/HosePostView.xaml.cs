@@ -16,6 +16,12 @@ public partial class HosePostView : ContentPage
         BindingContext = _hoseService;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        OnPropertyChanged(nameof(BindingContext));
+    }
+
     private async void OnCompartimentButtonClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new CompartimentPostView());
