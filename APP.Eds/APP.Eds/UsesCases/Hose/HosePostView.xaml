@@ -301,19 +301,10 @@
                                 </Border>
 
                                 <!-- Compartment Button -->
-                                <Border BackgroundColor="#FF9800" 
-                                        StrokeShape="RoundRectangle 16"
-                                        StrokeThickness="0"
-                                        Grid.Column="1">
-                                    <Border.Shadow>
-                                        <Shadow Brush="#FF9800" 
-                                                Offset="0,3" 
-                                                Radius="6" 
-                                                Opacity="0.3"/>
-                                    </Border.Shadow>
+                                <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="1">
                                     <button:HoverButton
-                                        Text="📦 Compartimento"
-                                        TextColor="white" 
+                                        Text="� Compartimento"
+                                        TextColor="White"
                                         BackgroundColor="Transparent"
                                         Clicked="OnCompartimentButtonClicked"
                                         AutomationId="ButtonCompartiment"
@@ -321,8 +312,9 @@
                                         FontAttributes="Bold"
                                         HeightRequest="50"
                                         CornerRadius="16"
-                                        HoverColor="Gray"
-                                        PressedColor="AliceBlue"/>
+                                        NormalColor="#FF9800"
+                                        HoverColor="#FB8C00"
+                                        PressedColor="#FB8C00"/>
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>
