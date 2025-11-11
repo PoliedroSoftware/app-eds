@@ -315,6 +315,7 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             Compartment = x.Compartment,
             Ability = x.Ability,
+            NameEDS = x.SelectedEds.Name,
         }).ToList();
     }
 
@@ -336,10 +337,11 @@ public class SetupService : INotifyPropertyChanged
         return Products.Select(x => new ProductModel()
         {
             Name = x.Name,
-            IdProductType = x.IdProductType,
+            IdProductType = x?.IdProductType ?? 0,
             SellPrice = x.SellPrice,
             PurchasePrice = x.PurchasePrice,
             Stock = x.Stock,
+            NameEDS = x.SelectedEds.Name
         }).ToList();
     }
 
@@ -371,7 +373,7 @@ public class SetupService : INotifyPropertyChanged
         {
             Code = x.Code,
             Number = x.Number,
-            DispenserTypeId = x.SelectedDispenserType.IdType,
+            DispenserTypeId = x.SelectedDispenserType?.IdType ?? 0,
             HoseNumber = x.HoseNumber,
             NumberIsland = Islands.ToList().FindIndex(y=> y.Number == x.SelectedIsland.Number),
             NameEDS = x.SelectedEds.Name
@@ -385,7 +387,7 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             AccumulatedAmount = x.AccumulatedAmount,
             AccumulatedGallons = x.AccumulatedGallons,
-            IdProductType = x.SelectProductType.IdProductType,
+            IdProductType = x.SelectProductType?.IdProductType ?? 0,
             CodeDispenser = x.SelectedDispenser.Code,
             NumberCompartiment = x.SelectedCompartiment.Number
         }).ToList();
@@ -433,6 +435,7 @@ public class SetupService : INotifyPropertyChanged
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var url = $"{Configuration.BaseUrl}/api/v1/bootstrap/setup";
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
 
             if (response.IsSuccessStatusCode)
@@ -441,7 +444,6 @@ public class SetupService : INotifyPropertyChanged
 
                 // Clear form
                 Name = string.Empty;
-                Description = string.Empty;
                 EdsList = new();
                 Islands = new();
                 Tanks = new();
@@ -452,6 +454,16 @@ public class SetupService : INotifyPropertyChanged
                 Dispensers = new();
                 Hoses = new();
                 IsActive = true;
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(EdsList));
+                OnPropertyChanged(nameof(Tanks));
+                OnPropertyChanged(nameof(Compartiments));
+                OnPropertyChanged(nameof(Islands));
+                OnPropertyChanged(nameof(Products));
+                OnPropertyChanged(nameof(Islanders));
+                OnPropertyChanged(nameof(Providers));
+                OnPropertyChanged(nameof(Dispensers));
+                OnPropertyChanged(nameof(Hoses));
             }
             else
             {
@@ -488,6 +500,7 @@ public class SetupService : INotifyPropertyChanged
             Address = "",
             Sicom = ""
         });
+        OnPropertyChanged(nameof(EdsList));
     }
 
     private void AddIsland()
@@ -496,12 +509,14 @@ public class SetupService : INotifyPropertyChanged
         {
             Number = Islands.Count + 1
         });
+        OnPropertyChanged(nameof(Islands));
     }
     private void AddTank()
     {
         Tanks.Add(new EditablePendingTank
         {
         });
+        OnPropertyChanged(nameof(Tanks));
     }
     private void AddCompartiment()
     {
@@ -517,6 +532,7 @@ public class SetupService : INotifyPropertyChanged
         {
         });
         OnPropertyChanged(nameof(EdsList));
+        OnPropertyChanged(nameof(Products));
     }
     private void AddIslander()
     {
@@ -528,12 +544,14 @@ public class SetupService : INotifyPropertyChanged
             Name = string.Empty,
             Password = string.Empty,
         });
+        OnPropertyChanged(nameof(Islanders));
     }
     private void AddProvider()
     {
         Providers.Add(new ProviderModel
         {
         });
+        OnPropertyChanged(nameof(Providers));
     }
 
     private void AddDispenser()
@@ -543,6 +561,7 @@ public class SetupService : INotifyPropertyChanged
         });
         OnPropertyChanged(nameof(EdsList));
         OnPropertyChanged(nameof(Islands));
+        OnPropertyChanged(nameof(Dispensers));
     }
 
     private void AddHose()
@@ -553,6 +572,7 @@ public class SetupService : INotifyPropertyChanged
 
         OnPropertyChanged(nameof(Dispensers));
         OnPropertyChanged(nameof(Compartiments));
+        OnPropertyChanged(nameof(Hoses));
     }
 
     private void RemoveEds(Models.Eds.EdsModel eds)
@@ -561,48 +581,61 @@ public class SetupService : INotifyPropertyChanged
         {
             EdsList.Remove(eds);
         }
+        OnPropertyChanged(nameof(EdsList));
     }
+
     private void RemoveIsland(EditablePendingIsland island)
     {
         if (Islands.Contains(island))
         {
             Islands.Remove(island);
         }
+        OnPropertyChanged(nameof(Islands));
     }
+
     private void RemoveTank(EditablePendingTank tank)
     {
         if (Tanks.Contains(tank))
         {
             Tanks.Remove(tank);
         }
+        OnPropertyChanged(nameof(Tanks));
     }
+
     private void RemoveCompartiment(EditablePendingCompartiment compartiment)
     {
         if (Compartiments.Contains(compartiment))
         {
             Compartiments.Remove(compartiment);
         }
+        OnPropertyChanged(nameof(Compartiments));
     }
+
     private void RemoveProduct(EditablePendingProduct product)
     {
         if (Products.Contains(product))
         {
             Products.Remove(product);
         }
+        OnPropertyChanged(nameof(Products));
     }
+
     private void RemoveIslander(EditablePendingIslander islander)
     {
         if (Islanders.Contains(islander))
         {
             Islanders.Remove(islander);
         }
+        OnPropertyChanged(nameof(Islanders));
     }
+
     private void RemoveProvider(ProviderModel provider)
     {
         if (Providers.Contains(provider))
         {
             Providers.Remove(provider);
         }
+        OnPropertyChanged(nameof(Providers));
     }
 
     private void RemoveDispenser(EditablePendingDispenser dispenser)
@@ -611,6 +644,7 @@ public class SetupService : INotifyPropertyChanged
         {
             Dispensers.Remove(dispenser);
         }
+        OnPropertyChanged(nameof(Dispensers));
     }
 
     private void RemoveHose(EditablePendingHose hose)
@@ -619,6 +653,7 @@ public class SetupService : INotifyPropertyChanged
         {
             Hoses.Remove(hose);
         }
+        OnPropertyChanged(nameof(Hoses));
     }
 
     private async Task GetAllProductTypeData()
@@ -703,7 +738,19 @@ public class SetupService : INotifyPropertyChanged
             }
 
             // Handle specific error cases
-            if (statusCode == System.Net.HttpStatusCode.BadRequest)
+            if (statusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                // Generic error
+                var errorMessage = errorObj?.Detail ?? "Error desconocido del servidor";
+                // Generic validation error
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error de Validación",
+                    "Los datos enviados ya existen en el sistema.\n\n" +
+                    "Por favor, verifica:\n" +
+                    errorMessage,
+                    "OK");
+            }    
+            else if (statusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 // Check for duplicate business name error
                 if (IsDuplicateError(errorResponse))

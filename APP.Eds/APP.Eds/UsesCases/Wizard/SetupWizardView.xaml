@@ -443,6 +443,53 @@
                                                             </Border>
                                                         </VerticalStackLayout>
                                                     </Grid>
+
+                                                    <!-- EDS Selection (NUEVO) -->
+                                                    <VerticalStackLayout Spacing="8">
+                                                        <StackLayout Orientation="Horizontal" Spacing="4">
+                                                            <Label Text="Estación de Servicio (EDS)" 
+                                                                    FontSize="14" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#2D3436"
+                                                                    Margin="4,0,0,0"/>
+                                                            <Label Text="*" 
+                                                                    FontSize="14" 
+                                                                    FontAttributes="Bold" 
+                                                                    TextColor="#E74C3C"
+                                                                    VerticalOptions="Start"/>
+                                                        </StackLayout>
+
+                                                        <Border BackgroundColor="#F8F9FA" 
+                                                                 StrokeShape="RoundRectangle 12"
+                                                                 Stroke="#DDD6FE"
+                                                                 StrokeThickness="2"
+                                                                 Padding="0">
+                                                            <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                                <Label Text="🏪" 
+                                                                        FontSize="18" 
+                                                                        TextColor="#8B5CF6" 
+                                                                        VerticalOptions="Center"/>
+
+                                                                <Picker x:Name="EdsPicker"
+                                                                         Title="Seleccione una estación de servicio"
+                                                                         ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
+                                                                         ItemDisplayBinding="{Binding Name}"
+                                                                         SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                         AutomationId="PickerEds"
+                                                                         BackgroundColor="Transparent"
+                                                                         FontSize="16"
+                                                                         TextColor="#374151"
+                                                                         VerticalOptions="Center"
+                                                                         HorizontalOptions="FillAndExpand"/>
+                                                            </StackLayout>
+                                                        </Border>
+
+                                                        <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece este producto."
+                                                                FontSize="12"
+                                                                TextColor="#636E72"
+                                                                Margin="4,0,0,0"/>
+                                                    </VerticalStackLayout>
+
                                                     <Button Text="Eliminar" 
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveTankCommand}"
                                                             CommandParameter="{Binding .}" 
@@ -1683,6 +1730,10 @@
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
+                                <Label Text="Proveedor otros, incluido por defecto." 
+                                       FontSize="14" 
+                                       TextColor="#636E72"
+                                       Margin="4,0,0,0"/>
                                 <Button Text="Agregar proveedor" Command="{Binding AddProviderCommand}" BackgroundColor="#2196F3" TextColor="White"/>
                             </VerticalStackLayout>
                         </toolkit:Expander>

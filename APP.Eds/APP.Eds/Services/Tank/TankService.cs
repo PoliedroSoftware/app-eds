@@ -17,7 +17,7 @@ public class EditablePendingTank : INotifyPropertyChanged
     public string? Number { get; set; }
     public double? Ability { get; set; }
     public double? Stock { get; set; }
-
+    public Models.Eds.EdsModel SelectedEds { get; set; }
     public string DisplayText => $"Tanque {Number} - Capacidad {Ability:N0} L";
 
     public event PropertyChangedEventHandler? PropertyChanged;
