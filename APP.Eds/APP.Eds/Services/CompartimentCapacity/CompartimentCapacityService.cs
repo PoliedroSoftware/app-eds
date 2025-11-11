@@ -96,8 +96,8 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     }
     //AgregaDefault
 
-    private byte? _default;
-    public byte? Default
+    private double? _default;
+    public double? Default
     {
         get => _default;
         set
@@ -227,7 +227,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment-capacity{ compartimentCapacityId}");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/compartiment-capacity/{compartimentCapacityId}");
             Console.WriteLine(response);
 
             CompartimentCapacityModel = JsonSerializer.Deserialize<CompartimentCapacityModel>(response, new JsonSerializerOptions
@@ -274,10 +274,11 @@ public class CompartimentCapacityService : INotifyPropertyChanged
                 return;
             }
 
+            // ✅ Usar el ID del compartimento, no el número
             CompartimentCapacityModel = new CompartimentCapacityModel
             {
                 IdCapacity = SelectCapacity.IdCapacity,
-                IdCompartiment = SelectCompartiment.Number,
+                IdCompartiment = SelectCompartiment.IdCompartiment,
                 Default = Default.Value
             };
 
@@ -296,35 +297,35 @@ public class CompartimentCapacityService : INotifyPropertyChanged
             {
                 string tankCode = SelectCapacity.Code ?? "N/A";
                 int compartmentNumber = SelectCompartiment.Number;
-                
+
                 await CustomAlert.ShowSuccessAsync(
-                    $"Se ha configurado exitosamente la capacidad de {Default.Value} L para el compartimento #{compartmentNumber} del tanque {tankCode}", 
+                    $"Se ha configurado exitosamente la capacidad de {Default.Value:N2} L para el compartimento #{compartmentNumber} del tanque {tankCode}",
                     "Capacidad Configurada");
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
                 await CustomAlert.ShowErrorAsync(
-                    $"No se pudo guardar la configuración:\n\nCódigo: {response.StatusCode}\nDetalle: {error}", 
+                    $"No se pudo guardar la configuración:\n\nCódigo: {response.StatusCode}\nDetalle: {error}",
                     "Error del Servidor");
             }
         }
-        catch (HttpRequestException httpEx)
+        catch (HttpRequestException)
         {
             await CustomAlert.ShowErrorAsync(
-                "Error de conexión. Verifique su conexión a internet e intente nuevamente.", 
+                "Error de conexión. Verifique su conexión a internet e intente nuevamente.",
                 "Error de Conexión");
         }
-        catch (JsonException jsonEx)
+        catch (JsonException)
         {
             await CustomAlert.ShowErrorAsync(
-                "Error al procesar la respuesta del servidor.", 
+                "Error al procesar la respuesta del servidor.",
                 "Error de Datos");
         }
         catch (Exception ex)
         {
             await CustomAlert.ShowErrorAsync(
-                $"Error inesperado al enviar la configuración:\n\n{ex.Message}", 
+                $"Error inesperado al enviar la configuración:\n\n{ex.Message}",
                 "Error del Sistema");
         }
     }

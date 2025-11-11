@@ -4,5 +4,5 @@ public class CompartimentCapacityModel
 {
     public int IdCompartiment { get; set; }
     public int IdCapacity { get; set; }
-    public byte? Default { get; set; }
+    public double? Default { get; set; }
 }

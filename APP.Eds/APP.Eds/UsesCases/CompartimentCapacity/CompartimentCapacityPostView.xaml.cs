@@ -5,7 +5,7 @@ namespace APP.Eds.UsesCases.CompartimentCapacity;
 
 public partial class CompartimentCapacityPostView : ContentPage
 {
-    private CompartimentCapacityService _compartimentCapacityService;
+    private readonly CompartimentCapacityService _compartimentCapacityService;
 
     public CompartimentCapacityPostView()
     {
@@ -18,14 +18,12 @@ public partial class CompartimentCapacityPostView : ContentPage
     {
         try
         {
-            // Disable button to prevent multiple submissions
             if (sender is Button button)
             {
                 button.IsEnabled = false;
                 button.Text = "Enviando...";
             }
 
-            // Enhanced validation with professional alerts
             if (_compartimentCapacityService.SelectCapacity == null)
             {
                 await CustomAlert.ShowErrorAsync("Debe seleccionar un tanque para asignar la capacidad", "Tanque Requerido");
@@ -38,7 +36,7 @@ public partial class CompartimentCapacityPostView : ContentPage
                 return;
             }
 
-            if (_compartimentCapacityService.Default <= 0)
+            if (!_compartimentCapacityService.Default.HasValue || _compartimentCapacityService.Default <= 0)
             {
                 await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
                 return;
@@ -50,15 +48,14 @@ public partial class CompartimentCapacityPostView : ContentPage
                 return;
             }
 
-            // Show professional confirmation dialog
             string tankCode = _compartimentCapacityService.SelectCapacity.Code ?? "N/A";
             int compartmentNumber = _compartimentCapacityService.SelectCompartiment.Number;
-            byte capacity = (byte)_compartimentCapacityService.Default;
+            double capacityValue = _compartimentCapacityService.Default.Value;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
-                "Confirmar Configuración", 
-                "Confirmar", 
+                $"¿Confirma que desea asignar {capacityValue:N2} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.",
+                "Confirmar Configuración",
+                "Confirmar",
                 "Cancelar");
 
             if (!confirm) return;
@@ -66,10 +63,10 @@ public partial class CompartimentCapacityPostView : ContentPage
             LoadingOverlay.ShowLoading();
             await _compartimentCapacityService.SaveCompartimentCapacityDataAsync();
 
-            // Clear form fields after successful submission
+            // Reset
             _compartimentCapacityService.SelectCapacity = null;
             _compartimentCapacityService.SelectCompartiment = null;
-            Default = 0;
+            Default = 0; // ahora double
         }
         catch (Exception ex)
         {
@@ -78,12 +75,10 @@ public partial class CompartimentCapacityPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-
-            // Re-enable button
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "?? Enviar Datos"; // Restore original text
+                button.Text = "?? Enviar Datos";
             }
         }
     }
@@ -107,7 +102,8 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
     }
 
-    public byte Default
+    // Cambiado a double (o double?)
+    public double Default
     {
         get => _compartimentCapacityService.Default ?? 0;
         set

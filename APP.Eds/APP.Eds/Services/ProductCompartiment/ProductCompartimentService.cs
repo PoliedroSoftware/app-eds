@@ -233,10 +233,11 @@ public class ProductCompartimentService : INotifyPropertyChanged
                 return;
             }
 
+            // ✅ Usar el ID real del compartimento
             ProductCompartimentModel = new ProductCompartimentModel
             {
                 IdProduct = SelectProduct.IdProduct,
-                IdCompartiment = SelectCompartiment.Number,
+                IdCompartiment = SelectCompartiment.IdCompartiment,
                 Stock = Stock
             };
 
@@ -261,7 +262,6 @@ public class ProductCompartimentService : INotifyPropertyChanged
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
             }
         }
-
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
