@@ -86,7 +86,8 @@
                             </Border>
 
                             <!-- EDS -->
-                            <Label Text="EDS" 
+                            <Label 
+                                   Text="EDS" 
                                    FontAttributes="Bold" 
                                    TextColor="#636E72" 
                                    VerticalOptions="Center" 
@@ -148,6 +149,36 @@
                                    TextColor="#2D3436"
                                    VerticalOptions="Center"/>
                         </StackLayout>
+                        <!-- Selector de EDS (solo User y si tiene >1) -->
+                        <Border BackgroundColor="#F8F9FA"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#DDD6FE"
+                                Padding="12">
+                            <Border.BindingContext>
+                                <Binding Source="{x:Reference CortePage}" Path="RegisterShiftView"/>
+                            </Border.BindingContext>
+                            <!-- IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker}"> -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Selecciona EDS"
+                                       FontAttributes="Bold"
+                                       TextColor="#636E72"/>
+                                <Picker Title="Seleccione EDS"
+                                        ItemDisplayBinding="{Binding EdsName}"
+                                        AutomationId="EdsPicker"
+                                        ItemsSource="{Binding ListEds}"
+                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                        SelectedIndexChanged="OnEdsUserSelected"
+                                        BackgroundColor="Transparent"
+                                        Margin="12,8"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Texto informativo cuando solo hay 1 EDS 
+                        <StackLayout IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker, Converter={StaticResource InverseBoolConverter}}">
+                            <Label Text="{Binding Source={x:Reference CortePage}, Path=BindingContext.EdsName}"
+                                   TextColor="#636E72"
+                                   FontAttributes="Italic"/> 
+                        </StackLayout> -->
 
                         <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
                             <!-- Date -->

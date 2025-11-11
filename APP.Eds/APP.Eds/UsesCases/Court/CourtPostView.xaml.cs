@@ -19,7 +19,8 @@ namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
-    private readonly RegisterShiftUserService _registerShiftUserService = RegisterShiftUserService.Instance;
+    public RegisterShiftUserService _registerShiftUserService;
+    public RegisterShiftUserService RegisterShiftView { get; private set; }
 
     private async Task ShowOperationalSectionsAsync()
     {
@@ -99,6 +100,8 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         _service = CourtService.Instance;
         _service.DateStarttime = DateTime.Today;
+        _registerShiftUserService = RegisterShiftUserService.Instance;
+        RegisterShiftView = _registerShiftUserService;
 
         // El BindingContext sigue siendo el servicio (todas las bindings Court.* funcionan)
         BindingContext = _service;
@@ -108,6 +111,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         ConfigureDatePickerAsync();
         _ = _service.LoadTranslationsAsync();
+        
 
         UserRole = Preferences.Get("userRole", string.Empty);
 
@@ -164,6 +168,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         try
         {
             loadingOverlay?.ShowLoading();
+            RegisterShiftView.RefreshEdsCommand.Execute(null);
             if (mainContent != null) mainContent.IsVisible = false;
 
             // Mostrar/ocultar tarjeta Business por rol (Admin la ve)
@@ -507,15 +512,44 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private void OnEdsUserSelected (object sender, EventArgs e)
+    {
+        if (sender is not Picker picker) return;
+        if (picker.SelectedItem is EdsResponse selected) _registerShiftUserService.SelectedEds = selected;
+
+    }
+
     // --- Envío del corte
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        var btn = sender as Button;                // una sola variable -> sin CS0136
+        var btn = sender as Button;
+        // una sola variable -> sin CS0136
         if (btn != null) btn.IsEnabled = false;
 
         try
         {
             if (BindingContext is not CourtService vm) return;
+
+            var check = this.FindByName<CheckBox>("RegisterShiftCheck");
+            bool registerShift = check?.IsChecked ?? false;
+
+            if (string.Equals(UserRole, "User", StringComparison.OrdinalIgnoreCase) && registerShift)
+            {
+                
+                // Pasar SOLO fechas/horas al servicio
+                _registerShiftUserService.DateStart = vm.DateStarttime;
+                _registerShiftUserService.DateEnd = vm.DateEndtime; // o (vm.Endtime < vm.Starttime ? vm.DateStarttime.AddDays(1) : vm.DateStarttime)
+                _registerShiftUserService.StartTime = vm.Starttime;
+                _registerShiftUserService.EndTime = vm.Endtime;
+
+                var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                try { overlayRegisterShift?.ShowLoading(); } catch { }
+
+                await _registerShiftUserService.SaveRegisterShiftAsync();
+
+                try { overlayRegisterShift?.HideLoading(); } catch { }
+                return; // no continuar con el flujo normal
+            }
 
             // --- Reglas para Administrador (datos maestros) ---
             if (UserRole == "Admin")
@@ -752,70 +786,24 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         });
     }
 
-    public async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
+    private async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
     {
         _isregisterShiftChecked = e.Value;
-        if (UserRole == "User")
+        if (!e.Value) return;
+        //if (!_isregisterShiftChecked || !string.Equals(UserRole, "User", StringComparison.OrdinalIgnoreCase))
+        //    return;
+
+        var sendButton = this.FindByName<Button>("SendData");
+        if (sendButton != null)
         {
-            var sendButton = this.FindByName<Button>("SendData");
-            if (sendButton != null)
-            {
-                sendButton.Text = _isregisterShiftChecked ? "Registrar Turno sin Ventas" : "Enviar";
-            }
-
-            try
-            {
-                var vm = this.BindingContext;
-                DateTime dateStart = (DateTime?)vm?.GetType().GetProperty("DateStarttime")?.GetValue(vm)
-                    ?? this.FindByName<DatePicker>("datePicker")?.Date
-                    ?? DateTime.Today;
-
-                var startTimeObj = vm?.GetType().GetProperty("StartTime")?.GetValue(vm);
-                var endTimeObj = vm?.GetType().GetProperty("EndTime")?.GetValue(vm);
-
-                TimeSpan startTime = startTimeObj is TimeSpan ts1 ? ts1
-                            : this.FindByName<TimePicker>("StartTimePicker")?.Time ?? new TimeSpan(6, 0, 0);
-
-                TimeSpan endTime = endTimeObj is TimeSpan ts2 ? ts2
-                                      : this.FindByName<TimePicker>("EndTimePicker")?.Time ?? new TimeSpan(18, 0, 0);
-
-                DateTime? dateEndVm = (DateTime?)vm?.GetType().GetProperty("DateEndtime")?.GetValue(vm);
-                DateTime dateEnd = dateEndVm ?? (endTime < startTime ? dateStart.AddDays(1) : dateStart);
-
-                var selEds = vm?.GetType().GetProperty("SelectedEds")?.GetValue(vm);
-                var selBusiness = vm?.GetType().GetProperty("SelectedBusiness")?.GetValue(vm);
-                var selIslander = vm?.GetType().GetProperty("SelectedIslander")?.GetValue(vm);
-
-                int? idEds = selEds?.GetType().GetProperty("IdEds")?.GetValue(selEds) as int?;
-                int? idBusiness = selBusiness?.GetType().GetProperty("IdBusiness")?.GetValue(selBusiness) as int?;
-                int? idIslander = selIslander?.GetType().GetProperty("IdIslander")?.GetValue(selIslander) as int?;
-
-                //if (idEds is null || idIslander is null || idBusiness is null)
-                //{
-                //    await DisplayAlert("Error", "Datos incompletos", "OK");
-                //    return;
-                //}
-
-                _registerShiftUserService.IdEds = idEds;
-                _registerShiftUserService.IdBusiness = idBusiness;
-                _registerShiftUserService.IdIslander = idIslander;
-
-                _registerShiftUserService.DateStart = dateStart;
-                _registerShiftUserService.DateEnd = dateEnd;
-                _registerShiftUserService.StartTime = startTime;
-                _registerShiftUserService.EndTime = endTime;
-
-                await _registerShiftUserService.SaveRegisterShiftAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in OnRegisterShiftCheckChanged: {ex.Message}");
-                await CustomAlert.ShowErrorAsync("No se pudo registrar el turno", "Error de Registro");
-            }
-        } 
-        
-        
+            sendButton.Text = _isregisterShiftChecked ? "Registrar Turno" : "Enviar";
+        }
+        else
+        {
+            sendButton.Text = _isregisterShiftChecked ? "Enviar Datos" : "Envair";
+        }
     }
+
 
 
     // INotifyPropertyChanged local para x:Reference CortePage
