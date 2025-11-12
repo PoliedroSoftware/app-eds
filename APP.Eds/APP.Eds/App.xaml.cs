@@ -10,11 +10,33 @@ public partial class App : Application
     {
         InitializeComponent();
         HandlerInitialize();
+        
+        // Ensure app follows system theme (Light/Dark mode)
+        // UserAppTheme = AppTheme.Unspecified allows system theme to control
+        UserAppTheme = AppTheme.Unspecified;
+        
         var sessionManager = new KeycloakSessionManager();
 
         
         sessionManager.ClearCurrentSession();
         MainPage = new NavigationPage(new MainPage());
+    }
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        // Ensure theme is applied on app start
+        RequestedThemeChanged += OnRequestedThemeChanged;
+    }
+
+    private void OnRequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
+    {
+        // This method will be called when system theme changes
+        // Force a refresh of the current page to apply new theme
+        if (MainPage != null)
+        {
+            MainPage.Handler?.DisconnectHandler();
+        }
     }
 
     private void HandlerInitialize()
