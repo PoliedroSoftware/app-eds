@@ -14,6 +14,7 @@
     using APP.Eds.UsesCases.Hose;
     using APP.Eds.UsesCases.HoseHistory;
     using APP.Eds.UsesCases.Inventory;
+    using APP.Eds.UsesCases.IoT;
     using APP.Eds.UsesCases.Island;
     using APP.Eds.UsesCases.Islander;
     using APP.Eds.UsesCases.Phone;
@@ -127,6 +128,15 @@
                 }
             });
 
+            // ✨ NUEVO: Comando directo para Control IoT
+            var NavigateToIoTControlCommand = new Command(async () =>
+            {
+                if (Application.Current?.MainPage is NavigationPage navPage)
+                {
+                    await navPage.PushAsync(new ValveControlPage());
+                }
+            });
+
             if (userRole == "Admin")
             {
                 Categories = new ObservableCollection<CategoryModel>
@@ -148,6 +158,8 @@
                     }),
                     new("Listado de Pagos QR", "💳", NavigateToQRPaymentsCommand, isDirectNavigation: true),
                     new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
+                    // ✨ NUEVO: Sección IoT con acceso directo al Control de Válvula
+                    new("Control IoT", "🎛️", NavigateToIoTControlCommand, isDirectNavigation: true),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
                         new("Dispensadores", typeof(DispensersPostView), "⛽"),
