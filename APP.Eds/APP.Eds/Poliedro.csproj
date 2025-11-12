@@ -234,6 +234,9 @@
     <MauiXaml Update="UsesCases\Court\CourtListView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="UsesCases\IoT\ValveControlPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="UsesCases\Island\IslandPostView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
