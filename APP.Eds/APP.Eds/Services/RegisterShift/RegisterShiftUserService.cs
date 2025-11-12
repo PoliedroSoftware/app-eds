@@ -1,9 +1,9 @@
 ﻿using APP.Eds.Helpers;
-using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.RegisterShift;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Islander;
 using Microsoft.Maui.Storage;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Input;
+using static System.Net.WebRequestMethods;
 
 
 namespace APP.Eds.Services.RegisterShift;
@@ -26,19 +27,29 @@ public class RegisterShiftUserService : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private const string RegisterShiftEndpoint = "/api/v1/registershift";
+    private readonly IslanderService _islanderService = new IslanderService();
 
-    public ObservableCollection<EdsResponse> ListEds { get; } = [];
+    //public ObservableCollection<IslanderResponse> ListIslander { get; } = [];
+    public ObservableCollection<EdsResponse> UserEds { get; } = [];
+    public ObservableCollection<EnhancedIslanderItem> ListIslander { get; } = [];
 
-    private EdsResponse _selectedEds;
-    public EdsResponse SelectedEds
+    private EdsResponse _selectedUserEds;
+    public EdsResponse SelectedUserEds
     {
-        get => _selectedEds;
+        get => _selectedUserEds;
         set
         {
-            _selectedEds = value;
-            OnPropertyChanged(nameof(SelectedEds));
-            IdEds = _selectedEds?.IdEds;
+            _selectedUserEds = value;
+            OnPropertyChanged(nameof(SelectedUserEds));
+            IdEds = _selectedUserEds?.IdEds;
         }
+    }
+
+    private string _edsName;
+    public string EdsName
+    {
+        get => _edsName;
+        private set { _edsName = value; OnPropertyChanged(nameof(EdsName)); }
     }
 
     private bool _showEdsPicker;
@@ -59,14 +70,25 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         }
     }
 
-    private string _edsName;
-    public string EdsName
+    private int? _idIslander;
+    public int? IdIslander
     {
-        get => _edsName;
+        get => _idIslander;
+        set
+        {
+            _idIslander = value;
+            OnPropertyChanged(nameof(IdIslander));
+        }
+    }
+
+    private string _islanderName;
+    public string IslanderName
+    {
+        get => _islanderName;
         private set
         {
-            _edsName = value;
-            OnPropertyChanged(nameof(EdsName));
+            _islanderName = value;
+            OnPropertyChanged(nameof(IslanderName));
         }
     }
 
@@ -132,21 +154,27 @@ public class RegisterShiftUserService : INotifyPropertyChanged
     private RegisterShiftUserModel _registerShiftUserModel;
 
     public ICommand SaveRegisterShiftCommand { get; }
-    public ICommand RefreshEdsCommand { get; }
+    public ICommand RefreshIslanderCommand { get; }
 
     public RegisterShiftUserService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
 
         SaveRegisterShiftCommand = new Command(async () => await SaveRegisterShiftAsync());
-        RefreshEdsCommand = new Command(async () => await LoadEdsAsync());
+        RefreshIslanderCommand = new Command(async () => await LoadIslanderAsync());
 
         DateStart = DateTime.Now.Date;
         DateEnd = DateTime.Now.Date;
         StartTime = new TimeSpan(6, 0, 0);
         EndTime = new TimeSpan(18, 0, 0);
 
-        _ = LoadEdsAsync();
+        _ = LoadIslanderAsync();
+    }
+
+    private static string? GetUserLogged()
+    {
+        var name = Preferences.Get("Usernamelogin", string.Empty);
+        return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
     }
 
     private void UpdateDateEndForOvernight()
@@ -156,7 +184,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         else
             DateEnd = DateStart;
     }
-    public async Task LoadEdsAsync()
+    public async Task LoadIslanderAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -166,40 +194,81 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
         try
         {
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/eds?PageNumber=1&PageSize=100");
-            // The API typically returns { data: [...] }
-            var edsResponse = JsonSerializer.Deserialize<EdsApiResponse>(response, new JsonSerializerOptions
+            await _islanderService.GetIslandersAsync();
+
+            var nameUser = GetUserLogged();
+            if (string.IsNullOrEmpty(nameUser))
             {
-                PropertyNameCaseInsensitive = true
-            });
+                UserEds.Clear();
+                ShowEdsPicker = false;
+                EdsName = "Usuario sin Nombre";
+                IdEds = null;
+                return;
+            }
 
-            ListEds.Clear();
-            foreach (var eds in edsResponse?.Data ?? new List<EdsResponse>())
-                ListEds.Add(eds);
+            var getAllIslander = _islanderService.IslanderList;
+            if (getAllIslander == null || getAllIslander.Count == 0)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron datos de Islander.", "OK");
+                return;
+            }
+            
+            var userIslander = getAllIslander
+                .Where(i => !string.IsNullOrWhiteSpace(i.Name) &&
+                            string.Equals(i.Name.Trim(), nameUser.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
 
-            //if (UserEds.Count <= 1)
+            if (!userIslander.Any())
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se encontró EDS para el usuario '{nameUser}'.", "OK");
+            }
+
+            var edsIds = userIslander
+                .Select(i => i.IdEds)
+                .Where(id => id.HasValue && id.Value > 0)
+                .Select(id => id!.Value)
+                .Distinct()
+                .ToList();
+
+            var userEdsList = _islanderService.EdsList
+                .Where(e => edsIds.Contains(e.IdEds))
+                .Select(e => new EdsResponse { IdEds = e.IdEds, Name = (e.Name ?? "").Trim() });
+
+            var withNames = userIslander
+                .Where(i => i.IdEds.HasValue && i.IdEds > 0 && !string.IsNullOrWhiteSpace(i.EdsName))
+                .Select(i => new EdsResponse { IdEds = i.IdEds!.Value, Name = i.EdsName!.Trim() });
+
+            var merged = userEdsList
+                    .Concat(withNames)
+                    .Where(x => x.IdEds > 0 && !string.IsNullOrWhiteSpace(x.Name))
+                    .GroupBy(x => x.IdEds)
+                    .Select(g => g.First())
+                    .OrderBy(x => x.Name)
+                    .ToList();
+
+            UserEds.Clear();
+            foreach (var eds in merged)
+                UserEds.Add(eds);
+                
+            // 5) Decidir si mostrar el picker
+            //if (UserEds.Count == 0)
             //{
-            //    ShowEdsPicker = true;
-
-            //    if (UserEds.Count == 1)
-            //    {
-            //        SelectedEds = UserEds[0];
-            //        EdsName = UserEds[0].Name ?? "EDS asignado";
-            //    }
-
-            //    else
-            //    {
-            //        EdsName = "Sin EDS Asignado";
-            //        IdEds = null;
-            //    }
+            //    ShowEdsPicker = false;
+            //    EdsName = "Sin EDS asignado";
+            //    IdEds = null;
+            //    SelectedUserEds = null;
+            //}
+            //else if (UserEds.Count == 1)
+            //{
+            //    ShowEdsPicker = false;
+            //    SelectedUserEds = UserEds[0];               // esto setea IdEds
+            //    EdsName = UserEds[0].Name ?? "EDS asignado";
             //}
             //else
             //{
-            //    ShowEdsPicker= true;
+            //    ShowEdsPicker = true;
             //    EdsName = string.Empty;
             //    IdEds = null;
+            //    SelectedUserEds = null;
             //}
 
         }
@@ -221,17 +290,18 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         var start = DateStart.Date + StartTime;
         var end = DateEnd.Date + EndTime;
 
-        if (end <= start)
-        {
-            await Application.Current.MainPage.DisplayAlert(
-                "Error de validación",
-                "La fecha/hora de fin debe ser posterior a la fecha/hora de inicio.",
-                "OK");
-            return;
-        }
+        //if (end <= start)
+        //{
+        //    await Application.Current.MainPage.DisplayAlert(
+        //        "Error de validación",
+        //        "La fecha/hora de fin debe ser posterior a la fecha/hora de inicio.",
+        //        "OK");
+        //    return;
+        //}
+
         if (!(IdEds is > 0))
         {
-            if (ShowEdsPicker)
+            if (ShowEdsPicker && SelectedUserEds == null)
                 await Application.Current.MainPage.DisplayAlert("EDS requerido", "Seleccione el EDS donde registrará el turno.", "OK");
             else
                 await Application.Current.MainPage.DisplayAlert("EDS no disponible", "No se encontró un EDS asignado.", "OK");

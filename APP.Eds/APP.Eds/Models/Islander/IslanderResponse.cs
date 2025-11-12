@@ -11,7 +11,10 @@ public class IslanderResponse
     public string Name { get; set; }
 
     [JsonProperty("idEds")]
-    public int IdEds { get; set; }
+    public int? IdEds { get; set; }
+
+    [JsonProperty("edsName")]
+    public string EdsName { get; set; }
 
     [JsonProperty("password")]
     public string Password { get; set; }

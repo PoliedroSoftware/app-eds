@@ -111,7 +111,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         ConfigureDatePickerAsync();
         _ = _service.LoadTranslationsAsync();
-        
 
         UserRole = Preferences.Get("userRole", string.Empty);
 
@@ -165,10 +164,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
         var mainContent = this.FindByName<ScrollView>("MainContent");
+
         try
         {
             loadingOverlay?.ShowLoading();
-            RegisterShiftView.RefreshEdsCommand.Execute(null);
+            await _registerShiftUserService.LoadIslanderAsync();
+            RegisterShiftView.RefreshIslanderCommand.Execute(null);
             if (mainContent != null) mainContent.IsVisible = false;
 
             // Mostrar/ocultar tarjeta Business por rol (Admin la ve)
@@ -176,12 +177,17 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             if (businessBorder != null)
                 businessBorder.IsVisible = (UserRole == "Admin");
 
+            var edsUser = this.FindByName<Border>("EdsUser");
+            if (edsUser != null)
+                edsUser.IsVisible = (UserRole == "User");
+
             await _service.LoadTranslationsAsync();
             await AnimateBottomNavEntry();
         }
         catch (Exception ex)
         {
             await CustomAlert.ShowErrorAsync($"Error al cargar datos:\n\n{ex.Message}", "Error de Carga");
+            Debug.WriteLine($"Error inicializando RegisterShiftUserService: {ex.Message}");
         }
         finally
         {
@@ -515,8 +521,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private void OnEdsUserSelected (object sender, EventArgs e)
     {
         if (sender is not Picker picker) return;
-        if (picker.SelectedItem is EdsResponse selected) _registerShiftUserService.SelectedEds = selected;
-
+        if (picker.SelectedItem is EdsResponse selected) _registerShiftUserService.SelectedUserEds = selected;
     }
 
     // --- Envío del corte

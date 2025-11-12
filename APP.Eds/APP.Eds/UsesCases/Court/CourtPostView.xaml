@@ -2,6 +2,7 @@
     x:Class="APP.Eds.UsesCases.Court.CourtPostView"
     x:Name="CortePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:services="clr-namespace:APP.Eds.Services.RegisterShift"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
@@ -150,23 +151,22 @@
                                    VerticalOptions="Center"/>
                         </StackLayout>
                         <!-- Selector de EDS (solo User y si tiene >1) -->
-                        <Border BackgroundColor="#F8F9FA"
+                        <Border x:Name="EdsUser"
+                                BackgroundColor="#F8F9FA"
                                 StrokeShape="RoundRectangle 8"
                                 Stroke="#DDD6FE"
-                                Padding="12">
-                            <Border.BindingContext>
-                                <Binding Source="{x:Reference CortePage}" Path="RegisterShiftView"/>
-                            </Border.BindingContext>
+                                Padding="12"
+                                IsVisible="{Binding IsNotIslanderLogin}">
                             <!-- IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker}"> -->
                             <VerticalStackLayout Spacing="6">
                                 <Label Text="Selecciona EDS"
                                        FontAttributes="Bold"
                                        TextColor="#636E72"/>
                                 <Picker Title="Seleccione EDS"
-                                        ItemDisplayBinding="{Binding EdsName}"
+                                        ItemDisplayBinding="{Binding Name}"
                                         AutomationId="EdsPicker"
-                                        ItemsSource="{Binding ListEds}"
-                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                        ItemsSource="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=UserEds}"
+                                        SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
                                         SelectedIndexChanged="OnEdsUserSelected"
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>

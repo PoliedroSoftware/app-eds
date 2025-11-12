@@ -23,7 +23,7 @@ public class EnhancedIslanderItem
     public string Email { get; set; } = string.Empty;
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;
-    public int IdEds { get; set; }
+    public int? IdEds { get; set; }
     public string EdsName { get; set; } = string.Empty;
     public string Role { get; set; } = "Operario";
     public string RoleIcon { get; set; } = "👷";
@@ -700,7 +700,7 @@ public class IslanderService : INotifyPropertyChanged
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
             var islanders = JsonSerializer.Deserialize<IslanderApiResponse>(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase

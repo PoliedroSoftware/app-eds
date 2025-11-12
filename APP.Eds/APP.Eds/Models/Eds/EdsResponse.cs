@@ -5,7 +5,7 @@ namespace APP.Eds.Models.Eds;
 public class EdsResponse
 {
     [JsonProperty("idEds")]
-    public int IdEds { get; set; }
+    public int? IdEds { get; set; }
 
     [JsonProperty("name")]
     public string Name { get; set; }
