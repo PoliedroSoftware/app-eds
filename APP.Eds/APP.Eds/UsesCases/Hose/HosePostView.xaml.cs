@@ -19,6 +19,11 @@ public partial class HosePostView : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        // Asegurar que el texto del botón de compartimento se restablezca al volver a la vista.
+        if (CompartmentButton != null)
+        {
+            CompartmentButton.Text = "📦 Compartimento";
+        }
         OnPropertyChanged(nameof(BindingContext));
     }
 
