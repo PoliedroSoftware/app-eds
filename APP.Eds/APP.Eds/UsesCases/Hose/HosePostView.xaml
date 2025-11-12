@@ -311,19 +311,17 @@
                                                 Radius="6"
                                                 Opacity="0.3"/>
                                     </Border.Shadow>
-                                    <button:HoverButton
+                                    <Button
                                         x:Name="CompartmentButton"
                                         Text="📦 Compartimento"
-                                        TextColor="white"
-                                        BackgroundColor="Transparent"
+                                        TextColor="White"
+                                        BackgroundColor="#FF9800"
                                         Clicked="OnCompartimentButtonClicked"
                                         AutomationId="ButtonCompartiment"
                                         FontSize="16"
                                         FontAttributes="Bold"
                                         HeightRequest="50"
-                                        CornerRadius="16"
-                                        HoverColor="#FB8C00"
-                                        PressedColor="#FB8C00"/>
+                                        CornerRadius="16"/>
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>
