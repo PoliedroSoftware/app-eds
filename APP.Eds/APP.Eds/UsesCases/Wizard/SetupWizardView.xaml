@@ -268,55 +268,105 @@
                                 <CollectionView ItemsSource="{Binding Islands}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid BackgroundColor="#E3F2FD" Padding="15,10" Margin="0,2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="80" />
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
+                                            <VerticalStackLayout Spacing="16">
+                                                <Grid BackgroundColor="#E3F2FD" Padding="15,10" Margin="0,2">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
 
-                                                <Label Grid.Column="0" 
-                                                       Text="🏝️" 
-                                                       FontSize="16" 
-                                                       VerticalOptions="Center"
-                                                       Margin="0,0,10,0" />
-
-                                                <Frame Grid.Column="1" 
-                                                       BackgroundColor="White" 
-                                                       CornerRadius="5"
-                                                       Padding="5"
-                                                       HasShadow="False">
-                                                    <Entry Text="{Binding Number, Mode=TwoWay}"
-                                                           Keyboard="Numeric"
-                                                           FontSize="14"
-                                                           HorizontalOptions="Fill"
+                                                    <Label Grid.Column="0" 
+                                                           Text="🏝️" 
+                                                           FontSize="16" 
                                                            VerticalOptions="Center"
-                                                           BackgroundColor="Transparent"
-                                                           Placeholder="Núm"
-                                                           AutomationId="EntryIslandNumber" />
-                                                </Frame>
+                                                           Margin="0,0,10,0" />
 
-                                                <Label Grid.Column="2" 
-                                                       Text="{Binding Name}" 
-                                                       FontSize="16" 
-                                                       TextColor="#1976D2"
-                                                       FontAttributes="Bold"
-                                                       VerticalOptions="Center"
-                                                       Margin="10,0,0,0" />
+                                                    <Frame Grid.Column="1" 
+                                                           BackgroundColor="White" 
+                                                           CornerRadius="5"
+                                                           Padding="5"
+                                                           HasShadow="False">
+                                                        <Entry Text="{Binding Number, Mode=TwoWay}"
+                                                               Keyboard="Numeric"
+                                                               FontSize="14"
+                                                               HorizontalOptions="Fill"
+                                                               VerticalOptions="Center"
+                                                               BackgroundColor="Transparent"
+                                                               Placeholder="Núm"
+                                                               AutomationId="EntryIslandNumber" />
+                                                    </Frame>
+                                                
 
-                                                <Button Grid.Column="3"
-                                                        Text="✕"
-                                                        BackgroundColor="#FF5722"
-                                                        TextColor="White"
-                                                        FontSize="12"
-                                                        CornerRadius="15"
-                                                        HeightRequest="37"
-                                                        WidthRequest="40"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslandCommand}"
-                                                        CommandParameter="{Binding .}"
-                                                        AutomationId="ButtonRemoveIsland" />
-                                            </Grid>
+                                                    <Label Grid.Column="2" 
+                                                           Text="{Binding Name}" 
+                                                           FontSize="16" 
+                                                           TextColor="#1976D2"
+                                                           FontAttributes="Bold"
+                                                           VerticalOptions="Center"
+                                                           Margin="10,0,0,0" />
+
+                                                    <Button Grid.Column="3"
+                                                            Text="✕"
+                                                            BackgroundColor="#FF5722"
+                                                            TextColor="White"
+                                                            FontSize="12"
+                                                            CornerRadius="15"
+                                                            HeightRequest="37"
+                                                            WidthRequest="40"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslandCommand}"
+                                                            CommandParameter="{Binding .}"
+                                                            AutomationId="ButtonRemoveIsland" />
+                                                
+                                                </Grid>
+                                                <!-- EDS Selection (NUEVO) -->
+                                                <VerticalStackLayout Spacing="8">
+                                                    <StackLayout Orientation="Horizontal" Spacing="4">
+                                                        <Label Text="Estación de Servicio (EDS)" 
+                                                                FontSize="14" 
+                                                                FontAttributes="Bold" 
+                                                                TextColor="#2D3436"
+                                                                Margin="4,0,0,0"/>
+                                                        <Label Text="*" 
+                                                                FontSize="14" 
+                                                                FontAttributes="Bold" 
+                                                                TextColor="#E74C3C"
+                                                                VerticalOptions="Start"/>
+                                                    </StackLayout>
+
+                                                    <Border BackgroundColor="#F8F9FA" 
+                                                             StrokeShape="RoundRectangle 12"
+                                                             Stroke="#DDD6FE"
+                                                             StrokeThickness="2"
+                                                             Padding="0">
+                                                        <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
+                                                            <Label Text="🏪" 
+                                                                    FontSize="18" 
+                                                                    TextColor="#8B5CF6" 
+                                                                    VerticalOptions="Center"/>
+
+                                                            <Picker x:Name="EdsPicker"
+                                                                     Title="Seleccione una estación de servicio"
+                                                                     ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
+                                                                     ItemDisplayBinding="{Binding Name}"
+                                                                     SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                     AutomationId="PickerEds"
+                                                                     BackgroundColor="Transparent"
+                                                                     FontSize="16"
+                                                                     TextColor="#374151"
+                                                                     VerticalOptions="Center"
+                                                                     HorizontalOptions="FillAndExpand"/>
+                                                        </StackLayout>
+                                                    </Border>
+
+                                                    <Label Text="Campo obligatorio. Seleccione la estación de servicio a la que pertenece esta isla."
+                                                            FontSize="12"
+                                                            TextColor="#636E72"
+                                                            Margin="4,0,0,0"/>
+                                                </VerticalStackLayout>
+
+                                            </VerticalStackLayout>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>

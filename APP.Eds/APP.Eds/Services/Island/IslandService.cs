@@ -37,6 +37,8 @@ public class EditablePendingIsland : INotifyPropertyChanged
         }
     }
 
+    public Models.Eds.EdsModel SelectedEds { get; set; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged(string propertyName)

@@ -305,6 +305,7 @@ public class SetupService : INotifyPropertyChanged
         return Islands.Select(x => new IslandModel()
         {
             Description = x.Name,
+            NameEDS = x.SelectedEds.Name
         }).ToList();
     }
 
@@ -396,16 +397,17 @@ public class SetupService : INotifyPropertyChanged
     public async Task SaveDataAsync()
     {
         ValidateName();
-        if (ShowNameError || string.IsNullOrWhiteSpace(Name))
-        {
-            return;
-        }
-
+        
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
+
+        bool isInvalidForm = await IsInvalidateSetupAsync();
+
+        if (isInvalidForm)
+            return;
 
         try
         {
@@ -719,6 +721,51 @@ public class SetupService : INotifyPropertyChanged
         }
     }
 
+    public async Task<bool> IsInvalidateSetupAsync()
+    {
+        var invalidProperties = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Name) || Name.Length < 3)
+            invalidProperties.Add("El nombre no puede ser vacio y debe tener minimo 3 caracteres");
+        
+        if (EdsList == null || !EdsList.Any())
+            invalidProperties.Add("Exista al menos una EDS");
+
+        if (Tanks == null || !Tanks.Any())
+            invalidProperties.Add("Exista al menos un Tanque");
+
+        if (Compartiments == null || !Compartiments.Any())
+            invalidProperties.Add("Exista al menos un Compartimiento");
+
+        if (Products == null || !Products.Any())
+            invalidProperties.Add("Exista al menos un Producto");
+
+        if (Islanders == null || !Islanders.Any())
+            invalidProperties.Add("Exista al menos un Islero");
+
+        if (Islands == null || !Islands.Any())
+            invalidProperties.Add("Exista al menos una Isla");
+
+        if (Dispensers == null || !Dispensers.Any())
+            invalidProperties.Add("Exista al menos un Dispensador");
+
+        if (Hoses == null || !Hoses.Any())
+            invalidProperties.Add("Exista al menos una Manguera");
+
+        bool invalid = invalidProperties.Any();
+
+        if(invalid)
+            await Application.Current.MainPage.DisplayAlert(
+                "Formulario Invalido",
+                "Los datos enviados no son válidos.\n\n" +
+                "Por favor, verifica que:\n" +
+                string.Join("\n", invalidProperties),
+                "OK");
+
+        return invalid;
+    }
+
+
     private async Task HandleBusinessErrorAsync(System.Net.HttpStatusCode statusCode, string errorResponse)
     {
         try
@@ -766,6 +813,7 @@ public class SetupService : INotifyPropertyChanged
                     "Por favor, verifica que:\n" +
                     "• El nombre del negocio sea único\n" +
                     "• Todos los campos requeridos estén completos\n" +
+                    "• Exista al menos una entidad de cada tipo\n" +
                     "• Los valores sean correctos",
                     "OK");
             }
