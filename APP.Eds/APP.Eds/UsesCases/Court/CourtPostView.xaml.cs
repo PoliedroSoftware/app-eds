@@ -21,6 +21,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
     public RegisterShiftUserService _registerShiftUserService;
     public RegisterShiftUserService RegisterShiftView { get; private set; }
+    public RegisterShiftAdminService _registerShiftAdminService;
 
     private async Task ShowOperationalSectionsAsync()
     {
@@ -102,6 +103,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         _service.DateStarttime = DateTime.Today;
         _registerShiftUserService = RegisterShiftUserService.Instance;
         RegisterShiftView = _registerShiftUserService;
+        _registerShiftAdminService = RegisterShiftAdminService.Instance;
 
         // El BindingContext sigue siendo el servicio (todas las bindings Court.* funcionan)
         BindingContext = _service;
@@ -521,7 +523,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private void OnEdsUserSelected (object sender, EventArgs e)
     {
         if (sender is not Picker picker) return;
-        if (picker.SelectedItem is EdsResponse selected) _registerShiftUserService.SelectedUserEds = selected;
+        if (UserRole == "User" && picker.SelectedItem is EdsResponse selected)
+        {
+            _registerShiftUserService.SelectedUserEds = selected;
+        }
     }
 
     // --- Envío del corte
@@ -535,13 +540,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             if (BindingContext is not CourtService vm) return;
 
+            // Servicio RegisterShift para User
             var check = this.FindByName<CheckBox>("RegisterShiftCheck");
             bool registerShift = check?.IsChecked ?? false;
 
             if (string.Equals(UserRole, "User", StringComparison.OrdinalIgnoreCase) && registerShift)
             {
-                
-                // Pasar SOLO fechas/horas al servicio
                 _registerShiftUserService.DateStart = vm.DateStarttime;
                 _registerShiftUserService.DateEnd = vm.DateEndtime; // o (vm.Endtime < vm.Starttime ? vm.DateStarttime.AddDays(1) : vm.DateStarttime)
                 _registerShiftUserService.StartTime = vm.Starttime;
@@ -555,6 +559,34 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 try { overlayRegisterShift?.HideLoading(); } catch { }
                 return; // no continuar con el flujo normal
             }
+            // Servicio para Admin
+            if (string.Equals(UserRole, "Admin", StringComparison.OrdinalIgnoreCase) && registerShift)
+            {
+                _registerShiftAdminService.IdEds = vm.IdEds;
+                _registerShiftAdminService.IdBusiness = vm.IdBusiness;
+                _registerShiftAdminService.IdIslander = vm.IdIslander;
+                _registerShiftAdminService.DateStart = vm.DateStarttime;
+                _registerShiftAdminService.DateEnd = vm.DateEndtime; 
+                _registerShiftAdminService.StartTime = vm.Starttime;
+                _registerShiftAdminService.EndTime = vm.Endtime;
+
+                if (vm.IdEds <= 0 || vm.IdBusiness <= 0 || vm.IdIslander <= 0)
+                {
+                    await CustomAlert.ShowErrorAsync(
+                        "Debe Seleccionar los tres Campos iniciales Negocio, EDS e Ilsero.",
+                        "Campos Vacios");
+                    return;
+                }
+
+                var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                try { overlayRegisterShift?.ShowLoading(); } catch { }
+
+                await _registerShiftAdminService.SaveRegisterShiftAsync();
+
+                try { overlayRegisterShift?.HideLoading(); } catch { }
+                return; // no continuar con el flujo normal
+            }
+
 
             // --- Reglas para Administrador (datos maestros) ---
             if (UserRole == "Admin")
@@ -860,7 +892,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             sendButton.Text = _isregisterShiftChecked ? "Registrar Turno" : "Enviar";
         }
-        else
+        else if (sendButton == null)
         {
             sendButton.Text = _isregisterShiftChecked ? "Enviar Datos" : "Envair";
         }

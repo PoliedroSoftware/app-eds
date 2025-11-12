@@ -1,39 +1,34 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Eds;
-using APP.Eds.Models.Islander;
-using APP.Eds.Models.RegisterShift;
 using APP.Eds.Services.Config;
-using APP.Eds.Services.Islander;
-using Microsoft.Maui.Storage;
+using APP.Eds.Services.Court;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using static System.Net.WebRequestMethods;
-
 
 namespace APP.Eds.Services.RegisterShift;
 
-public class RegisterShiftUserService : INotifyPropertyChanged
+public class RegisterShiftAdminService : INotifyPropertyChanged
 {
-    private static RegisterShiftUserService? _instance;
-    public string UserRole { get; set; } = string.Empty;
-
-    public static RegisterShiftUserService Instance => _instance ??= new RegisterShiftUserService();
+    private static RegisterShiftAdminService? _instance;
+    public static RegisterShiftAdminService Instance => _instance ??= new RegisterShiftAdminService();
 
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private const string RegisterShiftEndpoint = "/api/v1/registershift";
-    private readonly IslanderService _islanderService = new IslanderService();
+    private readonly CourtService _courtService = new CourtService();
 
-    //public ObservableCollection<IslanderResponse> ListIslander { get; } = [];
     public ObservableCollection<EdsResponse> UserEds { get; } = [];
-    public ObservableCollection<EnhancedIslanderItem> ListIslander { get; } = [];
+
 
     private EdsResponse _selectedUserEds;
     public EdsResponse SelectedUserEds
@@ -71,6 +66,18 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             OnPropertyChanged(nameof(IdEds));
         }
     }
+
+    private int? _idBusiness;
+    public int? IdBusiness
+    {
+        get => _idBusiness;
+        set
+        {
+            _idBusiness = value;
+            OnPropertyChanged(nameof(IdBusiness));
+        }
+    }
+
 
     private int? _idIslander;
     public int? IdIslander
@@ -152,34 +159,22 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             }
         }
     }
-
-    private RegisterShiftUserModel _registerShiftUserModel;
-
     public ICommand SaveRegisterShiftCommand { get; }
     public ICommand RefreshIslanderCommand { get; }
 
-    public RegisterShiftUserService()
+    public RegisterShiftAdminService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
 
         SaveRegisterShiftCommand = new Command(async () => await SaveRegisterShiftAsync());
-        RefreshIslanderCommand = new Command(async () => await LoadIslanderAsync());
 
         DateStart = DateTime.Now.Date;
         DateEnd = DateTime.Now.Date;
         StartTime = new TimeSpan(6, 0, 0);
         EndTime = new TimeSpan(18, 0, 0);
 
-        _ = LoadIslanderAsync();
-
-        UserRole = Preferences.Get("userRole", string.Empty);
     }
 
-    private static string? GetUserLogged()
-    {
-        var name = Preferences.Get("Usernamelogin", string.Empty);
-        return string.IsNullOrWhiteSpace(name) ? null : name.Trim();
-    }
 
     private void UpdateDateEndForOvernight()
     {
@@ -188,108 +183,13 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         else
             DateEnd = DateStart;
     }
-    public async Task LoadIslanderAsync()
-    {
-        if (string.IsNullOrEmpty(_authToken))
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
-        }
-
-        try
-        {
-            await _islanderService.GetIslandersAsync();
-
-            var nameUser = GetUserLogged();
-            if (string.IsNullOrEmpty(nameUser))
-            {
-                UserEds.Clear();
-                ShowEdsPicker = false;
-                EdsName = "Usuario sin Nombre";
-                IdEds = null;
-                return;
-            }
-
-            var getAllIslander = _islanderService.IslanderList;
-            if (getAllIslander == null || getAllIslander.Count == 0 && UserRole == "User")
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron datos de Islander.", "OK");
-                return;
-            }
-            
-            var userIslander = getAllIslander
-                .Where(i => !string.IsNullOrWhiteSpace(i.Name) &&
-                            string.Equals(i.Name.Trim(), nameUser.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-
-            if (!userIslander.Any() && UserRole == "User")
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se encontró EDS para el usuario '{nameUser}'.", "OK");
-            }
-
-            var edsIds = userIslander
-                .Select(i => i.IdEds)
-                .Where(id => id.HasValue && id.Value > 0)
-                .Select(id => id!.Value)
-                .Distinct()
-                .ToList();
-
-            var userEdsList = _islanderService.EdsList
-                .Where(e => edsIds.Contains(e.IdEds))
-                .Select(e => new EdsResponse { IdEds = e.IdEds, Name = (e.Name ?? "").Trim() });
-
-            var withNames = userIslander
-                .Where(i => i.IdEds.HasValue && i.IdEds > 0 && !string.IsNullOrWhiteSpace(i.EdsName))
-                .Select(i => new EdsResponse { IdEds = i.IdEds!.Value, Name = i.EdsName!.Trim() });
-
-            var merged = userEdsList
-                    .Concat(withNames)
-                    .Where(x => x.IdEds > 0 && !string.IsNullOrWhiteSpace(x.Name))
-                    .GroupBy(x => x.IdEds)
-                    .Select(g => g.First())
-                    .OrderBy(x => x.Name)
-                    .ToList();
-
-            UserEds.Clear();
-            foreach (var eds in merged)
-                UserEds.Add(eds);
-                
-            // 5) Decidir si mostrar el picker
-            //if (UserEds.Count == 0)
-            //{
-            //    ShowEdsPicker = false;
-            //    EdsName = "Sin EDS asignado";
-            //    IdEds = null;
-            //    SelectedUserEds = null;
-            //}
-            //else if (UserEds.Count == 1)
-            //{
-            //    ShowEdsPicker = false;
-            //    SelectedUserEds = UserEds[0];               // esto setea IdEds
-            //    EdsName = UserEds[0].Name ?? "EDS asignado";
-            //}
-            //else
-            //{
-            //    ShowEdsPicker = true;
-            //    EdsName = string.Empty;
-            //    IdEds = null;
-            //    SelectedUserEds = null;
-            //}
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error cargando EDS o business: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al cargar EDS o Business: {ex.Message}", "OK");
-            return;
-        }
-    }
     public async Task SaveRegisterShiftAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
-        }      
+        }
 
         var start = DateStart.Date + StartTime;
         var end = DateEnd.Date + EndTime;
@@ -303,15 +203,6 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         //    return;
         //}
 
-        if (!(IdEds is > 0))
-        {
-            if (ShowEdsPicker && SelectedUserEds == null)
-                await Application.Current.MainPage.DisplayAlert("EDS requerido", "Seleccione el EDS donde registrará el turno.", "OK");
-            else
-                await Application.Current.MainPage.DisplayAlert("EDS no disponible", "No se encontró un EDS asignado.", "OK");
-            return;
-        }
-
         try
         {
             var payload = new
@@ -319,7 +210,8 @@ public class RegisterShiftUserService : INotifyPropertyChanged
                 request = new
                 {
                     idEds = IdEds.Value,
-                    // Business e Islander quedan opcionales; si son null se omiten del JSON
+                    idBusiness = IdBusiness.Value,
+                    idIslero = IdIslander.Value,
                     dateStartTime = DateStart.ToString("yyyy-MM-dd"),
                     startTime = StartTime.ToString(@"hh\:mm\:ss"),
                     dateEndTime = DateEnd.ToString("yyyy-MM-dd"),
@@ -354,3 +246,4 @@ public class RegisterShiftUserService : INotifyPropertyChanged
     protected void OnPropertyChanged(string propertyName)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
+
