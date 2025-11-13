@@ -156,7 +156,7 @@
     </VerticalStackLayout>
           </Frame>
 
-  <Frame BackgroundColor="White" HasShadow="True" CornerRadius="10" Padding="20">
+  <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" HasShadow="True" CornerRadius="10" Padding="20">
          <VerticalStackLayout Spacing="15">
          <Label Text="{Binding WizardService.CurrentStep.Title, StringFormat='📌 Paso Actual: {0}'}"
  FontSize="18"

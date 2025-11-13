@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestion de Isleros"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -34,7 +34,7 @@
                 </Border>
 
                 <!-- Islander Registration Form Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -49,7 +49,7 @@
                             <Label Text="Registro de Nuevo Islero" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -60,18 +60,18 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Usuario" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Usuario del islero"
                                            Text="{Binding Name, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -79,18 +79,18 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Nombre completo" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Nombre completo"
                                            Text="{Binding FirstName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryFirstName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -98,18 +98,18 @@
                             <StackLayout Grid.Row="1" Grid.Column="0">
                                 <Label Text="Apellidos completos" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="Apellidos completos"
                                            Text="{Binding LastName, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryLastName"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -117,18 +117,18 @@
                             <StackLayout Grid.Row="1" Grid.Column="1">
                                 <Label Text="Correo Electronico" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Text"
                                            Placeholder="correo@ejemplo.com"
                                            Text="{Binding Email, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryEmail"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -136,11 +136,11 @@
                             <StackLayout Grid.Row="2" Grid.Column="0">
                                 <Label Text="Estacion de Servicio (EDS)" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Picker Title="Seleccione EDS asignada"
                                             ItemsSource="{Binding EdsList}"
@@ -155,11 +155,11 @@
                             <StackLayout Grid.Row="2" Grid.Column="1">
                                 <Label Text="Posicion/Rol" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Picker Title="Seleccione rol"
                                             ItemsSource="{Binding RoleOptions}"
@@ -173,18 +173,18 @@
                             <StackLayout Grid.Row="3" Grid.Column="0">
                                 <Label Text="Contraseña" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Placeholder="Contraseña de acceso (min. 6 caracteres)"
                                            Text="{Binding Password, Mode=TwoWay}"
                                            IsPassword="True"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPassword"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -192,18 +192,18 @@
                             <StackLayout Grid.Row="3" Grid.Column="1">
                                 <Label Text="Telefono de Contacto" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#DDD6FE" 
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                         Padding="4">
                                     <Entry Keyboard="Telephone"
                                            Placeholder="Numero de contacto"
                                            Text="{Binding PhoneNumber, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryPhone"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -211,7 +211,7 @@
                             <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
                                 <Label Text="Configuraciones de Acceso" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
                                 <StackLayout Orientation="Horizontal" Spacing="20">
                                     <StackLayout Orientation="Horizontal" Spacing="6">
@@ -220,7 +220,7 @@
                                                   AutomationId="CheckBoxIsActive"/>
                                         <Label Text="Usuario Activo" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                     
@@ -232,7 +232,7 @@
                                                   Margin="0,2,0,0"/>
                                         <Label Text="¿Puede gestionar dispensadores?" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"
                                                LineBreakMode="WordWrap"
                                                MaxLines="2"
@@ -263,7 +263,7 @@
                 </Border>
 
                 <!-- Islanders Statistics Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -278,7 +278,7 @@
                             <Label Text="Estadisticas de Personal" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -368,7 +368,7 @@
                 </Border>
 
                 <!-- Islanders List Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -383,7 +383,7 @@
                             <Label Text="Personal Registrado" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -470,13 +470,13 @@
 
                                             <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="📧" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Email}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="{Binding Email}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="👤" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Firstname}" FontSize="13" TextColor="#374151"/>
-                                                <Label Text="{Binding Lastname}" FontSize="13" TextColor="#374151"/>
+                                                <Label Text="{Binding Firstname}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
+                                                <Label Text="{Binding Lastname}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
                                             </StackLayout>
 
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
@@ -487,7 +487,7 @@
                                                 
                                                 <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
                                                     <Label Text="📞" FontSize="11" VerticalOptions="Center"/>
-                                                    <Label Text="{Binding PhoneNumber, FallbackValue='N/D'}" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding PhoneNumber, FallbackValue='N/D'}" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                                 </StackLayout>
                                             </Grid>
 
@@ -529,15 +529,15 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="👷" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="👷" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                     <Label Text="No hay isleros registrados" 
                                            FontSize="16" 
-                                           TextColor="#6B7280" 
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            FontAttributes="Bold"/>
                                     <Label Text="Registre el primer islero usando el formulario superior" 
                                            FontSize="14" 
-                                           TextColor="#9CA3AF" 
+                                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>

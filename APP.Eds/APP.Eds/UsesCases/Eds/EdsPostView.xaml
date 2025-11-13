@@ -97,7 +97,7 @@
                             </Border.Background>
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                                 <Border Grid.Column="0" 
-                                        BackgroundColor="White" 
+                                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 12"
                                         WidthRequest="36"
                                         HeightRequest="36"
@@ -352,7 +352,7 @@
                             </Border.Background>
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
                                 <Border Grid.Column="0"
-                                        BackgroundColor="White"
+                                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 12"
                                         WidthRequest="32"
                                         HeightRequest="32">

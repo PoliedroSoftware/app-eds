@@ -23,7 +23,7 @@
            BorderColor="#FF9800"
            CornerRadius="16"
            HasShadow="True"
-           BackgroundColor="White"
+           BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
            WidthRequest="350" 
            MaximumWidthRequest="380"
            MaximumHeightRequest="620"
@@ -44,7 +44,7 @@
                                TextColor="#FFE0B2" HorizontalTextAlignment="Center" />
                     </StackLayout>
 
-                    <Frame Grid.Column="2" BackgroundColor="White" CornerRadius="12"
+                    <Frame Grid.Column="2" BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="12"
                            HasShadow="False" Padding="0" WidthRequest="24" HeightRequest="24"
                            HorizontalOptions="End" VerticalOptions="Center">
                         <Button BackgroundColor="Transparent" Clicked="OnCloseTapped"
@@ -59,7 +59,7 @@
             <VerticalStackLayout Grid.Row="1" Spacing="10" Margin="0,0,0,8">
 
                 <!-- Manguera compacta -->
-                <Frame BackgroundColor="#F8F9FA" CornerRadius="10" HasShadow="True"
+                <Frame BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1E1E1E}" CornerRadius="10" HasShadow="True"
                        BorderColor="#FFE0B2" Padding="10">
                     <StackLayout Spacing="6">
                         <StackLayout Orientation="Horizontal" Spacing="6">
@@ -68,10 +68,10 @@
                                 <Label Text="H" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Manguera" FontSize="13" FontAttributes="Bold"
-                                   TextColor="#2D3436" VerticalOptions="Center"/>
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Frame BackgroundColor="White" CornerRadius="6" HasShadow="False"
+                        <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="6" HasShadow="False"
                                BorderColor="#DDD6FE" Padding="6,2">
                             <Picker x:Name="HosePicker" AutomationId="HosePicker"
                                     Title="Seleccione una manguera"
@@ -103,7 +103,7 @@
                                 <Label Text="📦" FontSize="8" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Inventario del Producto" FontSize="13" FontAttributes="Bold"
-                                   TextColor="#2D3436" VerticalOptions="Center"/>
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" VerticalOptions="Center"/>
                         </StackLayout>
 
                         <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="4">
@@ -152,7 +152,7 @@
                 </Frame>
 
                 <!-- Dinero compacto -->
-                <Frame BackgroundColor="#F8F9FA" CornerRadius="10" HasShadow="True"
+                <Frame BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1E1E1E}" CornerRadius="10" HasShadow="True"
                        BorderColor="#E8F5E8" Padding="10">
                     <StackLayout Spacing="8">
 
@@ -162,7 +162,7 @@
                                 <Label Text="$" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Información de Dinero" FontSize="13" FontAttributes="Bold"
-                                   TextColor="#2D3436" VerticalOptions="Center"/>
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Precio por galón más compacto -->
@@ -255,7 +255,7 @@
                                    HorizontalOptions="End" FontAttributes="Bold" FontSize="11"
                                    Grid.Row="1" Grid.Column="0"/>
 
-                            <Frame BackgroundColor="White" CornerRadius="6" HasShadow="False"
+                            <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="6" HasShadow="False"
                                    BorderColor="#DDD6FE" Padding="4,1" Grid.Row="1" Grid.Column="2">
                                 <Entry x:Name="FirstEntry" AutomationId="AccumulatedAmountEntry"
                                        Keyboard="Numeric" Placeholder="Ingrese el monto"
@@ -276,14 +276,14 @@
                                    FontSize="10" Grid.Row="3" Grid.Column="0"/>
                             <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource NumberToWordsConverter}}"
                                    VerticalOptions="Center" HorizontalOptions="Start"
-                                   FontAttributes="Italic" FontSize="9" TextColor="#666666"
+                                   FontAttributes="Italic" FontSize="9" TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                    Grid.Row="3" Grid.Column="2" LineBreakMode="WordWrap"/>
                         </Grid>
                     </StackLayout>
                 </Frame>
 
                 <!-- Galones compacto -->
-                <Frame BackgroundColor="#F8F9FA" CornerRadius="10" HasShadow="True"
+                <Frame BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1E1E1E}" CornerRadius="10" HasShadow="True"
                        BorderColor="#E3F2FD" Padding="10">
                     <StackLayout Spacing="8">
                         <StackLayout Orientation="Horizontal" Spacing="6">
@@ -292,7 +292,7 @@
                                 <Label Text="G" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Información de Galones" FontSize="13" FontAttributes="Bold"
-                                   TextColor="#2D3436" VerticalOptions="Center"/>
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" VerticalOptions="Center"/>
                         </StackLayout>
 
                         <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,15,*" RowSpacing="5">
@@ -307,7 +307,7 @@
                                    Grid.Row="1" Grid.Column="0"/>
 
                             <StackLayout Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="3">
-                                <Frame BackgroundColor="White" CornerRadius="6" HasShadow="False"
+                                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="6" HasShadow="False"
                                        BorderColor="#DDD6FE" Padding="4,1" HorizontalOptions="FillAndExpand">
                                     <Entry x:Name="SecondEntry" AutomationId="AccumulatedGallonsEntry"
                                            Keyboard="Numeric" Placeholder="Ingrese los galones"
@@ -377,7 +377,7 @@
                   BackgroundColor="#CC000000">
                 
                 <!-- Loading State -->
-                <Frame BackgroundColor="White" CornerRadius="16" 
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="16" 
                        Padding="24" HasShadow="True"
                        HorizontalOptions="Center" VerticalOptions="Center"
                        WidthRequest="280"
@@ -389,16 +389,16 @@
                         <Label Text="Cargando mangueras…" 
                                FontSize="16" FontAttributes="Bold"
                                HorizontalTextAlignment="Center"
-                               TextColor="#2D3436"/>
+                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                         <Label Text="Por favor espere" 
                                FontSize="12"
                                HorizontalTextAlignment="Center"
-                               TextColor="#636E72"/>
+                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Error State -->
-                <Frame BackgroundColor="White" CornerRadius="16" 
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="16" 
                        Padding="24" HasShadow="True"
                        HorizontalOptions="Center" VerticalOptions="Center"
                        WidthRequest="280"
@@ -413,7 +413,7 @@
                         <Label Text="{Binding CourtService.HoseLoadError}" 
                                FontSize="12"
                                HorizontalTextAlignment="Center"
-                               TextColor="#636E72"
+                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                LineBreakMode="WordWrap"/>
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                             <Button Grid.Column="0" Text="Reintentar"
@@ -424,7 +424,7 @@
                                     FontSize="14"/>
                             <Button Grid.Column="1" Text="Cerrar"
                                     BackgroundColor="#E0E0E0"
-                                    TextColor="#2D3436"
+                                    TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                     Clicked="OnCloseTapped"
                                     CornerRadius="8"
                                     FontSize="14"/>
@@ -433,7 +433,7 @@
                 </Frame>
 
                 <!-- Empty State -->
-                <Frame BackgroundColor="White" CornerRadius="16" 
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" CornerRadius="16" 
                        Padding="24" HasShadow="True"
                        HorizontalOptions="Center" VerticalOptions="Center"
                        WidthRequest="280"
@@ -448,7 +448,7 @@
                         <Label Text="No hay mangueras disponibles para este dispensador/EDS." 
                                FontSize="12"
                                HorizontalTextAlignment="Center"
-                               TextColor="#636E72"
+                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                LineBreakMode="WordWrap"/>
                         <Button Text="Cerrar"
                                 BackgroundColor="#FF9800"

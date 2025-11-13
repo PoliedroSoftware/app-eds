@@ -9,7 +9,7 @@
     AutomationId="PopupAddShopping">
 
     <!-- Main Container with Modern Design -->
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 24"
             StrokeThickness="0"
             WidthRequest="380"
@@ -50,7 +50,7 @@
                     
                     <!-- Close Button -->
                     <Border Grid.Column="2"
-                            BackgroundColor="White"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 16"
                             WidthRequest="32" HeightRequest="32"
                             HorizontalOptions="End"
@@ -77,7 +77,7 @@
                 <VerticalStackLayout Spacing="20">
                     
                     <!-- Product Selection Card -->
-                    <Border BackgroundColor="#F8F9FA"
+                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                             StrokeShape="RoundRectangle 16"
                             Stroke="#E3F2FD"
                             StrokeThickness="2"
@@ -103,14 +103,14 @@
                                 <Label Text="Producto y Compartimento" 
                                        FontSize="16" 
                                        FontAttributes="Bold"
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
                             <!-- Picker Container -->
-                            <Border BackgroundColor="White" 
+                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#DDD6FE"
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                     StrokeThickness="2"
                                     Padding="0">
                                 <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -127,7 +127,7 @@
                                             SelectedIndexChanged="ProductCompartimentPickerSelected"
                                             BackgroundColor="Transparent"
                                             FontSize="14"
-                                            TextColor="#374151"
+                                            TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                             VerticalOptions="Center"
                                             HorizontalOptions="FillAndExpand"
                                             AutomationId="PickerProductCompartimentPair"/>
@@ -141,7 +141,7 @@
                         
                         <!-- Purchase Price -->
                         <Border Grid.Column="0" Grid.Row="0"
-                                BackgroundColor="#F8F9FA"
+                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                                 StrokeShape="RoundRectangle 16"
                                 Stroke="#E8F5E8"
                                 StrokeThickness="2"
@@ -162,31 +162,31 @@
                                         <Label Text="Precio Compra" 
                                                FontSize="14" 
                                                FontAttributes="Bold"
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                AutomationId="LabelPrice"/>
                                         <Label Text="Incluye transporte" 
                                                FontSize="11" 
-                                               TextColor="#6B7280"
+                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                                Margin="0,-2,0,0"/>
                                     </StackLayout>
                                 </StackLayout>
                                 
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="1"
                                         Padding="12,10">
                                     <Entry x:Name="FirstEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.00" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding PurchasePrice, Mode=TwoWay}"
                                            Completed="EntryPurchasePriceCompleted"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryPrice"/>
                                 </Border>
@@ -195,7 +195,7 @@
 
                         <!-- Sell Price -->
                         <Border Grid.Column="1" Grid.Row="0"
-                                BackgroundColor="#F8F9FA"
+                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                                 StrokeShape="RoundRectangle 16"
                                 Stroke="#FFF3E0"
                                 StrokeThickness="2"
@@ -215,27 +215,27 @@
                                     <Label Text="Precio Venta" 
                                            FontSize="14" 
                                            FontAttributes="Bold"
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            VerticalOptions="Center"
                                            AutomationId="LabelSellPrice"/>
                                 </StackLayout>
                                 
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="1"
                                         Padding="12,10">
                                     <Entry x:Name="SecondEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.00" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding SellPrice, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="EntrySellPriceCompleted"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntrySellPrice"/>
                                 </Border>
@@ -244,7 +244,7 @@
 
                         <!-- Quantity Field (Full Width) -->
                         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
-                                BackgroundColor="#F8F9FA"
+                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                                 StrokeShape="RoundRectangle 16"
                                 Stroke="#E3F2FD"
                                 StrokeThickness="2"
@@ -264,27 +264,27 @@
                                     <Label Text="Cantidad de Galones" 
                                            FontSize="16" 
                                            FontAttributes="Bold"
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            VerticalOptions="Center"
                                            AutomationId="LabelQuantity"/>
                                 </StackLayout>
                                 
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="16,12">
                                     <Entry x:Name="ThirdEntry" 
                                            Keyboard="Numeric"
                                            Placeholder="0.000" 
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            Text="{Binding Quantity, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="Add_Product"
                                            BackgroundColor="Transparent"
                                            FontSize="16"
-                                           TextColor="#374151"
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryQuantity"/>
                                 </Border>

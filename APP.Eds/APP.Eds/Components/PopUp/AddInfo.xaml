@@ -8,7 +8,7 @@
     Color="Transparent">
     
     <!-- Modern Minimalist Container -->
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             WidthRequest="380" 
@@ -69,7 +69,7 @@
                 
                 <VerticalStackLayout Spacing="16">
                     <!-- Description Card -->
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 12"
                             Stroke="#E8F2FF"
                             StrokeThickness="1"
@@ -132,7 +132,7 @@
 
             <!-- Modern Action Buttons -->
             <Border Grid.Row="2"
-                    BackgroundColor="White"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 0,0,20,20"
                     Padding="20,12">
                 
@@ -151,7 +151,7 @@
                                 FontSize="16" 
                                 FontAttributes="Bold"
                                 Text="Cancelar" 
-                                TextColor="#757575"
+                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                 HeightRequest="46"
                                 AutomationId="ButtonCancelAddInfo"/>
                     </Border>
