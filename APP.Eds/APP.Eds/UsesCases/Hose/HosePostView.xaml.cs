@@ -16,16 +16,15 @@ public partial class HosePostView : ContentPage
         BindingContext = _hoseService;
     }
 
-    protected override void OnAppearing()
+     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // Asegurar que el texto del botón de compartimento se restablezca al volver a la vista.
-        if (CompartmentButton != null)
-        {
-            CompartmentButton.Text = "📦 Compartimento";
-        }
-        OnPropertyChanged(nameof(BindingContext));
+
+        // Llamada correcta al m�todo GetHoseAsync del servicio
+        await _hoseService.GetHoseAsync();
+
     }
+
 
     private async void OnCompartimentButtonClicked(object sender, EventArgs e)
     {
@@ -133,8 +132,8 @@ public partial class HosePostView : ContentPage
                 Number = 0;
                 AccumulatedAmount = 0;
                 AccumulatedGallons = 0;
-                _hoseService.SelectedDispensers = null;
-                _hoseService.SelectProductType = null;
+                _hoseService.SelectedDispensers = default!;
+                _hoseService.SelectProductType = default!;
             }
             catch (Exception ex)
             {
