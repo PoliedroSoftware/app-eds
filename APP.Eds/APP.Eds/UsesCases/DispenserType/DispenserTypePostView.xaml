@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Tipos de Dispensador"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -34,7 +34,7 @@
                 </Border>
 
                 <!-- Dispenser Type Registration Form Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -49,7 +49,7 @@
                             <Label Text="Nuevo Tipo de Dispensador" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -57,9 +57,9 @@
                         <StackLayout Spacing="8">
                             <Label Text="Descripción del Tipo de Dispensador" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                    FontSize="14"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                     StrokeShape="RoundRectangle 8"
                                     Stroke="#BBDEFB" 
                                     Padding="4">
@@ -76,9 +76,9 @@
                                            Text="{Binding Description, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryDispenserType"
-                                           PlaceholderColor="#9CA3AF"
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                            FontSize="16"
-                                           TextColor="#374151"/>
+                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
                                 </Grid>
                             </Border>
                         </StackLayout>
@@ -123,7 +123,7 @@
                 </Border>
 
                 <!-- Example Types Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -138,7 +138,7 @@
                             <Label Text="Ejemplos de Tipos de Dispensador" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 

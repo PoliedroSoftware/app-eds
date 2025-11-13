@@ -17,7 +17,7 @@
     </mct:Popup.Resources>
     
     <!-- Modern Minimalist Container with responsive width -->
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             Margin="20,40"
@@ -106,7 +106,7 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <!-- Payment Method Card -->
-                                <Border BackgroundColor="White"
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 12"
                                         Stroke="#E8F2FF"
                                         StrokeThickness="1"
@@ -147,13 +147,13 @@
                                                        TextColor="#1976D2"/>
                                                 <Label Text="Método de pago"
                                                        FontSize="11"
-                                                       TextColor="#757575"/>
+                                                       TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Amount Entry - Full Width -->
                                         <StackLayout Spacing="4">
-                                            <Border BackgroundColor="White"
+                                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                                     StrokeShape="RoundRectangle 8"
                                                     Stroke="#E0E9F7"
                                                     StrokeThickness="1"
@@ -217,7 +217,7 @@
                                                 <!-- Amount in Words -->
                                                 <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
                                                        FontSize="10"
-                                                       TextColor="#666666"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                                        FontAttributes="Italic"
                                                        VerticalOptions="Center"
                                                        LineBreakMode="TailTruncation"
@@ -226,7 +226,7 @@
                                         </StackLayout>
 
                                         <!-- Description Entry - Full Width -->
-                                        <Border BackgroundColor="White"
+                                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                                 StrokeShape="RoundRectangle 8"
                                                 Stroke="#E0E9F7"
                                                 StrokeThickness="1"
@@ -257,7 +257,7 @@
 
             <!-- Modern Action Buttons -->
             <Border Grid.Row="3"
-                    BackgroundColor="White"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 0,0,20,20"
                     Padding="16,12">
                 
@@ -276,7 +276,7 @@
                                 FontSize="15" 
                                 FontAttributes="Bold"
                                 Text="Borrar" 
-                                TextColor="#757575"
+                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                 HeightRequest="44"
                                 AutomationId="ButtonClearTypeOfCollection"/>
                     </Border>

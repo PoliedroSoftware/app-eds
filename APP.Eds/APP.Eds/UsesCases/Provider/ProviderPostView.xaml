@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Proveedores"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nuevo Proveedor" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Registre un nuevo proveedor de combustible" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,12 +61,12 @@
                                 <Label Text="Nombre del Proveedor" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -77,12 +77,12 @@
                                         
                                         <Entry Keyboard="Text"
                                                Placeholder="Ingrese el nombre del proveedor"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Name, Mode=TwoWay}"
                                                AutomationId="EntryProvider"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
+                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -147,10 +147,10 @@
                                 <Label Text="Lista de Proveedores" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Proveedores registrados en el sistema" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -160,7 +160,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -185,10 +185,10 @@
                                                 <Label Text="{Binding Name}" 
                                                        FontSize="16" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#2D3436"/>
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                                 <Label Text="Proveedor de combustible" 
                                                        FontSize="12" 
-                                                       TextColor="#636E72"/>
+                                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             </StackLayout>
 
                                             <!-- Status Indicator -->

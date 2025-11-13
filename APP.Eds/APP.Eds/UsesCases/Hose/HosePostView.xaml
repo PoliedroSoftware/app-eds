@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:button="clr-namespace:APP.Eds.Controls"
     Title="Gestión de Mangueras"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -47,10 +47,10 @@
                                 <Label Text="Nueva Manguera" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Configure una nueva manguera para dispensador" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -62,12 +62,12 @@
                                 <Label Text="Número de Manguera" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -78,12 +78,12 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="Ingrese número de manguera"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Number, Mode=TwoWay}"
                                                AutomationId="EntryNumber"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
+                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -98,12 +98,12 @@
                                     <Label Text="Monto Acumulado" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -114,12 +114,12 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="0.00"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding AccumulatedAmount, Mode=TwoWay}"
                                                    AutomationId="EntryAccumulatedAmount"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -131,12 +131,12 @@
                                     <Label Text="Galones Acumulados" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -147,12 +147,12 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="0.000"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding AccumulatedGallons, Mode=TwoWay}"
                                                    AutomationId="EntryAccumulatedGallons"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -165,12 +165,12 @@
                                 <Label Text="Dispensador" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -186,7 +186,7 @@
                                                 AutomationId="PickerDispensers"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -198,12 +198,12 @@
                                 <Label Text="Tipo de Producto" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -219,7 +219,7 @@
                                                 AutomationId="PickerProductType"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -230,12 +230,12 @@
                                 <Label Text="Compartimiento" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
 
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -251,7 +251,7 @@
                                                 AutomationId="PickerCompartiments"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -347,10 +347,10 @@
                                 <Label Text="Lista de Mangueras" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Mangueras registradas en el sistema" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -360,7 +360,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -382,27 +382,27 @@
 
                                             <!-- Hose Info -->
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="0" Grid.Column="1">
-                                                <Label Text="N° Manguera:" FontSize="13" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
-                                                <Label Text="{Binding Number}" FontSize="13" TextColor="#2D3436" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
+                                                <Label Text="N° Manguera:" FontSize="13" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="{Binding Number}" FontSize="13" TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Grid.Column="1">
-                                                <Label Text="Dispensador:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Dispensador:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding DispenserName}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="2" Grid.Column="1">
-                                                <Label Text="Producto:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Producto:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding ProductTypeName}" FontSize="12" TextColor="#9C27B0" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="3" Grid.Column="1">
-                                                <Label Text="Dinero:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Dinero:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding AccumulatedAmount, StringFormat='$ {0:N2}'}" FontSize="12" TextColor="#4CAF50" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
                                             
                                             <Grid ColumnDefinitions="Auto,*" Grid.Row="4" Grid.Column="1">
-                                                <Label Text="Galones:" FontSize="12" TextColor="#666" FontAttributes="Bold" Grid.Column="0"/>
+                                                <Label Text="Galones:" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" Grid.Column="0"/>
                                                 <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N3}'}" FontSize="12" TextColor="#2196F3" FontAttributes="Bold" Grid.Column="1" Margin="8,0,0,0"/>
                                             </Grid>
 

@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding CompartimentManagement}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nuevo Compartimento" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Configure un nuevo compartimento del tanque" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,12 +61,12 @@
                                 <Label Text="{Binding SelectTank}" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -82,7 +82,7 @@
                                                 AutomationId="PickerTank"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -94,12 +94,12 @@
                                 <Label Text="Seleccionar producto" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -115,7 +115,7 @@
                                                 AutomationId="PickerProduct"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -130,12 +130,12 @@
                                     <Label Text="Número" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -146,13 +146,13 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="{Binding EnterNumber}"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Number, Mode=TwoWay}"
                                                    TextChanged="NumericEntry_TextChanged"
                                                    AutomationId="EntryCompartimentNumber"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -164,12 +164,12 @@
                                     <Label Text="Altura (cm)" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                            
-                                    <Border BackgroundColor="#F8F9FA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#DDD6FE"
+                                            Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                             StrokeThickness="2"
                                             Padding="0">
                                         <StackLayout Orientation="Horizontal" Spacing="8" Padding="12,12">
@@ -180,13 +180,13 @@
                                             
                                             <Entry Keyboard="Numeric"
                                                    Placeholder="{Binding EnterHeight}"
-                                                   PlaceholderColor="#9CA3AF"
+                                                   PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                    Text="{Binding Height, Mode=TwoWay}"
                                                    TextChanged="NumericEntry_TextChanged"
                                                    AutomationId="EntryCompartimentHeight"
                                                    BackgroundColor="Transparent"
                                                    FontSize="14"
-                                                   TextColor="#374151"
+                                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                    VerticalOptions="Center"
                                                    HorizontalOptions="FillAndExpand"/>
                                         </StackLayout>
@@ -199,7 +199,7 @@
                                 <Label Text="Capacidades" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        HorizontalOptions="Center"/>
 
                                 <!-- Grid for Capacities -->
@@ -210,7 +210,7 @@
                                         <Label Text="Capacidad Nominal" 
                                                FontSize="13" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"/>
                                                
                                         <Border BackgroundColor="#E8F5E8" 
@@ -225,7 +225,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding EnterNominal}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Nominal, Mode=TwoWay}"
                                                        TextChanged="NumericEntry_TextChanged"
                                                        AutomationId="EntryCompartimentNominal"
@@ -243,7 +243,7 @@
                                         <Label Text="Capacidad Operativa" 
                                                FontSize="13" 
                                                FontAttributes="Bold" 
-                                               TextColor="#2D3436"
+                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                HorizontalOptions="Center"/>
                                                
                                         <Border BackgroundColor="#E3F2FD" 
@@ -258,7 +258,7 @@
                                                 
                                                 <Entry Keyboard="Numeric"
                                                        Placeholder="{Binding EnterOperative}"
-                                                       PlaceholderColor="#9CA3AF"
+                                                       PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                        Text="{Binding Operative, Mode=TwoWay}"
                                                        TextChanged="NumericEntry_TextChanged"
                                                        AutomationId="EntryCompartimentOperative"
@@ -331,10 +331,10 @@
                                 <Label Text="Lista de Compartimentos" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Compartimentos registrados en el sistema" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -344,7 +344,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -369,7 +369,7 @@
                                                 <Label Text="{Binding Number, StringFormat='Compartimento #{0}'}" 
                                                        FontSize="16" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#2D3436"/>
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                                 <StackLayout Orientation="Horizontal" Spacing="8">
                                                     <Label Text="{Binding Number, StringFormat='Tanque #: {0}'}" 
                                                            FontSize="12" 
@@ -386,21 +386,21 @@
                                             <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="16">
                                                 <!-- Nominal Capacity -->
                                                 <StackLayout Grid.Row="0" Grid.Column="0">
-                                                    <Label Text="Cap. Nominal" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Cap. Nominal" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding Nominal, StringFormat='{0:N2} L'}" 
                                                            FontSize="12" TextColor="#4CAF50" FontAttributes="Bold"/>
                                                 </StackLayout>
 
                                                 <!-- Operative Capacity -->
                                                 <StackLayout Grid.Row="0" Grid.Column="1">
-                                                    <Label Text="Cap. Operativa" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Cap. Operativa" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding Operative, StringFormat='{0:N2} L'}" 
                                                            FontSize="12" TextColor="#2196F3" FontAttributes="Bold"/>
                                                 </StackLayout>
 
                                                 <!-- Height -->
                                                 <StackLayout Grid.Row="1" Grid.Column="1">
-                                                    <Label Text="Altura" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Altura" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding Height, StringFormat='{0:N0} cm'}" 
                                                            FontSize="12" TextColor="#9C27B0" FontAttributes="Bold"/>
                                                 </StackLayout>
