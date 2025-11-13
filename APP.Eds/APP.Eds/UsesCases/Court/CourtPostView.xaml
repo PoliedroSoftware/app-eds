@@ -747,75 +747,66 @@
 
                                 <!-- Botón NewSale -->
                                 <Button Text="{Binding NewSale}"
-            Style="{StaticResource CompactActionButtonStyle}"
-            Clicked="OpenDispenserPopUp"
-            Command="{Binding OpenDispenserCommand}"
-            AutomationId="AddSaleButton"
-            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
-            Grid.Column="0">
+                                    Clicked="OpenDispenserPopUp"
+                                    AutomationId="AddSaleButton"
+                                    Grid.Column="0"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    Padding="16,12"
+                                    CornerRadius="12"
+                                    BackgroundColor="#4CAF50"
+                                    TextColor="White">
                                     <Button.Triggers>
-                                        <!-- Bloquear si el corte ya fue enviado -->
+                                        <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
-                         Value="False">
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
+                                                 Value="False">
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                        <!-- Trigger para cuando se envió el corte -->
+                                        <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
+                                                 Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
-
-                                    <!-- Estados visuales -->
-                                    <!-- Estados visuales -->
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <VisualState Name="Normal">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="#4CAF50"/>
-                                                    <Setter Property="TextColor" Value="White"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState Name="Disabled">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
                                 </Button>
 
                                 <!-- Botón AddCollectionType -->
                                 <Button Text="{Binding AddCollectionType}"
-            Style="{StaticResource CompactActionButtonStyle}"
-            Clicked="OpenTypeOfCollectionPopUp"
-            AutomationId="AddCollectionTypeButton"
-            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
-            Grid.Column="1">
+                                    Clicked="OpenTypeOfCollectionPopUp"
+                                    AutomationId="AddCollectionTypeButton"
+                                    Grid.Column="1"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    Padding="16,12"
+                                    CornerRadius="12"
+                                    BackgroundColor="#2196F3"
+                                    TextColor="White">
                                     <Button.Triggers>
+                                        <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
-                         Value="False">
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
+                                                 Value="False">
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                        <!-- Trigger para cuando se envió el corte -->
+                                        <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
+                                                 Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
-
-                                    <!-- Estados visuales -->
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <VisualState Name="Normal">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="#2196F3"/>
-                                                    <!-- Azul -->
-                                                    <Setter Property="TextColor" Value="White"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState Name="Disabled">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
-                                                    <!-- Apagado -->
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
                                 </Button>
 
                             </Grid>
