@@ -556,17 +556,29 @@
                     <Border BackgroundColor="#FFF3E0" 
                             StrokeShape="RoundRectangle 8"
                             Stroke="#FF9800"
-                            Padding="16"
+                            Padding="12"
                             Margin="0,0,0,8"
                             IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}">
-                        <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                            <Label Text="📄" FontSize="18" VerticalOptions="Center"/>
-                            <Label Text="Comprobantes" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" 
-                                   TextColor="#F57C00"
-                                   VerticalOptions="Center"/>
-                        </StackLayout>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Start" Grid.Column="0">
+                                <Label Text="📄" FontSize="18" VerticalOptions="Center"/>
+                                <Label Text="Comprobantes" 
+                                       FontAttributes="Bold" 
+                                       FontSize="16" 
+                                       TextColor="#F57C00"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+
+                            <Button Grid.Column="1"
+                                    Text="Eliminar todos"
+                                    Padding="10,6"
+                                    CornerRadius="12"
+                                    BackgroundColor="#FFEBEE"
+                                    TextColor="#C62828"
+                                    FontSize="12"
+                                    Clicked="OnRemoveAllDocumentsClicked"
+                                    IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}"/>
+                        </Grid>
                     </Border>
 
                     <CollectionView ItemsSource="{Binding CourtDocuments}" x:Name="CourtDocuments">

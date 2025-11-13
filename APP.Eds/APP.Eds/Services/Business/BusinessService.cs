@@ -39,6 +39,7 @@ public class BusinessService : INotifyPropertyChanged
     // Collections
     public ObservableCollection<BusinessModel> BusinessList { get; set; } = [];
     public ObservableCollection<EnhancedBusinessItem> EnhancedBusinessList { get; set; } = [];
+    private List<EnhancedBusinessItem> _allBusinesses = new();
     public ObservableCollection<string> StatusOptions { get; set; } = new();
 
     private BusinessRequest Request { get; set; }
@@ -285,8 +286,11 @@ public class BusinessService : INotifyPropertyChanged
                 });
             }
 
+            // Store all businesses for filtering
+            _allBusinesses = enhancedBusinesses.OrderBy(x => x.Name).ToList();
+            
             EnhancedBusinessList.Clear();
-            foreach (var business in enhancedBusinesses.OrderBy(x => x.Name))
+            foreach (var business in _allBusinesses)
             {
                 EnhancedBusinessList.Add(business);
             }
@@ -304,18 +308,33 @@ public class BusinessService : INotifyPropertyChanged
         FilterActiveColor = Color.FromArgb("#9E9E9E");
         FilterInactiveColor = Color.FromArgb("#9E9E9E");
 
-        // Set active button color
+        // Set active button color and filter the list
+        IEnumerable<EnhancedBusinessItem> filteredBusinesses;
+        
         switch (filter)
         {
             case "all":
                 FilterAllColor = Color.FromArgb("#3B82F6");
+                filteredBusinesses = _allBusinesses;
                 break;
             case "active":
                 FilterActiveColor = Color.FromArgb("#3B82F6");
+                filteredBusinesses = _allBusinesses.Where(b => b.IsActive);
                 break;
             case "inactive":
                 FilterInactiveColor = Color.FromArgb("#3B82F6");
+                filteredBusinesses = _allBusinesses.Where(b => !b.IsActive);
                 break;
+            default:
+                filteredBusinesses = _allBusinesses;
+                break;
+        }
+
+        // Update the observable collection with filtered results
+        EnhancedBusinessList.Clear();
+        foreach (var business in filteredBusinesses)
+        {
+            EnhancedBusinessList.Add(business);
         }
     }
 
@@ -350,6 +369,7 @@ public class BusinessService : INotifyPropertyChanged
 
             if (result)
             {
+                _allBusinesses.Remove(business);
                 EnhancedBusinessList.Remove(business);
                 UpdateStatistics();
                 await Application.Current.MainPage.DisplayAlert("Exito", "Negocio eliminado correctamente", "OK");
@@ -496,6 +516,8 @@ public class BusinessService : INotifyPropertyChanged
                     ActiveEds = 0
                 };
                 
+                // Add to backing list for filtering
+                _allBusinesses.Insert(0, newBusiness);
                 EnhancedBusinessList.Insert(0, newBusiness);
                 UpdateStatistics();
 

@@ -11,6 +11,7 @@ using APP.Eds.Helpers;
 using APP.Eds.Models.Shopping;
 using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
+using APP.Eds.Models.Islander;
 
 namespace APP.Eds.Services.Shopping;
 
@@ -24,6 +25,9 @@ public class ShoppingService : INotifyPropertyChanged
     public ObservableCollection<ProviderModel> ProviderList { get; set; } = [];
     public ObservableCollection<CategoryModel> CategoryList { get; set; } = [];
     public ObservableCollection<ProductCompartimentPairModel> ProductCompartimentPairs { get; set; } = [];
+    public ObservableCollection<ProductCompartimentPairModel> FilteredProductCompartimentPairs { get; set; } = [];
+    public ObservableCollection<EdsModel> EdsList { get; set; } = [];
+    public ObservableCollection<ShoppingResponse> ShoppingList { get; set; } = [];
     private ShoppingRequest Request { get; set; }
 
 
@@ -381,6 +385,62 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    private EdsModel _selectedEds;
+    public EdsModel SelectedEds
+    {
+        get => _selectedEds;
+        set
+        {
+            _selectedEds = value;
+            OnPropertyChanged(nameof(SelectedEds));
+            if (_selectedEds != null)
+            {
+                IdEds = _selectedEds.IdEds;
+                // ✅ Filtrar compartimentos cuando se selecciona un EDS
+                _ = FilterCompartimentsByEdsAsync(_selectedEds.IdEds);
+            }
+            else
+            {
+                // Si se deselecciona el EDS, limpiar los compartimentos filtrados
+                FilteredProductCompartimentPairs.Clear();
+            }
+        }
+    }
+
+    private int _idEds;
+    public int IdEds
+    {
+        get => _idEds;
+        set
+        {
+            _idEds = value;
+            OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
+    // Filter properties for ShoppingListView
+    private ProviderModel _selectedProviderFilter;
+    public ProviderModel SelectedProviderFilter
+    {
+        get => _selectedProviderFilter;
+        set
+        {
+            _selectedProviderFilter = value;
+            OnPropertyChanged(nameof(SelectedProviderFilter));
+        }
+    }
+
+    private CategoryModel _selectedCategoryFilter;
+    public CategoryModel SelectedCategoryFilter
+    {
+        get => _selectedCategoryFilter;
+        set
+        {
+            _selectedCategoryFilter = value;
+            OnPropertyChanged(nameof(SelectedCategoryFilter));
+        }
+    }
+
     public ICommand GetByIdShoppingDataCommand { get; }
     public ICommand SaveShoppingDataCommand { get; }
     public Command AddShoppingProductCommand { get; }
@@ -398,6 +458,7 @@ public class ShoppingService : INotifyPropertyChanged
         GetAllProviderData();
         GetAllCategoryData();
         GetAllProductCompartimentPairsAsync();
+        GetAllEdsData();
 
         //GetByIdShoppingDataCommand = new Command<int>(async (shoppingId) => await GetByIdShoppingDataAsync(shoppingId));
         SaveShoppingDataCommand = new Command(async () => await SaveShoppingDataAsync());
@@ -451,6 +512,69 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    private async void GetAllEdsData()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron los datos de configuración", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/eds";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var edsList = JsonSerializer.Deserialize<EdsResponseModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateEdsList(edsList?.Data ?? new List<EdsModel>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando EDS: {ex.Message}");
+        }
+    }
+
+    private void UpdateEdsList(IEnumerable<EdsModel> edsData)
+    {
+        EdsList.Clear();
+        foreach (var eds in edsData)
+        {
+            EdsList.Add(eds);
+        }
+    }
+
+    public async Task GetAllShoppingAsync(int pageNumber = 1, int pageSize = 5)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+        try
+        {
+            string url = $"{Configuration.BaseUrl}/api/v1/shopping?PageNumber={pageNumber}&PageSize={pageSize}";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var response = await httpClient.GetStringAsync(url);
+            var shoppingApiResponse = JsonSerializer.Deserialize<ShoppingApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            UpdateShoppingList(shoppingApiResponse?.Data ?? new List<ShoppingResponse>());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando compras: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al cargar compras: {ex.Message}", "OK");
+        }
+    }
+
+    private void UpdateShoppingList(IEnumerable<ShoppingResponse> shoppingData)
+    {
+        ShoppingList.Clear();
+        foreach (var shopping in shoppingData)
+        {
+            ShoppingList.Add(shopping);
+        }
+    }
+
     public async Task GetAllProductCompartimentPairsAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
@@ -487,6 +611,7 @@ public class ShoppingService : INotifyPropertyChanged
                 Number = x.number,
                 Operative = x.operative,
                 Stock = GetRealProductStock(x.idProduct, productDictionary), // Use real stock from product API
+                IdTank = x.idTank  // ✅ Guardar el IdTank para poder filtrar después
             }).ToList();
 
             ProductCompartimentPairs.Clear();
@@ -502,6 +627,143 @@ public class ShoppingService : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Filtra los compartimentos según el EDS seleccionado usando la relación eds_tank
+    /// </summary>
+    public async Task FilterCompartimentsByEdsAsync(int edsId)
+    {
+        if (string.IsNullOrEmpty(_authToken))
+            return;
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+
+            // Obtener todas las asignaciones EDS-Tank
+            string edsTankUrl = $"{Configuration.BaseUrl}/api/v1/eds-tank";
+            var edsTankResponse = await httpClient.GetStringAsync(edsTankUrl);
+            
+            // Crear el modelo de respuesta para deserializar
+            var edsTankApiResponse = JsonSerializer.Deserialize<EdsTankApiResponse>(edsTankResponse, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (edsTankApiResponse == null || edsTankApiResponse.Data == null || !edsTankApiResponse.Data.Any())
+            {
+                // No hay asignaciones de tanques en el sistema
+                FilteredProductCompartimentPairs.Clear();
+                System.Diagnostics.Debug.WriteLine($"No se encontraron asignaciones EDS-Tank en el sistema");
+                
+                // Mostrar todos los compartimentos si no hay asignaciones
+                foreach (var compartment in ProductCompartimentPairs)
+                {
+                    FilteredProductCompartimentPairs.Add(compartment);
+                }
+                return;
+            }
+
+            // Filtrar solo los tanques del EDS seleccionado
+            var tankIdsForEds = edsTankApiResponse.Data
+                .Where(et => et.IdEds == edsId)
+                .Select(et => et.IdTank)
+                .ToList();
+
+            System.Diagnostics.Debug.WriteLine($"EDS {edsId} tiene {tankIdsForEds.Count} tanques asignados: {string.Join(", ", tankIdsForEds)}");
+
+            if (!tankIdsForEds.Any())
+            {
+                // El EDS seleccionado no tiene tanques asignados
+                FilteredProductCompartimentPairs.Clear();
+                
+                System.Diagnostics.Debug.WriteLine($"El EDS {edsId} no tiene tanques asignados");
+                
+                await CustomAlert.ShowWarningAsync(
+                    $"El EDS seleccionado no tiene tanques asignados.\n\n" +
+                    $"Por favor, asigne tanques al EDS en el módulo de configuración antes de realizar una compra.",
+                    "Sin Tanques Asignados");
+                return;
+            }
+
+            // Debug: Mostrar todos los compartimentos disponibles con sus tanques
+            System.Diagnostics.Debug.WriteLine($"Compartimentos disponibles:");
+            foreach (var c in ProductCompartimentPairs)
+            {
+                System.Diagnostics.Debug.WriteLine($"  - Compartimento {c.Number}, Producto: {c.ProductName}, Tank: {c.IdTank}");
+            }
+
+            // Filtrar los compartimentos que pertenecen a los tanques del EDS seleccionado
+            var filteredCompartments = ProductCompartimentPairs
+                .Where(c => tankIdsForEds.Contains(c.IdTank))
+                .OrderBy(c => c.ProductName)
+                .ThenBy(c => c.Number)
+                .ToList();
+
+            System.Diagnostics.Debug.WriteLine($"Compartimentos filtrados: {filteredCompartments.Count}");
+            foreach (var c in filteredCompartments)
+            {
+                System.Diagnostics.Debug.WriteLine($"  - Compartimento {c.Number}, Producto: {c.ProductName}, Tank: {c.IdTank}");
+            }
+
+            // Actualizar la colección filtrada
+            FilteredProductCompartimentPairs.Clear();
+            
+            if (filteredCompartments.Any())
+            {
+                foreach (var compartment in filteredCompartments)
+                {
+                    FilteredProductCompartimentPairs.Add(compartment);
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"✅ Filtrado exitoso: {FilteredProductCompartimentPairs.Count} compartimentos para EDS {edsId}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"⚠️ No se encontraron compartimentos para los tanques del EDS {edsId}");
+                
+                await CustomAlert.ShowWarningAsync(
+                    $"Los tanques asignados a este EDS no tienen compartimentos configurados.\n\n" +
+                    $"Por favor, configure los compartimentos en el módulo de tanques.",
+                    "Sin Compartimentos Configurados");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error de conexión filtrando compartimentos: {httpEx.Message}");
+            
+            await CustomAlert.ShowErrorAsync(
+                "Error al cargar los compartimentos del EDS seleccionado.\n\n" +
+                "Verifique su conexión a internet e intente nuevamente.",
+                "Error de Conexión");
+            
+            // En caso de error de conexión, limpiar para evitar confusión
+            FilteredProductCompartimentPairs.Clear();
+        }
+        catch (JsonException jsonEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error de JSON filtrando compartimentos: {jsonEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"   Stack trace: {jsonEx.StackTrace}");
+            
+            // En caso de error de deserialización, mostrar todos los compartimentos
+            FilteredProductCompartimentPairs.Clear();
+            foreach (var compartment in ProductCompartimentPairs)
+            {
+                FilteredProductCompartimentPairs.Add(compartment);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error general filtrando compartimentos por EDS: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"   Tipo: {ex.GetType().Name}");
+            System.Diagnostics.Debug.WriteLine($"   Stack trace: {ex.StackTrace}");
+            
+            // En caso de error general, mostrar todos los compartimentos
+            FilteredProductCompartimentPairs.Clear();
+            foreach (var compartment in ProductCompartimentPairs)
+            {
+                FilteredProductCompartimentPairs.Add(compartment);
+            }
+        }
+    }
 
     private string GetProductName(int productId, Dictionary<int, ProductResponse> productDictionary)
     {
@@ -634,6 +896,13 @@ public class ShoppingService : INotifyPropertyChanged
                 return; // Stop if invoice is invalid or user wants to modify it
             }
 
+            // Validate EDS selection
+            if (SelectedEds is null)
+            {
+                await CustomAlert.ShowErrorAsync("Debe seleccionar un EDS (Estación de Servicio) para registrar la compra", "EDS Requerido");
+                return;
+            }
+
             if (SelectedProvider is null || SelectedCategory is null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Complete todos los campos", "OK");
@@ -657,6 +926,7 @@ public class ShoppingService : INotifyPropertyChanged
                 Amount = Amount,
                 IdProvider = SelectedProvider.IdProvider,
                 IdCategory = SelectedCategory.IdCategory,
+                IdEds = SelectedEds.IdEds,  // ✅ Asignar IdEds dentro del ShoppingModel
                 ShoppingProducts = shoppingProducts
             };
 
@@ -676,6 +946,7 @@ public class ShoppingService : INotifyPropertyChanged
                 Amount = 0;
                 SelectedProvider = null;
                 SelectedCategory = null;
+                SelectedEds = null;
                 ShoppingProduct.Clear();
                 UpdateAccumulatedTotals();
             }
@@ -863,7 +1134,7 @@ public class ShoppingService : INotifyPropertyChanged
                 double maxCapacity = compartmentCapacity;
 
                 // Intentar extraer el stock actual y la capacidad del mensaje de error
-                var match = System.Text.RegularExpressions.Regex.Match(errorContent, @"(\d+(?:\.\d+)?)\s*gls?\)?\s*supera\s*la\s*capacidad\s*operativa\s*\((\d+(?:\.\d+)?)\s*gls?",
+                var match = System.Text.RegularExpressions.Regex.Match(errorContent, @"(\d+(?:\.\d+)?)\s*gls?\)?\s*supera\s*la\s*capacidad\s*\((\d+(?:\.\d+)?)\s*gls?",
                     System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
                 if (match.Success && match.Groups.Count >= 3)
@@ -1029,7 +1300,7 @@ public class ShoppingService : INotifyPropertyChanged
                 suggestionsText,
                 "Factura Duplicada");
 
-            return false; // Always return false if invoice exists - forces user to modify
+            return false; // Siempre retornar false si la factura existe - obliga al usuario a modificar
         }
         else
         {
