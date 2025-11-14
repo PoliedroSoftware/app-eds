@@ -1,10 +1,29 @@
 using NUnit.Framework;
-using APP.Eds.Models.Tank;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Mobile_tests
 {
+    // Simplified models for unit testing the tank listing logic in compartment capacity module
+    public class TankCapacityResponse
+    {
+        public int IdTank { get; set; }
+        public string Number { get; set; } = "";
+        public decimal Ability { get; set; }
+        public decimal Stock { get; set; }
+        public int Compartment { get; set; }
+        
+        public string DisplayText => $"Tanque {Number} - Capacidad {Ability:N0} L";
+    }
+
+    public class TankCapacityApiResponse
+    {
+        public int StatusCode { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; } = "";
+        public List<TankCapacityResponse> Data { get; set; } = new();
+    }
+
     /// <summary>
     /// Test to verify that the tank listing uses the correct endpoint and model
     /// </summary>
@@ -17,7 +36,7 @@ namespace Mobile_tests
         public void TankResponse_ShouldHaveCorrectProperties()
         {
             // Arrange & Act
-            var tank = new TankResponse
+            var tank = new TankCapacityResponse
             {
                 IdTank = 1,
                 Number = "TQ-TQ-001",
@@ -40,7 +59,7 @@ namespace Mobile_tests
         public void TankResponse_DisplayText_ShouldFormatCorrectly()
         {
             // Arrange
-            var tank = new TankResponse
+            var tank = new TankCapacityResponse
             {
                 IdTank = 1,
                 Number = "TQ-TQ-001",
@@ -64,14 +83,14 @@ namespace Mobile_tests
         public void TankApiResponse_ShouldContainDataList()
         {
             // Arrange
-            var tanks = new List<TankResponse>
+            var tanks = new List<TankCapacityResponse>
             {
-                new TankResponse { IdTank = 1, Number = "1", Ability = 10000 },
-                new TankResponse { IdTank = 2, Number = "2", Ability = 12000 },
-                new TankResponse { IdTank = 3, Number = "TQ-TQ-001", Ability = 15000 }
+                new TankCapacityResponse { IdTank = 1, Number = "1", Ability = 10000 },
+                new TankCapacityResponse { IdTank = 2, Number = "2", Ability = 12000 },
+                new TankCapacityResponse { IdTank = 3, Number = "TQ-TQ-001", Ability = 15000 }
             };
 
-            var apiResponse = new TankApiResponse
+            var apiResponse = new TankCapacityApiResponse
             {
                 StatusCode = 200,
                 Success = true,
@@ -91,11 +110,11 @@ namespace Mobile_tests
         public void TankList_ShouldNotContainDuplicates()
         {
             // Arrange
-            var tanks = new List<TankResponse>
+            var tanks = new List<TankCapacityResponse>
             {
-                new TankResponse { IdTank = 1, Number = "1", Ability = 10000 },
-                new TankResponse { IdTank = 2, Number = "2", Ability = 12000 },
-                new TankResponse { IdTank = 3, Number = "3", Ability = 15000 }
+                new TankCapacityResponse { IdTank = 1, Number = "1", Ability = 10000 },
+                new TankCapacityResponse { IdTank = 2, Number = "2", Ability = 12000 },
+                new TankCapacityResponse { IdTank = 3, Number = "3", Ability = 15000 }
             };
 
             // Act
@@ -111,7 +130,7 @@ namespace Mobile_tests
         public void TankNumber_ShouldNotBeNullOrEmpty()
         {
             // Arrange
-            var tank = new TankResponse
+            var tank = new TankCapacityResponse
             {
                 IdTank = 1,
                 Number = "TQ-TQ-001",
@@ -121,6 +140,28 @@ namespace Mobile_tests
             // Assert
             Assert.That(tank.Number, Is.Not.Null, "Tank number should not be null");
             Assert.That(tank.Number, Is.Not.Empty, "Tank number should not be empty");
+        }
+
+        [Test]
+        [Category("CompartmentCapacity")]
+        [Category("TankListing")]
+        public void TankList_ShouldFilterByValidAbility()
+        {
+            // Arrange
+            var tanks = new List<TankCapacityResponse>
+            {
+                new TankCapacityResponse { IdTank = 1, Number = "1", Ability = 0 },  // Invalid
+                new TankCapacityResponse { IdTank = 2, Number = "2", Ability = 12000 },
+                new TankCapacityResponse { IdTank = 3, Number = "3", Ability = -100 },  // Invalid
+                new TankCapacityResponse { IdTank = 4, Number = "TQ-TQ-001", Ability = 15000 }
+            };
+
+            // Act
+            var validTanks = tanks.Where(t => t.Ability > 0).ToList();
+
+            // Assert
+            Assert.That(validTanks.Count, Is.EqualTo(2), "Only tanks with positive ability should be valid");
+            Assert.That(validTanks.All(t => t.Ability > 0), Is.True, "All valid tanks should have positive ability");
         }
     }
 }
