@@ -2764,20 +2764,20 @@ public class CourtService : INotifyPropertyChanged
 
                 if (diferencia > 0)
                 {
-                    mensajeError = $"?? Validaci�n de Pagos Fallida\n\n" +
+                    mensajeError = $"⚠️ Validaci�n de Pagos Fallida\n\n" +
                                   $"El total de m�todos de pago es menor al total de ventas:\n\n" +
-                                  $"� Total de ventas: ${totalVentas:N2}\n" +
-                                  $"� Total m�todos de pago: ${totalMetodosPago:N2}\n" +
-                                  $"� Faltante: ${diferencia:N2}\n\n" +
+                                  $"💵 Total de ventas: ${totalVentas:N2}\n" +
+                                  $"💳 Total m�todos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"📊 Faltante: ${diferencia:N2}\n\n" +
                                   $"Por favor, agregue m�todos de pago por el monto faltante antes de enviar el corte.";
                 }
                 else
                 {
-                    mensajeError = $"?? Validaci�n de Pagos Fallida\n\n" +
+                    mensajeError = $"⚠️ Validaci�n de Pagos Fallida\n\n" +
                                   $"El total de m�todos de pago excede al total de ventas:\n\n" +
-                                  $"� Total de ventas: ${totalVentas:N2}\n" +
-                                  $"� Total m�todos de pago: ${totalMetodosPago:N2}\n" +
-                                  $"� Excedente: ${Math.Abs(diferencia):N2}\n\n" +
+                                  $"💵 Total de ventas: ${totalVentas:N2}\n" +
+                                  $"💳 Total m�todos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"📊 Excedente: ${Math.Abs(diferencia):N2}\n\n" +
                                   $"Por favor, ajuste los m�todos de pago antes de enviar el corte.";
                 }
 
@@ -2854,15 +2854,9 @@ public class CourtService : INotifyPropertyChanged
                     }
                 }
 
-                await Application.Current.MainPage.DisplayAlert(
-                    "? Corte Enviado Exitosamente",
-                    $"El corte se ha enviado correctamente:\n\n" +
-                    $"� Total de ventas: ${totalVentas:N2}\n" +
-                    $"� M�todos de pago: ${totalMetodosPago:N2}\n" +
-                    $"� Gastos: ${GetTotalExpenditure():N2}\n" +
-                    $"� Documentos adjuntos: {CourtDocuments?.Count ?? 0}\n\n" +
-                    $"La validaci�n de pagos fue exitosa.",
-                    "Completado");
+                // ✅ NUEVO: Construir mensaje profesional y detallado
+                var successMessage = BuildCourtSuccessMessage(totalVentas, totalMetodosPago);
+                await Components.PopUp.CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
             }
             else
             {
@@ -2897,6 +2891,81 @@ public class CourtService : INotifyPropertyChanged
 
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
         }
+    }
+
+    /// <summary>
+    /// Construye un mensaje de éxito profesional y detallado para el envío del corte
+    /// </summary>
+    private string BuildCourtSuccessMessage(double totalAmount, double totalTypeOfCollection)
+    {
+        var message = new System.Text.StringBuilder();
+        
+        message.AppendLine("El corte de turno ha sido registrado correctamente en el sistema.");
+        message.AppendLine();
+        message.AppendLine("📊 RESUMEN DEL CIERRE:");
+        message.AppendLine();
+        
+        // Información de ventas
+        if (CourtDispensers?.Any() == true)
+        {
+            message.AppendLine($"⛽ Ventas por Mangueras: {CourtDispensers.Count} registro(s)");
+            message.AppendLine($"   • Total en dinero: ${totalAmount:N2}");
+            message.AppendLine($"   • Total en galones: {GetTotalGallons():N2}");
+            message.AppendLine();
+        }
+        
+        // Métodos de pago
+        if (CourtTypeOfCollections?.Any() == true)
+        {
+            message.AppendLine($"💳 Métodos de Pago: {CourtTypeOfCollections.Count} método(s)");
+            message.AppendLine($"   • Total recaudado: ${totalTypeOfCollection:N2}");
+            
+            // Detallar métodos de pago
+            foreach (var payment in CourtTypeOfCollections)
+            {
+                message.AppendLine($"   • {payment.TypeOfCollectionName}: ${payment.Amount:N2}");
+            }
+            message.AppendLine();
+        }
+        
+        // Gastos
+        if (CourtExpenditures?.Any() == true)
+        {
+            message.AppendLine($"💸 Gastos Registrados: {CourtExpenditures.Count} gasto(s)");
+            message.AppendLine($"   • Total de gastos: ${GetTotalExpenditure():N2}");
+            message.AppendLine();
+        }
+        
+        // Documentos adjuntos
+        if (CourtDocuments?.Any() == true)
+        {
+            message.AppendLine($"📎 Documentos Adjuntos: {CourtDocuments.Count} archivo(s)");
+            message.AppendLine();
+        }
+        
+        // Efectivo en caja
+        double cash = totalTypeOfCollection - GetTotalExpenditure();
+        message.AppendLine("💰 EFECTIVO FINAL:");
+        message.AppendLine($"   ${cash:N2}");
+        message.AppendLine();
+        
+        // Validación de cuadratura
+        var tolerance = 0.01;
+        if (Math.Abs(totalAmount - totalTypeOfCollection) <= tolerance)
+        {
+            message.AppendLine("✅ VALIDACIÓN: Cuadratura exitosa");
+            message.AppendLine("   Los métodos de pago coinciden con las ventas registradas.");
+        }
+        else
+        {
+            var difference = totalAmount - totalTypeOfCollection;
+            message.AppendLine($"⚠️ VALIDACIÓN: Diferencia de ${Math.Abs(difference):N2}");
+            message.AppendLine(difference > 0 
+                ? "   (Ventas mayores a métodos de pago)" 
+                : "   (Métodos de pago mayores a ventas)");
+        }
+        
+        return message.ToString();
     }
 
     // Resto de m�todos necesarios
@@ -2935,7 +3004,7 @@ public class CourtService : INotifyPropertyChanged
 
         TotalSales = GetTotalSales();
 
-        // ?? Notificar cambio en la visibilidad despu�s de agregar el dispensador
+        // Notificar cambio en la visibilidad después de agregar el dispensador
         OnPropertyChanged(nameof(ShouldShowDispensersSection));
     }
 
@@ -2998,27 +3067,27 @@ public class CourtService : INotifyPropertyChanged
         // Validar que el nuevo gasto no exceda el efectivo disponible
         if (montoGasto > efectivoRestante)
         {
-            string mensaje = $"?? Gasto Excede Efectivo Disponible\n\n" +
+            string mensaje = $"⚠️ Gasto Excede Efectivo Disponible\n\n" +
                             $"El monto del gasto que intenta registrar excede el efectivo disponible:\n\n" +
-                            $"� Efectivo en m�todos de pago: ${efectivoDisponible:N2}\n" +
-                            $"� Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
-                            $"� Efectivo disponible: ${efectivoRestante:N2}\n" +
-                            $"� Monto del gasto: ${montoGasto:N2}\n" +
-                            $"� Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
+                            $"💵 Efectivo en métodos de pago: ${efectivoDisponible:N2}\n" +
+                            $"💸 Gastos ya registrados: ${gastosYaRegistrados:N2}\n" +
+                            $"💰 Efectivo disponible: ${efectivoRestante:N2}\n" +
+                            $"📊 Monto del gasto: ${montoGasto:N2}\n" +
+                            $"❌ Excedente: ${montoGasto - efectivoRestante:N2}\n\n";
 
             if (efectivoDisponible == 0)
             {
-                mensaje += "No hay m�todos de pago en efectivo registrados.\n" +
-                          "Por favor, agregue un m�todo de pago en efectivo antes de registrar gastos.";
+                mensaje += "No hay métodos de pago en efectivo registrados.\n" +
+                          "Por favor, agregue un método de pago en efectivo antes de registrar gastos.";
             }
             else if (efectivoRestante <= 0)
             {
                 mensaje += "Ya se han registrado gastos por el total del efectivo disponible.\n" +
-                          "No es posible registrar m�s gastos sin agregar m�s efectivo.";
+                          "No es posible registrar más gastos sin agregar más efectivo.";
             }
             else
             {
-                mensaje += $"El monto m�ximo que puede registrar como gasto es: ${efectivoRestante:N2}";
+                mensaje += $"El monto máximo que puede registrar como gasto es: ${efectivoRestante:N2}";
             }
 
             await Application.Current.MainPage.DisplayAlert(
@@ -3072,7 +3141,7 @@ public class CourtService : INotifyPropertyChanged
         CourtTypeOfCollectionAmount = 0;
         CourtTypeOfCollectionDescription = "";
 
-        // ?? Notificar cambio en la visibilidad despu�s de agregar el m�todo de pago
+        // Notificar cambio en la visibilidad después de agregar el método de pago
         OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
     }
 
@@ -3123,7 +3192,7 @@ public class CourtService : INotifyPropertyChanged
         OnPropertyChanged(nameof(TotalSales));
         OnPropertyChanged(nameof(ShouldShowCashCountSection));
 
-        // NUEVO: calcula el pendiente que usar� el popup
+        // NUEVO: calcula el pendiente que usará el popup
         RemainingToPay = Math.Max(0, TotalAmount - TotalTypeOfCollection);
 
         return TotalAmount;
@@ -3297,7 +3366,7 @@ public class CourtService : INotifyPropertyChanged
                 GallonResults.Remove(gallonsToRemove);
             }
 
-            // Recalcular totales despu�s de remover los valores
+            // Recalcular totales después de remover los valores
             TotalAmount = GetTotalAmount();
             TotalGallons = GetTotalGallons();
             TotalSales = GetTotalSales();
@@ -3307,7 +3376,7 @@ public class CourtService : INotifyPropertyChanged
             OnPropertyChanged(nameof(TotalAmount));
             OnPropertyChanged(nameof(TotalGallons));
             OnPropertyChanged(nameof(TotalSales));
-            // ?? Notificar cambio en la visibilidad despu�s de eliminar el dispensador
+            // Notificar cambio en la visibilidad después de eliminar el dispensador
             OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
     }
@@ -3331,7 +3400,7 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
-    // NUEVO: pendiente por pagar (ventas - m�todos de pago)
+    // NUEVO: pendiente por pagar (ventas - métodos de pago)
     private double _remainingToPay;
     public double RemainingToPay
     {

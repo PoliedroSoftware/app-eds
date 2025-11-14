@@ -297,7 +297,7 @@
                                                                Placeholder="Núm"
                                                                AutomationId="EntryIslandNumber" />
                                                     </Frame>
-                                                
+
 
                                                     <Label Grid.Column="2" 
                                                            Text="{Binding Name}" 
@@ -318,7 +318,7 @@
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveIslandCommand}"
                                                             CommandParameter="{Binding .}"
                                                             AutomationId="ButtonRemoveIsland" />
-                                                
+
                                                 </Grid>
                                                 <!-- EDS Selection (NUEVO) -->
                                                 <VerticalStackLayout Spacing="8">

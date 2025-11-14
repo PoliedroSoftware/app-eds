@@ -7,7 +7,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -46,9 +46,10 @@
 
                 <!-- Business Selection Card -->
                 <Border x:Name="Business"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
                     <Border.Shadow>
@@ -60,7 +61,7 @@
                             <Label Text="{Binding Business}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -68,12 +69,12 @@
                             <!-- Business -->
                             <Label Text="Negocio" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="0" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                     Grid.Row="0" Grid.Column="1">
                                 <Picker Title="{Binding SelectaBusiness}"
                                         AutomationId="BusinessPicker"
@@ -88,12 +89,12 @@
                             <!-- EDS -->
                             <Label Text="EDS" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="1" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                     Grid.Row="1" Grid.Column="1">
                                 <Picker Title="{Binding SelectaEds}"
                                         AutomationId="EdsPicker"
@@ -109,12 +110,12 @@
                             <!-- Islander -->
                             <Label Text="Islero" 
                                    FontAttributes="Bold" 
-                                   TextColor="#636E72" 
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                    VerticalOptions="Center" 
                                    Grid.Row="2" Grid.Column="0"/>
-                            <Border BackgroundColor="#F8F9FA" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#DDD6FE" 
+                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
                                     Grid.Row="2" Grid.Column="1">
                                 <Picker Title="{Binding SelectAnIslander}"
                                         AutomationId="IslanderPicker"
@@ -132,9 +133,10 @@
 
                 <!-- Time Card -->
                 <Border x:Name="Time" 
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        StrokeThickness="1"
                         Padding="20">
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
@@ -145,7 +147,7 @@
                             <Label Text="{Binding Time}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -154,7 +156,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="0">
                                 <Label Text="Fecha" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#FFF3CD" 
                                         StrokeShape="RoundRectangle 8"
@@ -174,7 +176,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="1">
                                 <Label Text="Hora Inicio" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#D4EDDA" 
                                         StrokeShape="RoundRectangle 8"
@@ -192,7 +194,7 @@
                             <StackLayout Grid.Row="0" Grid.Column="2">
                                 <Label Text="Hora Fin" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        HorizontalOptions="Center"/>
                                 <Border BackgroundColor="#F8D7DA" 
                                         StrokeShape="RoundRectangle 8"
@@ -211,9 +213,10 @@
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"
-                        BackgroundColor="White"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding ShouldShowCashCountSection}">
                     <Border.Shadow>
@@ -225,7 +228,7 @@
                             <Label Text="{Binding CashCount}" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -330,20 +333,20 @@
                                 </StackLayout>
                             </Border>
 
-                            <Border BackgroundColor="#F5F5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2C2C2C}" 
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9E9E9E"
+                                    Stroke="{AppThemeBinding Light=#9E9E9E, Dark=#3D3D3D}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="1">
                                 <StackLayout Spacing="8">
                                     <Label Text="{Binding DistinticDescription}" 
                                            FontAttributes="Bold" 
                                            FontSize="12"
-                                           TextColor="#616161"
+                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"
                                            HorizontalOptions="Center"/>
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#2C2C2C}"
                                             StrokeShape="RoundRectangle 6"
-                                            Stroke="#BDBDBD"
+                                            Stroke="{AppThemeBinding Light=#BDBDBD, Dark=#3D3D3D}"
                                             Padding="8">
                                         <Entry Keyboard="Numeric" 
                                                Placeholder="Ingrese distintivo" 
@@ -388,9 +391,9 @@
                     <CollectionView ItemsSource="{Binding CourtDispensers}" x:Name="CourtDispensers">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -400,19 +403,19 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                             <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Money Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Monto acumulado" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto acumulado" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en dinero" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en dinero" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -421,12 +424,12 @@
                                         <!-- Gallons Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Galones acumulados" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Galones acumulados" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en galones" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Venta en galones" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
                                                        FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -487,9 +490,9 @@
                     <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" x:Name="CourtTypeOfCollections">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -499,31 +502,31 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Método" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Método" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding TypeOfCollectionName}" 
                                                        FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                       FontSize="10" TextColor="#666666" FontAttributes="Italic"
+                                                       FontSize="10" TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}" FontAttributes="Italic"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
@@ -584,9 +587,9 @@
                     <CollectionView ItemsSource="{Binding CourtDocuments}" x:Name="CourtDocuments">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -596,7 +599,7 @@
                                         <!-- Document Info -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="📎" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                             <Label Text="{Binding DocumentName}" 
                                                    FontSize="14" TextColor="#FF9800" FontAttributes="Bold" VerticalOptions="Center"/>
                                         </StackLayout>
@@ -658,9 +661,9 @@
                     <CollectionView ItemsSource="{Binding CourtExpenditures}" x:Name="CourtExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White" 
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,4"
                                         Padding="16">
                                     <Border.Shadow>
@@ -670,18 +673,18 @@
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
                                             <Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="#424242" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Tipo" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Tipo" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding ExpenditureName}" 
                                                        FontSize="14" TextColor="#F44336" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                 <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                        FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
                                             </StackLayout>
@@ -689,9 +692,9 @@
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="#666" FontAttributes="Bold"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="#757575"/>
+                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
@@ -744,75 +747,66 @@
 
                                 <!-- Botón NewSale -->
                                 <Button Text="{Binding NewSale}"
-            Style="{StaticResource CompactActionButtonStyle}"
-            Clicked="OpenDispenserPopUp"
-            Command="{Binding OpenDispenserCommand}"
-            AutomationId="AddSaleButton"
-            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
-            Grid.Column="0">
+                                    Clicked="OpenDispenserPopUp"
+                                    AutomationId="AddSaleButton"
+                                    Grid.Column="0"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    Padding="16,12"
+                                    CornerRadius="12"
+                                    BackgroundColor="#4CAF50"
+                                    TextColor="White">
                                     <Button.Triggers>
-                                        <!-- Bloquear si el corte ya fue enviado -->
+                                        <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
-                         Value="False">
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
+                                                 Value="False">
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                        <!-- Trigger para cuando se envió el corte -->
+                                        <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
+                                                 Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
-
-                                    <!-- Estados visuales -->
-                                    <!-- Estados visuales -->
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <VisualState Name="Normal">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="#4CAF50"/>
-                                                    <Setter Property="TextColor" Value="White"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState Name="Disabled">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
                                 </Button>
 
                                 <!-- Botón AddCollectionType -->
                                 <Button Text="{Binding AddCollectionType}"
-            Style="{StaticResource CompactActionButtonStyle}"
-            Clicked="OpenTypeOfCollectionPopUp"
-            AutomationId="AddCollectionTypeButton"
-            IsEnabled="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
-            Grid.Column="1">
+                                    Clicked="OpenTypeOfCollectionPopUp"
+                                    AutomationId="AddCollectionTypeButton"
+                                    Grid.Column="1"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    Padding="16,12"
+                                    CornerRadius="12"
+                                    BackgroundColor="#2196F3"
+                                    TextColor="White">
                                     <Button.Triggers>
+                                        <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
-                         Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
-                         Value="False">
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
+                                                 Value="False">
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </DataTrigger>
+                                        <!-- Trigger para cuando se envió el corte -->
+                                        <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
+                                                 Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
+                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
-
-                                    <!-- Estados visuales -->
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <VisualState Name="Normal">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="#2196F3"/>
-                                                    <!-- Azul -->
-                                                    <Setter Property="TextColor" Value="White"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState Name="Disabled">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="LightGray"/>
-                                                    <!-- Apagado -->
-                                                    <Setter Property="TextColor" Value="#9E9E9E"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
                                 </Button>
 
                             </Grid>

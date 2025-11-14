@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.Island.IslandPostView"
              Title="Gestión De Isla"
-             BackgroundColor="#F8F9FA">
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <Grid>
         <!-- Main Content -->
-        <ScrollView Grid.Row="1" BackgroundColor="White">
+        <ScrollView Grid.Row="1" BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}">
             <VerticalStackLayout Padding="20" Spacing="15">
 
                 <!-- Counter Section -->
@@ -46,7 +46,7 @@
                 </Frame>
 
                 <!-- Create Islands Section -->
-                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
                     <StackLayout Spacing="10">
                         <Label Text="📊 Crear Islas en Lote" 
                                FontSize="16" 
@@ -59,7 +59,7 @@
                                Keyboard="Numeric"
                                Placeholder="Ingrese el número de islas (0 para ninguna)"
                                Text="{Binding NumberOfIslands, Mode=TwoWay}"
-                               BackgroundColor="White"
+                               BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                HeightRequest="50"
                                AutomationId="EntryNumberOfIslands"/>
 
@@ -76,7 +76,7 @@
                 </Frame>
 
                 <!-- Pending Islands -->
-                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
                     <StackLayout Spacing="10">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -142,7 +142,7 @@
                                                Margin="0,0,10,0" />
                                         
                                         <Frame Grid.Column="1" 
-                                               BackgroundColor="White" 
+                                               BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                                CornerRadius="5"
                                                Padding="5"
                                                HasShadow="False">
@@ -183,7 +183,7 @@
                 </Frame>
 
                 <!-- Created Islands -->
-                <Frame BackgroundColor="White" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
+                <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" BorderColor="#E0E0E0" CornerRadius="10" Padding="20">
                     <StackLayout Spacing="10">
                         <Label Text="✅ Islas Creadas" 
                                FontSize="16" 
@@ -241,7 +241,7 @@
                                             <!-- Show Entry when editing -->
                                             <Entry Text="{Binding Description, Mode=TwoWay}" 
                                                    FontSize="14" 
-                                                   BackgroundColor="White"
+                                                   BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                                    IsVisible="False"
                                                    AutomationId="EntryEditDescription">
                                                 <Entry.Triggers>
