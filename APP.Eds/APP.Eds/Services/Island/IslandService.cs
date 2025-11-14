@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Island;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Eds;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -36,8 +37,7 @@ public class EditablePendingIsland : INotifyPropertyChanged
             OnPropertyChanged(nameof(Number));
         }
     }
-
-    public Models.Eds.EdsModel SelectedEds { get; set; }
+    public string SelectedEdsName { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

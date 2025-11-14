@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Helpers;
+using APP.Eds.Models.Common;
 using APP.Eds.Models.Compartiment;
 using APP.Eds.Models.Hose;
 using APP.Eds.Models.Product;
@@ -9,10 +10,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
-using static APP.Eds.Models.Product.ProductModelResponse;
-using APP.Eds.Models.Common;
-using APP.Eds.Services.Compartiment;
-using APP.Eds.Services.Dispensers;
 
 namespace APP.Eds.Services.Hose;
 
@@ -21,8 +18,8 @@ public class EditablePendingHose : INotifyPropertyChanged
     public int Number { get; set; }
     public double AccumulatedAmount { get; set; }
     public double AccumulatedGallons { get; set; }
-    public EditablePendingCompartiment SelectedCompartiment { get; set; }
-    public EditablePendingDispenser SelectedDispenser { get; set; }
+    public string SelectedCompartimentName { get; set; }
+    public string SelectedDispenserName { get; set; }
     public ProductTypeModelResponse SelectProductType { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;

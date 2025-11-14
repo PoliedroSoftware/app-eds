@@ -13,13 +13,16 @@ using APP.Eds.Models.Tank;
 using APP.Eds.Services.Compartiment;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Dispensers;
+using APP.Eds.Services.Eds;
 using APP.Eds.Services.Hose;
 using APP.Eds.Services.Island;
 using APP.Eds.Services.Islander;
 using APP.Eds.Services.Product;
 using APP.Eds.Services.Tank;
 using APP.Eds.UsesCases.Product;
+using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -37,16 +40,23 @@ public class SetupService : INotifyPropertyChanged
 
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
+    public VerticalStackLayout ExpanderContainer;
 
     // Collections
-    public ObservableCollection<Models.Eds.EdsModel> EdsList { get; set; } = new();
+    public ObservableCollection<EditablePendingEds> EdsList { get; set; } = new();
+    public ObservableCollection<string> EdsListNames { get; set; } = new();
     public ObservableCollection<EditablePendingIsland> Islands { get; set; } = new();
+    public ObservableCollection<string> IslandsListNames { get; set; } = new();
     public ObservableCollection<EditablePendingTank> Tanks { get; set; } = new();
+    public ObservableCollection<string> TanksListNames { get; set; } = new();
     public ObservableCollection<EditablePendingCompartiment> Compartiments { get; set; } = new();
+    public ObservableCollection<string> CompartimentsListNames { get; set; } = new();
     public ObservableCollection<EditablePendingProduct> Products { get; set; } = new();
+    public ObservableCollection<string> ProductsListNames { get; set; } = new();
     public ObservableCollection<EditablePendingIslander> Islanders { get; set; } = new();
     public ObservableCollection<ProviderModel> Providers { get; set; } = new();
     public ObservableCollection<EditablePendingDispenser> Dispensers { get; set; } = new();
+    public ObservableCollection<string> DispensersListNames { get; set; } = new();
     public ObservableCollection<EditablePendingHose> Hoses { get; set; } = new();
 
     // help collections
@@ -243,8 +253,9 @@ public class SetupService : INotifyPropertyChanged
     public ICommand RemoveDispenserCommand { get; private set; }
     public ICommand RemoveHoseCommand { get; private set; }
 
-    public SetupService()
+    public SetupService(VerticalStackLayout expanderContainer)
     {
+        ExpanderContainer = expanderContainer;
         InitializeCommands();
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         SaveDataCommand = new Command(async () => await SaveDataAsync());
@@ -267,7 +278,7 @@ public class SetupService : INotifyPropertyChanged
         AddDispenserCommand = new Command(() => AddDispenser());
         AddHoseCommand = new Command(() => AddHose());
         //removes
-        RemoveEdsCommand = new Command<Models.Eds.EdsModel>(RemoveEds);
+        RemoveEdsCommand = new Command<EditablePendingEds>(RemoveEds);
         RemoveIslandCommand = new Command<EditablePendingIsland>(RemoveIsland);
         RemoveTankCommand = new Command<EditablePendingTank>(RemoveTank);
         RemoveCompartimentCommand = new Command<EditablePendingCompartiment>(RemoveCompartiment);
@@ -305,7 +316,7 @@ public class SetupService : INotifyPropertyChanged
         return Islands.Select(x => new IslandModel()
         {
             Description = x.Name,
-            NameEDS = x.SelectedEds.Name
+            NameEDS = x.SelectedEdsName
         }).ToList();
     }
 
@@ -316,7 +327,7 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             Compartment = x.Compartment,
             Ability = x.Ability,
-            NameEDS = x.SelectedEds.Name,
+            NameEDS = x.SelectedEdsName,
         }).ToList();
     }
 
@@ -328,8 +339,8 @@ public class SetupService : INotifyPropertyChanged
             Nominal = x.Nominal,
             Operative = x.Operative,
             Height = x.Height,
-            NumberTank = x.SelectedTank?.Number,
-            NameProduct = x.SelectedProduct?.Name,
+            NumberTank = Tanks.ToList().FirstOrDefault(y=> y.DisplayText == x.SelectedTankName)?.Number,
+            NameProduct = x.SelectedProductName,
         }).ToList();
     }
 
@@ -342,7 +353,7 @@ public class SetupService : INotifyPropertyChanged
             SellPrice = x.SellPrice,
             PurchasePrice = x.PurchasePrice,
             Stock = x.Stock,
-            NameEDS = x.SelectedEds.Name
+            NameEDS = x.SelectedEdsName
         }).ToList();
     }
 
@@ -356,7 +367,7 @@ public class SetupService : INotifyPropertyChanged
             LastName = x.LastName,
             Password = x.Password,
             NameClaimToken = "OPERARIO",
-            NameEDS = x.SelectedEds.Name
+            NameEDS = x.SelectedEdsName
         }).ToList();
     }
 
@@ -376,8 +387,8 @@ public class SetupService : INotifyPropertyChanged
             Number = x.Number,
             DispenserTypeId = x.SelectedDispenserType?.IdType ?? 0,
             HoseNumber = x.HoseNumber,
-            NumberIsland = Islands.ToList().FindIndex(y=> y.Number == x.SelectedIsland.Number),
-            NameEDS = x.SelectedEds.Name
+            NumberIsland = Islands.ToList().FindIndex(y=> y.Name == x.SelectedIslandName),
+            NameEDS = x.SelectedEdsName
         }).ToList();
     }
 
@@ -389,11 +400,11 @@ public class SetupService : INotifyPropertyChanged
             AccumulatedAmount = x.AccumulatedAmount,
             AccumulatedGallons = x.AccumulatedGallons,
             IdProductType = x.SelectProductType?.IdProductType ?? 0,
-            CodeDispenser = x.SelectedDispenser.Code,
-            NumberCompartiment = x.SelectedCompartiment.Number
+            CodeDispenser = Dispensers.ToList().FirstOrDefault(y => y.DisplayName == x.SelectedDispenserName)?.Code,
+            NumberCompartiment = Compartiments.ToList().FirstOrDefault(y => y.DisplayCompartiment == x.SelectedCompartimentName)?.Number
         }).ToList();
     }
-
+    
     public async Task SaveDataAsync()
     {
         ValidateName();
@@ -403,6 +414,7 @@ public class SetupService : INotifyPropertyChanged
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
+        CalculateNames();
 
         bool isInvalidForm = await IsInvalidateSetupAsync();
 
@@ -495,7 +507,7 @@ public class SetupService : INotifyPropertyChanged
 
     private void AddEds()
     {
-        EdsList.Add(new Models.Eds.EdsModel
+        EdsList.Add(new EditablePendingEds
         {
             Name = "",
             Nit = "",
@@ -512,6 +524,7 @@ public class SetupService : INotifyPropertyChanged
             Number = Islands.Count + 1
         });
         OnPropertyChanged(nameof(Islands));
+        OnPropertyChanged(nameof(EdsList));
     }
     private void AddTank()
     {
@@ -577,7 +590,7 @@ public class SetupService : INotifyPropertyChanged
         OnPropertyChanged(nameof(Hoses));
     }
 
-    private void RemoveEds(Models.Eds.EdsModel eds)
+    private void RemoveEds(EditablePendingEds eds)
     {
         if (EdsList.Contains(eds))
         {
@@ -897,5 +910,157 @@ public class SetupService : INotifyPropertyChanged
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public async void OnExpanderExpanded(object sender, EventArgs e)
+    {
+        if (sender is not Expander expandedExpander)
+            return;
+
+        if (!expandedExpander.IsExpanded)
+            return;
+
+        foreach (var child in ExpanderContainer.Children)
+        {
+            if (child is Expander expander && expander != expandedExpander)
+            {
+                expander.IsExpanded = false;
+            }
+        }
+
+        OnPropertyChanged(nameof(EdsList));
+        OnPropertyChanged(nameof(Tanks));
+        OnPropertyChanged(nameof(Compartiments));
+        OnPropertyChanged(nameof(Islands));
+        OnPropertyChanged(nameof(Products));
+        OnPropertyChanged(nameof(Islanders));
+        OnPropertyChanged(nameof(Providers));
+        OnPropertyChanged(nameof(Dispensers));
+        OnPropertyChanged(nameof(Hoses));
+        CalculateNames();
+    }
+
+    private void CalculateNames()
+    {
+        CalculateEdsNames();
+        CalculateIslandsNames();
+        CalculateTanksNames();
+        CalculateCompartimentsNames();
+        CalculateProductsNames();
+        CalculateDispensersNames();
+    }
+
+    private void CalculateEdsNames()
+    {
+        var names = EdsList.ToList().Select(x => x.Name).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if(EdsListNames.Count > i)
+            {
+                EdsListNames[i] = names[i];
+            }
+            else
+            {
+                EdsListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(EdsListNames));
+    }
+
+    private void CalculateIslandsNames()
+    {
+        var names = Islands.ToList().Select(x => x.Name).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (IslandsListNames.Count > i)
+            {
+                IslandsListNames[i] = names[i];
+            }
+            else
+            {
+                IslandsListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(IslandsListNames));
+    }
+
+    private void CalculateTanksNames()
+    {
+        var names = Tanks.ToList().Select(x => x.DisplayText).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (TanksListNames.Count > i)
+            {
+                TanksListNames[i] = names[i];
+            }
+            else
+            {
+                TanksListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(TanksListNames));
+    }
+
+    private void CalculateCompartimentsNames()
+    {
+        var names = Compartiments.ToList().Select(x => x.DisplayCompartiment).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (CompartimentsListNames.Count > i)
+            {
+                CompartimentsListNames[i] = names[i];
+            }
+            else
+            {
+                CompartimentsListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(CompartimentsListNames));
+    }
+
+    private void CalculateProductsNames()
+    {
+        var names = Products.ToList().Select(x => x.Name).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (ProductsListNames.Count > i)
+            {
+                ProductsListNames[i] = names[i];
+            }
+            else
+            {
+                ProductsListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(ProductsListNames));
+    }
+
+    private void CalculateDispensersNames()
+    {
+        var names = Dispensers.ToList().Select(x => x.DisplayName).ToArray();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (DispensersListNames.Count > i)
+            {
+                DispensersListNames[i] = names[i];
+            }
+            else
+            {
+                DispensersListNames.Add(names[i]);
+            }
+        }
+
+        OnPropertyChanged(nameof(DispensersListNames));
     }
 }

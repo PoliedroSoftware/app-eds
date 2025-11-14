@@ -28,7 +28,7 @@ public class EditablePendingProduct : INotifyPropertyChanged
     public int Stock { get; set; }
     public int IdEds { get; set; }
     public bool IsFormValid => !string.IsNullOrWhiteSpace(Name) && IdProductType > 0;
-    public Models.Eds.EdsModel SelectedEds { get; set; }
+    public string SelectedEdsName { get; set; }
 
     public ObservableCollection<SpecificProductType> AvailableProductTypes { get; set; } = [];
     public ObservableCollection<SpecificProductType> FilteredProductTypes { get; set; } = [];

@@ -24,14 +24,15 @@ namespace APP.Eds.Services.Compartiment
         public double Height { get; set; }
         public int IdTank { get; set; }
         public int IdProduct { get; set; }
-        public EditablePendingTank SelectedTank { get; set; }
-        public EditablePendingProduct SelectedProduct { get; set; }
+        public string SelectedTankName { get; set; }
+        public string SelectedProductName { get; set; }
 
         public string DisplayCompartiment =>
            $"Compartimento: {Number}\n" +
            $"Capacidad nominal: {Nominal}\n" +
            $"Capacidad operativa: {Operative}\n" +
            $"Altura: {Height}\n" +
+           $"Producto: {SelectedProductName ?? string.Empty}" +
            "-------------------------------------------------";
 
         public event PropertyChangedEventHandler? PropertyChanged;

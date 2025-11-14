@@ -31,7 +31,7 @@
                 </Frame>
 
                 <ScrollView>
-                    <VerticalStackLayout Padding="20" Spacing="20">
+                    <VerticalStackLayout Padding="20" Spacing="20" x:Name="ExpanderContainer">
 
                         <!-- Business Section -->
                         <Label Text="🏢 Negocio"
@@ -69,7 +69,7 @@
                         </Border>
 
                         <!-- EDS -->
-                        <toolkit:Expander IsExpanded="True">
+                        <toolkit:Expander IsExpanded="True" ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label Text="⛽ EDS"
                                        FontAttributes="Bold"
@@ -255,7 +255,7 @@
                         </toolkit:Expander>
 
                         <!-- Islands -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                     Text="🏝️ Islas"
@@ -348,9 +348,8 @@
 
                                                             <Picker x:Name="EdsPicker"
                                                                      Title="Seleccione una estación de servicio"
-                                                                     ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                     ItemDisplayBinding="{Binding Name}"
-                                                                     SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                     ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsListNames}"
+                                                                     SelectedItem="{Binding SelectedEdsName, Mode=TwoWay}"
                                                                      AutomationId="PickerEds"
                                                                      BackgroundColor="Transparent"
                                                                      FontSize="16"
@@ -375,7 +374,7 @@
                         </toolkit:Expander>
 
                         <!-- Tanks -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                     Text="🛢️ Tanques"
@@ -522,9 +521,8 @@
 
                                                                 <Picker x:Name="EdsPicker"
                                                                          Title="Seleccione una estación de servicio"
-                                                                         ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                         ItemDisplayBinding="{Binding Name}"
-                                                                         SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                         ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsListNames}"
+                                                                         SelectedItem="{Binding SelectedEdsName, Mode=TwoWay}"
                                                                          AutomationId="PickerEds"
                                                                          BackgroundColor="Transparent"
                                                                          FontSize="16"
@@ -555,7 +553,7 @@
                         </toolkit:Expander>
 
                         <!-- Products -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                       Text="📦 Productos"
@@ -840,9 +838,8 @@
 
                                                                     <Picker x:Name="EdsPicker"
                                                                             Title="Seleccione una estación de servicio"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                            ItemDisplayBinding="{Binding Name}"
-                                                                            SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsListNames}"
+                                                                            SelectedItem="{Binding SelectedEdsName, Mode=TwoWay}"
                                                                             AutomationId="PickerEds"
                                                                             BackgroundColor="Transparent"
                                                                             FontSize="16"
@@ -873,7 +870,7 @@
                         </toolkit:Expander>
 
                         <!-- Compartiments -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                     Text="📦 Compartimientos"
@@ -911,9 +908,8 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Seleccionar tanque"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Tanks}"
-                                                                            ItemDisplayBinding="{Binding DisplayText}" 
-                                                                            SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TanksListNames}"
+                                                                            SelectedItem="{Binding SelectedTankName, Mode=TwoWay}"
                                                                             AutomationId="PickerTank"
                                                                             BackgroundColor="Transparent"
                                                                             FontSize="16"
@@ -944,9 +940,8 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Selecciona un producto"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Products}"
-                                                                            ItemDisplayBinding="{Binding Name}" 
-                                                                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ProductsListNames}"
+                                                                            SelectedItem="{Binding SelectedProductName, Mode=TwoWay}"
                                                                             AutomationId="PickerProduct"
                                                                             BackgroundColor="Transparent"
                                                                             FontSize="16"
@@ -1123,7 +1118,7 @@
                         </toolkit:Expander>
 
                         <!-- Dispensers -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                     Text="🔧 Dispensadores"
@@ -1214,9 +1209,8 @@
                                                                     Stroke="#FFE0B2" 
                                                                     Padding="4">
                                                                 <Picker Title="Seleccione EDS"
-                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                        ItemDisplayBinding="{Binding Name}"
-                                                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsListNames}"
+                                                                        SelectedItem="{Binding SelectedEdsName, Mode=TwoWay}"
                                                                         BackgroundColor="Transparent"
                                                                         AutomationId="PickerEds"/>
                                                             </Border>
@@ -1232,9 +1226,8 @@
                                                                     Stroke="#FFE0B2" 
                                                                     Padding="4">
                                                                 <Picker Title="Seleccione isla"
-                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Islands}"
-                                                                        ItemDisplayBinding="{Binding Name}"
-                                                                        SelectedItem="{Binding SelectedIsland, Mode=TwoWay}"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IslandsListNames}"
+                                                                        SelectedItem="{Binding SelectedIslandName, Mode=TwoWay}"
                                                                         BackgroundColor="Transparent"
                                                                         AutomationId="PickerIsland"/>
                                                             </Border>
@@ -1275,7 +1268,7 @@
                         </toolkit:Expander>
 
                         <!-- Hoses -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                      Text="📎 Mangueras"
@@ -1416,9 +1409,8 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Seleccione un Dispensador"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Dispensers}"
-                                                                            ItemDisplayBinding="{Binding DisplayName}"
-                                                                            SelectedItem="{Binding SelectedDispenser, Mode=TwoWay}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DispensersListNames}"
+                                                                            SelectedItem="{Binding SelectedDispenserName, Mode=TwoWay}"
                                                                             AutomationId="PickerDispensers"
                                                                             BackgroundColor="Transparent"
                                                                             FontSize="16"
@@ -1481,9 +1473,8 @@
                                                                            VerticalOptions="Center"/>
 
                                                                     <Picker Title="Seleccione un Compartimiento"
-                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.Compartiments}"
-                                                                            ItemDisplayBinding="{Binding DisplayCompartiment}"
-                                                                            SelectedItem="{Binding SelectedCompartiment, Mode=TwoWay}"
+                                                                            ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CompartimentsListNames}"
+                                                                            SelectedItem="{Binding SelectedCompartimentName, Mode=TwoWay}"
                                                                             AutomationId="PickerCompartiments"
                                                                             BackgroundColor="Transparent"
                                                                             FontSize="16"
@@ -1509,9 +1500,8 @@
                             </VerticalStackLayout>
                         </toolkit:Expander>
 
-
                         <!-- Islanders -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                  Text="👷 Isleros"
@@ -1655,9 +1645,8 @@
 
                                                                 <Picker x:Name="EdsPicker"
                                                                         Title="Seleccione una estación de servicio"
-                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsList}"
-                                                                        ItemDisplayBinding="{Binding Name}"
-                                                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                                                        ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EdsListNames}"
+                                                                        SelectedItem="{Binding SelectedEdsName, Mode=TwoWay}"
                                                                         AutomationId="PickerEds"
                                                                         BackgroundColor="Transparent"
                                                                         FontSize="16"
@@ -1722,7 +1711,7 @@
                         </toolkit:Expander>
 
                         <!-- Providers -->
-                        <toolkit:Expander>
+                        <toolkit:Expander ExpandedChanged="OnExpanderExpanded">
                             <toolkit:Expander.Header>
                                 <Label 
                                      Text="🚚 Proveedores"

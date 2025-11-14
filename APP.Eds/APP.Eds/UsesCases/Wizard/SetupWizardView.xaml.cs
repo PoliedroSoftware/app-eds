@@ -1,5 +1,6 @@
 using APP.Eds.Services.Product;
 using APP.Eds.Services.Setup;
+using CommunityToolkit.Maui.Views;
 using System.ComponentModel;
 
 namespace APP.Eds.UsesCases.Wizard
@@ -12,7 +13,7 @@ namespace APP.Eds.UsesCases.Wizard
         public SetupWizardView()
         {
             InitializeComponent();
-            _setupService = new SetupService();
+            _setupService = new SetupService(ExpanderContainer);
             BindingContext = _setupService;
         }
 
@@ -37,6 +38,11 @@ namespace APP.Eds.UsesCases.Wizard
         protected new virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void OnExpanderExpanded(object sender, EventArgs e)
+        {
+           _setupService.OnExpanderExpanded(sender, e);
         }
     }
 }

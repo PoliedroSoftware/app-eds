@@ -20,8 +20,8 @@ namespace APP.Eds.Services.Dispensers
         public string Code { get; set; }
         public int Number { get; set; }
         public int HoseNumber { get; set; }
-        public Models.Eds.EdsModel SelectedEds { get; set; }
-        public EditablePendingIsland SelectedIsland { get; set; }
+        public string SelectedEdsName { get; set; }
+        public string SelectedIslandName { get; set; }
         public DisperserTypeResponse SelectedDispenserType { get; set; }
 
         public string DisplayName => $" Número:{Number} - Código:{Code} ";

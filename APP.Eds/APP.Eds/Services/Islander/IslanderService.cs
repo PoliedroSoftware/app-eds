@@ -20,7 +20,7 @@ public class EditablePendingIslander : INotifyPropertyChanged
     public required string LastName { get; set; }
     public int IdEds { get; set; }
     public required string Password { get; set; }
-    public Models.Eds.EdsModel SelectedEds { get; set; }
+    public string SelectedEdsName { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
