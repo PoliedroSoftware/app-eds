@@ -2748,7 +2748,7 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
         try
@@ -2764,25 +2764,25 @@ public class CourtService : INotifyPropertyChanged
 
                 if (diferencia > 0)
                 {
-                    mensajeError = $"⚠️ Validaci�n de Pagos Fallida\n\n" +
-                                  $"El total de m�todos de pago es menor al total de ventas:\n\n" +
+                    mensajeError = $"⚠️ Validación de Pagos Fallida\n\n" +
+                                  $"El total de métodos de pago es menor al total de ventas:\n\n" +
                                   $"💵 Total de ventas: ${totalVentas:N2}\n" +
-                                  $"💳 Total m�todos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"💳 Total métodos de pago: ${totalMetodosPago:N2}\n" +
                                   $"📊 Faltante: ${diferencia:N2}\n\n" +
-                                  $"Por favor, agregue m�todos de pago por el monto faltante antes de enviar el corte.";
+                                  $"Por favor, agregue métodos de pago por el monto faltante antes de enviar el corte.";
                 }
                 else
                 {
-                    mensajeError = $"⚠️ Validaci�n de Pagos Fallida\n\n" +
-                                  $"El total de m�todos de pago excede al total de ventas:\n\n" +
+                    mensajeError = $"⚠️ Validación de Pagos Fallida\n\n" +
+                                  $"El total de métodos de pago excede al total de ventas:\n\n" +
                                   $"💵 Total de ventas: ${totalVentas:N2}\n" +
-                                  $"💳 Total m�todos de pago: ${totalMetodosPago:N2}\n" +
+                                  $"💳 Total métodos de pago: ${totalMetodosPago:N2}\n" +
                                   $"📊 Excedente: ${Math.Abs(diferencia):N2}\n\n" +
-                                  $"Por favor, ajuste los m�todos de pago antes de enviar el corte.";
+                                  $"Por favor, ajuste los métodos de pago antes de enviar el corte.";
                 }
 
                 LastSendWasSuccessful = false;
-                await Application.Current.MainPage.DisplayAlert("Validaci�n Fallida", mensajeError, "Entendido");
+                await Application.Current.MainPage.DisplayAlert("Validación Fallida", mensajeError, "Entendido");
                 return;
             }
 
@@ -2790,11 +2790,11 @@ public class CourtService : INotifyPropertyChanged
             {
                 LastSendWasSuccessful = false;
                 await Application.Current.MainPage.DisplayAlert(
-                    "M�todos de Pago Requeridos",
-                    $"No se pueden enviar datos del corte sin registrar m�todos de pago.\n\n" +
+                    "Métodos de Pago Requeridos",
+                    $"No se pueden enviar datos del corte sin registrar métodos de pago.\n\n" +
                     $"Total de ventas: ${totalVentas:N2}\n" +
-                    $"M�todos de pago registrados: 0\n\n" +
-                    $"Por favor, agregue al menos un m�todo de pago que cubra el total de ventas.",
+                    $"Métodos de pago registrados: 0\n\n" +
+                    $"Por favor, agregue al menos un método de pago que cubra el total de ventas.",
                     "Entendido");
                 return;
             }
@@ -2835,12 +2835,28 @@ public class CourtService : INotifyPropertyChanged
             if (response.IsSuccessStatusCode)
             {
                 LastSendWasSuccessful = true;
+                int createdCourtId = 0;
+                
+                try
+                {
+                    var courtListResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court?PageNumber=1&PageSize=1");
+                    var courtList = JsonSerializer.Deserialize<List<CourtListItemModel>>(courtListResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                // Usar el servicio de subida de archivos si hay documentos
-                if (CourtDocuments?.Any() == true)
+                    if ((courtList?.Any()) == true)
+                    {
+                        createdCourtId = (int)courtList.First().Id;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: Error al consultar la lista de cortes - {ex.Message}");
+                }
+
+                if (CourtDocuments?.Any() == true && createdCourtId > 0)
                 {
                     var fileUploadService = new FileUploadService(_authToken);
-                    var uploadResult = await fileUploadService.UploadDocumentsAsync(CourtDocuments);
+                    var uploadResult = await fileUploadService.UploadDocumentsAsync(CourtDocuments, createdCourtId);
 
                     if (!uploadResult.Success)
                     {
@@ -2853,8 +2869,10 @@ public class CourtService : INotifyPropertyChanged
                         }
                     }
                 }
-
-                // ✅ NUEVO: Construir mensaje profesional y detallado
+                else if (CourtDocuments?.Any() == true && createdCourtId <= 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: No se pudo obtener el ID del corte creado para subir los documentos");
+                }
                 var successMessage = BuildCourtSuccessMessage(totalVentas, totalMetodosPago);
                 await Components.PopUp.CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
             }
@@ -2864,17 +2882,17 @@ public class CourtService : INotifyPropertyChanged
 
                 var error = await response.Content.ReadAsStringAsync();
 
-                string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo m�s tarde.";
+                string userFriendlyError = $"No se pudo enviar el dato. Por favor, intente de nuevo más tarde.";
                 if (!string.IsNullOrEmpty(error))
                 {
 
                     if (error.Contains("validation error", StringComparison.OrdinalIgnoreCase) || error.Contains("invalid input", StringComparison.OrdinalIgnoreCase))
                     {
-                        userFriendlyError = $"Error de validaci�n: {error}";
+                        userFriendlyError = $"Error de validación: {error}";
                     }
                     else if (error.Contains("server error", StringComparison.OrdinalIgnoreCase) || error.Contains("internal server error", StringComparison.OrdinalIgnoreCase))
                     {
-                        userFriendlyError = $"Error del servidor. Por favor, intente de nuevo m�s tarde.";
+                        userFriendlyError = $"Error del servidor. Por favor, intente de nuevo más tarde.";
                     }
                     else
                     {
