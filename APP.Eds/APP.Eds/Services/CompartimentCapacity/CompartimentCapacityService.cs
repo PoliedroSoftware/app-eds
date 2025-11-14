@@ -4,6 +4,7 @@ using APP.Eds.Models.EdsTank;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.Product;
 using APP.Eds.Models.ProductCompartiment;
+using APP.Eds.Models.Tank;
 using APP.Eds.Services.Config;
 using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 {
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
-    public ObservableCollection<CapacityModelResponse> CapacityList { get; set; } = [];
+    public ObservableCollection<TankResponse> TankList { get; set; } = [];
     public ObservableCollection<CompartimentModelResponse> CompartimentList { get; set; } = [];
     private CompartimentCapacityRequest Request { get; set; }
 
@@ -35,34 +36,34 @@ public class CompartimentCapacityService : INotifyPropertyChanged
         }
     }
 
-    //SelectCapacity
+    //SelectTank
 
-    private int _idIdCapacity;
-    public int IdIdCapacity
+    private int _idIdTank;
+    public int IdIdTank
     {
-        get => _idIdCapacity;
+        get => _idIdTank;
         set
         {
-            if (_idIdCapacity != value)
+            if (_idIdTank != value)
             {
-                _idIdCapacity = value;
-                OnPropertyChanged(nameof(IdIdCapacity));
+                _idIdTank = value;
+                OnPropertyChanged(nameof(IdIdTank));
 
             }
         }
     }
 
-    private CapacityModelResponse _selectedCapacity;
-    public CapacityModelResponse SelectCapacity
+    private TankResponse _selectedTank;
+    public TankResponse SelectedTank
     {
-        get => _selectedCapacity;
+        get => _selectedTank;
         set
         {
-            _selectedCapacity = value;
-            OnPropertyChanged(nameof(SelectCapacity));
-            if (_selectedCapacity != null)
+            _selectedTank = value;
+            OnPropertyChanged(nameof(SelectedTank));
+            if (_selectedTank != null)
             {
-                IdIdCapacity = _selectedCapacity.IdCapacity;
+                IdIdTank = _selectedTank.IdTank;
             }
         }
     }
@@ -110,16 +111,14 @@ public class CompartimentCapacityService : INotifyPropertyChanged
     public CompartimentCapacityService()
     {
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        GetAllCapacityData();
+        GetAllTankData();
         GetByIdCompartimentCapacityDataCommand = new Command<int>(async (compartimentCapacityId) => await GetByIdCompartimentCapacityDataAsync(compartimentCapacityId));
         SaveCompartimentCapacityDataCommand = new Command(async () => await SaveCompartimentCapacityDataAsync());
 
         GetAllCompartimentData();
-        GetByIdCompartimentCapacityDataCommand = new Command<int>(async (compartimentCapacityId) => await GetByIdCompartimentCapacityDataAsync(compartimentCapacityId));
-        SaveCompartimentCapacityDataCommand = new Command(async () => await SaveCompartimentCapacityDataAsync());
     }
-    //GuardaCapacity
-    public async Task GetAllCapacityDataAsync()
+    //GuardaTank
+    public async Task GetAllTankDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -129,42 +128,42 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
         try
         {
-            string url = $"{Configuration.BaseUrl}/api/v1/capacity";
+            string url = $"{Configuration.BaseUrl}/api/v1/tank";
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var response = await httpClient.GetStringAsync(url);
-            var capacityResponse = JsonSerializer.Deserialize<CapacityResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var tankResponse = JsonSerializer.Deserialize<TankApiResponse>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            UpdateCapacityList(capacityResponse?.Data ?? new List<CapacityModelResponse>());
+            UpdateTankList(tankResponse?.Data ?? new List<TankResponse>());
         }
         catch (HttpRequestException httpEx)
         {
-            System.Diagnostics.Debug.WriteLine($"HTTP error loading capacities: {httpEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"HTTP error loading tanks: {httpEx.Message}");
             await CustomAlert.ShowErrorAsync("Error de conexión. Verifique su conexión a internet e intente nuevamente.", "Error de Conexión");
         }
         catch (JsonException jsonEx)
         {
-            System.Diagnostics.Debug.WriteLine($"JSON error loading capacities: {jsonEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"JSON error loading tanks: {jsonEx.Message}");
             await CustomAlert.ShowErrorAsync("Error al procesar los datos del servidor.", "Error de Datos");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"General error loading capacities: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"General error loading tanks: {ex.Message}");
             await CustomAlert.ShowErrorAsync($"Error cargando los tanques:\n\n{ex.Message}", "Error del Sistema");
         }
     }
 
-    private async void GetAllCapacityData()
+    private async void GetAllTankData()
     {
-        await GetAllCapacityDataAsync();
+        await GetAllTankDataAsync();
     }
 
-    private void UpdateCapacityList(IEnumerable<CapacityModelResponse> Data)
+    private void UpdateTankList(IEnumerable<TankResponse> Data)
     {
-        CapacityList.Clear();
-        foreach (var eds in Data)
+        TankList.Clear();
+        foreach (var tank in Data)
         {
-            CapacityList.Add(eds);
+            TankList.Add(tank);
         }
     }
 
@@ -250,7 +249,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
         }
         try
         {
-            if (SelectCapacity is null)
+            if (SelectedTank is null)
             {
                 await CustomAlert.ShowErrorAsync("Debe seleccionar un tanque para asignar la capacidad", "Tanque Requerido");
                 return;
@@ -276,7 +275,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
             CompartimentCapacityModel = new CompartimentCapacityModel
             {
-                IdCapacity = SelectCapacity.IdCapacity,
+                IdCapacity = SelectedTank.IdTank,
                 IdCompartiment = SelectCompartiment.Number,
                 Default = Default.Value
             };
@@ -294,11 +293,11 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                string tankCode = SelectCapacity.Code ?? "N/A";
+                string tankNumber = SelectedTank.Number ?? "N/A";
                 int compartmentNumber = SelectCompartiment.Number;
                 
                 await CustomAlert.ShowSuccessAsync(
-                    $"Se ha configurado exitosamente la capacidad de {Default.Value} L para el compartimento #{compartmentNumber} del tanque {tankCode}", 
+                    $"Se ha configurado exitosamente la capacidad de {Default.Value} L para el compartimento #{compartmentNumber} del tanque {tankNumber}", 
                     "Capacidad Configurada");
             }
             else

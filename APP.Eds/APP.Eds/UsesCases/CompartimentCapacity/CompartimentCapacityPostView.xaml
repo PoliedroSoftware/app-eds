@@ -76,10 +76,10 @@
                                                VerticalOptions="Center"/>
                                         
                                         <Picker Title="Seleccione un tanque"
-                                                ItemsSource="{Binding CapacityList}"
-                                                ItemDisplayBinding="{Binding Code}"
-                                                SelectedItem="{Binding SelectCapacity, Mode=TwoWay}"
-                                                AutomationId="PickerCapacity"
+                                                ItemsSource="{Binding TankList}"
+                                                ItemDisplayBinding="{Binding Number}"
+                                                SelectedItem="{Binding SelectedTank, Mode=TwoWay}"
+                                                AutomationId="PickerTank"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
                                                 TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"

@@ -26,7 +26,7 @@ public partial class CompartimentCapacityPostView : ContentPage
             }
 
             // Enhanced validation with professional alerts
-            if (_compartimentCapacityService.SelectCapacity == null)
+            if (_compartimentCapacityService.SelectedTank == null)
             {
                 await CustomAlert.ShowErrorAsync("Debe seleccionar un tanque para asignar la capacidad", "Tanque Requerido");
                 return;
@@ -40,7 +40,7 @@ public partial class CompartimentCapacityPostView : ContentPage
 
             if (_compartimentCapacityService.Default <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad vï¿½lida mayor que 0", "Capacidad Invï¿½lida");
                 return;
             }
 
@@ -51,13 +51,13 @@ public partial class CompartimentCapacityPostView : ContentPage
             }
 
             // Show professional confirmation dialog
-            string tankCode = _compartimentCapacityService.SelectCapacity.Code ?? "N/A";
+            string tankNumber = _compartimentCapacityService.SelectedTank.Number ?? "N/A";
             int compartmentNumber = _compartimentCapacityService.SelectCompartiment.Number;
             byte capacity = (byte)_compartimentCapacityService.Default;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
-                "Confirmar Configuración", 
+                $"Â¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankNumber}?\n\nEsta configuraciÃ³n afectarÃ¡ las operaciones del compartimento.", 
+                "Confirmar ConfiguraciÃ³n", 
                 "Confirmar", 
                 "Cancelar");
 
@@ -67,13 +67,13 @@ public partial class CompartimentCapacityPostView : ContentPage
             await _compartimentCapacityService.SaveCompartimentCapacityDataAsync();
 
             // Clear form fields after successful submission
-            _compartimentCapacityService.SelectCapacity = null;
+            _compartimentCapacityService.SelectedTank = null;
             _compartimentCapacityService.SelectCompartiment = null;
             Default = 0;
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar la configuración de capacidad:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la configuraciï¿½n de capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -94,7 +94,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         try
         {
             LoadingOverlay?.ShowLoading();
-            await _compartimentCapacityService.GetAllCapacityDataAsync();
+            await _compartimentCapacityService.GetAllTankDataAsync();
             await _compartimentCapacityService.GetAllCompartimentDataAsync();
         }
         catch (Exception ex)
