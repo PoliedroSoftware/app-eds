@@ -1,8 +1,11 @@
-﻿namespace APP.Eds.Models.CompartimentCapacity;
+﻿using System.Text.Json.Serialization;
+
+namespace APP.Eds.Models.CompartimentCapacity;
 
 public class CompartimentCapacityRequest
 {
-    public CompartimentCapacityModel Request { get; set; }
-
+    // El backend exige esta propiedad raíz: "Request"
+    [JsonPropertyName("Request")]
+    public CompartimentCapacityModel Request { get; set; } = default!;
 }
 

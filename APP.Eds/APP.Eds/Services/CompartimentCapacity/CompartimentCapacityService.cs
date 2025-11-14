@@ -274,39 +274,42 @@ public class CompartimentCapacityService : INotifyPropertyChanged
                 return;
             }
 
-            // ✅ Usar el ID del compartimento, no el número
             CompartimentCapacityModel = new CompartimentCapacityModel
             {
                 IdCapacity = SelectCapacity.IdCapacity,
-                IdCompartiment = SelectCompartiment.IdCompartiment,
-                Default = Default.Value
+                IdCompartiment = SelectCompartiment.IdCompartiment, // ✅ Id, NO Number
+                Default = (int)Math.Round(Default!.Value)           // si definiste int; si mantienes double: Default = Default!.Value
             };
 
-            Request = new CompartimentCapacityRequest
+            var wrapper = new CompartimentCapacityRequest
             {
                 Request = CompartimentCapacityModel
             };
 
+            // Serialización SIN camelCase para respetar PascalCase exacto
+            var json = JsonSerializer.Serialize(wrapper, new JsonSerializerOptions
+            {
+                WriteIndented = false // opcional
+            });
+            System.Diagnostics.Debug.WriteLine($"[CompartimentCapacity] Payload enviado: {json}");
+
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/compartiment-capacity", content);
 
             if (response.IsSuccessStatusCode)
             {
-                string tankCode = SelectCapacity.Code ?? "N/A";
-                int compartmentNumber = SelectCompartiment.Number;
-
                 await CustomAlert.ShowSuccessAsync(
-                    $"Se ha configurado exitosamente la capacidad de {Default.Value:N2} L para el compartimento #{compartmentNumber} del tanque {tankCode}",
-                    "Capacidad Configurada");
+                    $"Capacidad configurada: {Default!.Value:N0} L en compartimento #{SelectCompartiment.Number} del tanque {SelectCapacity.Code ?? "N/A"}",
+                    "Configuración Guardada");
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
+                var errorBody = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"[CompartimentCapacity] Error respuesta: {errorBody}");
                 await CustomAlert.ShowErrorAsync(
-                    $"No se pudo guardar la configuración:\n\nCódigo: {response.StatusCode}\nDetalle: {error}",
+                    $"No se pudo guardar la configuración:\n\nCódigo: {response.StatusCode}\nRespuesta: {errorBody}",
                     "Error del Servidor");
             }
         }
