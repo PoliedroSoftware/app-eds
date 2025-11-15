@@ -624,6 +624,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
             if (vm.LastSendWasSuccessful)
             {
+                // ✅ Mensaje de éxito profesional y detallado
+                var successMessage = BuildSuccessMessage(totalAmount, totalTypeOfCollection, totalExpenditures);
+                await CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
+
                 // Evitar doble submit inmediatamente
                 OcultarSeccionesCierre();
 
@@ -651,6 +655,82 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Construye un mensaje de éxito profesional y detallado para el envío del corte
+    /// </summary>
+    private string BuildSuccessMessage(double totalAmount, double totalTypeOfCollection, double totalExpenditures)
+    {
+        var message = new System.Text.StringBuilder();
+        
+        message.AppendLine("El corte de turno ha sido registrado correctamente en el sistema.");
+        message.AppendLine();
+        message.AppendLine("📊 RESUMEN DEL CIERRE:");
+        message.AppendLine();
+        
+        // Información de ventas
+        if (_service.CourtDispensers?.Any() == true)
+        {
+            message.AppendLine($"⛽ Ventas por Mangueras: {_service.CourtDispensers.Count} registro(s)");
+            message.AppendLine($"   • Total en dinero: ${totalAmount:N2}");
+            message.AppendLine($"   • Total en galones: {_service.GetTotalGallons():N2}");
+            message.AppendLine();
+        }
+        
+        // Métodos de pago
+        if (_service.CourtTypeOfCollections?.Any() == true)
+        {
+            message.AppendLine($"💳 Métodos de Pago: {_service.CourtTypeOfCollections.Count} método(s)");
+            message.AppendLine($"   • Total recaudado: ${totalTypeOfCollection:N2}");
+            
+            // Detallar métodos de pago
+            foreach (var payment in _service.CourtTypeOfCollections)
+            {
+                message.AppendLine($"   • {payment.TypeOfCollectionName}: ${payment.Amount:N2}");
+            }
+            message.AppendLine();
+        }
+        
+        // Gastos
+        if (_service.CourtExpenditures?.Any() == true)
+        {
+            message.AppendLine($"💸 Gastos Registrados: {_service.CourtExpenditures.Count} gasto(s)");
+            message.AppendLine($"   • Total de gastos: ${totalExpenditures:N2}");
+            message.AppendLine();
+        }
+        
+        // Documentos adjuntos
+        if (_service.CourtDocuments?.Any() == true)
+        {
+            message.AppendLine($"📎 Documentos Adjuntos: {_service.CourtDocuments.Count} archivo(s)");
+            message.AppendLine();
+        }
+        
+        // Efectivo en caja
+        double cash = totalTypeOfCollection - totalExpenditures;
+        message.AppendLine("💰 EFECTIVO FINAL:");
+        message.AppendLine($"   ${cash:N2}");
+        message.AppendLine();
+        
+        // Validación de cuadratura
+        var tolerance = 0.01;
+        if (Math.Abs(totalAmount - totalTypeOfCollection) <= tolerance)
+        {
+            message.AppendLine("✅ VALIDACIÓN: Cuadratura exitosa");
+            message.AppendLine("   Los métodos de pago coinciden con las ventas registradas.");
+        }
+        else
+        {
+            var difference = totalAmount - totalTypeOfCollection;
+            message.AppendLine($"⚠️ VALIDACIÓN: Diferencia de ${Math.Abs(difference):N2}");
+            message.AppendLine(difference > 0 
+                ? "   (Ventas mayores a métodos de pago)" 
+                : "   (Métodos de pago mayores a ventas)");
+        }
+        
+        return message.ToString();
+    }
+
+
+    /// <summary>
     /// Rehabilita botones y secciones para un NUEVO cierre de turno,
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
@@ -658,19 +738,19 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     // ✅ CORREGIDO: Lógica diferente para Admin vs Usuario normal
     public bool AccionesHabilitadas => PuedeEditar && CanAccessFunctionality;
 
-    // ✅ NUEVA PROPIEDAD: Determina si el usuario puede acceder a la funcionalidad
+    // ✅ CORREGIDO: Los botones se habilitan cuando hay EDS O Islander seleccionado
     public bool CanAccessFunctionality
     {
         get
         {
             if (UserRole == "Admin")
             {
-                // Administradores necesitan seleccionar negocio
-                return IsBusinessSelected;
+                // ✅ CORREGIDO: Admin solo necesita seleccionar Negocio Y (EDS O Islander)
+                return IsBusinessSelected && (_service.IsEdsSelected || _service.SelectedIslander != null);
             }
             else
             {
-                // Usuarios normales pueden acceder siempre (se asume que ya tienen asignada su EDS)
+                // Usuarios normales siempre pueden acceder
                 return true;
             }
         }
@@ -728,7 +808,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _service.IslanderSelectList.Clear();
                     _service.IsBusinessSelected = true;
 
-                    IsBusinessSelected = true;
+                    // ✅ CORREGIDO: Sincronizar ambas propiedades
+                    IsBusinessSelected = true;  // La propiedad local de la página
+                    
                     OnPropertyChanged(nameof(AccionesHabilitadas));
                     OnPropertyChanged(nameof(CanAccessFunctionality));
 
@@ -756,7 +838,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _service.LoadIslandersByEds(selectedEds.IdEds);
                     _service.IsEdsSelected = true;
 
-                    // 👇 Mostrar secciones al elegir EDS
+                    // ✅ CORREGIDO: Notificar cambio para habilitar botones
+                    OnPropertyChanged(nameof(CanAccessFunctionality));
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
+
                     await ShowOperationalSectionsAsync();
                 }
             }
@@ -777,9 +862,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             {
                 if (picker.SelectedItem is IslanderResponse selectedIslander)
                 {
-                    // (si necesitas cargar algo extra, hazlo aquí)
+                    // ✅ CORREGIDO: Notificar cambio para habilitar botones
+                    OnPropertyChanged(nameof(CanAccessFunctionality));
+                    OnPropertyChanged(nameof(AccionesHabilitadas));
 
-                    // 👇 Mostrar secciones al elegir Islero
                     await ShowOperationalSectionsAsync();
                 }
             }
@@ -873,6 +959,3 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 }
-
-
-

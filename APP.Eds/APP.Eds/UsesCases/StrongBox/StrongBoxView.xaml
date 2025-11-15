@@ -4,7 +4,7 @@
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.StrongBox.StrongBoxView"
              Title="Caja Fuerte"
-             BackgroundColor="#F8F9FA">
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
@@ -43,7 +43,7 @@
                 <VerticalStackLayout Padding="20,24,20,20" Spacing="20">
                     
                     <!-- Tarjeta de saldo actual -->
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0"
                             Padding="24,20">
@@ -65,7 +65,7 @@
                                 <Label Text="Saldo actual:" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
-                                       TextColor="#374151"
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
@@ -82,7 +82,7 @@
                                 <Label Text="Monto a retirar" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#374151"/>
+                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
                                 
                                 <Border BackgroundColor="#F9FAFB"
                                         StrokeShape="RoundRectangle 12"
@@ -93,7 +93,7 @@
                                         <Label Text="$" 
                                                FontSize="18" 
                                                FontAttributes="Bold"
-                                               TextColor="#6B7280" 
+                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                                VerticalOptions="Center"/>
                                         <Entry Placeholder="0.00"
                                                Keyboard="Numeric"
@@ -101,7 +101,7 @@
                                                BackgroundColor="Transparent"
                                                FontSize="16"
                                                TextColor="#111827"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
@@ -176,7 +176,7 @@
                             <Label Text="Movimientos recientes" 
                                    FontSize="18" 
                                    FontAttributes="Bold" 
-                                   TextColor="#374151"
+                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -185,7 +185,7 @@
                                         MaximumHeightRequest="400">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                             StrokeShape="RoundRectangle 12"
                                             Stroke="#E5E7EB"
                                             StrokeThickness="1"
@@ -279,7 +279,7 @@
                                                 <Label Text="{Binding Saldo, StringFormat='${0:N2}'}" 
                                                        FontSize="14" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#6B7280"
+                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                                        HorizontalOptions="End"/>
                                             </StackLayout>
 
@@ -288,7 +288,7 @@
                                                          IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}">
                                                 <Label Text="{Binding Note, StringFormat='Nota: {0}'}" 
                                                        FontSize="12" 
-                                                       TextColor="#6B7280"
+                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
 
@@ -311,10 +311,10 @@
                                                          Spacing="16">
                                                 <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
                                                        FontSize="11" 
-                                                       TextColor="#9CA3AF"/>
+                                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                                 <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}" 
                                                        FontSize="11" 
-                                                       TextColor="#9CA3AF"/>
+                                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                             </StackLayout>
                                         </Grid>
                                     </Border>
@@ -325,22 +325,22 @@
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" 
                                              Spacing="16" Padding="32">
-                                    <Border BackgroundColor="White"
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                             StrokeShape="RoundRectangle 16"
                                             Stroke="#E5E7EB"
                                             Padding="32,24">
                                         <StackLayout Spacing="16" HorizontalOptions="Center">
                                             <Label Text="📋" FontSize="48" 
                                                    HorizontalOptions="Center" 
-                                                   TextColor="#9CA3AF"/>
+                                                   TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                             <Label Text="No hay movimientos registrados" 
                                                    FontSize="16" 
                                                    FontAttributes="Bold"
-                                                   TextColor="#6B7280" 
+                                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                                    HorizontalOptions="Center"/>
                                             <Label Text="Los movimientos de efectivo apareceran aqui" 
                                                    FontSize="14" 
-                                                   TextColor="#9CA3AF" 
+                                                   TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                                    HorizontalOptions="Center"
                                                    HorizontalTextAlignment="Center"/>
                                         </StackLayout>
@@ -357,7 +357,7 @@
                             <Button Text="📄 Cargar mas" 
                                     Command="{Binding LoadMoreMovementsCommand}"
                                     BackgroundColor="Transparent"
-                                    TextColor="#6B7280"
+                                    TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                     FontSize="14"
                                     FontAttributes="Bold"
                                     HeightRequest="44"/>

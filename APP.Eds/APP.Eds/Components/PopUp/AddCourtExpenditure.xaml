@@ -8,7 +8,7 @@
     Color="Transparent">
     
     <!-- Minimalist Container with Clean Shadow -->
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             WidthRequest="380" 
@@ -83,7 +83,7 @@
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
-                            <Border BackgroundColor="White"
+                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                     StrokeShape="RoundRectangle 8"
                                     Stroke="#E0E9F7"
                                     StrokeThickness="1"
@@ -120,7 +120,7 @@
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
-                            <Border BackgroundColor="White"
+                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                     StrokeShape="RoundRectangle 8"
                                     Stroke="#E0E9F7"
                                     StrokeThickness="1"
@@ -160,7 +160,7 @@
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
-                            <Border BackgroundColor="White"
+                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                     StrokeShape="RoundRectangle 8"
                                     Stroke="#E0E9F7"
                                     StrokeThickness="1"
@@ -195,7 +195,7 @@
 
             <!-- Clean Action Button Area -->
             <Border Grid.Row="2"
-                    BackgroundColor="White"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                     StrokeShape="RoundRectangle 0,0,20,20"
                     Padding="20,10">
                 

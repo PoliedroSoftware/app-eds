@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Compras"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nueva Compra" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Registre los detalles de la compra" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,13 +61,13 @@
                                 <Label Text="Número de Factura" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
 
                                 <Border x:Name="InvoiceBorder"
-                                        BackgroundColor="#F8F9FA" 
+                                        BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -79,7 +79,7 @@
                                         <Entry x:Name="FirstEntry"
                                                Keyboard="Text"
                                                Placeholder="Ingrese número de factura (mínimo 3 caracteres)"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Invoice, Mode=TwoWay}"
                                                TextChanged="InvoiceEntryTextChanged"
                                                Completed="InvoiceEntryCompleted"
@@ -87,7 +87,7 @@
                                                AutomationId="EntryInvoice"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#374151"
+                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -103,7 +103,7 @@
                                     <Label x:Name="InvoiceHelpText"
                                            Text="El número de factura debe tener al menos 3 caracteres"
                                            FontSize="12"
-                                           TextColor="#6B7280"
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
                                            VerticalOptions="Center"
                                            IsVisible="True"/>
                                 </StackLayout>
@@ -115,7 +115,7 @@
                                     <Label Text="Estación de Servicio (EDS)" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            Margin="4,0,0,0"/>
                                     <Label Text="*" 
                                            FontSize="14" 
@@ -124,9 +124,9 @@
                                            VerticalOptions="Start"/>
                                 </StackLayout>
 
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -143,7 +143,7 @@
                                                 AutomationId="PickerEds"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -155,7 +155,7 @@
                                 <Label Text="Fecha de Compra" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
 
                                 <Border BackgroundColor="#FFF3CD" 
@@ -188,12 +188,12 @@
                                 <Label Text="Proveedor" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
 
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -211,7 +211,7 @@
                                                 AutomationId="PickerProvider"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -223,12 +223,12 @@
                                 <Label Text="Categoría de Combustible" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
 
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -246,7 +246,7 @@
                                                 AutomationId="PickerCategory"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -278,11 +278,11 @@
                                     <Label Text="Productos Agregados" 
                                            FontSize="18" 
                                            FontAttributes="Bold" 
-                                           TextColor="#2D3436"
+                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                            AutomationId="LabelAddeProducts"/>
                                     <Label Text="Productos incluidos en esta compra" 
                                            FontSize="12" 
-                                           TextColor="#636E72"/>
+                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                 </StackLayout>
                             </StackLayout>
 
@@ -319,7 +319,7 @@
                                 <DataTemplate>
                                     <Border BackgroundColor="#FAFAFA" 
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             Margin="0,4"
                                             Padding="16">
                                         <Border.Shadow>
@@ -344,7 +344,7 @@
                                                 <Label Text="{Binding Name}" 
                                                        FontSize="16" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#2D3436"
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                        AutomationId="LabelProductNameValue"/>
                                             </StackLayout>
 
@@ -352,28 +352,28 @@
                                             <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="16">
                                                 <!-- Gallons -->
                                                 <StackLayout Grid.Row="0" Grid.Column="0">
-                                                    <Label Text="Galones" FontSize="11" TextColor="#666" FontAttributes="Bold" AutomationId="LabelProductQuantity"/>
+                                                    <Label Text="Galones" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" AutomationId="LabelProductQuantity"/>
                                                     <Label Text="{Binding Quantity, StringFormat='{0:N2}'}" 
                                                            FontSize="13" TextColor="#2196F3" FontAttributes="Bold" AutomationId="LabelProductQuantityValue"/>
                                                 </StackLayout>
 
                                                 <!-- Purchase Price -->
                                                 <StackLayout Grid.Row="1" Grid.Column="0">
-                                                    <Label Text="Precio Compra" FontSize="11" TextColor="#666" FontAttributes="Bold" AutomationId="LabelProductPrice"/>
+                                                    <Label Text="Precio Compra" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold" AutomationId="LabelProductPrice"/>
                                                     <Label Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#4CAF50" FontAttributes="Bold" AutomationId="LabelProductPriceValue"/>
                                                 </StackLayout>
 
                                                 <!-- Sell Price -->
                                                 <StackLayout Grid.Row="0" Grid.Column="1">
-                                                    <Label Text="Precio Venta" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Precio Venta" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding SellPrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#FF9800" FontAttributes="Bold"/>
                                                 </StackLayout>
 
                                                 <!-- Total -->
                                                 <StackLayout Grid.Row="1" Grid.Column="1">
-                                                    <Label Text="Total" FontSize="11" TextColor="#666" FontAttributes="Bold"/>
+                                                    <Label Text="Total" FontSize="11" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
                                                     <Label Text="{Binding TotalPrice, StringFormat='$ {0:N2}'}" 
                                                            FontSize="13" TextColor="#9C27B0" FontAttributes="Bold"/>
                                                 </StackLayout>
@@ -425,11 +425,11 @@
                                 <Label Text="Total a pagar" 
                        FontSize="18" 
                        FontAttributes="Bold" 
-                       TextColor="#2D3436"
+                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                        AutomationId="LabelTotalPurchases"/>
                                 <Label Text="Resumen de la compra actual" 
                        FontSize="12" 
-                       TextColor="#636E72"/>
+                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 

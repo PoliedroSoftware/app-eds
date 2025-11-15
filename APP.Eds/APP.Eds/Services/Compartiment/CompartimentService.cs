@@ -1,21 +1,48 @@
-﻿using System.ComponentModel;
-using System.Text.Json;
-using System.Text;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using APP.Eds.Models.Compartiment;
-using APP.Eds.Services.Config;
+﻿using APP.Eds.Components.PopUp;
 using APP.Eds.Helpers;
-using System.Net.Http.Headers;
-using APP.Eds.Models.Translations;
-using System.Linq;
-using APP.Eds.Components.PopUp;
-using static APP.Eds.Components.PopUp.CustomAlert;
-using APP.Eds.Models.ProductCompartiment;
+using APP.Eds.Models.Compartiment;
 using APP.Eds.Models.Product;
+using APP.Eds.Models.ProductCompartiment;
+using APP.Eds.Models.Translations;
+using APP.Eds.Services.Config;
+using APP.Eds.Services.Tank;
+using APP.Eds.UsesCases.Product;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
 
 namespace APP.Eds.Services.Compartiment
 {
+    public class EditablePendingCompartiment : INotifyPropertyChanged
+    {
+        public int Number { get; set; }
+        public double Nominal { get; set; }
+        public double Operative { get; set; }
+        public double Height { get; set; }
+        public int IdTank { get; set; }
+        public int IdProduct { get; set; }
+        public string SelectedTankName { get; set; }
+        public string SelectedProductName { get; set; }
+
+        public string DisplayCompartiment =>
+           $"Compartimento: {Number}\n" +
+           $"Capacidad nominal: {Nominal}\n" +
+           $"Capacidad operativa: {Operative}\n" +
+           $"Altura: {Height}\n" +
+           $"Producto: {SelectedProductName ?? string.Empty}" +
+           "-------------------------------------------------";
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     public class CompartimentService : INotifyPropertyChanged
     {
         private string? _authToken;

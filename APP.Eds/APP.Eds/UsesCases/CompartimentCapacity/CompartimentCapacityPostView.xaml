@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Capacidad del Compartimento"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -46,10 +46,10 @@
                                 <Label Text="Nueva Configuración" 
                                        FontSize="20" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Asigne capacidades a los compartimentos" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -61,12 +61,12 @@
                                 <Label Text="Seleccionar Tanque" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -82,7 +82,7 @@
                                                 AutomationId="PickerCapacity"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -94,12 +94,12 @@
                                 <Label Text="Seleccionar Compartimento" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="#DDD6FE"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                         StrokeThickness="2"
                                         Padding="0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
@@ -115,7 +115,7 @@
                                                 AutomationId="PickerCompartiment"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="#374151"
+                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -127,7 +127,7 @@
                                 <Label Text="Capacidad del Compartimento" 
                                        FontSize="14" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        Margin="4,0,0,0"/>
                                        
                                 <Border BackgroundColor="#FFF3E0" 
@@ -143,7 +143,7 @@
                                         
                                         <Entry Keyboard="Numeric"
                                                Placeholder="Ingrese la capacidad en litros"
-                                               PlaceholderColor="#9CA3AF"
+                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                                Text="{Binding Default, Mode=TwoWay}"
                                                AutomationId="EntryDefault"
                                                BackgroundColor="Transparent"
@@ -213,10 +213,10 @@
                                 <Label Text="Guía de Configuración" 
                                        FontSize="18" 
                                        FontAttributes="Bold" 
-                                       TextColor="#2D3436"/>
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                 <Label Text="Pasos para configurar correctamente" 
                                        FontSize="12" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </StackLayout>
 

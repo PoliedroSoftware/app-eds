@@ -7,7 +7,7 @@
     CanBeDismissedByTappingOutsideOfPopup="True"
     Color="Transparent">
 
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             WidthRequest="340"
             HeightRequest="450"
@@ -28,7 +28,7 @@
                 
                 <StackLayout HorizontalOptions="Center" Spacing="12">
                     <!-- Icon with better styling -->
-                    <Border BackgroundColor="White"
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                             StrokeShape="RoundRectangle 25"
                             WidthRequest="50" 
                             HeightRequest="50"
@@ -65,7 +65,7 @@
                            Text="Mensaje de alerta" 
                            FontSize="16"
                            LineBreakMode="WordWrap"
-                           TextColor="#2D3436"
+                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                            HorizontalOptions="FillAndExpand"
                            HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Start"/>
@@ -74,7 +74,7 @@
                            Text="" 
                            FontSize="14"
                            LineBreakMode="WordWrap"
-                           TextColor="#636E72"
+                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                            HorizontalOptions="FillAndExpand"
                            HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Start"
@@ -91,9 +91,9 @@
                          HorizontalOptions="Center">
                 
                 <Border x:Name="CancelButtonBorder"
-                        BackgroundColor="#F8F9FA"
+                        BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="#E0E0E0"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                         StrokeThickness="1"
                         IsVisible="False"
                         Padding="2">
