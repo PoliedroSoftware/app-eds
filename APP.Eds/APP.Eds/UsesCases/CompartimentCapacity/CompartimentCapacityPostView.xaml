@@ -180,7 +180,7 @@
 
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
-                                <Button Text="🚀 Enviar Datos"
+                                <Button Text="Enviar Datos"
                                         TextColor="White" 
                                         BackgroundColor="Transparent"
                                         Clicked="Button_Clicked"
