@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Helpers\Helpers.csproj" />
     <ProjectReference Include="..\Mobile_views\Mobile_views.csproj" />
+    <ProjectReference Include="..\APP.Eds\Poliedro.csproj" />
   </ItemGroup>
 
   <ItemGroup>
