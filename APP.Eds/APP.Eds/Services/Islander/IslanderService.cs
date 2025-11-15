@@ -12,9 +12,23 @@ using APP.Eds.Models.Business;
 
 namespace APP.Eds.Services.Islander;
 
+public class EditablePendingIslander : INotifyPropertyChanged
+{
+    public required string Name { get; set; }
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public int IdEds { get; set; }
+    public required string Password { get; set; }
+    public string SelectedEdsName { get; set; }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
 
 public class EnhancedIslanderItem
 {
