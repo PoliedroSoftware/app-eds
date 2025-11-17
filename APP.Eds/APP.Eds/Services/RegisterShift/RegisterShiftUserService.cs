@@ -1,4 +1,5 @@
-﻿using APP.Eds.Helpers;
+﻿using APP.Eds.Components.PopUp;
+using APP.Eds.Helpers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.RegisterShift;
@@ -303,15 +304,6 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         //    return;
         //}
 
-        if (!(IdEds is > 0))
-        {
-            if (ShowEdsPicker && SelectedUserEds == null)
-                await Application.Current.MainPage.DisplayAlert("EDS requerido", "Seleccione el EDS donde registrará el turno.", "OK");
-            else
-                await Application.Current.MainPage.DisplayAlert("EDS no disponible", "No se encontró un EDS asignado.", "OK");
-            return;
-        }
-
         try
         {
             var payload = new
@@ -338,11 +330,12 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}{RegisterShiftEndpoint}", content);
 
             if (response.IsSuccessStatusCode)
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Turno registrado correctamente", "OK");
+                await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo registrar el turno: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync($"No se pudo registrar el turno: {response.StatusCode}\n{error}", "Error");
+                return;
             }
         }
         catch (Exception ex)

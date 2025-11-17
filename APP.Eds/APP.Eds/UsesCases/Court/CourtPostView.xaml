@@ -157,30 +157,29 @@
                                 BackgroundColor="#F8F9FA"
                                 StrokeShape="RoundRectangle 8"
                                 Stroke="#DDD6FE"
-                                Padding="12"
-                                IsVisible="{Binding IsNotIslanderLogin}">
-                            <!-- IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker}"> -->
+                                Padding="12">
                             <VerticalStackLayout Spacing="6">
-                                <Label Text="Selecciona EDS"
-                                       FontAttributes="Bold"
-                                       TextColor="#636E72"/>
+                                    <Label Text="Selecciona EDS"
+                                           FontAttributes="Bold"
+                                           TextColor="#636E72"/>
                                 <Picker Title="Seleccione EDS"
-                                        ItemDisplayBinding="{Binding Name}"
-                                        AutomationId="EdsPicker"
-                                        ItemsSource="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=UserEds}"
-                                        SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
-                                        SelectedIndexChanged="OnEdsUserSelected"
-                                        BackgroundColor="Transparent"
-                                        Margin="12,8"/>
+                                            ItemDisplayBinding="{Binding Name}"
+                                            AutomationId="EdsPicker"
+                                            ItemsSource="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=UserEds}"
+                                            SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
+                                            SelectedIndexChanged="OnEdsUserSelected"
+                                            BackgroundColor="Transparent"
+                                            Margin="12,8"
+                                            IsEnabled="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked}"/>
                             </VerticalStackLayout>
                         </Border>
 
-                        <!-- Texto informativo cuando solo hay 1 EDS 
+                        <!--Texto informativo cuando solo hay 1 EDS 
                         <StackLayout IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker, Converter={StaticResource InverseBoolConverter}}">
                             <Label Text="{Binding Source={x:Reference CortePage}, Path=BindingContext.EdsName}"
                                    TextColor="#636E72"
                                    FontAttributes="Italic"/> 
-                        </StackLayout> -->
+                        </StackLayout>-->
 
                         <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
                             <!-- Date -->
@@ -204,7 +203,7 @@
                                 <!-- Checkbox para registrar turno sin ventas -->
                                 <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
                                     <CheckBox x:Name="RegisterShiftCheck"
-                                              IsChecked="{Binding IsRegisterShiftChecked, Mode=TwoWay}"
+                                              IsChecked="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked, Mode=TwoWay}"
                                               Color="#6A1B9A"
                                               CheckedChanged="OnRegisterShiftCheckChanged"/>
                                     <Label Text="Registrar turno sin ventas"

@@ -78,10 +78,10 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private bool _isregisterShiftChecked;
     public bool IsRegisterShiftChecked
     {
-               get => _isregisterShiftChecked;
+        get => _isregisterShiftChecked;
         set
         {
-            if (_isregisterShiftChecked != value)
+            if (_isregisterShiftChecked == value) return;
             {
                 _isregisterShiftChecked = value;
                 OnPropertyChanged(nameof(IsRegisterShiftChecked));
@@ -425,6 +425,13 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         // Prevent double-click by disabling the button immediately
         var button = sender as Button;
+        var check = this.FindByName<CheckBox>("RegisterShiftCheck");
+        bool registerShift = check?.IsChecked ?? false;
+        if (registerShift)
+        {
+            await CustomAlert.ShowErrorAsync("Has seleccionado registrar turno sin ventas, favor desmarca si desea hacer un corte.", "Registrar turno activo !!!");
+            return;
+        }
         if (button != null && !button.IsEnabled) return;
         if (button != null) button.IsEnabled = false;
 
@@ -710,6 +717,32 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
             await vm.SendCourtDataAsync();
 
+            if (vm.SendCourtDataAsync != null)
+            {
+                if (UserRole == "Admin")
+                {
+                    _registerShiftAdminService.IdEds = vm.IdEds;
+                    _registerShiftAdminService.IdBusiness = vm.IdBusiness;
+                    _registerShiftAdminService.IdIslander = vm.IdIslander;
+                    _registerShiftAdminService.DateStart = vm.DateStarttime;
+                    _registerShiftAdminService.DateEnd = vm.DateEndtime;
+                    _registerShiftAdminService.StartTime = vm.Starttime;
+                    _registerShiftAdminService.EndTime = vm.Endtime;
+
+                    await _registerShiftAdminService.SaveRegisterShiftAsync();
+                }
+                else
+                {
+                    _registerShiftUserService.IdEds = vm.IdEds;
+                    _registerShiftUserService.DateStart = vm.DateStarttime;
+                    _registerShiftUserService.DateEnd = vm.DateEndtime; // o (vm.Endtime < vm.Starttime ? vm.DateStarttime.AddDays(1) : vm.DateStarttime)
+                    _registerShiftUserService.StartTime = vm.Starttime;
+                    _registerShiftUserService.EndTime = vm.Endtime;
+                    await _registerShiftUserService.SaveRegisterShiftAsync();
+                }
+            }
+            
+
             try { overlay?.HideLoading(); } catch { }
 
             if (vm.LastSendWasSuccessful)
@@ -717,6 +750,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 // ✅ Mensaje de éxito profesional y detallado
                 var successMessage = BuildSuccessMessage(totalAmount, totalTypeOfCollection, totalExpenditures);
                 await CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
+                await CustomAlert.ShowSuccessAsync("Registro de turno", "Turno registrado exitosamente");
 
                 // Evitar doble submit inmediatamente
                 OcultarSeccionesCierre();
@@ -969,19 +1003,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
     {
         _isregisterShiftChecked = e.Value;
-        if (!e.Value) return;
-        //if (!_isregisterShiftChecked || !string.Equals(UserRole, "User", StringComparison.OrdinalIgnoreCase))
-        //    return;
 
         var sendButton = this.FindByName<Button>("SendData");
-        if (sendButton != null)
-        {
-            sendButton.Text = _isregisterShiftChecked ? "Registrar Turno" : "Enviar";
-        }
-        else if (sendButton == null)
-        {
-            sendButton.Text = _isregisterShiftChecked ? "Enviar Datos" : "Envair";
-        }
+        if (sendButton is null) return;
+
+        sendButton.Text = _isregisterShiftChecked ? "Registrar Turno" : "Enviar Datos";
     }
 
 
