@@ -1,14 +1,265 @@
+ï»¿using APP.Eds.Components.PopUp;
+using APP.Eds.Models.Product;
 using APP.Eds.Services.Product;
 using APP.Eds.UsesCases.ProductType;
-using APP.Eds.Services.Alert;
-using APP.Eds.Components.PopUp;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using APP.Eds.Models.Product;
 
 
 namespace APP.Eds.UsesCases.Product;
+
+public class EditablePendingProduct : INotifyPropertyChanged
+{
+    public EditablePendingProduct()
+    {
+        // Inicializar los tipos especÃ­ficos
+        AvailableProductTypes.Clear();
+        AvailableProductTypes.Add(new SpecificProductType(1, "Corriente", 1, "â›½")); // Gasolina Corriente
+        AvailableProductTypes.Add(new SpecificProductType(2, "Extra", 1, "âœ¨"));     // Gasolina Extra
+        AvailableProductTypes.Add(new SpecificProductType(3, "ACPM", 2, "ðŸš›"));     // ACPM
+        AddSampleData();
+    }
+    public int IdProduct { get; set; }
+    public int IdProductType { get; set; }
+    public double SellPrice { get; set; }
+    public double PurchasePrice { get; set; }
+    public int Stock { get; set; }
+    public int IdEds { get; set; }
+    public bool IsFormValid => !string.IsNullOrWhiteSpace(Name) && IdProductType > 0;
+    public string SelectedEdsName { get; set; }
+
+    public ObservableCollection<SpecificProductType> AvailableProductTypes { get; set; } = [];
+    public ObservableCollection<SpecificProductType> FilteredProductTypes { get; set; } = [];
+    public ObservableCollection<ProductTypeModelResponse> ProductTypeList { get; set; } = [];
+    public ObservableCollection<EnhancedProductTypeItem> EnhancedProductTypeList { get; set; } = [];
+    public bool IsProductTypeSelectionVisible => SelectedProductOption?.Id == 1; // Gasolina
+    public bool IsAcpmSelected => SelectedProductOption?.Id == 2; // ACPM
+
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(IsFormValid)); // Notificar cambio en validez del formulario
+        }
+    }
+
+
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    private SpecificProductType _selectedSpecificProductType;
+
+
+    public SpecificProductType SelectedSpecificProductType
+    {
+        get => _selectedSpecificProductType;
+        set
+        {
+            _selectedSpecificProductType = value;
+            OnPropertyChanged(nameof(SelectedSpecificProductType));
+
+            if (SelectedProductOption == null) return;
+
+            if (SelectedProductOption.Id == 2) // ACPM
+            {
+                Name = "ACPM";
+                UpdateProductTypeFromSelection();
+                return;
+            }
+
+            if (SelectedProductOption.Id == 3) // Urea
+            {
+                Name = "Urea";
+                UpdateProductTypeFromSelection();
+                return;
+            }
+
+            // Gasolina con subtipo
+            if (_selectedSpecificProductType != null)
+            {
+                Name = $"Gasolina {_selectedSpecificProductType.Description}".Trim();
+                UpdateProductTypeFromSelection();
+            }
+        }
+    }
+    private void UpdateProductTypeFromSelection()
+    {
+        if (SelectedProductOption == null) return;
+
+        // Gasolina con subtipo
+        if (SelectedProductOption.Id == 1 && SelectedSpecificProductType != null)
+        {
+            var id = GetBackendTypeIdForGasoline(SelectedSpecificProductType.Description);
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                return;
+            }
+        }
+
+        // ACPM sin subtipo
+        if (SelectedProductOption.Id == 2)
+        {
+            var id = GetBackendTypeIdForAcpm();
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                return;
+            }
+        }
+
+        // Urea sin subtipo
+        if (SelectedProductOption.Id == 3)
+        {
+            var id = GetBackendTypeIdForUrea();
+            if (id.HasValue)
+            {
+                IdProductType = id.Value;
+                return;
+            }
+        }
+
+        // Fallback: no tocar IdProductType si no hay match
+    }
+
+    // MÃ©todo para actualizar el tipo de producto basado en la selecciÃ³n   
+    private int? GetBackendTypeIdByPredicate(Func<string, bool> predicate)
+    {
+        var match = EnhancedProductTypeList.FirstOrDefault(pt =>
+            predicate((pt.Description ?? string.Empty).ToLowerInvariant()));
+        return match?.IdProductType;
+    }
+
+    private int? GetBackendTypeIdForGasoline(string subtype) // "corriente" o "extra"
+    {
+        var sub = (subtype ?? "").Trim().ToLowerInvariant();
+        return GetBackendTypeIdByPredicate(desc =>
+            desc.Contains("gasolina") && desc.Contains(sub));
+    }
+
+    private int? GetBackendTypeIdForAcpm()
+    {
+        return GetBackendTypeIdByPredicate(desc => desc.Contains("acpm") || desc.Contains("diesel"));
+    }
+
+    private int? GetBackendTypeIdForUrea()
+    {
+        return GetBackendTypeIdByPredicate(desc => desc.Contains("urea"));
+    }
+    private void OnProductOptionChanged()
+    {
+        if (SelectedProductOption == null)
+        {
+            FilteredProductTypes.Clear();
+            SelectedSpecificProductType = null;
+            Name = string.Empty;
+        }
+        else
+        {
+            // Filtrar tipos de producto segÃºn la opciÃ³n seleccionada
+            FilteredProductTypes.Clear();
+            var filteredTypes = AvailableProductTypes.Where(pt => pt.ParentProductId == SelectedProductOption.Id);
+
+            foreach (var type in filteredTypes)
+            {
+                FilteredProductTypes.Add(type);
+            }
+
+            // Si es ACPM, seleccionar automÃ¡ticamente
+            if (SelectedProductOption.Id == 2) // ACPM
+            {
+                SelectedSpecificProductType = null;
+                Name = "ACPM";
+                UpdateProductTypeFromSelection();
+            }
+            else if (SelectedProductOption.Id == 3)
+            {
+                SelectedSpecificProductType = null;
+                Name = "Urea";
+                UpdateProductTypeFromSelection();
+            }
+            else
+            {
+                SelectedSpecificProductType = null;
+                Name = string.Empty;
+            }
+        }
+
+        // Notificar cambios en las propiedades de visibilidad
+        OnPropertyChanged(nameof(FilteredProductTypes));
+        OnPropertyChanged(nameof(IsProductTypeSelectionVisible));
+        OnPropertyChanged(nameof(IsAcpmSelected));
+    }
+
+    private void AddSampleData()
+    {
+        try
+        {
+            var sampleTypes = new List<ProductTypeModelResponse>
+            {
+                new ProductTypeModelResponse { IdProductType = 1, Description = "Gasolina Corriente" },
+                new ProductTypeModelResponse { IdProductType = 2, Description = "Gasolina Extra" },
+                new ProductTypeModelResponse { IdProductType = 3, Description = "ACPM" },
+                new ProductTypeModelResponse { IdProductType = 5, Description = "Urea" },
+                new ProductTypeModelResponse { IdProductType = 4, Description = "Lubricantes" }
+            };
+            UpdateProductTypeList(sampleTypes);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error adding sample data: {ex.Message}");
+        }
+    }
+
+
+    private void UpdateProductTypeList(IEnumerable<ProductTypeModelResponse> data)
+    {
+        try
+        {
+            ProductTypeList.Clear();
+            EnhancedProductTypeList.Clear();
+
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    ProductTypeList.Add(item);
+                    EnhancedProductTypeList.Add(new EnhancedProductTypeItem(item));
+                }
+            }
+
+            // Notify that collections have changed
+            OnPropertyChanged(nameof(ProductTypeList));
+            OnPropertyChanged(nameof(EnhancedProductTypeList));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating product type list: {ex.Message}");
+        }
+    }
+
+    private ProductOption _selectedProductOption;
+    public ProductOption SelectedProductOption
+    {
+        get => _selectedProductOption;
+        set
+        {
+            _selectedProductOption = value;
+            OnPropertyChanged(nameof(SelectedProductOption));
+            OnProductOptionChanged();
+        }
+    }
+}
 
 public partial class ProductPostView : ContentPage, INotifyPropertyChanged
 {
@@ -41,14 +292,14 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 button.Text = "Registrando...";
             }
 
-            // Validar campos requeridos específicos del nuevo sistema
+            // Validar campos requeridos especÃ­ficos del nuevo sistema
             if (_productService.SelectedProductOption == null)
             {
                 await CustomAlert.ShowErrorAsync("Por favor seleccione el tipo de combustible (Gasolina o ACPM)", "Tipo de Combustible Requerido");
                 return;
             }
 
-            // Si es Gasolina, debe seleccionar el tipo específico
+            // Si es Gasolina, debe seleccionar el tipo especÃ­fico
             if (_productService.SelectedProductOption.Id == 1 && _productService.SelectedSpecificProductType == null)
             {
                 await CustomAlert.ShowErrorAsync("Por favor seleccione el tipo de gasolina (Corriente o Extra)", "Tipo de Gasolina Requerido");
@@ -58,36 +309,36 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             // Validar que el nombre se haya generado correctamente
             if (string.IsNullOrWhiteSpace(_productService.Name))
             {
-                await CustomAlert.ShowErrorAsync("El nombre del producto no se generó correctamente. Por favor revise su selección.", "Error en Nombre del Producto");
+                await CustomAlert.ShowErrorAsync("El nombre del producto no se generÃ³ correctamente. Por favor revise su selecciÃ³n.", "Error en Nombre del Producto");
                 return;
             }
 
-            // Validar que los valores numéricos no sean negativos
+            // Validar que los valores numÃ©ricos no sean negativos
             if (_productService.PurchasePrice < 0)
             {
-                await CustomAlert.ShowErrorAsync("El precio de compra no puede ser negativo", "Precio de Compra Inválido");
+                await CustomAlert.ShowErrorAsync("El precio de compra no puede ser negativo", "Precio de Compra InvÃ¡lido");
                 return;
             }
 
             if (_productService.SellPrice < 0)
             {
-                await CustomAlert.ShowErrorAsync("El precio de venta no puede ser negativo", "Precio de Venta Inválido");
+                await CustomAlert.ShowErrorAsync("El precio de venta no puede ser negativo", "Precio de Venta InvÃ¡lido");
                 return;
             }
 
             if (_productService.Stock < 0)
             {
-                await CustomAlert.ShowErrorAsync("El stock no puede ser negativo", "Stock Inválido");
+                await CustomAlert.ShowErrorAsync("El stock no puede ser negativo", "Stock InvÃ¡lido");
                 return;
             }
 
-            // Validación de lógica de negocio para precios
+            // ValidaciÃ³n de lÃ³gica de negocio para precios
             if (_productService.SellPrice > 0 && _productService.PurchasePrice > 0 && 
                 _productService.SellPrice <= _productService.PurchasePrice)
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
                     $"El precio de venta (${_productService.SellPrice:F2}) es menor o igual al precio de compra (${_productService.PurchasePrice:F2}).\n\n" +
-                    $"Esto podría resultar en pérdidas. ¿Desea continuar de todas formas?",
+                    $"Esto podrÃ­a resultar en pÃ©rdidas. Â¿Desea continuar de todas formas?",
                     "Advertencia de Rentabilidad",
                     "Continuar",
                     "Revisar Precios");
@@ -95,19 +346,19 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 if (!confirm) return;
             }
 
-            // Validación específica de rangos de precios para combustibles
+            // ValidaciÃ³n especÃ­fica de rangos de precios para combustibles
             if (_productService.SellPrice > 0)
             {
-                // Rangos aproximados para Colombia (pueden ajustarse según el mercado)
+                // Rangos aproximados para Colombia (pueden ajustarse segÃºn el mercado)
                 bool isGasoline = _productService.SelectedProductOption.Id == 1;
                 bool isAcpm = _productService.SelectedProductOption.Id == 2;
 
                 if (isGasoline && (_productService.SellPrice < 8000 || _productService.SellPrice > 20000))
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El precio de venta para gasolina (${_productService.SellPrice:F2}) está fuera del rango típico (8.000 - 20.000 COP).\n\n" +
-                        $"¿Confirma que este precio es correcto?",
-                        "Precio Atípico para Gasolina",
+                        $"El precio de venta para gasolina (${_productService.SellPrice:F2}) estÃ¡ fuera del rango tÃ­pico (8.000 - 20.000 COP).\n\n" +
+                        $"Â¿Confirma que este precio es correcto?",
+                        "Precio AtÃ­pico para Gasolina",
                         "Confirmar",
                         "Revisar");
                     
@@ -117,9 +368,9 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 if (isAcpm && (_productService.SellPrice < 7000 || _productService.SellPrice > 18000))
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El precio de venta para ACPM (${_productService.SellPrice:F2}) está fuera del rango típico (7.000 - 18.000 COP).\n\n" +
-                        $"¿Confirma que este precio es correcto?",
-                        "Precio Atípico para ACPM",
+                        $"El precio de venta para ACPM (${_productService.SellPrice:F2}) estÃ¡ fuera del rango tÃ­pico (7.000 - 18.000 COP).\n\n" +
+                        $"Â¿Confirma que este precio es correcto?",
+                        "Precio AtÃ­pico para ACPM",
                         "Confirmar",
                         "Revisar");
                     
@@ -127,24 +378,24 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 }
             }
 
-            // Mostrar confirmación antes de guardar
+            // Mostrar confirmaciÃ³n antes de guardar
             var productType = _productService.SelectedProductOption.Name;
             var productSubtype = _productService.SelectedSpecificProductType?.Description ?? "";
             var fullProductName = _productService.Name;
 
-            var confirmationMessage = $"¿Confirma el registro del siguiente producto?\n\n" +
-                                    $"• Tipo: {productType}\n" +
-                                    $"• Subtipo: {productSubtype}\n" +
-                                    $"• Nombre completo: {fullProductName}\n";
+            var confirmationMessage = $"Â¿Confirma el registro del siguiente producto?\n\n" +
+                                    $"â€¢ Tipo: {productType}\n" +
+                                    $"â€¢ Subtipo: {productSubtype}\n" +
+                                    $"â€¢ Nombre completo: {fullProductName}\n";
 
             if (_productService.PurchasePrice > 0)
-                confirmationMessage += $"• Precio de compra: ${_productService.PurchasePrice:F2}\n";
+                confirmationMessage += $"â€¢ Precio de compra: ${_productService.PurchasePrice:F2}\n";
 
             if (_productService.SellPrice > 0)
-                confirmationMessage += $"• Precio de venta: ${_productService.SellPrice:F2}\n";
+                confirmationMessage += $"â€¢ Precio de venta: ${_productService.SellPrice:F2}\n";
 
             if (_productService.Stock > 0)
-                confirmationMessage += $"• Stock inicial: {_productService.Stock:N0} galones\n";
+                confirmationMessage += $"â€¢ Stock inicial: {_productService.Stock:N0} galones\n";
 
             bool finalConfirm = await CustomAlert.ShowConfirmAsync(
                 confirmationMessage,
@@ -158,11 +409,11 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
             await _productService.SaveProductDataAsync();
             wasSuccessful = true;
 
-            // El formulario se limpia automáticamente en el servicio después de un guardado exitoso
+            // El formulario se limpia automÃ¡ticamente en el servicio despuÃ©s de un guardado exitoso
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Ocurrió un error inesperado al registrar el producto:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"OcurriÃ³ un error inesperado al registrar el producto:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -185,7 +436,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"No se pudo abrir la página de tipos de producto:\n\n{ex.Message}", "Error de Navegación");
+            await CustomAlert.ShowErrorAsync($"No se pudo abrir la pÃ¡gina de tipos de producto:\n\n{ex.Message}", "Error de NavegaciÃ³n");
         }
     }
 
@@ -211,8 +462,8 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
         if (obj is ProductModelResponse product)
         {
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Está seguro de que desea eliminar el producto '{product.Name}'?\n\nEsta acción no se puede deshacer.", 
-                "Confirmar Eliminación", 
+                $"Â¿EstÃ¡ seguro de que desea eliminar el producto '{product.Name}'?\n\nEsta acciÃ³n no se puede deshacer.", 
+                "Confirmar EliminaciÃ³n", 
                 "Eliminar", 
                 "Cancelar");
 
@@ -229,7 +480,7 @@ public partial class ProductPostView : ContentPage, INotifyPropertyChanged
                 }
                 catch (Exception ex)
                 {
-                    await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error de Eliminación");
+                    await CustomAlert.ShowErrorAsync($"Error al eliminar el producto:\n\n{ex.Message}", "Error de EliminaciÃ³n");
                 }
                 finally
                 {

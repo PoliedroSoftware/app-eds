@@ -64,7 +64,7 @@
                     </Border.GestureRecognizers>
                     <Grid Padding="20,15" ColumnDefinitions="Auto,*,Auto">
                         <Border Grid.Column="0"
-                                BackgroundColor="White"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                 StrokeShape="RoundRectangle 8"
                                 WidthRequest="32"
                                 HeightRequest="32"
@@ -174,7 +174,7 @@
                     </Border.GestureRecognizers>
                     <Grid Padding="20,15" ColumnDefinitions="Auto,*">
                         <Border Grid.Column="0"
-                                BackgroundColor="White"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                 StrokeShape="RoundRectangle 8"
                                 WidthRequest="28"
                                 HeightRequest="28"

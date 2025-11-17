@@ -7,7 +7,7 @@
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
 
-    <Border BackgroundColor="White"
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             WidthRequest="420" 
@@ -76,13 +76,13 @@
                                 <Label Text="Toque para seleccionar archivos" 
                                        FontSize="14" FontAttributes="Bold" TextColor="#1976D2"/>
                                 <Label Text="PDF, JPG, PNG, DOC, TXT (máx. 5MB c/u)" 
-                                       FontSize="11" TextColor="#616161"/>
+                                       FontSize="11" TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                             </StackLayout>
                         </Grid>
                     </Border>
 
                     <!-- Lista previa de selección -->
-                    <Border BackgroundColor="White" StrokeShape="RoundRectangle 12" Stroke="#E8F2FF" Padding="8,6">
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" StrokeShape="RoundRectangle 12" Stroke="#E8F2FF" Padding="8,6">
                         <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" Padding="6,2">
                                 <Label Text="Archivos seleccionados" FontAttributes="Bold" TextColor="#1976D2"/>
@@ -115,8 +115,8 @@
                                             <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="10">
                                                 <Label Text="{Binding Icon}" FontSize="16" VerticalOptions="Center"/>
                                                 <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="13" TextColor="#424242"/>
-                                                    <Label Text="{Binding SizeText}" FontSize="11" TextColor="#757575"/>
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="13" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
+                                                    <Label Text="{Binding SizeText}" FontSize="11" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                                 </VerticalStackLayout>
                                                 <Button Text="✕" 
                                                         Grid.Column="2"
@@ -137,7 +137,7 @@
 
             <!-- Actions -->
             <Grid Grid.Row="2" Padding="16,10" ColumnDefinitions="*,*" ColumnSpacing="12"
-                  BackgroundColor="White">
+                  BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}">
                 <Border BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 12">
                     <Button BackgroundColor="Transparent"
                             Text="Seleccionar más"

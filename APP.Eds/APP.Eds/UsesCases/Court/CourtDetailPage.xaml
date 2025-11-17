@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Detalle Del Corte"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -65,7 +65,7 @@
                                 <Label Text="Fecha del Cierre" 
                                        FontSize="11" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                 <Border BackgroundColor="#FFF3CD"
                                         StrokeShape="RoundRectangle 6"
                                         Stroke="#F39C12"
@@ -84,7 +84,7 @@
                                 <Label Text="Islero Responsable" 
                                        FontSize="11" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                 <Border BackgroundColor="#E8F5E8"
                                         StrokeShape="RoundRectangle 6"
                                         Stroke="#4CAF50"
@@ -106,7 +106,7 @@
                                 <Label Text="EDS" 
                                        FontSize="11" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                 <Border BackgroundColor="#E3F2FD"
                                         StrokeShape="RoundRectangle 6"
                                         Stroke="#2196F3"
@@ -128,7 +128,7 @@
                                 <Label Text="Horario de Trabajo" 
                                        FontSize="11" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72"/>
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                 <Border BackgroundColor="#D4EDDA"
                                         StrokeShape="RoundRectangle 6"
                                         Stroke="#27AE60"
@@ -160,7 +160,7 @@
                     <Label Text="Totales Financieros" 
                            FontSize="13" 
                            FontAttributes="Bold" 
-                           TextColor="#2D3436"/>
+                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                     
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                         <!-- Total Amount -->
@@ -260,7 +260,7 @@
                     <!-- Show message when no collections -->
                     <Border BackgroundColor="#FAFAFA"
                             StrokeShape="RoundRectangle 6"
-                            Stroke="#E0E0E0"
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                             Padding="16,12"
                             IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=inverse}">
                         <StackLayout Spacing="8" HorizontalOptions="Center">
@@ -268,7 +268,7 @@
                             <Label Text="No hay medios de pago registrados" 
                                    FontSize="13" 
                                    FontAttributes="Bold"
-                                   TextColor="#666666"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
                                    HorizontalOptions="Center"/>
                             <Label Text="Los métodos de pago se mostrarán aquí cuando estén disponibles" 
                                    FontSize="11" 
@@ -283,9 +283,9 @@
                                     IsVisible="{Binding Collections.Count, Converter={StaticResource CountToBoolConverter}}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White"
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="12,8">
                                     <Border.Shadow>
@@ -303,11 +303,11 @@
                                             <Label Text="Método de Pago"
                                                    FontSize="9"
                                                    FontAttributes="Bold"
-                                                   TextColor="#636E72"/>
+                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Collection}"
                                                    FontSize="11"
                                                    FontAttributes="Bold"
-                                                   TextColor="#2D3436"
+                                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                                    AutomationId="LabelCollectionValue"/>
                                         </StackLayout>
 
@@ -316,7 +316,7 @@
                                             <Label Text="Monto"
                                                    FontSize="9"
                                                    FontAttributes="Bold"
-                                                   TextColor="#636E72"/>
+                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}"
                                                    FontSize="11"
                                                    FontAttributes="Bold"
@@ -329,10 +329,10 @@
                                             <Label Text="Descripción"
                                                    FontSize="9"
                                                    FontAttributes="Bold"
-                                                   TextColor="#636E72"/>
+                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Description}"
                                                    FontSize="10"
-                                                   TextColor="#757575"
+                                                   TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
                                                    AutomationId="LabelDescriptionValue"/>
                                         </StackLayout>
                                     </Grid>
@@ -358,9 +358,9 @@
                     <CollectionView ItemsSource="{Binding Dispensers}" AutomationId="CollectionViewDispensers">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White"
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="12,8">
                                     <Border.Shadow>
@@ -381,7 +381,7 @@
                                                 <Label Text="Dispensador" 
                                                        FontSize="9" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#636E72"/>
+                                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                 <Label Text="{Binding Dispenser}" 
                                                        FontSize="12" 
                                                        FontAttributes="Bold"
@@ -392,11 +392,11 @@
                                                 <Label Text="Num. Manguera" 
                                                        FontSize="9" 
                                                        FontAttributes="Bold" 
-                                                       TextColor="#636E72"/>
+                                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                 <Label Text="{Binding NumberHose}" 
                                                        FontSize="11" 
                                                        FontAttributes="Bold"
-                                                       TextColor="#2D3436"/>
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                             </StackLayout>
                                         </Grid>
 
@@ -408,7 +408,7 @@
                                                     <Label Text="Monto Actual" 
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
-                                                           TextColor="#636E72"/>
+                                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                            FontSize="11" 
                                                            FontAttributes="Bold"
@@ -419,7 +419,7 @@
                                                     <Label Text="Galones Actuales" 
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
-                                                           TextColor="#636E72"/>
+                                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding AccumulatedGallons, StringFormat='{0:N1}'}" 
                                                            FontSize="11" 
                                                            FontAttributes="Bold"
@@ -433,20 +433,20 @@
                                                     <Label Text="Monto Anterior" 
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
-                                                           TextColor="#636E72"/>
+                                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding LastAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
                                                            FontSize="11" 
-                                                           TextColor="#757575"/>
+                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                                 </StackLayout>
 
                                                 <StackLayout Grid.Column="1" Spacing="1">
                                                     <Label Text="Galones Anteriores" 
                                                            FontSize="9" 
                                                            FontAttributes="Bold" 
-                                                           TextColor="#636E72"/>
+                                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                                     <Label Text="{Binding LastAccumulatedGallons, StringFormat='{0:N1}'}" 
                                                            FontSize="11" 
-                                                           TextColor="#757575"/>
+                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
                                                 </StackLayout>
                                             </Grid>
                                         </StackLayout>
@@ -473,9 +473,9 @@
                     <CollectionView ItemsSource="{Binding Expenditures}" AutomationId="CollectionViewExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="White"
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                         StrokeShape="RoundRectangle 6"
-                                        Stroke="#E0E0E0"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                         Margin="0,2"
                                         Padding="10,6">
                                     <Border.Shadow>
@@ -488,11 +488,11 @@
                                             <Label Text="Descripcion" 
                                                    FontSize="9" 
                                                    FontAttributes="Bold" 
-                                                   TextColor="#636E72"/>
+                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Expenditure}" 
                                                    FontSize="11" 
                                                    FontAttributes="Bold"
-                                                   TextColor="#2D3436" 
+                                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}" 
                                                    AutomationId="LabelExpenditureValue"/>
                                         </StackLayout>
 
@@ -501,7 +501,7 @@
                                             <Label Text="Monto" 
                                                    FontSize="9" 
                                                    FontAttributes="Bold" 
-                                                   TextColor="#636E72"/>
+                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
                                             <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
                                                    FontSize="11"
                                                    FontAttributes="Bold"

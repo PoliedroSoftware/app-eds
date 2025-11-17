@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Listado de Compras"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
@@ -74,13 +74,13 @@
                         <Label Text="Buscar y Filtrar Compras" 
                                FontSize="14" 
                                FontAttributes="Bold" 
-                               TextColor="#2D3436"/>
+                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                         
                         <!-- Search by Invoice -->
                         <Entry x:Name="SearchEntry"
                                Placeholder="Buscar por número de factura..."
                                TextChanged="OnSearchTextChanged"
-                               BackgroundColor="White"/>
+                               BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"/>
                         
                         <!-- Filter by Provider -->
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
@@ -95,7 +95,7 @@
                                     ItemDisplayBinding="{Binding Name}"
                                     SelectedItem="{Binding SelectedProviderFilter}"
                                     SelectedIndexChanged="OnProviderFilterChanged"
-                                    BackgroundColor="White"/>
+                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"/>
                         </Grid>
                         
                         <!-- Filter by Category -->
@@ -111,7 +111,7 @@
                                     ItemDisplayBinding="{Binding Description}"
                                     SelectedItem="{Binding SelectedCategoryFilter}"
                                     SelectedIndexChanged="OnCategoryFilterChanged"
-                                    BackgroundColor="White"/>
+                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"/>
                         </Grid>
                         
                         <!-- Clear Filters Button -->
@@ -132,7 +132,7 @@
                         <Label Text="Compras Registradas" 
                                FontSize="18" 
                                FontAttributes="Bold" 
-                               TextColor="#2D3436"/>
+                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
 
                         <StackLayout x:Name="EmptyStateView" 
                                      IsVisible="False"
@@ -141,16 +141,16 @@
                             <Label Text="No hay compras registradas" 
                                    FontSize="16" 
                                    FontAttributes="Bold"
-                                   TextColor="#636E72"
+                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                    HorizontalOptions="Center"/>
                         </StackLayout>
 
                         <CollectionView x:Name="ShoppingCollectionView">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="White" 
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                             StrokeShape="RoundRectangle 16"
-                                            Stroke="#E0E0E0"
+                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                             StrokeThickness="1"
                                             Margin="0,8"
                                             Padding="0">
@@ -204,30 +204,30 @@
                                                            Text="🏢 Proveedor:"
                                                            FontSize="13"
                                                            FontAttributes="Bold"
-                                                           TextColor="#424242"/>
+                                                           TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                     <Label Grid.Row="0" Grid.Column="1"
                                                            Text="{Binding Provider.Name}"
                                                            FontSize="13"
-                                                           TextColor="#616161"/>
+                                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                 
                                                     <Label Grid.Row="1" Grid.Column="0"
                                                            Text="📦 Categoría:"
                                                            FontSize="13"
                                                            FontAttributes="Bold"
-                                                           TextColor="#424242"/>
+                                                           TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                     <Label Grid.Row="1" Grid.Column="1"
                                                            Text="{Binding Category.Description}"
                                                            FontSize="13"
-                                                           TextColor="#616161"/>
+                                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                 </Grid>
                                             </StackLayout>
 
                                             <!-- Products Section -->
-                                            <StackLayout Padding="16" Spacing="12" BackgroundColor="White" x:Name="ProductsSection" BindingContext="{Binding .}">
+                                            <StackLayout Padding="16" Spacing="12" BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" x:Name="ProductsSection" BindingContext="{Binding .}">
                                                 <Label Text="{Binding ShoppingProducts.Count, StringFormat='📦 PRODUCTOS ({0}):'}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
-                                                       TextColor="#2D3436"/>
+                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                                 
                                                 <BoxView HeightRequest="1" BackgroundColor="#E0E0E0"/>
 
@@ -237,14 +237,14 @@
                                                         <DataTemplate>
                                                             <Border BackgroundColor="#FAFAFA"
                                                                     StrokeShape="RoundRectangle 12"
-                                                                    Stroke="#E0E0E0"
+                                                                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                                                     Padding="12"
                                                                     Margin="0,4">
                                                                 <VerticalStackLayout Spacing="8">
                                                                     <Label Text="{Binding Product.Name, StringFormat='▪️ {0}'}"
                                                                            FontSize="15"
                                                                            FontAttributes="Bold"
-                                                                           TextColor="#2D3436"/>
+                                                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
                                                                 
                                                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
                                                                           ColumnSpacing="8" RowSpacing="4">
@@ -252,42 +252,42 @@
                                                                         <Label Grid.Row="0" Grid.Column="0"
                                                                                Text="📊 Cantidad:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="0" Grid.Column="1"
                                                                                Text="{Binding Quantity, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="1" Grid.Column="0"
                                                                                Text="💵 P. Compra:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="1" Grid.Column="1"
                                                                                Text="{Binding PurchasePrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="2" Grid.Column="0"
                                                                                Text="💸 P. Venta:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="2" Grid.Column="1"
                                                                                Text="{Binding SellPrice, StringFormat='$ {0:N2}'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="3" Grid.Column="0"
                                                                                Text="📦 Stock:"
                                                                                FontSize="12"
-                                                                               TextColor="#616161"/>
+                                                                               TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
                                                                         <Label Grid.Row="3" Grid.Column="1"
                                                                                Text="{Binding Product.Stock, StringFormat='{0:N2} gal'}"
                                                                                FontSize="12"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="#424242"/>
+                                                                               TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
                                                                         
                                                                         <Label Grid.Row="4" Grid.Column="0"
                                                                                Text="💰 Subtotal:"
@@ -353,7 +353,7 @@
                         <!-- Pagination Controls -->
                         <Border BackgroundColor="#F5F5F5"
                                 StrokeShape="RoundRectangle 12"
-                                Stroke="#E0E0E0"
+                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
                                 Padding="12">
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                 <Button x:Name="PreviousPageButton"
@@ -371,7 +371,7 @@
                                        Text="Página 1"
                                        FontSize="13"
                                        FontAttributes="Bold"
-                                       TextColor="#2D3436"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                                 

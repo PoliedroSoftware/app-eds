@@ -11,6 +11,33 @@ using APP.Eds.Services.Translations;
 
 namespace APP.Eds.Services.Eds;
 
+public class EditablePendingEds : INotifyPropertyChanged
+{
+    public string Nit { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Sicom { get; set; } = string.Empty;
+    public int IdBusiness { get; set; }
+    private string _name;
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged("EdsList");
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
 public class EdsService : INotifyPropertyChanged
 {
     private string? _authToken;

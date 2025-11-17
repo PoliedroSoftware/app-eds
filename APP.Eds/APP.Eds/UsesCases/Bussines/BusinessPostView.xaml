@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:behaviors="clr-namespace:APP.Eds.UsesCases.Behaviors"
     Title="Gestion de Negocios"
-    BackgroundColor="#F8F9FA">
+    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
@@ -35,7 +35,7 @@
                 </Border>
 
                 <!-- Business Registration Form Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -50,7 +50,7 @@
                             <Label Text="Configuracion de Nuevo Negocio" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -61,9 +61,9 @@
                             <StackLayout Grid.Row="0" Grid.ColumnSpan="2">
                                 <Label Text="Nombre del Negocio" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#BFDBFE" 
                                         Padding="4">
@@ -72,7 +72,7 @@
                                            Text="{Binding Name, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryBusinessName"
-                                           PlaceholderColor="#9CA3AF">
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}">
                                         <Entry.Behaviors>
                                             <behaviors:LettersOnlyBehavior />
                                         </Entry.Behaviors>
@@ -95,9 +95,9 @@
                             <StackLayout Grid.Row="1" Grid.Column="0">
                                 <Label Text="Descripcion Corta" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#BFDBFE" 
                                         Padding="4">
@@ -106,7 +106,7 @@
                                            Text="{Binding Description, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryBusinessDescription"
-                                           PlaceholderColor="#9CA3AF"/>
+                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
                                 </Border>
                             </StackLayout>
 
@@ -114,9 +114,9 @@
                             <StackLayout Grid.Row="1" Grid.Column="1">
                                 <Label Text="Estado Operativo" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#BFDBFE" 
                                         Padding="4">
@@ -132,7 +132,7 @@
                             <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
                                 <Label Text="Configuraciones Adicionales" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"/>
                                 <StackLayout Orientation="Horizontal" Spacing="20">
                                     <StackLayout Orientation="Horizontal" Spacing="6">
@@ -141,7 +141,7 @@
                                                   AutomationId="CheckBoxIsActive"/>
                                         <Label Text="Activo para Operaciones" 
                                                FontSize="13" 
-                                               TextColor="#636E72"
+                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                 </StackLayout>
@@ -149,10 +149,10 @@
                                 <!-- Notes -->
                                 <Label Text="Observaciones/Notas" 
                                        FontAttributes="Bold" 
-                                       TextColor="#636E72" 
+                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                        FontSize="14"
                                        Margin="0,10,0,5"/>
-                                <Border BackgroundColor="#F8F9FA" 
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
                                         StrokeShape="RoundRectangle 8"
                                         Stroke="#BFDBFE" 
                                         Padding="4">
@@ -160,7 +160,7 @@
                                             Text="{Binding BusinessNotes, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
                                             AutomationId="EditorNotes"
-                                            PlaceholderColor="#9CA3AF"
+                                            PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
                                             HeightRequest="60"/>
                                 </Border>
                             </StackLayout>
@@ -187,7 +187,7 @@
                 </Border>
 
                 <!-- Business Statistics Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -202,7 +202,7 @@
                             <Label Text="Resumen de Negocios" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -292,7 +292,7 @@
                 </Border>
 
                 <!-- Business List Card -->
-                <Border BackgroundColor="White"
+                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
@@ -307,7 +307,7 @@
                             <Label Text="Lista de Negocios Configurados" 
                                    FontAttributes="Bold" 
                                    FontSize="18" 
-                                   TextColor="#2D3436"
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -394,27 +394,27 @@
 
                                             <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="📅" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding CreationDate, StringFormat='{0:dd/MM/yyyy}'}" FontSize="13" TextColor="#6B7280"/>
-                                                <Label Text="•" FontSize="12" TextColor="#6B7280" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Status}" FontSize="13" TextColor="#6B7280"/>
+                                                <Label Text="{Binding CreationDate, StringFormat='{0:dd/MM/yyyy}'}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
+                                                <Label Text="•" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Status}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                                 <Label Text="📋" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding Description}" FontSize="13" TextColor="#374151" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                                <Label Text="{Binding Description}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" LineBreakMode="TailTruncation" MaxLines="1"/>
                                             </StackLayout>
 
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
                                                 <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
                                                     <Label Text="🏪" FontSize="11" VerticalOptions="Center"/>
                                                     <Label Text="{Binding TotalEds}" FontSize="12" TextColor="#3B82F6" FontAttributes="Bold"/>
-                                                    <Label Text="EDS total" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="EDS total" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                                 </StackLayout>
                                                 
                                                 <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
                                                     <Label Text="✅" FontSize="11" VerticalOptions="Center"/>
                                                     <Label Text="{Binding ActiveEds}" FontSize="12" TextColor="#10B981" FontAttributes="Bold"/>
-                                                    <Label Text="activas" FontSize="11" TextColor="#6B7280" VerticalOptions="Center"/>
+                                                    <Label Text="activas" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
                                                 </StackLayout>
                                             </Grid>
 
@@ -456,15 +456,15 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="🏢" FontSize="48" HorizontalOptions="Center" TextColor="#9CA3AF"/>
+                                    <Label Text="🏢" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
                                     <Label Text="No hay negocios configurados" 
                                            FontSize="16" 
-                                           TextColor="#6B7280" 
+                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            FontAttributes="Bold"/>
                                     <Label Text="Configure el primer negocio usando el formulario superior" 
                                            FontSize="14" 
-                                           TextColor="#9CA3AF" 
+                                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
