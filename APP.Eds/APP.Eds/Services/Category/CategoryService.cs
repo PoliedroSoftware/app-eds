@@ -2,6 +2,7 @@ using APP.Eds.Helpers;
 using APP.Eds.Models.Category;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Text;
@@ -25,6 +26,35 @@ namespace APP.Eds.Services.Category
                 OnPropertyChanged(nameof(Category));
             }
         }
+
+        // Default category options
+        public ObservableCollection<string> DefaultCategories { get; set; } = new ObservableCollection<string>
+        {
+            "Subsidiado",
+            "Nacional",
+            "Personalizado..." // Option to add custom category
+        };
+
+        private string _selectedDefaultCategory;
+        public string SelectedDefaultCategory
+        {
+            get => _selectedDefaultCategory;
+            set
+            {
+                _selectedDefaultCategory = value;
+                OnPropertyChanged(nameof(SelectedDefaultCategory));
+                OnPropertyChanged(nameof(IsCustomCategoryVisible));
+                
+                // If not "Personalizado", set as description
+                if (value != null && value != "Personalizado...")
+                {
+                    Description = value;
+                }
+            }
+        }
+
+        // Property to control visibility of custom input
+        public bool IsCustomCategoryVisible => SelectedDefaultCategory == "Personalizado...";
 
         private string _description;
         public string Description
