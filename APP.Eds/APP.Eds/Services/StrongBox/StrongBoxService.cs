@@ -403,18 +403,18 @@ public class StrongBoxService : INotifyPropertyChanged
                 return await GetCourtDetailsFallbackAsync(courtId);
             }
             
-            // Intentar deserializar como objeto único primero
-            var courtDetails = JsonSerializer.Deserialize<CourtListItemModel>(json, 
+            // Deserialize using the wrapper structure
+            var apiResponse = JsonSerializer.Deserialize<APP.Eds.Models.Inventory.ApiResponseWrapper<CourtListItemModel>>(json, 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (courtDetails == null)
+            if (apiResponse?.Data == null)
             {
                 System.Diagnostics.Debug.WriteLine("Deserialization returned null");
                 return await GetCourtDetailsFallbackAsync(courtId);
             }
 
-            System.Diagnostics.Debug.WriteLine($"Successfully loaded court details for ID: {courtId}, Court: {courtDetails.Id}");
-            return courtDetails;
+            System.Diagnostics.Debug.WriteLine($"Successfully loaded court details for ID: {courtId}, Court: {apiResponse.Data.Id}");
+            return apiResponse.Data;
         }
         catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
         {
@@ -478,23 +478,24 @@ public class StrongBoxService : INotifyPropertyChanged
                 return null;
             }
 
-            var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(json, 
+            // Deserialize using the wrapper structure
+            var apiResponse = JsonSerializer.Deserialize<APP.Eds.Models.Inventory.ApiResponseWrapper<List<CourtListItemModel>>>(json, 
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (courts == null || !courts.Any())
+            if (apiResponse?.Data == null || !apiResponse.Data.Any())
             {
                 System.Diagnostics.Debug.WriteLine("Fallback: No courts found in response");
                 return null;
             }
 
-            System.Diagnostics.Debug.WriteLine($"Fallback: Found {courts.Count} courts, searching for ID: {courtId}");
+            System.Diagnostics.Debug.WriteLine($"Fallback: Found {apiResponse.Data.Count} courts, searching for ID: {courtId}");
             
-            var result = courts.FirstOrDefault(c => c.Id == courtId);
+            var result = apiResponse.Data.FirstOrDefault(c => c.Id == courtId);
             System.Diagnostics.Debug.WriteLine($"Fallback method found court: {result != null}");
             
             if (result == null)
             {
-                System.Diagnostics.Debug.WriteLine($"Fallback: Court with ID {courtId} not found in the first {courts.Count} courts");
+                System.Diagnostics.Debug.WriteLine($"Fallback: Court with ID {courtId} not found in the first {apiResponse.Data.Count} courts");
                 
                 // Intentar con más páginas si no se encuentra en la primera
                 for (int page = 2; page <= 3; page++) // Intentar hasta 3 páginas
@@ -508,12 +509,12 @@ public class StrongBoxService : INotifyPropertyChanged
                         if (pageResponse.IsSuccessStatusCode)
                         {
                             var pageJson = await pageResponse.Content.ReadAsStringAsync();
-                            var pageCourts = JsonSerializer.Deserialize<List<CourtListItemModel>>(pageJson, 
+                            var pageApiResponse = JsonSerializer.Deserialize<APP.Eds.Models.Inventory.ApiResponseWrapper<List<CourtListItemModel>>>(pageJson, 
                                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                             
-                            if (pageCourts?.Any() == true)
+                            if (pageApiResponse?.Data?.Any() == true)
                             {
-                                result = pageCourts.FirstOrDefault(c => c.Id == courtId);
+                                result = pageApiResponse.Data.FirstOrDefault(c => c.Id == courtId);
                                 if (result != null)
                                 {
                                     System.Diagnostics.Debug.WriteLine($"Fallback: Found court in page {page}");

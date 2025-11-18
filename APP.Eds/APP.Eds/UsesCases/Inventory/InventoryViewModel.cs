@@ -210,13 +210,15 @@ namespace APP.Eds.UsesCases.Inventory
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
                 var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/inventory?PageNumber=1&PageSize=100&includeProductType=true");
-                var inventories = JsonSerializer.Deserialize<List<InventoryModel>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                // Deserialize using the wrapper structure
+                var apiResponse = JsonSerializer.Deserialize<ApiResponseWrapper<List<InventoryModel>>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 Businesses.Clear();
 
-                if (inventories != null)
+                if (apiResponse?.Data != null)
                 {
-                    foreach (var inventory in inventories)
+                    foreach (var inventory in apiResponse.Data)
                     {
                         if (inventory.Businesses != null)
                         {
