@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using APP.Eds.Services.PointOfSale;
+using APP.Eds.Services.VersionCheck;
 
 namespace APP.Eds
 {
@@ -21,6 +22,9 @@ namespace APP.Eds
 
             // Register Point of Sale Service
             builder.Services.AddSingleton<IPointOfSaleService, PointOfSaleService>();
+            
+            // Register Version Check Service
+            builder.Services.AddSingleton<IVersionCheckService, VersionCheckService>();
 
 #if DEBUG
             builder.Logging.AddDebug();
