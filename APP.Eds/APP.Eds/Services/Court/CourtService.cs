@@ -2942,8 +2942,8 @@ public class CourtService : INotifyPropertyChanged
                 {
                     System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: No se pudo obtener el ID del corte creado para subir los documentos");
                 }
-                var successMessage = BuildCourtSuccessMessage(totalVentas, totalMetodosPago);
-                await Components.PopUp.CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
+                // ✅ FIX: Removed duplicate success alert - UI feedback is handled in CourtPostView.Button_Clicked()
+                // The Service layer only sets LastSendWasSuccessful = true to indicate success
             }
             else
             {
@@ -2980,80 +2980,10 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Construye un mensaje de éxito profesional y detallado para el envío del corte
-    /// </summary>
-    private string BuildCourtSuccessMessage(double totalAmount, double totalTypeOfCollection)
-    {
-        var message = new System.Text.StringBuilder();
-        
-        message.AppendLine("El corte de turno ha sido registrado correctamente en el sistema.");
-        message.AppendLine();
-        message.AppendLine("📊 RESUMEN DEL CIERRE:");
-        message.AppendLine();
-        
-        // Información de ventas
-        if (CourtDispensers?.Any() == true)
-        {
-            message.AppendLine($"⛽ Ventas por Mangueras: {CourtDispensers.Count} registro(s)");
-            message.AppendLine($"   • Total en dinero: ${totalAmount:N2}");
-            message.AppendLine($"   • Total en galones: {GetTotalGallons():N2}");
-            message.AppendLine();
-        }
-        
-        // Métodos de pago
-        if (CourtTypeOfCollections?.Any() == true)
-        {
-            message.AppendLine($"💳 Métodos de Pago: {CourtTypeOfCollections.Count} método(s)");
-            message.AppendLine($"   • Total recaudado: ${totalTypeOfCollection:N2}");
-            
-            // Detallar métodos de pago
-            foreach (var payment in CourtTypeOfCollections)
-            {
-                message.AppendLine($"   • {payment.TypeOfCollectionName}: ${payment.Amount:N2}");
-            }
-            message.AppendLine();
-        }
-        
-        // Gastos
-        if (CourtExpenditures?.Any() == true)
-        {
-            message.AppendLine($"💸 Gastos Registrados: {CourtExpenditures.Count} gasto(s)");
-            message.AppendLine($"   • Total de gastos: ${GetTotalExpenditure():N2}");
-            message.AppendLine();
-        }
-        
-        // Documentos adjuntos
-        if (CourtDocuments?.Any() == true)
-        {
-            message.AppendLine($"📎 Documentos Adjuntos: {CourtDocuments.Count} archivo(s)");
-            message.AppendLine();
-        }
-        
-        // Efectivo en caja
-        double cash = totalTypeOfCollection - GetTotalExpenditure();
-        message.AppendLine("💰 EFECTIVO FINAL:");
-        message.AppendLine($"   ${cash:N2}");
-        message.AppendLine();
-        
-        // Validación de cuadratura
-        var tolerance = 0.01;
-        if (Math.Abs(totalAmount - totalTypeOfCollection) <= tolerance)
-        {
-            message.AppendLine("✅ VALIDACIÓN: Cuadratura exitosa");
-            message.AppendLine("   Los métodos de pago coinciden con las ventas registradas.");
-        }
-        else
-        {
-            var difference = totalAmount - totalTypeOfCollection;
-            message.AppendLine($"⚠️ VALIDACIÓN: Diferencia de ${Math.Abs(difference):N2}");
-            message.AppendLine(difference > 0 
-                ? "   (Ventas mayores a métodos de pago)" 
-                : "   (Métodos de pago mayores a ventas)");
-        }
-        
-        return message.ToString();
-    }
+    // ✅ REMOVED: BuildCourtSuccessMessage() method
+    // This method was causing duplicate success messages. The success message
+    // is now handled exclusively in CourtPostView.BuildSuccessMessage() to maintain
+    // proper separation of concerns (Service layer should not display UI alerts)
 
     // Resto de m�todos necesarios
     public async Task AddDispenserFromPopup()
