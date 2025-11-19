@@ -34,11 +34,16 @@ public partial class App : Application
         CheckForUpdates();
     }
     
+    /// <summary>
+    /// Checks for app updates on Google Play Store and notifies the user if an update is available.
+    /// This method runs asynchronously and does not block app startup.
+    /// </summary>
     private async void CheckForUpdates()
     {
         try
         {
-            var versionCheckService = new VersionCheckService();
+            // Create service instance (consider using DI in future if App constructor is refactored)
+            using var versionCheckService = new VersionCheckService();
             var updateAvailable = await versionCheckService.IsUpdateAvailableAsync();
             
             if (updateAvailable)
@@ -46,6 +51,7 @@ public partial class App : Application
                 var latestVersion = await versionCheckService.GetLatestVersionAsync();
                 var currentVersion = versionCheckService.GetCurrentVersion();
                 
+                // Ensure UI updates happen on main thread
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     var shouldUpdate = await AlertService.ShowConfirmAsync(
@@ -57,6 +63,7 @@ public partial class App : Application
                     
                     if (shouldUpdate)
                     {
+                        // Open Play Store app page
                         await Launcher.OpenAsync(new Uri("https://play.google.com/store/apps/details?id=com.companyname.app.EDS"));
                     }
                 });

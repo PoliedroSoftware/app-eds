@@ -3,16 +3,21 @@ using System.Text.RegularExpressions;
 namespace APP.Eds.Services.VersionCheck;
 
 /// <summary>
-/// Service for checking app version updates from Google Play Store
+/// Service for checking app version updates from Google Play Store.
+/// Implements IDisposable to properly dispose of HttpClient resources.
 /// </summary>
-public class VersionCheckService : IVersionCheckService
+public class VersionCheckService : IVersionCheckService, IDisposable
 {
     private const string PlayStoreUrl = "https://play.google.com/store/apps/details?id=com.companyname.app.EDS&hl=en";
     private readonly HttpClient _httpClient;
+    private bool _disposed;
 
     public VersionCheckService()
     {
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10) // Set timeout to prevent hanging
+        };
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36");
     }
 
@@ -27,15 +32,16 @@ public class VersionCheckService : IVersionCheckService
     /// <summary>
     /// Gets the latest version available on Google Play Store
     /// </summary>
+    /// <returns>The version string from Play Store, or null if unable to fetch</returns>
     public async Task<string?> GetLatestVersionAsync()
     {
         try
         {
             var response = await _httpClient.GetStringAsync(PlayStoreUrl);
             
-            // Pattern to match version in Google Play Store HTML
-            // Looking for patterns like: "Current Version</div><span...>1.0.1</span>"
-            // or "Versión actual</div><span...>1.0.1</span>"
+            // Try multiple regex patterns to handle different Play Store layouts
+            // Pattern 1: Standard layout - "Current Version</div><span...>1.0.1</span>"
+            // Pattern 2: Spanish layout - "Versión actual</div><span...>1.0.1</span>"
             var versionPattern = @"(?:Current Version|Versión actual)[^>]*>\s*<[^>]*>\s*<[^>]*>([0-9]+\.[0-9]+\.?[0-9]*)<";
             var match = Regex.Match(response, versionPattern, RegexOptions.IgnoreCase);
             
@@ -44,7 +50,7 @@ public class VersionCheckService : IVersionCheckService
                 return match.Groups[1].Value.Trim();
             }
 
-            // Alternative pattern for newer Play Store layouts
+            // Pattern 3: JSON-like structure in Play Store API responses
             versionPattern = @"\[\[\[""([0-9]+\.[0-9]+\.?[0-9]*)""\]\]";
             match = Regex.Match(response, versionPattern);
             
@@ -53,6 +59,26 @@ public class VersionCheckService : IVersionCheckService
                 return match.Groups[1].Value.Trim();
             }
 
+            // Pattern 4: More lenient search for version numbers in the page
+            versionPattern = @"softwareVersion['""]?\s*[:=]\s*['""]?([0-9]+\.[0-9]+\.?[0-9]*)";
+            match = Regex.Match(response, versionPattern, RegexOptions.IgnoreCase);
+            
+            if (match.Success)
+            {
+                return match.Groups[1].Value.Trim();
+            }
+
+            System.Diagnostics.Debug.WriteLine("Version pattern not found in Play Store response");
+            return null;
+        }
+        catch (TaskCanceledException)
+        {
+            System.Diagnostics.Debug.WriteLine("Version check timed out");
+            return null;
+        }
+        catch (HttpRequestException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Network error fetching version: {ex.Message}");
             return null;
         }
         catch (Exception ex)
@@ -111,5 +137,29 @@ public class VersionCheckService : IVersionCheckService
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Disposes of the HttpClient resources
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Protected implementation of Dispose pattern
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _httpClient?.Dispose();
+            }
+            _disposed = true;
+        }
     }
 }
