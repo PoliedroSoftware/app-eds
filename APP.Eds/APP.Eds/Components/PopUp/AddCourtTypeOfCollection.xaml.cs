@@ -4,19 +4,65 @@ using CommunityToolkit.Maui.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace APP.Eds.Components.PopUp;
 
-public partial class AddCourtTypeOfCollection : Popup
+public partial class AddCourtTypeOfCollection : Popup, INotifyPropertyChanged
 {
     private readonly CourtService courtService;
     private System.Timers.Timer _updateTimer;
+
+    // ✅ NUEVO: Propiedades para controlar el estado de carga
+    private bool _isLoading = true; // Empieza en true para mostrar loading al abrir
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
+            if (_isLoading != value)
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsContentVisible)); // Notifica cambio en visibilidad del contenido
+            }
+        }
+    }
+
+    private string _loadingMessage = "Cargando métodos de pago...";
+    public string LoadingMessage
+    {
+        get => _loadingMessage;
+        set
+        {
+            if (_loadingMessage != value)
+            {
+                _loadingMessage = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // Propiedad calculada para mostrar/ocultar el contenido
+    public bool IsContentVisible => !IsLoading;
+
+    // ✅ MODIFICADO: Mostrar el monto RESTANTE (que disminuye al agregar métodos)
+    public double TotalDelDia => (double)Remaining;
 
     decimal _remaining;
     public decimal Remaining
     {
         get => _remaining;
-        set { if (_remaining != value) { _remaining = value; OnPropertyChanged(); } }
+        set 
+        { 
+            if (_remaining != value) 
+            { 
+                _remaining = value; 
+                OnPropertyChanged();
+                // ✅ IMPORTANTE: Notificar TotalDelDia cuando Remaining cambia
+                OnPropertyChanged(nameof(TotalDelDia));
+            } 
+        }
     }
 
     public class PaymentOption : INotifyPropertyChanged
@@ -64,61 +110,167 @@ public partial class AddCourtTypeOfCollection : Popup
 
     public ObservableCollection<PaymentOption> PaymentOptions { get; } = new();
 
+    // ✅ NUEVO: Implementación explícita de INotifyPropertyChanged
+    public new event PropertyChangedEventHandler? PropertyChanged;
+
+    protected new void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     public AddCourtTypeOfCollection(CourtService courtService)
     {
         InitializeComponent();
         this.courtService = courtService;
 
-        // Encadenar al servicio para los bindings (RemainingToPay en el encabezado)
-        BindingContext = courtService;
+        // ✅ IMPORTANTE: Establecer BindingContext a esta instancia para que las propiedades IsLoading funcionen
+        BindingContext = this;
+
+        // ✅ NUEVO: Inicializar Remaining con el total pendiente
+        Remaining = (decimal)courtService.RemainingToPay;
 
         _updateTimer = new System.Timers.Timer(1500);
         _updateTimer.Elapsed += OnUpdateTimerElapsed;
         _updateTimer.AutoReset = false;
 
-        InitializePaymentOptionsAsync();
+        // ✅ NUEVO: Iniciar carga de forma asíncrona sin await (fire and forget es OK aquí)
+        _ = InitializePaymentOptionsAsync();
     }
 
-    private async void InitializePaymentOptionsAsync()
+    private async Task InitializePaymentOptionsAsync()
     {
         try
         {
-            if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
+            // ✅ NUEVO: Mostrar loading al inicio
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
+                IsLoading = true;
+                LoadingMessage = "Cargando métodos de pago...";
+            });
+
+            System.Diagnostics.Debug.WriteLine("AddCourtTypeOfCollection: Starting InitializePaymentOptionsAsync");
+            
+            // ✅ FIX: Try dedicated method first, then fallback to full data load
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("AddCourtTypeOfCollection: Attempting to load TypeOfCollection data directly");
+                
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    LoadingMessage = "Cargando...";
+                });
+                
+                await courtService.LoadTypeOfCollectionDataAsync();
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Direct load successful. Count = {courtService.TypeOfCollectionList?.Count ?? 0}");
+            }
+            catch (Exception directLoadEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Direct load failed: {directLoadEx.Message}. Trying full data load...");
+                
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    LoadingMessage = "Reintentando carga de datos...";
+                });
+                
+                // Fallback to full data load
                 await courtService.GetAllEdsData();
-                await Task.Delay(500);
+                await Task.Delay(500); // Reduced delay since we're showing loading
+                
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: After GetAllEdsData, TypeOfCollectionList count = {courtService.TypeOfCollectionList?.Count ?? 0}");
             }
 
+            // ✅ FIX: Better error message with specific guidance
             if (courtService.TypeOfCollectionList == null || !courtService.TypeOfCollectionList.Any())
             {
+                System.Diagnostics.Debug.WriteLine("AddCourtTypeOfCollection: TypeOfCollectionList is still empty after loading attempts");
+                
+                // ✅ NUEVO: Ocultar loading antes de mostrar error
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    IsLoading = false;
+                });
+                
                 await CustomAlert.ShowWarningAsync(
-                    "No se pudieron cargar los métodos de pago disponibles.\n\n" +
-                    "Posibles causas: conexión, servidor o autenticación.",
+                    "⚠️ No se pudieron cargar los métodos de pago disponibles.\n\n" +
+                    "Causas posibles:\n" +
+                    "• Problemas de conexión con el servidor\n" +
+                    "• El token de autenticación ha expirado\n" +
+                    "• No hay métodos de pago configurados en el sistema\n\n" +
+                    "Soluciones:\n" +
+                    "1. Verifique su conexión a Internet\n" +
+                    "2. Intente cerrar sesión y volver a iniciar\n" +
+                    "3. Contacte al administrador del sistema\n\n" +
+                    $"API URL: {Services.Config.Configuration.BaseUrl}/api/v1/type-of-collection",
                     "Datos No Disponibles");
+                    
+                Close(); // ✅ FIX: Close the popup if data couldn't be loaded
                 return;
             }
+
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Successfully loaded {courtService.TypeOfCollectionList.Count} payment methods");
+
+            // ✅ NUEVO: Actualizar mensaje de loading antes de procesar datos
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                LoadingMessage = "Preparando métodos de pago...";
+            });
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
                 PaymentOptions.Clear();
+                
                 foreach (var t in courtService.TypeOfCollectionList)
                 {
-                    var opt = new PaymentOption { Type = t, IsSelected = false, Amount = 0m, IsPreviouslyPaid = false };
-                    opt.PropertyChanged += PaymentOption_PropertyChanged;
-                    PaymentOptions.Add(opt);
+                    try
+                    {
+                        var opt = new PaymentOption 
+                        { 
+                            Type = t, 
+                            IsSelected = false, 
+                            Amount = 0m, 
+                            IsPreviouslyPaid = false 
+                        };
+                        opt.PropertyChanged += PaymentOption_PropertyChanged;
+                        PaymentOptions.Add(opt);
+                        
+                        System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Added payment option '{t.Description}'");
+                    }
+                    catch (Exception optEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Error adding payment option '{t?.Description ?? "null"}': {optEx.Message}");
+                    }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Total PaymentOptions added: {PaymentOptions.Count}");
 
                 // Mostrar pagos previos marcados y bloqueados
                 RestorePreviousSelections();
 
                 RecalcRemaining();
+                
+                // ✅ NUEVO: Ocultar loading cuando todo esté listo
+                IsLoading = false;
+                System.Diagnostics.Debug.WriteLine("AddCourtTypeOfCollection: Loading complete, UI ready");
             });
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Critical error in InitializePaymentOptionsAsync: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"AddCourtTypeOfCollection: Stack trace: {ex.StackTrace}");
+            
+            // ✅ NUEVO: Ocultar loading antes de mostrar error
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                IsLoading = false;
+            });
+            
             await CustomAlert.ShowErrorAsync(
-                $"Error al inicializar los métodos de pago:\n\n{ex.Message}",
+                $"❌ Error crítico al inicializar los métodos de pago:\n\n{ex.Message}\n\n" +
+                "Por favor, cierre esta ventana e intente nuevamente. Si el problema persiste, " +
+                "reinicie la aplicación o contacte al soporte técnico.",
                 "Error de Inicialización");
+                
+            Close(); // ✅ FIX: Close popup on critical error
         }
     }
 
@@ -202,6 +354,8 @@ public partial class AddCourtTypeOfCollection : Popup
 
             var baseTotal = (decimal)courtService.RemainingToPay; // pendiente actual
             Remaining = Math.Max(0, baseTotal - addedThisSession);
+            
+            // ✅ Ya no es necesario notificar TotalDelDia aquí porque se notifica automáticamente al cambiar Remaining
         }
         catch (Exception ex)
         {
