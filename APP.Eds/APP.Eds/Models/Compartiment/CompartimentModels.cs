@@ -8,5 +8,7 @@
         public double Height { get; set; }
         public int IdTank { get; set; }
         public int IdProduct { get; set; }
+        public string? NumberTank { get; set; }
+        public string? NameProduct { get; set; }
     }
 }

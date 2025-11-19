@@ -6,5 +6,6 @@
         public string? Number { get; set; }
         public double? Ability { get; set; }
         public double? Stock { get; set; }
+        public string? NameEDS { get; set; }
     }
 }

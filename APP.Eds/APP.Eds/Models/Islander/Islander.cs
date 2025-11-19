@@ -9,5 +9,7 @@
         public required string LastName { get; set; }
         public int IdEds { get; set; }
         public required string Password { get; set; }
+        public string? NameClaimToken { get; set; }
+        public string? NameEDS { get; set; }
     }
 }
