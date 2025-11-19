@@ -3,6 +3,7 @@ using APP.Eds.UsesCases.Navigation;
 using APP.Eds.Services.Authentication;
 using APP.Eds.Services.VersionCheck;
 using APP.Eds.Services.Alert;
+using APP.Eds.Services.Config;
 
 namespace APP.Eds;
 
@@ -30,15 +31,19 @@ public partial class App : Application
         // Ensure theme is applied on app start
         RequestedThemeChanged += OnRequestedThemeChanged;
         
-        // Check for app updates
-        CheckForUpdates();
+        // Check for app updates (controlled by Configuration.EnableAutoVersionCheck flag)
+        if (Configuration.EnableAutoVersionCheck)
+        {
+            CheckForUpdates();
+        }
     }
     
     /// <summary>
     /// Checks for app updates on Google Play Store and notifies the user if an update is available.
     /// This method runs asynchronously and does not block app startup.
+    /// Can be called manually for testing: ((App)Application.Current).CheckForUpdates();
     /// </summary>
-    private async void CheckForUpdates()
+    public async void CheckForUpdates()
     {
         try
         {

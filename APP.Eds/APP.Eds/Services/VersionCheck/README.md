@@ -4,14 +4,43 @@
 
 The Version Check Service provides automatic detection and notification of app updates available on Google Play Store. When a new version is published, users are notified and given the option to update immediately.
 
+**Note:** By default, automatic version checking is **disabled** to allow testing before full integration. See "Enabling the Feature" section below.
+
 ## Features
 
-- **Automatic Version Detection**: Checks Google Play Store on app startup
+- **Automatic Version Detection**: Checks Google Play Store on app startup (when enabled)
+- **Feature Flag Control**: Can be enabled/disabled via `Configuration.EnableAutoVersionCheck`
+- **Manual Testing**: Can be triggered manually for testing purposes
 - **Non-Blocking**: Version check runs asynchronously without blocking app launch
 - **User-Friendly Notifications**: Uses the app's existing AlertService for consistent UI
 - **Graceful Failure**: If version check fails, app continues normally without errors
 - **Semantic Versioning**: Properly compares version numbers (e.g., 1.0.1 vs 1.0.2)
 - **Direct Play Store Link**: One-tap access to update on Play Store
+
+## Enabling the Feature
+
+### For Testing (Manual Trigger)
+
+The version check is currently **disabled by default** to allow testing. You can test it manually by:
+
+1. Run the app normally (version check won't run automatically)
+2. Trigger it manually from any page using developer tools or debug console:
+   ```csharp
+   ((App)Application.Current).CheckForUpdates();
+   ```
+
+### For Production (Automatic on Startup)
+
+To enable automatic version checking on app startup:
+
+1. Open `Services/Config/Configuration.cs`
+2. Change `EnableAutoVersionCheck` from `false` to `true`:
+   ```csharp
+   public static bool EnableAutoVersionCheck => true;
+   ```
+3. Rebuild and deploy the app
+
+This approach allows thorough testing before enabling the feature for all users.
 
 ## Architecture
 

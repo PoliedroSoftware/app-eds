@@ -3,11 +3,41 @@
 ## Overview
 This guide provides instructions for manually testing the version update notification feature.
 
+**Important:** The feature is **disabled by default** (controlled by `Configuration.EnableAutoVersionCheck = false`). This allows safe testing before production rollout.
+
 ## Prerequisites
 - Android device or emulator
 - App installed with current version (1.0.1)
 - Internet connection
 - Access to publish a new version to Google Play Store (for full testing)
+
+## Testing Mode
+
+### Option 1: Manual Testing (Recommended for Initial Testing)
+
+**Current Configuration:** Feature is disabled by default.
+
+**How to Test:**
+1. Build and run the app normally
+2. The version check will NOT run automatically
+3. To test the feature, manually trigger it from code or debug console:
+   ```csharp
+   ((App)Application.Current).CheckForUpdates();
+   ```
+4. Or add a test button in your UI that calls this method
+
+**Benefits:**
+- Test without affecting normal app usage
+- Control exactly when the check happens
+- Easy to debug and verify behavior
+
+### Option 2: Automatic Testing (After Manual Testing Successful)
+
+**To Enable Automatic Checks:**
+1. Open `APP.Eds/Services/Config/Configuration.cs`
+2. Change: `public static bool EnableAutoVersionCheck => true;`
+3. Rebuild and redeploy the app
+4. Version check will now run automatically on every app startup
 
 ## Test Scenarios
 
@@ -16,7 +46,13 @@ This guide provides instructions for manually testing the version update notific
 **Setup:**
 - App version matches Play Store version
 
-**Steps:**
+**Steps (Manual Testing):**
+1. Launch the app
+2. Call `((App)Application.Current).CheckForUpdates();` from debug console or test button
+3. Wait a few seconds
+4. Observe app behavior
+
+**Steps (Automatic Testing - if enabled):**
 1. Launch the app
 2. Observe app startup
 
@@ -36,7 +72,13 @@ This guide provides instructions for manually testing the version update notific
 - Play Store has version 1.0.2 published
 - App has version 1.0.1 installed
 
-**Steps:**
+**Steps (Manual Testing):**
+1. Launch the app
+2. Call `((App)Application.Current).CheckForUpdates();` from debug console or test button
+3. Wait for version check to complete (should be within seconds)
+4. Observe the update notification dialog
+
+**Steps (Automatic Testing - if enabled):**
 1. Launch the app
 2. Wait for version check to complete (should be within seconds)
 3. Observe the update notification dialog
