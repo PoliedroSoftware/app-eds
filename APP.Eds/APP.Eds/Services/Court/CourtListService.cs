@@ -65,8 +65,14 @@ public class CourtListService : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"CourtListService.LoadAllCourtListAsync - Error: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo cargar la lista de courts: {ex.Message}", "OK");
+            // Log technical details internally for debugging
+            System.Diagnostics.Debug.WriteLine($"[CourtListService.LoadAllCourtListAsync] Error técnico completo: {ex}");
+            
+            // Show user-friendly error message
+            await Application.Current.MainPage.DisplayAlert(
+                "Error", 
+                "No se pudo cargar el historial de cortes.\nInténtalo nuevamente. Si continúa el error, comunícate con soporte.", 
+                "OK");
         }
     }
 

@@ -303,7 +303,14 @@ namespace APP.Eds.UsesCases.Inventory
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error cargando inventario: {ex.Message}", "OK");
+                // Log technical details internally for debugging
+                System.Diagnostics.Debug.WriteLine($"[InventoryViewModel.LoadDataAsync] Error técnico completo: {ex}");
+                
+                // Show user-friendly error message
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error", 
+                    "No se pudo cargar el inventario.\nPor favor verifica tu conexión o inténtalo nuevamente.\nSi el problema persiste, contacta a soporte.", 
+                    "OK");
             }
         }
 
