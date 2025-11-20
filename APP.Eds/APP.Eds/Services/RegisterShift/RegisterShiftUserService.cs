@@ -345,6 +345,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
                     endTime = EndTime.ToString(@"hh\:mm\:ss")
                 }
             };
+            
             var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -367,7 +368,8 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", $"Error al registrar el turno: {ex.Message}", "OK");
+            await CustomAlert.ShowErrorAsync("Debe seleccionar un EDS", "Error");
+            return;
         }
     }
 
