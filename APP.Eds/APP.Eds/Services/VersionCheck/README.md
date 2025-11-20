@@ -2,18 +2,21 @@
 
 ## Overview
 
-The Version Check Service provides automatic detection and notification of app updates available on Google Play Store. When a new version is published, users are notified and given the option to update immediately.
+The Version Check Service provides automatic detection and notification of app updates available on Google Play Store. **Always displays the current app version** and, when a new version is published, notifies users and gives them the option to update immediately.
 
 **Note:** By default, automatic version checking is **disabled** to allow testing before full integration. See "Enabling the Feature" section below.
 
 ## Features
 
+- **Always Shows Current Version**: Displays current app version information
+- **Update Notification**: When newer version available, shows update prompt with Play Store link
+- **No Update Message**: When up-to-date, confirms user has the latest version
 - **Automatic Version Detection**: Checks Google Play Store on app startup (when enabled)
 - **Feature Flag Control**: Can be enabled/disabled via `Configuration.EnableAutoVersionCheck`
 - **Manual Testing**: Can be triggered manually for testing purposes
 - **Non-Blocking**: Version check runs asynchronously without blocking app launch
 - **User-Friendly Notifications**: Uses the app's existing AlertService for consistent UI
-- **Graceful Failure**: If version check fails, app continues normally without errors
+- **Graceful Failure**: If version check fails, shows current version with error message
 - **Semantic Versioning**: Properly compares version numbers (e.g., 1.0.1 vs 1.0.2)
 - **Direct Play Store Link**: One-tap access to update on Play Store
 
@@ -56,8 +59,11 @@ This approach allows thorough testing before enabling the feature for all users.
 2. **Fetch Current Version**: Gets the installed version using `AppInfo.VersionString`
 3. **Fetch Play Store Version**: Scrapes the Google Play Store page to extract version
 4. **Compare Versions**: Uses semantic versioning logic to compare versions
-5. **Notify User**: If newer version exists, shows a confirmation dialog
-6. **Launch Play Store**: If user accepts, opens the app's Play Store page
+5. **Show Version Information**: Always displays current version to user
+6. **Update Available**: If newer version exists, shows confirmation dialog with "Actualizar" and "Más tarde" options
+7. **Up to Date**: If no update available, shows info message confirming latest version
+8. **Network Error**: If Play Store version can't be fetched, shows current version with error message
+9. **Launch Play Store**: If user accepts update, opens the app's Play Store page
 
 ## Implementation Details
 

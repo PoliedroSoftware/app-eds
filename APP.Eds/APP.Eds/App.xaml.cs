@@ -39,7 +39,8 @@ public partial class App : Application
     }
     
     /// <summary>
-    /// Checks for app updates on Google Play Store and notifies the user if an update is available.
+    /// Checks for app updates on Google Play Store and shows version information.
+    /// Always displays current version and notifies if an update is available.
     /// This method runs asynchronously and does not block app startup.
     /// Can be called manually for testing: ((App)Application.Current).CheckForUpdates();
     /// </summary>
@@ -49,35 +50,73 @@ public partial class App : Application
         {
             // Create service instance (consider using DI in future if App constructor is refactored)
             using var versionCheckService = new VersionCheckService();
-            var updateAvailable = await versionCheckService.IsUpdateAvailableAsync();
+            var currentVersion = versionCheckService.GetCurrentVersion();
+            var latestVersion = await versionCheckService.GetLatestVersionAsync();
             
-            if (updateAvailable)
+            // Ensure UI updates happen on main thread
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                var latestVersion = await versionCheckService.GetLatestVersionAsync();
-                var currentVersion = versionCheckService.GetCurrentVersion();
-                
-                // Ensure UI updates happen on main thread
-                await MainThread.InvokeOnMainThreadAsync(async () =>
+                if (!string.IsNullOrEmpty(latestVersion))
                 {
-                    var shouldUpdate = await AlertService.ShowConfirmAsync(
-                        $"Hay una nueva versión ({latestVersion}) disponible en Google Play Store. Tu versión actual es {currentVersion}. ¿Deseas actualizar ahora?",
-                        "Actualización Disponible",
-                        "Actualizar",
-                        "Más tarde"
-                    );
+                    var updateAvailable = await versionCheckService.IsUpdateAvailableAsync();
                     
-                    if (shouldUpdate)
+                    if (updateAvailable)
                     {
-                        // Open Play Store app page
-                        await Launcher.OpenAsync(new Uri("https://play.google.com/store/apps/details?id=com.companyname.app.EDS"));
+                        // Update available - show notification with update option
+                        var shouldUpdate = await AlertService.ShowConfirmAsync(
+                            $"Versión actual: {currentVersion}\n\nHay una nueva versión ({latestVersion}) disponible en Google Play Store. ¿Deseas actualizar ahora?",
+                            "Actualización Disponible",
+                            "Actualizar",
+                            "Más tarde"
+                        );
+                        
+                        if (shouldUpdate)
+                        {
+                            // Open Play Store app page
+                            await Launcher.OpenAsync(new Uri("https://play.google.com/store/apps/details?id=com.companyname.app.EDS"));
+                        }
                     }
-                });
-            }
+                    else
+                    {
+                        // No update available - show current version info
+                        await AlertService.ShowInfoAsync(
+                            $"Versión actual: {currentVersion}\n\nTienes la última versión disponible en Google Play Store.",
+                            "Información de Versión"
+                        );
+                    }
+                }
+                else
+                {
+                    // Could not fetch Play Store version - show current version only
+                    await AlertService.ShowInfoAsync(
+                        $"Versión actual: {currentVersion}\n\nNo se pudo verificar la versión en Google Play Store.",
+                        "Información de Versión"
+                    );
+                }
+            });
         }
         catch (Exception ex)
         {
-            // Silently fail - don't disrupt user experience if version check fails
+            // Show error with current version info
             System.Diagnostics.Debug.WriteLine($"Error checking for updates: {ex.Message}");
+            
+            try
+            {
+                using var versionCheckService = new VersionCheckService();
+                var currentVersion = versionCheckService.GetCurrentVersion();
+                
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await AlertService.ShowInfoAsync(
+                        $"Versión actual: {currentVersion}\n\nNo se pudo verificar actualizaciones en este momento.",
+                        "Información de Versión"
+                    );
+                });
+            }
+            catch
+            {
+                // Silently fail if we can't even show current version
+            }
         }
     }
 

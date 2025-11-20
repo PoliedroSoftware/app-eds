@@ -41,7 +41,7 @@ This guide provides instructions for manually testing the version update notific
 
 ## Test Scenarios
 
-### Scenario 1: No Update Available (Normal Flow)
+### Scenario 1: No Update Available (Up to Date)
 
 **Setup:**
 - App version matches Play Store version
@@ -50,19 +50,22 @@ This guide provides instructions for manually testing the version update notific
 1. Launch the app
 2. Call `((App)Application.Current).CheckForUpdates();` from debug console or test button
 3. Wait a few seconds
-4. Observe app behavior
+4. Observe the version information dialog
 
 **Steps (Automatic Testing - if enabled):**
 1. Launch the app
-2. Observe app startup
+2. Wait for version check to complete
+3. Observe the version information dialog
 
 **Expected Result:**
-- App launches normally
-- No update notification appears
-- App functions as expected
+- Dialog appears with title "Información de Versión"
+- Message shows: "Versión actual: X.X.X\n\nTienes la última versión disponible en Google Play Store."
+- One button: "OK"
+- App continues normally after closing dialog
 
 **Verification:**
-- Check debug logs for: "Version check completed successfully" (or similar)
+- Current version is displayed
+- User is informed they have the latest version
 
 ---
 
@@ -85,7 +88,7 @@ This guide provides instructions for manually testing the version update notific
 
 **Expected Result:**
 - Dialog appears with title "Actualización Disponible"
-- Message shows: "Hay una nueva versión (1.0.2) disponible en Google Play Store. Tu versión actual es 1.0.1. ¿Deseas actualizar ahora?"
+- Message shows: "Versión actual: 1.0.1\n\nHay una nueva versión (1.0.2) disponible en Google Play Store. ¿Deseas actualizar ahora?"
 - Two buttons: "Actualizar" and "Más tarde"
 
 **Test Path A - User Accepts Update:**
@@ -105,19 +108,29 @@ This guide provides instructions for manually testing the version update notific
 **Setup:**
 - Disable device internet connection or use airplane mode
 
-**Steps:**
+**Steps (Manual Testing):**
 1. Enable airplane mode
 2. Launch the app
-3. Observe behavior
+3. Call `((App)Application.Current).CheckForUpdates();`
+4. Wait a few seconds
+5. Observe the version information dialog
+
+**Steps (Automatic Testing - if enabled):**
+1. Enable airplane mode
+2. Launch the app
+3. Wait for version check to complete
+4. Observe the version information dialog
 
 **Expected Result:**
 - App launches normally without delays
-- No error messages shown to user
-- App functions normally after startup
+- Dialog appears with title "Información de Versión"
+- Message shows: "Versión actual: X.X.X\n\nNo se pudo verificar actualizaciones en este momento." OR "No se pudo verificar la versión en Google Play Store."
+- Current version is always displayed even when network fails
 - Debug log shows: "Network error fetching version" or "Error checking for updates"
 
 **Verification:**
 - App should not hang or crash
+- Current version is still shown to user despite network error
 - No user-facing error dialogs
 - Startup time not significantly affected
 
