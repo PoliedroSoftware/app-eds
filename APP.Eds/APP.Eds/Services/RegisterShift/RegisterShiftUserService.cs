@@ -336,8 +336,8 @@ public class RegisterShiftUserService : INotifyPropertyChanged
                 request = new
                 {
                     idEds = IdEds.Value,
-                    //islander = IdIslander.Value,
-                    //idBusiness = IdBusiness.Value,
+                    idIslander = IdIslander.Value,
+                    idBusiness = IdBusiness.Value,
                     dateStartTime = DateStart.ToString("yyyy-MM-dd"),
                     startTime = StartTime.ToString(@"hh\:mm\:ss"),
                     dateEndTime = DateEnd.ToString("yyyy-MM-dd"),
