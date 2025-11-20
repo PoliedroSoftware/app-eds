@@ -6,6 +6,7 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Files;
+using APP.Eds.Services.RegisterShift;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -25,6 +26,7 @@ public class CourtService : INotifyPropertyChanged
     public bool IsUserRole => Preferences.Get("userRole", "") == "User";
 
     private static CourtService _instance;
+    private static RegisterShiftUserService registerShiftUserService;
     public static CourtService Instance => _instance ??= new CourtService();
 
     private string? _authToken;
@@ -2156,6 +2158,19 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
+    private EdsResponse _selectedUserEds;
+    public EdsResponse SelectedUserEds
+    {
+        get => _selectedUserEds;
+        set
+        {
+            _selectedUserEds = value;
+            OnPropertyChanged(nameof(SelectedUserEds));
+            IdEds = _selectedUserEds.IdEds;
+            IdBusiness = _selectedUserEds.IdBusiness;
+        }
+    }
+
 
 
     private ObservableCollection<CourtExpenditure> _courtExpenditures;
@@ -2390,6 +2405,7 @@ public class CourtService : INotifyPropertyChanged
             VisibleReceipts = !VisibleReceipts;
         });
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        registerShiftUserService = RegisterShiftUserService.Instance;
         GetAllEdsData();
         DateStarttime = DateTime.Now;
         DateEndtime = DateTime.Now;
@@ -3288,6 +3304,11 @@ public class CourtService : INotifyPropertyChanged
             if (SelectedEds != null)
             {
                 LoadHoseByEds(SelectedEds.IdEds);
+                
+            }
+            else if (SelectedUserEds != null)
+            {
+                LoadHoseByEds(SelectedUserEds.IdEds);
             }
 
             System.Diagnostics.Debug.WriteLine($"CourtService.ReloadHosesAsync: Mangueras cargadas exitosamente. Total: {HoseList?.Count ?? 0}");

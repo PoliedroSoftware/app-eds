@@ -5,6 +5,7 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.RegisterShift;
 using APP.Eds.Services.Business;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Court;
 using APP.Eds.Services.Islander;
 using Microsoft.Maui.Storage;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace APP.Eds.Services.RegisterShift;
 public class RegisterShiftUserService : INotifyPropertyChanged
 {
     private static RegisterShiftUserService? _instance;
+    public static CourtService courtService;
     public string UserRole { get; set; } = string.Empty;
 
     public static RegisterShiftUserService Instance => _instance ??= new RegisterShiftUserService();
@@ -189,7 +191,6 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
         UserRole = Preferences.Get("userRole", string.Empty);
     }
-
     private static string? GetUserLogged()
     {
         var name = Preferences.Get("Usernamelogin", string.Empty);
@@ -243,7 +244,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
                 IslanderName = mainIslander.Name;
             }
 
-            if (!userIslander.Any() && UserRole == "User")
+            if (userIslander.Count == 0 && UserRole == "User")
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"No se encontró EDS para el usuario '{nameUser}'.", "OK");
             }

@@ -530,6 +530,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         if (UserRole == "User" && picker.SelectedItem is EdsResponse selected)
         {
             _registerShiftUserService.SelectedUserEds = selected;
+            _service.SelectedUserEds = selected;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using APP.Eds.Helpers;
+﻿using APP.Eds.Components.PopUp;
+using APP.Eds.Helpers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Court;
@@ -24,37 +25,8 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private const string RegisterShiftEndpoint = "/api/v1/registershift";
+    private const string RegisterShiftEndpoint = "/api/v1/register-shift";
     private readonly CourtService _courtService = new CourtService();
-
-    public ObservableCollection<EdsResponse> UserEds { get; } = [];
-
-
-    private EdsResponse _selectedUserEds;
-    public EdsResponse SelectedUserEds
-    {
-        get => _selectedUserEds;
-        set
-        {
-            _selectedUserEds = value;
-            OnPropertyChanged(nameof(SelectedUserEds));
-            IdEds = _selectedUserEds?.IdEds;
-        }
-    }
-
-    private string _edsName;
-    public string EdsName
-    {
-        get => _edsName;
-        private set { _edsName = value; OnPropertyChanged(nameof(EdsName)); }
-    }
-
-    private bool _showEdsPicker;
-    public bool ShowEdsPicker
-    {
-        get => _showEdsPicker;
-        private set { _showEdsPicker = value; OnPropertyChanged(nameof(ShowEdsPicker)); }
-    }
 
     private int? _idEds;
     public int? IdEds
@@ -194,15 +166,6 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
         var start = DateStart.Date + StartTime;
         var end = DateEnd.Date + EndTime;
 
-        //if (end <= start)
-        //{
-        //    await Application.Current.MainPage.DisplayAlert(
-        //        "Error de validación",
-        //        "La fecha/hora de fin debe ser posterior a la fecha/hora de inicio.",
-        //        "OK");
-        //    return;
-        //}
-
         try
         {
             var payload = new
@@ -211,7 +174,7 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
                 {
                     idEds = IdEds.Value,
                     idBusiness = IdBusiness.Value,
-                    idIslero = IdIslander.Value,
+                    idIslander = IdIslander.Value,
                     dateStartTime = DateStart.ToString("yyyy-MM-dd"),
                     startTime = StartTime.ToString(@"hh\:mm\:ss"),
                     dateEndTime = DateEnd.ToString("yyyy-MM-dd"),
@@ -230,11 +193,12 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}{RegisterShiftEndpoint}", content);
 
             if (response.IsSuccessStatusCode)
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Turno registrado correctamente", "OK");
+                await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo registrar el turno: {response.StatusCode}\n{error}", "OK");
+                await CustomAlert.ShowErrorAsync($"No se pudo registrar el turno: {response.StatusCode}\n{error}", "Error");
+                return;
             }
         }
         catch (Exception ex)
