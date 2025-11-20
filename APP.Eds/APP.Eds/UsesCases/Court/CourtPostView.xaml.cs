@@ -5,15 +5,12 @@ using APP.Eds.Models.Eds;
 using APP.Eds.Services.Court;
 using APP.Eds.Services.RegisterShift;
 using APP.Eds.UsesCases.Court.APP.Eds.Models.Business;
-using APP.Eds.UsesCases.LoadingView;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Storage;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace APP.Eds.UsesCases.Court;
 

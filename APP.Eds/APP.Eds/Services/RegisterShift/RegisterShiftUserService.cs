@@ -30,7 +30,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
     private string? _authToken;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private const string RegisterShiftEndpoint = "/api/v1/registershift";
+    private const string RegisterShiftEndpoint = "/api/v1/register-shift";
     private readonly IslanderService _islanderService = new IslanderService();
     private readonly BusinessService _businessService = new BusinessService();
 
