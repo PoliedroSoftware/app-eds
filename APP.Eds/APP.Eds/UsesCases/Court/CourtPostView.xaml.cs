@@ -729,7 +729,14 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _registerShiftAdminService.StartTime = vm.Starttime;
                     _registerShiftAdminService.EndTime = vm.Endtime;
 
+                    var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                    try { overlayRegisterShift?.ShowLoading(); } catch { }
+
                     await _registerShiftAdminService.SaveRegisterShiftAsync();
+
+                    try { overlayRegisterShift?.HideLoading(); } catch { }
+                    return; // no continuar con el flujo normal
+
                 }
                 else
                 {
@@ -738,7 +745,14 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     _registerShiftUserService.DateEnd = vm.DateEndtime; // o (vm.Endtime < vm.Starttime ? vm.DateStarttime.AddDays(1) : vm.DateStarttime)
                     _registerShiftUserService.StartTime = vm.Starttime;
                     _registerShiftUserService.EndTime = vm.Endtime;
+
+                    var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                    try { overlayRegisterShift?.ShowLoading(); } catch { }
+
                     await _registerShiftUserService.SaveRegisterShiftAsync();
+
+                    try { overlayRegisterShift?.HideLoading(); } catch { }
+                    return; // no continuar con el flujo normal
                 }
             }
             

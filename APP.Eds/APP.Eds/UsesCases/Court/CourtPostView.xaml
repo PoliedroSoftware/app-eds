@@ -169,8 +169,8 @@
                                             SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
                                             SelectedIndexChanged="OnEdsUserSelected"
                                             BackgroundColor="Transparent"
-                                            Margin="12,8"
-                                            IsEnabled="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked}"/>
+                                            Margin="12,8"/>
+                                <!--IsEnabled="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked}"/> -->
                             </VerticalStackLayout>
                         </Border>
 

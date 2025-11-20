@@ -3,6 +3,7 @@ using APP.Eds.Helpers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Models.Islander;
 using APP.Eds.Models.RegisterShift;
+using APP.Eds.Services.Business;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Islander;
 using Microsoft.Maui.Storage;
@@ -31,6 +32,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
     private const string RegisterShiftEndpoint = "/api/v1/registershift";
     private readonly IslanderService _islanderService = new IslanderService();
+    private readonly BusinessService _businessService = new BusinessService();
 
     //public ObservableCollection<IslanderResponse> ListIslander { get; } = [];
     public ObservableCollection<EdsResponse> UserEds { get; } = [];
@@ -45,6 +47,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             _selectedUserEds = value;
             OnPropertyChanged(nameof(SelectedUserEds));
             IdEds = _selectedUserEds?.IdEds;
+            IdBusiness = _selectedUserEds?.IdBusiness;
         }
     }
 
@@ -70,6 +73,17 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         {
             _idEds = value;
             OnPropertyChanged(nameof(IdEds));
+        }
+    }
+
+    private int? _idBusiness;
+    public int? IdBusiness
+    {
+        get => _idBusiness;
+        set
+        {
+            _idBusiness = value;
+            OnPropertyChanged(nameof(IdBusiness));
         }
     }
 
@@ -200,6 +214,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         try
         {
             await _islanderService.GetIslandersAsync();
+            await _businessService.GetBusinessesAsync();
 
             var nameUser = GetUserLogged();
             if (string.IsNullOrEmpty(nameUser))
@@ -214,13 +229,19 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             var getAllIslander = _islanderService.IslanderList;
             if (getAllIslander == null || getAllIslander.Count == 0 && UserRole == "User")
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron datos de Islander.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "No se encontraron datos de Islero.", "OK");
                 return;
             }
             
             var userIslander = getAllIslander
                 .Where(i => !string.IsNullOrWhiteSpace(i.Name) &&
                             string.Equals(i.Name.Trim(), nameUser.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+            if (userIslander.Any())
+            {
+                var mainIslander = userIslander.First();
+                IdIslander = mainIslander.IdIslander;
+                IslanderName = mainIslander.Name;
+            }
 
             if (!userIslander.Any() && UserRole == "User")
             {
@@ -236,11 +257,24 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
             var userEdsList = _islanderService.EdsList
                 .Where(e => edsIds.Contains(e.IdEds))
-                .Select(e => new EdsResponse { IdEds = e.IdEds, Name = (e.Name ?? "").Trim() });
+                .Select(e => new EdsResponse { IdEds = e.IdEds,
+                    Name = (e.Name ?? "").Trim(),
+                    IdBusiness = e.IdBusiness });
 
             var withNames = userIslander
                 .Where(i => i.IdEds.HasValue && i.IdEds > 0 && !string.IsNullOrWhiteSpace(i.EdsName))
-                .Select(i => new EdsResponse { IdEds = i.IdEds!.Value, Name = i.EdsName!.Trim() });
+                .Select(i =>
+                {
+                    var edsOriginal = _islanderService.EdsList
+                    .FirstOrDefault(e => e.IdEds == i.IdEds);
+
+                    return new EdsResponse
+                    {
+                        IdEds = i.IdEds!.Value,
+                        Name = i.EdsName!.Trim(),
+                        IdBusiness = edsOriginal.IdBusiness
+                    };
+                });
 
             var merged = userEdsList
                     .Concat(withNames)
@@ -253,28 +287,28 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             UserEds.Clear();
             foreach (var eds in merged)
                 UserEds.Add(eds);
-                
+
             // 5) Decidir si mostrar el picker
-            //if (UserEds.Count == 0)
-            //{
-            //    ShowEdsPicker = false;
-            //    EdsName = "Sin EDS asignado";
-            //    IdEds = null;
-            //    SelectedUserEds = null;
-            //}
-            //else if (UserEds.Count == 1)
-            //{
-            //    ShowEdsPicker = false;
-            //    SelectedUserEds = UserEds[0];               // esto setea IdEds
-            //    EdsName = UserEds[0].Name ?? "EDS asignado";
-            //}
-            //else
-            //{
-            //    ShowEdsPicker = true;
-            //    EdsName = string.Empty;
-            //    IdEds = null;
-            //    SelectedUserEds = null;
-            //}
+            if (UserEds.Count == 0)
+            {
+                ShowEdsPicker = false;
+                EdsName = "Sin EDS asignado";
+                IdEds = null;
+                SelectedUserEds = null;
+            }
+            else if (UserEds.Count == 1)
+            {
+                ShowEdsPicker = false;
+                SelectedUserEds = UserEds[0];
+                EdsName = UserEds[0].Name ?? "EDS asignado";
+            }
+            else
+            {
+                ShowEdsPicker = true;
+                EdsName = string.Empty;
+                IdEds = null;
+                SelectedUserEds = null;
+            }
 
         }
         catch (Exception ex)
@@ -295,15 +329,6 @@ public class RegisterShiftUserService : INotifyPropertyChanged
         var start = DateStart.Date + StartTime;
         var end = DateEnd.Date + EndTime;
 
-        //if (end <= start)
-        //{
-        //    await Application.Current.MainPage.DisplayAlert(
-        //        "Error de validación",
-        //        "La fecha/hora de fin debe ser posterior a la fecha/hora de inicio.",
-        //        "OK");
-        //    return;
-        //}
-
         try
         {
             var payload = new
@@ -311,7 +336,8 @@ public class RegisterShiftUserService : INotifyPropertyChanged
                 request = new
                 {
                     idEds = IdEds.Value,
-                    // Business e Islander quedan opcionales; si son null se omiten del JSON
+                    //islander = IdIslander.Value,
+                    //idBusiness = IdBusiness.Value,
                     dateStartTime = DateStart.ToString("yyyy-MM-dd"),
                     startTime = StartTime.ToString(@"hh\:mm\:ss"),
                     dateEndTime = DateEnd.ToString("yyyy-MM-dd"),
