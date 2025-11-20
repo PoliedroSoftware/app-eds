@@ -737,7 +737,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 }
                 else
                 {
-                    _registerShiftUserService.IdEds = vm.IdEds;
                     _registerShiftUserService.DateStart = vm.DateStarttime;
                     _registerShiftUserService.DateEnd = vm.DateEndtime; // o (vm.Endtime < vm.Starttime ? vm.DateStarttime.AddDays(1) : vm.DateStarttime)
                     _registerShiftUserService.StartTime = vm.Starttime;
