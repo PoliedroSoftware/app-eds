@@ -2422,8 +2422,8 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticaci�n no encontrado");
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Token de autenticación no encontrado");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
 
@@ -2433,7 +2433,7 @@ public class CourtService : INotifyPropertyChanged
 
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos m�s lentos
+            httpClient.Timeout = TimeSpan.FromSeconds(30); // Aumentar timeout para dispositivos más lentos
 
             System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de business, islander y eds...");
             var businessResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/business?PageNumber=1&PageSize=100");
@@ -2455,7 +2455,10 @@ public class CourtService : INotifyPropertyChanged
             var expenditureResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/expenditures?PageNumber=1&PageSize=100");
 
             System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Obteniendo datos de type-of-collection...");
-            var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection?PageNumber=1&PageSize=100");
+            var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection");
+            
+            // ✅ DEBUG: Log raw response
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: TypeOfCollection raw response (first 500 chars): {typeOfCollectionResponse?.Substring(0, Math.Min(500, typeOfCollectionResponse?.Length ?? 0))}");
 
             var dispensersResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/dispensers?PageNumber=1&PageSize=100");
 
@@ -2463,7 +2466,30 @@ public class CourtService : INotifyPropertyChanged
             var compartimentList = JsonSerializer.Deserialize<CompartimentCourtResponseModel>(compartimentResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             var hoseList = JsonSerializer.Deserialize<HoseCourtResponseModel>(hoseResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             var expenditureList = JsonSerializer.Deserialize<ExpenditureCourtResponseModel>(expenditureResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(typeOfCollectionResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            
+            // ✅ FIX: Better deserialization with explicit options and error handling
+            TypeOfCollectionResponseModel typeOfCollectionList = null;
+            try
+            {
+                var options = new JsonSerializerOptions 
+                { 
+                    PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                
+                typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(
+                    typeOfCollectionResponse, 
+                    options);
+                    
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Deserialized TypeOfCollection. Success={typeOfCollectionList?.Success}, Data count={typeOfCollectionList?.Data?.Count ?? 0}");
+            }
+            catch (Exception deserEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error deserializing TypeOfCollection: {deserEx.Message}");
+                System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Full response: {typeOfCollectionResponse}");
+                throw; // Re-throw to be caught by outer catch
+            }
+            
             var dispensersList = JsonSerializer.Deserialize<DispensersResponseModel>(dispensersResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             UpdateProductList(productList?.Data ?? new List<ProductCourtModel>());
@@ -2472,6 +2498,8 @@ public class CourtService : INotifyPropertyChanged
             UpdateCourtExpenditure(expenditureList?.Data ?? new List<ExpendituresCourtModel>());
 
             System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Actualizando TypeOfCollection con {typeOfCollectionList?.Data?.Count ?? 0} elementos");
+            
+            // ✅ FIX: Ensure we update even if the list is empty (to avoid null reference)
             UpdateTypeOfCollection(typeOfCollectionList?.Data ?? new List<TypeOfCollectionCourtModel>());
 
             UpdateDispensers(dispensersList?.Data ?? new List<DispenserModelResponse>());
@@ -2480,21 +2508,44 @@ public class CourtService : INotifyPropertyChanged
         }
         catch (HttpRequestException httpEx)
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexi�n HTTP: {httpEx.Message}");
-            Console.WriteLine($"Error de conexi�n cargando los datos: {httpEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error de conexión HTTP: {httpEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Stack trace: {httpEx.StackTrace}");
+            Console.WriteLine($"Error de conexión cargando los datos: {httpEx.Message}");
+            
+            // ✅ FIX: Initialize empty list on error to prevent null reference
+            if (TypeOfCollectionList == null || TypeOfCollectionList.Count == 0)
+            {
+                TypeOfCollectionList = new ObservableCollection<TypeOfCollectionCourtModel>();
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Initialized empty TypeOfCollectionList after HTTP error");
+            }
         }
         catch (TaskCanceledException timeoutEx)
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operaci�n: {timeoutEx.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Timeout de operación: {timeoutEx.Message}");
             Console.WriteLine($"Timeout cargando los datos: {timeoutEx.Message}");
+            
+            // ✅ FIX: Initialize empty list on timeout
+            if (TypeOfCollectionList == null || TypeOfCollectionList.Count == 0)
+            {
+                TypeOfCollectionList = new ObservableCollection<TypeOfCollectionCourtModel>();
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Initialized empty TypeOfCollectionList after timeout");
+            }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Error general: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.GetAllEdsData: Stack trace: {ex.StackTrace}");
             Console.WriteLine($"Error cargando los datos: {ex.Message}");
+            
+            // ✅ FIX: Initialize empty list on general error
+            if (TypeOfCollectionList == null || TypeOfCollectionList.Count == 0)
+            {
+                TypeOfCollectionList = new ObservableCollection<TypeOfCollectionCourtModel>();
+                System.Diagnostics.Debug.WriteLine("CourtService.GetAllEdsData: Initialized empty TypeOfCollectionList after general error");
+            }
         }
 
-        // Ejecutar la l�gica de preferencias despu�s de cargar los datos
+        // Ejecutar la lógica de preferencias después de cargar los datos
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             try
@@ -2646,7 +2697,14 @@ public class CourtService : INotifyPropertyChanged
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualizaci�n con {typeOfCollectionData?.Count() ?? 0} elementos");
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Iniciando actualización con {typeOfCollectionData?.Count() ?? 0} elementos");
+
+            // ✅ FIX: Initialize if null
+            if (TypeOfCollectionList == null)
+            {
+                TypeOfCollectionList = new ObservableCollection<TypeOfCollectionCourtModel>();
+                System.Diagnostics.Debug.WriteLine("CourtService.UpdateTypeOfCollection: Initialized new TypeOfCollectionList");
+            }
 
             TypeOfCollectionList.Clear();
 
@@ -2654,12 +2712,15 @@ public class CourtService : INotifyPropertyChanged
             {
                 foreach (var typeOfCollection in typeOfCollectionData)
                 {
-                    TypeOfCollectionList.Add(typeOfCollection);
-                    System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Agregado '{typeOfCollection.Description}' (ID: {typeOfCollection.IdTypeOfCollection})");
+                    if (typeOfCollection != null) // ✅ FIX: Additional null check
+                    {
+                        TypeOfCollectionList.Add(typeOfCollection);
+                        System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Agregado '{typeOfCollection.Description}' (ID: {typeOfCollection.IdTypeOfCollection})");
+                    }
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualizaci�n completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Actualización completada. Total de elementos en TypeOfCollectionList: {TypeOfCollectionList.Count}");
 
             // Notificar cambio en la propiedad para refrescar la UI
             OnPropertyChanged(nameof(TypeOfCollectionList));
@@ -2667,6 +2728,14 @@ public class CourtService : INotifyPropertyChanged
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Error actualizando lista: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"CourtService.UpdateTypeOfCollection: Stack trace: {ex.StackTrace}");
+            
+            // ✅ FIX: Ensure list exists even on error
+            if (TypeOfCollectionList == null)
+            {
+                TypeOfCollectionList = new ObservableCollection<TypeOfCollectionCourtModel>();
+                System.Diagnostics.Debug.WriteLine("CourtService.UpdateTypeOfCollection: Created empty list after error");
+            }
         }
     }
 
@@ -2889,8 +2958,8 @@ public class CourtService : INotifyPropertyChanged
                 {
                     System.Diagnostics.Debug.WriteLine($"CourtService.SendCourtDataAsync: No se pudo obtener el ID del corte creado para subir los documentos");
                 }
-                var successMessage = BuildCourtSuccessMessage(totalVentas, totalMetodosPago);
-                await Components.PopUp.CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
+                // ✅ FIX: Removed duplicate success alert - UI feedback is handled in CourtPostView.Button_Clicked()
+                // The Service layer only sets LastSendWasSuccessful = true to indicate success
             }
             else
             {
@@ -2927,80 +2996,10 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
-    /// <summary>
-    /// Construye un mensaje de éxito profesional y detallado para el envío del corte
-    /// </summary>
-    private string BuildCourtSuccessMessage(double totalAmount, double totalTypeOfCollection)
-    {
-        var message = new System.Text.StringBuilder();
-        
-        message.AppendLine("El corte de turno ha sido registrado correctamente en el sistema.");
-        message.AppendLine();
-        message.AppendLine("📊 RESUMEN DEL CIERRE:");
-        message.AppendLine();
-        
-        // Información de ventas
-        if (CourtDispensers?.Any() == true)
-        {
-            message.AppendLine($"⛽ Ventas por Mangueras: {CourtDispensers.Count} registro(s)");
-            message.AppendLine($"   • Total en dinero: ${totalAmount:N2}");
-            message.AppendLine($"   • Total en galones: {GetTotalGallons():N2}");
-            message.AppendLine();
-        }
-        
-        // Métodos de pago
-        if (CourtTypeOfCollections?.Any() == true)
-        {
-            message.AppendLine($"💳 Métodos de Pago: {CourtTypeOfCollections.Count} método(s)");
-            message.AppendLine($"   • Total recaudado: ${totalTypeOfCollection:N2}");
-            
-            // Detallar métodos de pago
-            foreach (var payment in CourtTypeOfCollections)
-            {
-                message.AppendLine($"   • {payment.TypeOfCollectionName}: ${payment.Amount:N2}");
-            }
-            message.AppendLine();
-        }
-        
-        // Gastos
-        if (CourtExpenditures?.Any() == true)
-        {
-            message.AppendLine($"💸 Gastos Registrados: {CourtExpenditures.Count} gasto(s)");
-            message.AppendLine($"   • Total de gastos: ${GetTotalExpenditure():N2}");
-            message.AppendLine();
-        }
-        
-        // Documentos adjuntos
-        if (CourtDocuments?.Any() == true)
-        {
-            message.AppendLine($"📎 Documentos Adjuntos: {CourtDocuments.Count} archivo(s)");
-            message.AppendLine();
-        }
-        
-        // Efectivo en caja
-        double cash = totalTypeOfCollection - GetTotalExpenditure();
-        message.AppendLine("💰 EFECTIVO FINAL:");
-        message.AppendLine($"   ${cash:N2}");
-        message.AppendLine();
-        
-        // Validación de cuadratura
-        var tolerance = 0.01;
-        if (Math.Abs(totalAmount - totalTypeOfCollection) <= tolerance)
-        {
-            message.AppendLine("✅ VALIDACIÓN: Cuadratura exitosa");
-            message.AppendLine("   Los métodos de pago coinciden con las ventas registradas.");
-        }
-        else
-        {
-            var difference = totalAmount - totalTypeOfCollection;
-            message.AppendLine($"⚠️ VALIDACIÓN: Diferencia de ${Math.Abs(difference):N2}");
-            message.AppendLine(difference > 0 
-                ? "   (Ventas mayores a métodos de pago)" 
-                : "   (Métodos de pago mayores a ventas)");
-        }
-        
-        return message.ToString();
-    }
+    // ✅ REMOVED: BuildCourtSuccessMessage() method
+    // This method was causing duplicate success messages. The success message
+    // is now handled exclusively in CourtPostView.BuildSuccessMessage() to maintain
+    // proper separation of concerns (Service layer should not display UI alerts)
 
     // Resto de m�todos necesarios
     public async Task AddDispenserFromPopup()
@@ -3451,6 +3450,71 @@ public class CourtService : INotifyPropertyChanged
                 _remainingToPay = value;
                 OnPropertyChanged(nameof(RemainingToPay));
             }
+        }
+    }
+
+    /// <summary>
+    /// Loads only the TypeOfCollection data from the API
+    /// This is a dedicated method for loading payment method types independently
+    /// </summary>
+    public async Task LoadTypeOfCollectionDataAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken))
+        {
+            System.Diagnostics.Debug.WriteLine("CourtService.LoadTypeOfCollectionDataAsync: Token de autenticación no encontrado");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
+            return;
+        }
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("CourtService.LoadTypeOfCollectionDataAsync: Iniciando carga de métodos de pago...");
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            httpClient.Timeout = TimeSpan.FromSeconds(15);
+
+            var typeOfCollectionResponse = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/type-of-collection");
+            
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: Response received (first 500 chars): {typeOfCollectionResponse?.Substring(0, Math.Min(500, typeOfCollectionResponse?.Length ?? 0))}");
+
+            var options = new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            
+            var typeOfCollectionList = JsonSerializer.Deserialize<TypeOfCollectionResponseModel>(
+                typeOfCollectionResponse, 
+                options);
+                
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: Deserialized. Success={typeOfCollectionList?.Success}, Data count={typeOfCollectionList?.Data?.Count ?? 0}");
+
+            if (typeOfCollectionList == null || typeOfCollectionList.Data == null)
+            {
+                System.Diagnostics.Debug.WriteLine("CourtService.LoadTypeOfCollectionDataAsync: Warning - API returned null data");
+                UpdateTypeOfCollection(new List<TypeOfCollectionCourtModel>());
+                return;
+            }
+
+            UpdateTypeOfCollection(typeOfCollectionList.Data);
+            
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: Successfully loaded {TypeOfCollectionList?.Count ?? 0} payment methods");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: HTTP error: {httpEx.Message}");
+            throw new Exception($"Error de conexión al cargar métodos de pago: {httpEx.Message}", httpEx);
+        }
+        catch (JsonException jsonEx)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: JSON error: {jsonEx.Message}");
+            throw new Exception($"Error al procesar datos de métodos de pago: {jsonEx.Message}", jsonEx);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtService.LoadTypeOfCollectionDataAsync: General error: {ex.Message}");
+            throw new Exception($"Error inesperado al cargar métodos de pago: {ex.Message}", ex);
         }
     }
 }
