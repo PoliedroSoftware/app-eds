@@ -23,10 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup .NET 9
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.0.x
 
       - name: Cache .NET dependencies (General)
         uses: actions/cache@v3
@@ -51,7 +51,7 @@ jobs:
         run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj
 
       - name: Build
-        run: dotnet build APP.Eds/APP.Eds/Poliedro.csproj --no-restore -c Release -f net9.0-windows10.0.19041.0 -r win-x64
+        run: dotnet build APP.Eds/APP.Eds/Poliedro.csproj --no-restore -c Release -f net10.0-windows10.0.19041.0 -r win-x64
 
       - name: Run Unit Tests
         run: dotnet test APP.Eds/Poliedro.sln --no-build --verbosity normal
@@ -80,10 +80,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup .NET 9
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.0.x
           
       - name: Cache .NET dependencies (Android)
         uses: actions/cache@v3
@@ -108,13 +108,13 @@ jobs:
         run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj
 
       - name: Build MAUI Android
-        run: dotnet publish APP.Eds/APP.Eds/Poliedro.csproj -c Release -f net9.0-android --no-restore
+        run: dotnet publish APP.Eds/APP.Eds/Poliedro.csproj -c Release -f net10.0-android --no-restore
 
       - name: Upload Android Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app.eds-android-ci-build
-          path: APP.Eds/APP.Eds/bin/Release/net9.0-android/*Signed.a*
+          path: APP.Eds/APP.Eds/bin/Release/net10.0-android/*Signed.a*
           
   appium-tests-android:
     needs: build-android
@@ -165,10 +165,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup .NET 9
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.0.x
 
       - name: Cache .NET dependencies (Windows)
         uses: actions/cache@v3
@@ -193,13 +193,13 @@ jobs:
         run: dotnet restore APP.Eds/APP.Eds/Poliedro.csproj
 
       - name: Build MAUI Windows
-        run: dotnet publish APP.Eds/APP.Eds/Poliedro.csproj -c Release -f net9.0-windows10.0.19041.0 --no-restore
+        run: dotnet publish APP.Eds/APP.Eds/Poliedro.csproj -c Release -f net10.0-windows10.0.19041.0 --no-restore
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-eds-windows-ci-build
-          path: APP.Eds/APP.Eds/bin/Release/net9.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
+          path: APP.Eds/APP.Eds/bin/Release/net10.0-windows10.0.19041.0/win-x64/AppPackages/APP.Eds_0.0.1.0_Test/*.msix
 
   appium-tests-windows:
     needs: build-windows
