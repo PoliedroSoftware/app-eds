@@ -98,7 +98,7 @@ namespace APP.Eds.UsesCases.Inventory
 
         public InventoryViewModel()
         {
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             RefreshCommand = new Command(async () => await RefreshDataAsync());
             ToggleBusinessCommand = new Command<Models.Inventory.Business>(OnToggleBusiness);
             ToggleEdsCommand = new Command<Models.Inventory.Eds>(OnToggleEds);

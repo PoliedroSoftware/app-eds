@@ -341,7 +341,7 @@ namespace APP.Eds.Services.Dispensers
         {
             InitializeCommands();
             InitializeStatusOptions();
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             GetAllDispenserTypeData();
             GetAllIslandData();
             GetAllEdsData();

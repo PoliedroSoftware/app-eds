@@ -5,12 +5,12 @@ namespace APP.Eds.UsesCases.Navigation;
 
 public partial class Main : ContentPage
 {
-    private KeycloakSessionManager _sessionManager;
+    private BackendSessionManager _sessionManager;
     
     public Main()
     {
         InitializeComponent();
-        _sessionManager = new KeycloakSessionManager();
+        _sessionManager = new BackendSessionManager();
         BindingContext = new MainService();
         
         // Cargar información del usuario en el badge
@@ -44,7 +44,7 @@ public partial class Main : ContentPage
 
         await Task.Delay(1000);
 
-        _sessionManager.ClearCurrentSession();
+        _sessionManager.ClearSession();
 
         LoadingOverlay.IsVisible = false;
 

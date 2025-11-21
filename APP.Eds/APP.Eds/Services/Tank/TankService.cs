@@ -264,7 +264,7 @@ public class TankService : INotifyPropertyChanged
     {
         GetByIdTankDataCommand = new Command<int>(async (tankId) => await GetByIdTankDataAsync(tankId));
         SaveTankDataCommand = new Command(async () => await SaveTankDataAsync());
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetTankAsync();
         LoadTranslationsAsync();
     }

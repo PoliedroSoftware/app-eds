@@ -76,7 +76,7 @@ public class PhoneService : INotifyPropertyChanged
     public PhoneService()
     {
         _httpClient = new HttpClient();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         InitializeCommands();
         LoadDatabasePhonesAsync(); // Cargar automáticamente al iniciar
     }

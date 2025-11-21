@@ -98,7 +98,7 @@ public class EdsTankService : INotifyPropertyChanged
 
     public EdsTankService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         GetByIdEdsTankDataCommand = new Command<int>(async (edsTankId) => await GetByIdEdsTankDataAsync(edsTankId));
         SaveEdsTankDataCommand = new Command(async () => await SaveEdsTankDataAsync());

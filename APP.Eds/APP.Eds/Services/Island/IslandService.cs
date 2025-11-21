@@ -154,7 +154,7 @@ public class IslandService : INotifyPropertyChanged
 
     public IslandService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         GetByIdIslandDataCommand = new Command<int>(async (islandId) => await GetByIdIslandDataAsync(islandId));
         SaveIslandDataCommand = new Command(async () => await SaveIslandDataAsync());

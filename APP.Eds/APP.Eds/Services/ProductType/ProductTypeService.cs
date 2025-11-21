@@ -41,9 +41,9 @@ namespace APP.Eds.Services.ProductType
 
         public ProductTypeService()
         {
+            _authToken = TokenHelper.LoadToken();
             GetByIdProductTypeDataCommand = new Command<int>(async (productTypeId) => await GetByIdProductTypeDataAsync(productTypeId));
             SaveProductTypeDataCommand = new Command(async () => await SaveProductTypeDataAsync());
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         }
 
         public async Task GetByIdProductTypeDataAsync(int productTypeId)
