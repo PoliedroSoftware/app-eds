@@ -345,7 +345,7 @@ namespace APP.Eds.Services.TypeOfCollection
         {
             InitializeCommands();
             InitializeOptions();
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             LoadTranslationsAsync();
         }
 
@@ -667,7 +667,7 @@ namespace APP.Eds.Services.TypeOfCollection
 
         public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
         {
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             if (string.IsNullOrWhiteSpace(_authToken))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Authentication token is missing", "OK");

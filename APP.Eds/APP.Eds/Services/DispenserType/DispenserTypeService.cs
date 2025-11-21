@@ -41,7 +41,7 @@ namespace APP.Eds.Services.DispenserType
 
         public DispenserTypeService()
         {
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             GetByIdDispenserTypeDataCommand = new Command<int>(async (dispenserTypeId) => await GetByIdDispenserTypeDataAsync(dispenserTypeId));
             SaveDispenserTypeDataCommand = new Command(async () => await SaveDispenserTypeDataAsync());
         }
@@ -126,7 +126,7 @@ namespace APP.Eds.Services.DispenserType
             {
                 System.Diagnostics.Debug.WriteLine($"HTTP error saving dispenser type: {httpEx.Message}");
                 await Application.Current.MainPage.DisplayAlert("Error", 
-                    "Error de conexión. Verifique su conexión a internet e intente nuevamente.", "OK");
+                    "Error de conexión. Verique su conexión a internet e intente nuevamente.", "OK");
             }
             catch (JsonException jsonEx)
             {

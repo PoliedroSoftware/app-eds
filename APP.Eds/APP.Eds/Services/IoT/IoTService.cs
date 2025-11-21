@@ -76,7 +76,7 @@ public class IoTService : INotifyPropertyChanged
 
     public IoTService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         _httpClient = new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(30)

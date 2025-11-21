@@ -14,7 +14,7 @@ public class TranslationsService : ITranslationsService
 
     public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");

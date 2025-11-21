@@ -103,17 +103,9 @@ public class ProductCompartimentService : INotifyPropertyChanged
 
     public ProductCompartimentService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-
-        GetAllProductData();
+        _authToken = TokenHelper.LoadToken();
         GetByIdProductCompartimentDataCommand = new Command<int>(async (productCompartimentId) => await GetByIdProductCompartimentDataAsync(productCompartimentId));
         SaveProductCompartimentDataCommand = new Command(async () => await SaveProductCompartimentDataAsync());
-
-        GetAllCompartimentData();
-        GetByIdProductCompartimentDataCommand = new Command<int>(async (productCompartimentId) => await GetByIdProductCompartimentDataAsync(productCompartimentId));
-        SaveProductCompartimentDataCommand = new Command(async () => await SaveProductCompartimentDataAsync());
-
-        
     }
     //GuardaProduct
     private async void GetAllProductData()
