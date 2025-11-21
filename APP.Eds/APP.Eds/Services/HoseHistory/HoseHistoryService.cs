@@ -122,7 +122,7 @@ public class HoseHistoryService : INotifyPropertyChanged
 
     public HoseHistoryService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         Date = DateTime.Now;
         GetAllDispensersData();
         GetHoseHistoryAsync();

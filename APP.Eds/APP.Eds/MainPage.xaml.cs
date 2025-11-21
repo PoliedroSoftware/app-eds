@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
-using System.Text;
 using APP.Eds.Services.Authentication;
 using APP.Eds.UsesCases.Navigation;
 using APP.Eds.Services.Config;
@@ -11,29 +10,21 @@ namespace APP.Eds
 {
     public partial class MainPage : ContentPage
     {
-
-        private readonly KeycloakService _keycloakService = new();
-        private readonly string _clientId;
-        private readonly string _realm;
+        private readonly BackendAuthService _authService;
         
         public MainPage()
         {
-
-            _clientId = Configuration.KeycloakCliendId;
-            _realm = Configuration.KeycloakRealms;
-      
+            _authService = new BackendAuthService(Configuration.BaseUrl);
             InitializeComponent();
 
-
-            var existingToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            // Verificar si ya hay una sesión activa
+            var existingToken = TokenHelper.LoadToken();
             if (!string.IsNullOrEmpty(existingToken))
             {
                 Application.Current.MainPage = new NavigationPage(new Main());
-
             }
         }
 
-        
         private async void OnLoginClicked(object sender, EventArgs e)
         {
             try
@@ -54,72 +45,32 @@ namespace APP.Eds
                     return;
                 }
 
-                var jsonResponse = await _keycloakService.AuthenticateRawJsonAsync(username, password);
+                // Llamar al backend directamente
+                var loginResponse = await _authService.LoginAsync(username, password);
 
-                var tokenResponse = JsonSerializer.Deserialize<JsonElement>(jsonResponse);
-                var token = tokenResponse.GetProperty("access_token").GetString();
-
-
-                if (string.IsNullOrEmpty(token))
+                if (loginResponse == null || string.IsNullOrEmpty(loginResponse.AccessToken))
                 {
                     var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("token_missing");
                     ShowError(message, icon, bgColor, textColor);
                     return;
                 }
 
-               
-                var tokenParts = token.Split('.');
-                if (tokenParts.Length < 2)
+                // Guardar el token del backend
+                TokenHelper.SaveToken(loginResponse.AccessToken);
+                
+                // Guardar refresh token si existe
+                if (!string.IsNullOrEmpty(loginResponse.RefreshToken))
                 {
-                    var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("token_invalid");
-                    ShowError(message, icon, bgColor, textColor);
-                    return;
+                    TokenHelper.SaveRefreshToken(loginResponse.RefreshToken);
                 }
 
-                var payload = tokenParts[1];
-                var jsonBytes = Convert.FromBase64String(PadBase64(payload));
-                var jsonPayload = Encoding.UTF8.GetString(jsonBytes);
+                // Guardar el username
+                Preferences.Set("Usernamelogin", username);
 
-                var tokenPayload = JsonSerializer.Deserialize<JsonElement>(jsonPayload);
+                // Extraer roles del token JWT (si vienen en el payload)
+                var roles = ExtractRolesFromToken(loginResponse.AccessToken);
 
-                var Username = tokenPayload.GetProperty("preferred_username").GetString();
-
-                Preferences.Set("Usernamelogin", Username);
-
-                // Collect roles from client (resource_access) and realm (realm_access), but do not require group membership
-                var roles = new List<string>();
-
-                if (tokenPayload.TryGetProperty("resource_access", out var resourceAccess))
-                {
-                    // Use configured client id instead of hard-coded value
-                    if (resourceAccess.TryGetProperty(_clientId, out var clientAccess))
-                    {
-                        if (clientAccess.TryGetProperty("roles", out var clientRoles))
-                        {
-                            foreach (var r in clientRoles.EnumerateArray())
-                            {
-                                var role = r.GetString();
-                                if (!string.IsNullOrEmpty(role)) roles.Add(role);
-                            }
-                        }
-                    }
-                }
-
-                if (tokenPayload.TryGetProperty("realm_access", out var realmAccess))
-                {
-                    if (realmAccess.TryGetProperty("roles", out var realmRoles))
-                    {
-                        foreach (var r in realmRoles.EnumerateArray())
-                        {
-                            var role = r.GetString();
-                            if (!string.IsNullOrEmpty(role)) roles.Add(role);
-                        }
-                    }
-                }
-
-                TokenHelper.SaveToken(token, _clientId, _realm);
-
-                // If you need role-based UI, keep it, but default to allowing any authenticated user.
+                // Guardar el rol del usuario
                 if (roles.Contains("Admin", StringComparer.OrdinalIgnoreCase))
                 {
                     Preferences.Set("userRole", "Admin");
@@ -130,12 +81,17 @@ namespace APP.Eds
                 }
                 else
                 {
-                    // Default role for any authenticated user in the realm
+                    // Rol por defecto para cualquier usuario autenticado
                     Preferences.Set("userRole", "User");
                 }
 
                 Application.Current.MainPage = new NavigationPage(new Main());
-
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Debug.WriteLine($"Error HTTP durante el inicio de sesión: {httpEx.Message}");
+                var (message, icon, bgColor, textColor) = ErrorMessages.GetFriendlyErrorMessage("network_error");
+                ShowError(message, icon, bgColor, textColor);
             }
             catch (Exception ex)
             {
@@ -152,7 +108,64 @@ namespace APP.Eds
             }
         }
 
-       
+        /// <summary>
+        /// Extrae los roles del token JWT
+        /// </summary>
+        private List<string> ExtractRolesFromToken(string token)
+        {
+            var roles = new List<string>();
+            
+            try
+            {
+                var tokenParts = token.Split('.');
+                if (tokenParts.Length < 2)
+                {
+                    return roles;
+                }
+
+                var payload = tokenParts[1];
+                var jsonBytes = Convert.FromBase64String(PadBase64(payload));
+                var jsonPayload = System.Text.Encoding.UTF8.GetString(jsonBytes);
+
+                var tokenPayload = JsonSerializer.Deserialize<JsonElement>(jsonPayload);
+
+                // Intentar obtener roles de resource_access
+                if (tokenPayload.TryGetProperty("resource_access", out var resourceAccess))
+                {
+                    if (resourceAccess.TryGetProperty("application-eds", out var clientAccess))
+                    {
+                        if (clientAccess.TryGetProperty("roles", out var clientRoles))
+                        {
+                            foreach (var r in clientRoles.EnumerateArray())
+                            {
+                                var role = r.GetString();
+                                if (!string.IsNullOrEmpty(role)) roles.Add(role);
+                            }
+                        }
+                    }
+                }
+
+                // Intentar obtener roles de realm_access
+                if (tokenPayload.TryGetProperty("realm_access", out var realmAccess))
+                {
+                    if (realmAccess.TryGetProperty("roles", out var realmRoles))
+                    {
+                        foreach (var r in realmRoles.EnumerateArray())
+                        {
+                            var role = r.GetString();
+                            if (!string.IsNullOrEmpty(role)) roles.Add(role);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error extrayendo roles del token: {ex.Message}");
+            }
+
+            return roles;
+        }
+
         private void ShowError(string message, string icon, string backgroundColor, string textColor)
         {
             ErrorLabel.Text = message;

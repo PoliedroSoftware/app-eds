@@ -6,18 +6,25 @@ namespace APP.Eds.Helpers
 {
     public static class TokenHelper
     {
-        public static string LoadToken(string clientId, string realm)
+        private const string TOKEN_KEY = "AUTH_ACCESS_TOKEN";
+        private const string REFRESH_TOKEN_KEY = "AUTH_REFRESH_TOKEN";
+        private const string TOKEN_PART_COUNT_KEY = "AUTH_TOKEN_PART_COUNT";
+        private const string TOKEN_PART_PREFIX = "AUTH_TOKEN_PART_";
+
+        /// <summary>
+        /// Carga el token de acceso almacenado
+        /// </summary>
+        public static string LoadToken()
         {
             try
             {
-                string prefix = $"AUTH_{realm}_{clientId}_";
-                int chunkCount = Preferences.Get($"{prefix}TOKEN_PART_COUNT", 0);
+                int chunkCount = Preferences.Get(TOKEN_PART_COUNT_KEY, 0);
                 if (chunkCount == 0) return null;
 
                 var tokenBuilder = new StringBuilder();
                 for (int i = 0; i < chunkCount; i++)
                 {
-                    tokenBuilder.Append(Preferences.Get($"{prefix}TOKEN_PART_{i}", string.Empty));
+                    tokenBuilder.Append(Preferences.Get($"{TOKEN_PART_PREFIX}{i}", string.Empty));
                 }
                 return tokenBuilder.ToString();
             }
@@ -28,25 +35,79 @@ namespace APP.Eds.Helpers
             }
         }
 
-        public static void SaveToken(string token, string clientId, string realm)
+        /// <summary>
+        /// Guarda el token de acceso
+        /// </summary>
+        public static void SaveToken(string token)
         {
             try
             {
-                Preferences.Set("CURRENT_AUTH_REALM", realm);
-                Preferences.Set("CURRENT_AUTH_CLIENT_ID", clientId);
-
-                string prefix = $"AUTH_{realm}_{clientId}_";
                 var tokenParts = SplitTokenIntoParts(token);
-                Preferences.Set($"{prefix}TOKEN_PART_COUNT", tokenParts.Length);
+                Preferences.Set(TOKEN_PART_COUNT_KEY, tokenParts.Length);
 
                 for (int i = 0; i < tokenParts.Length; i++)
                 {
-                    Preferences.Set($"{prefix}TOKEN_PART_{i}", tokenParts[i]);
+                    Preferences.Set($"{TOKEN_PART_PREFIX}{i}", tokenParts[i]);
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error saving token: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Carga el refresh token almacenado
+        /// </summary>
+        public static string LoadRefreshToken()
+        {
+            try
+            {
+                return Preferences.Get(REFRESH_TOKEN_KEY, null);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading refresh token: {ex}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Guarda el refresh token
+        /// </summary>
+        public static void SaveRefreshToken(string refreshToken)
+        {
+            try
+            {
+                Preferences.Set(REFRESH_TOKEN_KEY, refreshToken);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving refresh token: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Limpia todos los tokens almacenados
+        /// </summary>
+        public static void ClearTokens()
+        {
+            try
+            {
+                int chunkCount = Preferences.Get(TOKEN_PART_COUNT_KEY, 0);
+                for (int i = 0; i < chunkCount; i++)
+                {
+                    Preferences.Remove($"{TOKEN_PART_PREFIX}{i}");
+                }
+                
+                Preferences.Remove(TOKEN_PART_COUNT_KEY);
+                Preferences.Remove(REFRESH_TOKEN_KEY);
+                
+                System.Diagnostics.Debug.WriteLine("All tokens cleared successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error clearing tokens: {ex}");
             }
         }
 

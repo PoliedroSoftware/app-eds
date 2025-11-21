@@ -181,7 +181,7 @@ public class HoseService : INotifyPropertyChanged
 
     public HoseService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         IdHose = 0;
         InitializeService();
         GetByIdHoseDataCommand = new Command<int>(async (hoseId) => await GetByIdHoseDataAsync(hoseId));
@@ -591,5 +591,6 @@ public class HoseService : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
+
 
 

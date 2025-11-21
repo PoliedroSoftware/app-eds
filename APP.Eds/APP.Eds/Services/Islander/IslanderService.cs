@@ -292,7 +292,7 @@ public class IslanderService : INotifyPropertyChanged
     {
         InitializeCommands();
         InitializeRoleOptions();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetAllEdsData();
     }
 
