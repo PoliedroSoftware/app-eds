@@ -450,7 +450,7 @@ public class SetupService : INotifyPropertyChanged
             var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var url = $"{Configuration.BaseUrl}/api/v1/setup-wizard";
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/setup-wizard", content);
+            var response = await httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
             {
