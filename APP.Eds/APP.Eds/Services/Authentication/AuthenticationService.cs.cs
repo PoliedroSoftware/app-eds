@@ -60,7 +60,7 @@ public class AuthenticationService
             password
         };
         var content = new StringContent(JsonSerializer.Serialize(registerData), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("registry", content);
+        var response = await _httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/auth/register", content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -73,7 +73,7 @@ public class AuthenticationService
             phone
         };
         var content = new StringContent(JsonSerializer.Serialize(verifyData), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("verifyphone", content);
+        var response = await _httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/auth/verify-phone", content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
