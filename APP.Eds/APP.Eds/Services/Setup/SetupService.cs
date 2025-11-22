@@ -449,8 +449,8 @@ public class SetupService : INotifyPropertyChanged
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
             var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var url = $"{Configuration.BaseUrl}/api/v1/bootstrap/setup";
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
+            var url = $"{Configuration.BaseUrl}/api/v1/setup-wizard";
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/setup-wizard", content);
 
             if (response.IsSuccessStatusCode)
             {

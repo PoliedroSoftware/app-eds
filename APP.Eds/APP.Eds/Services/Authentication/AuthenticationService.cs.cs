@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using APP.Eds.Services.Alert;
+using APP.Eds.Services.Config;
 using APP.Eds.UsesCases;
 
 namespace APP.Eds.Services.Authentication;
@@ -14,7 +15,6 @@ public class AuthenticationService
     {
         _httpClient = new HttpClient();
         _alertService = new AlertService();
-        _httpClient.BaseAddress = new Uri("https://poliedroapigateway1.azure-api.net/reader/api/v1/authentication/login");
 
     }
 
@@ -27,7 +27,7 @@ public class AuthenticationService
             password
         };
         var content = new StringContent(JsonSerializer.Serialize(loginData), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("login", content);
+        var response = await _httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/auth", content);
 
         if (password != null)
         {

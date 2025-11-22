@@ -2778,7 +2778,7 @@ public class CourtService : INotifyPropertyChanged
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/court/{courtId}");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court/{courtId}");
             Console.WriteLine(response);
 
             Court = JsonSerializer.Deserialize<CourtModel>(response, new JsonSerializerOptions
