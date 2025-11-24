@@ -164,7 +164,7 @@
                                            TextColor="#636E72"/>
                                 <Picker Title="Seleccione EDS"
                                             ItemDisplayBinding="{Binding Name}"
-                                            AutomationId="EdsPicker"
+                                            AutomationId="EdsUserPicker"
                                             ItemsSource="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=UserEds}"
                                             SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
                                             SelectedIndexChanged="OnEdsUserSelected"

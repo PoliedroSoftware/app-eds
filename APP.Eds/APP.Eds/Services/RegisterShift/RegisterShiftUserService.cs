@@ -177,7 +177,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
     public RegisterShiftUserService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         SaveRegisterShiftCommand = new Command(async () => await SaveRegisterShiftAsync());
         RefreshIslanderCommand = new Command(async () => await LoadIslanderAsync());
@@ -203,6 +203,16 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             DateEnd = DateStart.AddDays(1);
         else
             DateEnd = DateStart;
+    }
+
+    public void ResetUserEds()
+    {
+        SelectedUserEds = null;
+        IdEds = null;
+        IdBusiness = null;
+
+        OnPropertyChanged(nameof(SelectedUserEds));
+        OnPropertyChanged(nameof(IdEds));
     }
     public async Task LoadIslanderAsync()
     {
@@ -358,7 +368,10 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             var response = await httpClient.PostAsync($"{Configuration.BaseUrl}{RegisterShiftEndpoint}", content);
 
             if (response.IsSuccessStatusCode)
+            {
                 await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
+                ResetUserEds();
+            }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();

@@ -6,6 +6,7 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Files;
+using APP.Eds.Services.RegisterShift;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -98,7 +99,6 @@ public class CourtService : INotifyPropertyChanged
             _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja despu�s del reset
             _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
-            _instance.OnPropertyChanged(nameof(SelectedUserEds));
             
         }
     }

@@ -86,6 +86,17 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private EdsResponse _selectedUserEds;
+    public EdsResponse SelectedUserEds
+    {
+        get => _selectedUserEds;
+        set
+        {
+            _selectedUserEds = value;
+            OnPropertyChanged(nameof(SelectedUserEds));
+        }
+    }
+
     public CourtPostView()
     {
         try { InitializeComponent(); }
@@ -560,7 +571,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                 await _registerShiftUserService.SaveRegisterShiftAsync();
-                await ResetForNewCloseAsync();
 
                 try { overlayRegisterShift?.HideLoading(); } catch { }
                 return; // no continuar con el flujo normal
@@ -588,7 +598,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                 await _registerShiftAdminService.SaveRegisterShiftAsync();
-                await ResetForNewCloseAsync();
+                ResetForNewCloseAsync();
 
                 try { overlayRegisterShift?.HideLoading(); } catch { }
                 return; // no continuar con el flujo normal
@@ -733,11 +743,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                     await _registerShiftAdminService.SaveRegisterShiftAsync();
-                    await ResetForNewCloseAsync();
-
-                    try { overlayRegisterShift?.HideLoading(); } catch { }
-                    return; // no continuar con el flujo normal
-
                 }
                 else
                 {
@@ -750,10 +755,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                     await _registerShiftUserService.SaveRegisterShiftAsync();
-                    await ResetForNewCloseAsync();
-
-                    try { overlayRegisterShift?.HideLoading(); } catch { }
-                    return; // no continuar con el flujo normal
                 }
             }
             
@@ -765,7 +766,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 // ✅ Mensaje de éxito profesional y detallado
                 var successMessage = BuildSuccessMessage(totalAmount, totalTypeOfCollection, totalExpenditures);
                 await CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
-                await CustomAlert.ShowSuccessAsync("Registro de turno", "Turno registrado exitosamente");
 
                 // Evitar doble submit inmediatamente
                 OcultarSeccionesCierre();
@@ -900,7 +900,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         var prevBusiness = _service.SelectedBusiness;
         var prevEds = _service.SelectedEds;
         var prevIslander = _service.SelectedIslander;
-        var prevUserEds = _service.SelectedUserEds;
 
         CourtService.ResetInstanceFields();
         _service = CourtService.Instance;
@@ -914,7 +913,6 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         if (prevEds != null) _service.SelectedEds = prevEds;
         if (prevIslander != null) _service.SelectedIslander = prevIslander;
-        if (prevUserEds != null) _service.SelectedUserEds = prevUserEds;
 
         SetEditingState(canEdit: true, showSections: true);
 
