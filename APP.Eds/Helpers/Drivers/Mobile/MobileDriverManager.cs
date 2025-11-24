@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Support.UI;
+using HelpersButton = Helpers.UIElements.Mobile.Button;
 
 namespace Helpers.Drivers.Mobile
 {
@@ -39,7 +40,7 @@ namespace Helpers.Drivers.Mobile
             switch (elementType)
             {
                 case ElementType.Button:
-                    return new Button(appiumElement);
+                    return new HelpersButton(appiumElement);
                 case ElementType.TextField:
                     return new TextField(appiumElement);
                 case ElementType.Text:
