@@ -560,6 +560,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                 await _registerShiftUserService.SaveRegisterShiftAsync();
+                await ResetForNewCloseAsync();
 
                 try { overlayRegisterShift?.HideLoading(); } catch { }
                 return; // no continuar con el flujo normal
@@ -587,6 +588,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                 await _registerShiftAdminService.SaveRegisterShiftAsync();
+                await ResetForNewCloseAsync();
 
                 try { overlayRegisterShift?.HideLoading(); } catch { }
                 return; // no continuar con el flujo normal
@@ -731,6 +733,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                     await _registerShiftAdminService.SaveRegisterShiftAsync();
+                    await ResetForNewCloseAsync();
 
                     try { overlayRegisterShift?.HideLoading(); } catch { }
                     return; // no continuar con el flujo normal
@@ -747,6 +750,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     try { overlayRegisterShift?.ShowLoading(); } catch { }
 
                     await _registerShiftUserService.SaveRegisterShiftAsync();
+                    await ResetForNewCloseAsync();
 
                     try { overlayRegisterShift?.HideLoading(); } catch { }
                     return; // no continuar con el flujo normal
@@ -896,6 +900,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         var prevBusiness = _service.SelectedBusiness;
         var prevEds = _service.SelectedEds;
         var prevIslander = _service.SelectedIslander;
+        var prevUserEds = _service.SelectedUserEds;
 
         CourtService.ResetInstanceFields();
         _service = CourtService.Instance;
@@ -909,6 +914,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         if (prevEds != null) _service.SelectedEds = prevEds;
         if (prevIslander != null) _service.SelectedIslander = prevIslander;
+        if (prevUserEds != null) _service.SelectedUserEds = prevUserEds;
 
         SetEditingState(canEdit: true, showSections: true);
 

@@ -26,7 +26,7 @@ public class CourtService : INotifyPropertyChanged
     public bool IsUserRole => Preferences.Get("userRole", "") == "User";
 
     private static CourtService _instance;
-    private static RegisterShiftUserService registerShiftUserService;
+    private static RegisterShiftUserService _registerShiftUserService;
     public static CourtService Instance => _instance ??= new CourtService();
 
     private string? _authToken;
@@ -69,6 +69,9 @@ public class CourtService : INotifyPropertyChanged
             // Reset additional info
             _instance.AdditionalInfoDescription = null;
 
+            // Reset RegisterShift
+            _instance.SelectedUserEds = null;
+
             // Notify all property changes to update UI
             _instance.OnPropertyChanged(nameof(TotalAmount));
             _instance.OnPropertyChanged(nameof(TotalGallons));
@@ -96,6 +99,8 @@ public class CourtService : INotifyPropertyChanged
             _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja despu�s del reset
             _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
+            _instance.OnPropertyChanged(nameof(SelectedUserEds));
+            
         }
     }
     public static void DestroyInstance()
@@ -2050,6 +2055,21 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
+    private EdsResponse _selectedUserEds;
+    public EdsResponse SelectedUserEds
+    {
+        get => _selectedUserEds;
+        set
+        {
+            _selectedUserEds = value;
+            OnPropertyChanged(nameof(SelectedUserEds));
+            if (_selectedUserEds != null)
+            {
+                IdEds = _selectedUserEds.IdEds;
+            }
+        }
+    }
+
     private IslanderResponse _selectedIslander;
     public IslanderResponse SelectedIslander
     {
@@ -2157,20 +2177,6 @@ public class CourtService : INotifyPropertyChanged
             }
         }
     }
-
-    private EdsResponse _selectedUserEds;
-    public EdsResponse SelectedUserEds
-    {
-        get => _selectedUserEds;
-        set
-        {
-            _selectedUserEds = value;
-            OnPropertyChanged(nameof(SelectedUserEds));
-            IdEds = _selectedUserEds.IdEds;
-            IdBusiness = _selectedUserEds.IdBusiness;
-        }
-    }
-
 
 
     private ObservableCollection<CourtExpenditure> _courtExpenditures;
@@ -2405,7 +2411,7 @@ public class CourtService : INotifyPropertyChanged
             VisibleReceipts = !VisibleReceipts;
         });
         _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
-        registerShiftUserService = RegisterShiftUserService.Instance;
+        _registerShiftUserService = RegisterShiftUserService.Instance;
         GetAllEdsData();
         DateStarttime = DateTime.Now;
         DateEndtime = DateTime.Now;
