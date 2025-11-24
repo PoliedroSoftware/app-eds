@@ -42,7 +42,7 @@ public class ElectronicBillingService
 
     public ElectronicBillingService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
     }
 
     public async Task<BillingResult> GenerateElectronicInvoiceAsync(

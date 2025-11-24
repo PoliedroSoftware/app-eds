@@ -15,10 +15,10 @@ public partial class App : Application
         // UserAppTheme = AppTheme.Unspecified allows system theme to control
         UserAppTheme = AppTheme.Unspecified;
         
-        var sessionManager = new KeycloakSessionManager();
-
+        var sessionManager = new BackendSessionManager();
         
-        sessionManager.ClearCurrentSession();
+        // Limpiar sesión anterior
+        sessionManager.ClearSession();
         MainPage = new NavigationPage(new MainPage());
     }
 
@@ -41,7 +41,6 @@ public partial class App : Application
 
     private void HandlerInitialize()
     {
-        
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("EntryCustomization", (handler, view) =>
         {
 #if ANDROID

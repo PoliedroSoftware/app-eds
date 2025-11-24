@@ -6,6 +6,7 @@ using APP.Eds.Models.Islander;
 using APP.Eds.Models.Translations;
 using APP.Eds.Services.Config;
 using APP.Eds.Services.Files;
+using APP.Eds.Services.RegisterShift;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -2409,8 +2410,12 @@ public class CourtService : INotifyPropertyChanged
         {
             VisibleReceipts = !VisibleReceipts;
         });
-        _authToken = TokenHelper.LoadToken();
+<<<<<<< HEAD
+        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         _registerShiftUserService = RegisterShiftUserService.Instance;
+=======
+        _authToken = TokenHelper.LoadToken();
+>>>>>>> origin/releasecandidate/v1.0.0
         GetAllEdsData();
         DateStarttime = DateTime.Now;
         DateEndtime = DateTime.Now;

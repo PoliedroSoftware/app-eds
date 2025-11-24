@@ -218,7 +218,7 @@ public class BusinessService : INotifyPropertyChanged
     {
         InitializeCommands();
         InitializeStatusOptions();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetByIdBusinessDataCommand = new Command<int>(async (businessId) => await GetByIdBusinessDataAsync(businessId));
         SaveBusinessDataCommand = new Command(async () => await SaveBusinessDataAsync());
         LoadTraslationsAsync();
