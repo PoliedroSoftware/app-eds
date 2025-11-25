@@ -99,6 +99,7 @@ public class CourtService : INotifyPropertyChanged
             _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
             // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja despu�s del reset
             _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
+            _instance.OnPropertyChanged(nameof(SelectedUserEds));
             
         }
     }
@@ -2409,8 +2410,12 @@ public class CourtService : INotifyPropertyChanged
         {
             VisibleReceipts = !VisibleReceipts;
         });
-        _authToken = TokenHelper.LoadToken();
+<<<<<<< HEAD
+        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
         _registerShiftUserService = RegisterShiftUserService.Instance;
+=======
+        _authToken = TokenHelper.LoadToken();
+>>>>>>> origin/releasecandidate/v1.0.0
         GetAllEdsData();
         DateStarttime = DateTime.Now;
         DateEndtime = DateTime.Now;

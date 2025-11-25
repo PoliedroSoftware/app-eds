@@ -5,14 +5,18 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Globalization;
+using APP.Eds.Services.RegisterShift;
 
 namespace APP.Eds.Components.PopUp;
 
 public partial class AddDispenser : Popup, INotifyPropertyChanged
 {
     private readonly CourtService courtService;
+    private readonly RegisterShiftUserService registerShiftUserService;
     private bool isGallonsEditable = false;
     private bool canEditPrice = false;
+    public string UserRole { get; set; } = string.Empty;
+
 
     // >>> VALIDATION: record last valid price to rollback on invalid edits
     private double _lastValidSellPrice = 0d;
@@ -145,6 +149,8 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
         // Trigger initial hose load
         _ = InitializeHosesAsync();
+
+        UserRole = Preferences.Get("userRole", string.Empty);
     }
 
     private async Task InitializeHosesAsync()
@@ -158,10 +164,10 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         });
 
         // If hoses are already loaded and not empty, skip reload
-        if (courtService.HoseList != null && courtService.HoseList.Count > 0)
-        {
-            return;
-        }
+        //if (courtService.HoseList != null && courtService.HoseList.Count > 0)
+        //{
+        //    return;
+        //}
 
         // Reload hoses
         await courtService.ReloadHosesAsync();
