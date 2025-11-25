@@ -292,7 +292,7 @@ public class IslanderService : INotifyPropertyChanged
     {
         InitializeCommands();
         InitializeRoleOptions();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetAllEdsData();
     }
 
@@ -311,11 +311,6 @@ public class IslanderService : INotifyPropertyChanged
     {
         RoleOptions.Clear();
         RoleOptions.Add("Operario");
-        RoleOptions.Add("Supervisor");
-        RoleOptions.Add("Encargado de Turno");
-        RoleOptions.Add("Cajero");
-        RoleOptions.Add("Mantenimiento");
-        RoleOptions.Add("Seguridad");
     }
 
     public async Task InitializeAsync()

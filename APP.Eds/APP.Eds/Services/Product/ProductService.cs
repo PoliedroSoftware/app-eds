@@ -383,7 +383,7 @@ public class ProductService : INotifyPropertyChanged
 
     public ProductService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         IdProduct = 0;
         OriginalProduct = new ProductResponse();
         GetProducstAsync();

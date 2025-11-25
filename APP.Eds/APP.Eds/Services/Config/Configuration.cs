@@ -5,11 +5,6 @@ public static class Configuration
     // ✅ API Base URLs
     public static string BaseUrl => "https://mg5tj7bmve.execute-api.us-east-2.amazonaws.com/eds";
     
-    // ✅ Keycloak Authentication
-    public static string KeycloakUrl => "https://keycloak-0yrtq1-u44828.vm.elestio.app/realms"; 
-    public static string KeycloakCliendId => "application-eds";
-    public static string KeycloakRealms => "AppEDS";
-    
     // ✨ NUEVO: Electronic Billing API URLs
     public static string BillingApiUrl => "https://wc9oqtphb5.execute-api.us-east-2.amazonaws.com/billing/api/v1/billing";
     public static string PdfApiUrl => "https://wc9oqtphb5.execute-api.us-east-2.amazonaws.com/billing/api/v1/pdfinvoice/pdf";

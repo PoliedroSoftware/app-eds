@@ -2358,7 +2358,7 @@ public class CourtService : INotifyPropertyChanged
         VisibleAdditionalInfo = false;
 
 
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
 
 
@@ -2389,7 +2389,7 @@ public class CourtService : INotifyPropertyChanged
         {
             VisibleReceipts = !VisibleReceipts;
         });
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetAllEdsData();
         DateStarttime = DateTime.Now;
         DateEndtime = DateTime.Now;

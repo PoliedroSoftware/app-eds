@@ -45,7 +45,7 @@ public class ProviderService : INotifyPropertyChanged
     {
         GetByIdProviderDataCommand = new Command<int>(async (providerId) => await GetByIdProviderDataAsync(providerId));
         SaveProviderDataCommand = new Command(async () => await SaveProviderDataAsync());
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetProvidersAsync();
     }
 
