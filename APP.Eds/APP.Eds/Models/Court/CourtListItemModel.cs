@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace APP.Eds.Models.Court;
 
 public class CourtListItemModel
@@ -15,6 +17,8 @@ public class CourtListItemModel
     public double Distinc { get; set; }
     public double TotalAccumulatedAmount { get; set; }
     public double TotalAccumulatedGallons { get; set; }
+    
+    [JsonPropertyName("description")]
     public string Descripcion { get; set; }
     
     // Propiedades de listas con inicializaci�n segura
