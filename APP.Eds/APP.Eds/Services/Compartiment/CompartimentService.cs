@@ -309,7 +309,7 @@ namespace APP.Eds.Services.Compartiment
         //ejecutando el metodo
         public CompartimentService()
         {
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             GetAllTankData();
             GetAllProductData();
             GetCompartimentAsync();
