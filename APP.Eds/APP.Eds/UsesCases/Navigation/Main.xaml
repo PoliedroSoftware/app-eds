@@ -16,9 +16,9 @@
     
     <Grid>
         <ScrollView>
-            <StackLayout Padding="25,40,25,25" Spacing="25">
+            <StackLayout Padding="25,40,25,25" Spacing="15">
                 
-                <!-- Header Section -->
+                <!-- Header Section with User Badge -->
                 <Border BackgroundColor="{StaticResource White}" 
                         StrokeShape="RoundRectangle 20"
                         StrokeThickness="0" 
@@ -29,17 +29,41 @@
                                 Radius="15" 
                                 Opacity="0.15"/>
                     </Border.Shadow>
-                    <StackLayout Spacing="8">
+                    <StackLayout Spacing="12">
+                        <!-- Welcome Title -->
                         <Label Text="¡Bienvenido!" 
-                               FontSize="24" 
+                               FontSize="26" 
                                FontAttributes="Bold"
                                TextColor="{StaticResource Primary}"
                                HorizontalOptions="Center"/>
+                        
+                        <!-- Menu Principal Label -->
                         <Label Text="Menú Principal" 
                                FontSize="16"
                                TextColor="{StaticResource Gray600}"
                                HorizontalOptions="Center"
                                AutomationId="LabelMenuPrincipal"/>
+                        
+                        <!-- User Badge - Below Menu Principal -->
+                        <Border BackgroundColor="Transparent"
+                                StrokeShape="RoundRectangle 15"
+                                Stroke="{StaticResource Primary}"
+                                StrokeThickness="2"
+                                Padding="10,6"
+                                HorizontalOptions="Center"
+                                Margin="0,8,0,0">
+                            <HorizontalStackLayout Spacing="6">
+                                <Label Text="👤"
+                                       FontSize="13"
+                                       VerticalOptions="Center"/>
+                                <Label x:Name="UserNameLabel"
+                                       Text="admin"
+                                       FontSize="12"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource Primary}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
                     </StackLayout>
                 </Border>
 

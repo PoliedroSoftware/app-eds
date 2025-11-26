@@ -257,7 +257,7 @@ public class SetupService : INotifyPropertyChanged
     {
         ExpanderContainer = expanderContainer;
         InitializeCommands();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         SaveDataCommand = new Command(async () => await SaveDataAsync());
         InitializeProductOptions();
         GetAllProductTypeData();

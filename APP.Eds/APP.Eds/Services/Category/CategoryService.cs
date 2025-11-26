@@ -129,7 +129,7 @@ namespace APP.Eds.Services.Category
         }
         public  CategoryService()
         {
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
             GetByIdCategoryDataCommand = new Command<int>(async (CategoryId) => await GetByIdDispenserTypeDataAsync(CategoryId));
             SaveCategoryDataCommand = new Command(async () => await SaveCategoryDataAsync());
             LoadTranslationsAsync();

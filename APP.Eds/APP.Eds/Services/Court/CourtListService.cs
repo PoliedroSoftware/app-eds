@@ -20,7 +20,7 @@ public class CourtListService : INotifyPropertyChanged
 
     public CourtListService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
     }
 
     public async Task LoadAllCourtListAsync()
@@ -42,15 +42,16 @@ public class CourtListService : INotifyPropertyChanged
             // Log the raw response for debugging
             System.Diagnostics.Debug.WriteLine($"CourtListService.LoadAllCourtListAsync - API Response: {response.Substring(0, Math.Min(500, response.Length))}...");
 
-            var courts = JsonSerializer.Deserialize<List<CourtListItemModel>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // Deserialize using the wrapper structure
+            var apiResponse = JsonSerializer.Deserialize<APP.Eds.Models.Inventory.ApiResponseWrapper<List<CourtListItemModel>>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             CourtList.Clear();
 
-            if (courts != null)
+            if (apiResponse?.Data != null)
             {
-                System.Diagnostics.Debug.WriteLine($"CourtListService.LoadAllCourtListAsync - Loaded {courts.Count} courts from API");
+                System.Diagnostics.Debug.WriteLine($"CourtListService.LoadAllCourtListAsync - Loaded {apiResponse.Data.Count} courts from API");
 
-                foreach (var court in courts)
+                foreach (var court in apiResponse.Data)
                 {
                     // Simplemente agregar el court tal como viene de la API
                     System.Diagnostics.Debug.WriteLine($"CourtListService - Court {court.Id}: Collections count = {court.Collections?.Count ?? 0}");

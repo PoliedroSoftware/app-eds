@@ -247,7 +247,7 @@ public class EdsService : INotifyPropertyChanged
 
     public EdsService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         GetAllBusinessData();
         GetEdssAsync();
