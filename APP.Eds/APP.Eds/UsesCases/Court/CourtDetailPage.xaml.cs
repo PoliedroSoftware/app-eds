@@ -15,7 +15,7 @@ public partial class CourtDetailPage : ContentPage
     {
         InitializeComponent();
         _court = court;
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         
         // Set initial binding context with list data
         BindingContext = court;
