@@ -228,7 +228,12 @@ namespace APP.Eds.Services.Category
                 else
                 {
                     var serverError = await response.Content.ReadAsStringAsync();
-                    var userFriendlyError = TranslateCategoryError(serverError, Description);
+                    
+                    // Debug logging
+                    System.Diagnostics.Debug.WriteLine($"Error Status Code: {response.StatusCode}");
+                    System.Diagnostics.Debug.WriteLine($"Error Response: {serverError}");
+                    
+                    var userFriendlyError = TranslateCategoryError(serverError, Description, response.StatusCode);
                     await Application.Current.MainPage.DisplayAlert("Error", userFriendlyError, "OK");
                 }
             }
@@ -238,10 +243,28 @@ namespace APP.Eds.Services.Category
             }
         }
 
-        private string TranslateCategoryError(string serverError, string categoryName)
+        private string TranslateCategoryError(string serverError, string categoryName, System.Net.HttpStatusCode statusCode)
         {
+            // If server error is empty but we have a 500 status, assume it's likely a duplicate error
             if (string.IsNullOrEmpty(serverError))
             {
+                // Check if it's a 500 error which is common for constraint violations
+                if (statusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    return $"⚠️ Categoría Ya Existente\n\n" +
+                           $"Ya existe una categoría con el nombre '{categoryName}' en el sistema.\n\n" +
+                           $"🚫 No se pueden registrar categorías duplicadas\n\n" +
+                           $"💡 Soluciones disponibles:\n\n" +
+                           $"✅ Cambiar el nombre de la categoría:\n" +
+                           $"   • Usar una variación del nombre\n" +
+                           $"   • Agregar un número o identificador\n" +
+                           $"   • Ejemplo: '{categoryName} 2' o '{categoryName} Especial'\n\n" +
+                           $"✅ Verificar categorías existentes:\n" +
+                           $"   • La categoría podría ya estar registrada\n" +
+                           $"   • Revisar la lista de categorías actuales\n\n" +
+                           $"📞 Si necesita ayuda, contacte al soporte técnico.";
+                }
+                
                 return "❌ Error Desconocido\n\nNo se pudo guardar la categoría. El servidor no proporcionó detalles del error.\n\nPor favor, intente de nuevo más tarde.";
             }
 
