@@ -24,7 +24,14 @@ public partial class CourtListView : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error al cargar datos: {ex.Message}", "OK");
+            // Log technical details internally for debugging
+            System.Diagnostics.Debug.WriteLine($"[CourtListView.OnAppearing] Error técnico completo: {ex}");
+            
+            // Show user-friendly error message
+            await DisplayAlert(
+                "Error", 
+                "No se pudo cargar el historial de cortes.\nInténtalo nuevamente. Si continúa el error, comunícate con soporte.", 
+                "OK");
         }
         finally
         {
