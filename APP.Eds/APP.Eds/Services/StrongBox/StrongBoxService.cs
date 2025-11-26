@@ -87,7 +87,7 @@ public class StrongBoxService : INotifyPropertyChanged
 
     public StrongBoxService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         LoadDataCommand = new Command(async () => await LoadDataAsync());
         WithdrawCommand = new Command(async () => await WithdrawAsync(), () => CanWithdraw);

@@ -159,7 +159,7 @@ public class TransferValidationService : INotifyPropertyChanged
 
     public TransferValidationService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         RefreshCommand = new Command(async () => await RefreshDataAsync());
     }
 

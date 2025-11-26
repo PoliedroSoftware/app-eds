@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using APP.Eds.Services.Islander;
+using Newtonsoft.Json;
 
 namespace APP.Eds.Models.Islander;
 
@@ -15,4 +16,7 @@ public class IslanderApiResponse
 
     [JsonProperty("data")]
     public List<IslanderResponse> Data { get; set; }
+
+    [JsonProperty("dataUser")]
+    public List<EnhancedIslanderItem> DataUser { get; set; }
 }

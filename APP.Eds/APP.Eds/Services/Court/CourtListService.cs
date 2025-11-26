@@ -20,7 +20,7 @@ public class CourtListService : INotifyPropertyChanged
 
     public CourtListService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
     }
 
     public async Task LoadAllCourtListAsync()
