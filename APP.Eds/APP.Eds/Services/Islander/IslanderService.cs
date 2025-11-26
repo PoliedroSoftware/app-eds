@@ -12,9 +12,23 @@ using APP.Eds.Models.Business;
 
 namespace APP.Eds.Services.Islander;
 
+public class EditablePendingIslander : INotifyPropertyChanged
+{
+    public required string Name { get; set; }
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public int IdEds { get; set; }
+    public required string Password { get; set; }
+    public string SelectedEdsName { get; set; }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
 
 public class EnhancedIslanderItem
 {
@@ -23,7 +37,7 @@ public class EnhancedIslanderItem
     public string Email { get; set; } = string.Empty;
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;
-    public int IdEds { get; set; }
+    public int? IdEds { get; set; }
     public string EdsName { get; set; } = string.Empty;
     public string Role { get; set; } = "Operario";
     public string RoleIcon { get; set; } = "👷";
@@ -278,7 +292,7 @@ public class IslanderService : INotifyPropertyChanged
     {
         InitializeCommands();
         InitializeRoleOptions();
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetAllEdsData();
     }
 
@@ -297,11 +311,6 @@ public class IslanderService : INotifyPropertyChanged
     {
         RoleOptions.Clear();
         RoleOptions.Add("Operario");
-        RoleOptions.Add("Supervisor");
-        RoleOptions.Add("Encargado de Turno");
-        RoleOptions.Add("Cajero");
-        RoleOptions.Add("Mantenimiento");
-        RoleOptions.Add("Seguridad");
     }
 
     public async Task InitializeAsync()
@@ -700,7 +709,7 @@ public class IslanderService : INotifyPropertyChanged
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
             var islanders = JsonSerializer.Deserialize<IslanderApiResponse>(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase

@@ -295,7 +295,7 @@ public class CapacityService : INotifyPropertyChanged
 
     public async Task<Dictionary<string, string>> GetTranslationsByLanguageAsync(string languageTag)
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Authentication token is missing", "OK");
@@ -315,7 +315,7 @@ public class CapacityService : INotifyPropertyChanged
     }
     public CapacityService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetByIdCapacityDataCommand = new Command<int>(async (capacityId) => await GetByIdCapacityDataAsync(capacityId));
         SaveCapacityDataCommand = new Command(async () => await SaveCapacityDataAsync());
         LoadTranslationsAsync();

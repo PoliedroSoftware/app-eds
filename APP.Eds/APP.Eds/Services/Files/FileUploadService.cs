@@ -11,11 +11,12 @@ public class FileUploadService(string? authToken)
 {
 
     /// <summary>
-    /// Sube una colección de documentos al servidor
+    /// Sube una colección de documentos al servidor con el ID del corte asociado
     /// </summary>
     /// <param name="documents">Colección de documentos a subir</param>
+    /// <param name="courtId">ID del corte al que pertenecen los documentos</param>
     /// <returns>Resultado de la operación con detalles de éxito y errores</returns>
-    public async Task<FileUploadResult> UploadDocumentsAsync(IEnumerable<CourtDocument> documents)
+    public async Task<FileUploadResult> UploadDocumentsAsync(IEnumerable<CourtDocument> documents, int courtId)
     {
         if (documents == null || !documents.Any())
         {
@@ -23,6 +24,15 @@ public class FileUploadService(string? authToken)
             {
                 Success = true,
                 Message = "No hay documentos para subir"
+            };
+        }
+
+        if (courtId <= 0)
+        {
+            return new FileUploadResult
+            {
+                Success = false,
+                Message = "ID de corte inválido"
             };
         }
 
@@ -45,7 +55,7 @@ public class FileUploadService(string? authToken)
         {
             try
             {
-                var uploadResult = await UploadSingleDocumentAsync(client, apiUrl, doc);
+                var uploadResult = await UploadSingleDocumentAsync(client, apiUrl, doc, courtId);
 
                 if (!uploadResult.Success)
                 {
@@ -80,12 +90,13 @@ public class FileUploadService(string? authToken)
     }
 
     /// <summary>
-    /// Sube un único documento al servidor
+    /// Sube un único documento al servidor con el ID del corte
     /// </summary>
     private async Task<SingleFileUploadResult> UploadSingleDocumentAsync(
         HttpClient client,
         string apiUrl,
-        CourtDocument document)
+        CourtDocument document,
+        int courtId)
     {
         try
         {
@@ -95,7 +106,11 @@ public class FileUploadService(string? authToken)
             var fileContent = new StreamContent(fileStream);
             fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-            contentFile.Add(fileContent, "files", document.DocumentName);
+            // Agregar el archivo con el nombre del campo esperado por la API
+            contentFile.Add(fileContent, "Files", document.DocumentName);
+
+            // Agregar el CourtId como campo del formulario
+            contentFile.Add(new StringContent(courtId.ToString()), "CourtId");
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, contentFile);
 
@@ -110,12 +125,13 @@ public class FileUploadService(string? authToken)
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
                 return new SingleFileUploadResult
                 {
                     Success = false,
                     FileName = document.DocumentName,
                     StatusCode = (int)response.StatusCode,
-                    Message = $"Error HTTP: {response.StatusCode} - {response.ReasonPhrase}"
+                    Message = $"Error HTTP: {response.StatusCode} - {response.ReasonPhrase}\nDetalle: {errorContent}"
                 };
             }
         }

@@ -11,6 +11,23 @@ using System.Windows.Input;
 
 namespace APP.Eds.Services.Tank;
 
+public class EditablePendingTank : INotifyPropertyChanged
+{
+    public int? Compartment { get; set; }
+    public string? Number { get; set; }
+    public double? Ability { get; set; }
+    public double? Stock { get; set; }
+    public string SelectedEdsName { get; set; }
+    public string DisplayText => $"Tanque {Number} - Capacidad {Ability:N0} L";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
 public class TankService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -247,7 +264,7 @@ public class TankService : INotifyPropertyChanged
     {
         GetByIdTankDataCommand = new Command<int>(async (tankId) => await GetByIdTankDataAsync(tankId));
         SaveTankDataCommand = new Command(async () => await SaveTankDataAsync());
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetTankAsync();
         LoadTranslationsAsync();
     }

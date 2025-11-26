@@ -28,131 +28,209 @@
             <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
         </Border.Shadow>
         
-        <Grid RowDefinitions="75,50,*,70" Padding="0">
+        <!-- ✅ NUEVO: Grid principal que contiene tanto el contenido como el loading overlay -->
+        <Grid>
+            <!-- Contenido Principal -->
+            <Grid RowDefinitions="75,50,*,70" 
+                  Padding="0"
+                  IsVisible="{Binding IsContentVisible}">
             
-            <!-- Clean Header with Blue Theme -->
-            <Border Grid.Row="0"
-                    BackgroundColor="#2196F3"
-                    StrokeShape="RoundRectangle 20,20,0,0"
-                    StrokeThickness="0"
-                    Padding="20,20">
-                
-                <Grid ColumnDefinitions="*,40">
-                    <!-- Title Section -->
-                    <StackLayout Grid.Column="0" 
-                                 VerticalOptions="Center" 
-                                 HorizontalOptions="Center"
-                                 Spacing="4">
-                        <Label Text="{Binding AddCollectionType}" 
-                               FontAttributes="Bold" 
-                               FontSize="20" 
-                               TextColor="White"
-                               HorizontalTextAlignment="Center"/>
-                        <Label Text="Configure los métodos de pago" 
-                               FontSize="12" 
-                               TextColor="#F5F5F5"
-                               FontAttributes="None"
-                               HorizontalTextAlignment="Center"/>
-                    </StackLayout>
+                <!-- Clean Header with Blue Theme -->
+                <Border Grid.Row="0"
+                        BackgroundColor="#2196F3"
+                        StrokeShape="RoundRectangle 20,20,0,0"
+                        StrokeThickness="0"
+                        Padding="20,20">
                     
-                    <!-- Modern Close Button -->
-                    <Border Grid.Column="1"
-                            BackgroundColor="#FFFFFF20"
-                            StrokeShape="RoundRectangle 20"
-                            WidthRequest="40" HeightRequest="40">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnCloseTapped"/>
-                        </Border.GestureRecognizers>
-                        <Label Text="✕" 
-                               FontSize="16" 
-                               TextColor="White"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" 
-                               VerticalOptions="Center"/>
-                    </Border>
-                </Grid>
-            </Border>
-            
-            <!-- Total Summary Card -->
-            <Border Grid.Row="1"
-                    BackgroundColor="#E3F2FD"
-                    Padding="16,12">
-                <StackLayout Orientation="Horizontal" 
-                             HorizontalOptions="Center"
-                             Spacing="12">
-                    <Border BackgroundColor="#1976D2"
-                            StrokeShape="RoundRectangle 15"
-                            WidthRequest="30" HeightRequest="30">
-                        <Label Text="💰" FontSize="14" 
-                               HorizontalOptions="Center" 
-                               VerticalOptions="Center"/>
-                    </Border>
-                    <Label Text="{Binding Source={x:Reference Root}, Path=Remaining, StringFormat='Total del Día: ${0:N0}'}"
-                           FontSize="15"
-                           FontAttributes="Bold"
-                           TextColor="#1976D2"
-                           VerticalOptions="Center"/>
-                </StackLayout>
-            </Border>
-
-            <!-- Payment Methods List -->
-            <Border Grid.Row="2" 
-                    BackgroundColor="#FAFCFF"
-                    Padding="16,12">
+                    <Grid ColumnDefinitions="*,40">
+                        <!-- Title Section -->
+                        <StackLayout Grid.Column="0" 
+                                     VerticalOptions="Center" 
+                                     HorizontalOptions="Center"
+                                     Spacing="4">
+                            <Label Text="Formas de pago" 
+                                   FontAttributes="Bold" 
+                                   FontSize="20" 
+                                   TextColor="White"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="Configure los métodos de pago" 
+                                   FontSize="12" 
+                                   TextColor="#F5F5F5"
+                                   FontAttributes="None"
+                                   HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                        
+                        <!-- Modern Close Button -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="#FFFFFF20"
+                                StrokeShape="RoundRectangle 20"
+                                WidthRequest="40" HeightRequest="40">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCloseTapped"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="✕" 
+                                   FontSize="16" 
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
                 
-                <ScrollView>
-                    <StackLayout Spacing="12"
-                                 BindableLayout.ItemsSource="{Binding Source={x:Reference Root}, Path=PaymentOptions}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate>
-                                <!-- Payment Method Card -->
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#E8F2FF"
-                                        StrokeThickness="1"
-                                        Padding="16,14">
-                                    <Border.Shadow>
-                                        <Shadow Brush="#2196F3" Offset="0,1" Radius="4" Opacity="0.05"/>
-                                    </Border.Shadow>
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Stroke" Value="#2196F3"/>
-                                            <Setter Property="StrokeThickness" Value="2"/>
-                                            <Setter Property="BackgroundColor" Value="#F0F7FF"/>
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    
-                                    <StackLayout Spacing="12">
-                                        <!-- Header with checkbox and payment method name -->
-                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                            <!-- Modern Checkbox -->
-                                            <CheckBox Grid.Column="0"
-                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                      Color="#2196F3"
-                                                      VerticalOptions="Center">
-                                                <CheckBox.Triggers>
-                                                    <DataTrigger TargetType="CheckBox" Binding="{Binding IsPreviouslyPaid}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </CheckBox.Triggers>
-                                            </CheckBox>
+                <!-- Total Summary Card -->
+                <Border Grid.Row="1"
+                        BackgroundColor="#E3F2FD"
+                        Padding="16,12">
+                    <StackLayout Orientation="Horizontal" 
+                                 HorizontalOptions="Center"
+                                 Spacing="12">
+                        <Border BackgroundColor="#1976D2"
+                                StrokeShape="RoundRectangle 15"
+                                WidthRequest="30" HeightRequest="30">
+                            <Label Text="💰" FontSize="14" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"/>
+                        </Border>
+                        <Label Text="{Binding TotalDelDia, StringFormat='Total del Día: ${0:N0}'}"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="#1976D2"
+                               VerticalOptions="Center"/>
+                    </StackLayout>
+                </Border>
 
-                                            <!-- Payment Method Name -->
-                                            <StackLayout Grid.Column="1"
-                                                         VerticalOptions="Center"
-                                                         Spacing="2">
-                                                <Label Text="{Binding Type.Description}"
-                                                       FontSize="15"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#1976D2"/>
-                                                <Label Text="Método de pago"
-                                                       FontSize="11"
-                                                       TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                <!-- Payment Methods List -->
+                <Border Grid.Row="2" 
+                        BackgroundColor="#FAFCFF"
+                        Padding="16,12">
+                    
+                    <ScrollView>
+                        <StackLayout Spacing="12"
+                                     BindableLayout.ItemsSource="{Binding PaymentOptions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <!-- Payment Method Card -->
+                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                            StrokeShape="RoundRectangle 12"
+                                            Stroke="#E8F2FF"
+                                            StrokeThickness="1"
+                                            Padding="16,14">
+                                        <Border.Shadow>
+                                            <Shadow Brush="#2196F3" Offset="0,1" Radius="4" Opacity="0.05"/>
+                                        </Border.Shadow>
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Stroke" Value="#2196F3"/>
+                                                <Setter Property="StrokeThickness" Value="2"/>
+                                                <Setter Property="BackgroundColor" Value="#F0F7FF"/>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        
+                                        <StackLayout Spacing="12">
+                                            <!-- Header with checkbox and payment method name -->
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                                <!-- Modern Checkbox -->
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                          Color="#2196F3"
+                                                          VerticalOptions="Center">
+                                                    <CheckBox.Triggers>
+                                                        <DataTrigger TargetType="CheckBox" Binding="{Binding IsPreviouslyPaid}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </CheckBox.Triggers>
+                                                </CheckBox>
+
+                                                <!-- Payment Method Name -->
+                                                <StackLayout Grid.Column="1"
+                                                             VerticalOptions="Center"
+                                                             Spacing="2">
+                                                    <Label Text="{Binding Type.Description}"
+                                                           FontSize="15"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#1976D2"/>
+                                                    <Label Text="Método de pago"
+                                                           FontSize="11"
+                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Amount Entry - Full Width -->
+                                            <StackLayout Spacing="4">
+                                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                                        StrokeShape="RoundRectangle 8"
+                                                        Stroke="#E0E9F7"
+                                                        StrokeThickness="1"
+                                                        Padding="12,8">
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="BackgroundColor" Value="#F0F7FF"/>
+                                                            <Setter Property="Stroke" Value="#90CAF9"/>
+                                                            <Setter Property="StrokeThickness" Value="2"/>
+                                                        </DataTrigger>
+                                                    </Border.Triggers>
+                                                    <Entry Placeholder="0"
+                                                           Keyboard="Numeric"
+                                                           MaxLength="12"
+                                                           HorizontalTextAlignment="Center"
+                                                           IsEnabled="{Binding IsSelected}"
+                                                           Text="{Binding Amount, Mode=TwoWay}"
+                                                           TextChanged="Amount_TextChanged"
+                                                           Focused="Amount_Focused"
+                                                           Unfocused="Amount_Unfocused"
+                                                           TextColor="#1976D2"
+                                                           PlaceholderColor="#9E9E9E"
+                                                           BackgroundColor="Transparent"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold">
+                                                        <Entry.Triggers>
+                                                            <DataTrigger TargetType="Entry" Binding="{Binding IsPreviouslyPaid}" Value="True">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                        </Entry.Triggers>
+                                                    </Entry>
+                                                </Border>
+                                                
+                                                <!-- Amount Display - Both Currency Format and Words -->
+                                                <StackLayout Orientation="Horizontal" 
+                                                             HorizontalOptions="Center"
+                                                             Spacing="8"
+                                                             IsVisible="{Binding IsSelected}">
+                                                    <StackLayout.Triggers>
+                                                        <!-- Only show when there's text and item is selected -->
+                                                        <DataTrigger TargetType="StackLayout" 
+                                                                     Binding="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
+                                                                     Value="">
+                                                            <Setter Property="IsVisible" Value="False"/>
+                                                        </DataTrigger>
+                                                    </StackLayout.Triggers>
+                                                
+                                                    <!-- Currency Format -->
+                                                    <Label Text="{Binding Amount, StringFormat='$ {0:N2}'}"
+                                                           FontSize="11"
+                                                           TextColor="#2196F3"
+                                                           FontAttributes="Bold"
+                                                           VerticalOptions="Center"/>
+                                                
+                                                    <!-- Separator -->
+                                                    <Label Text="•"
+                                                           FontSize="10"
+                                                           TextColor="#999999"
+                                                           VerticalOptions="Center"/>
+                                                
+                                                    <!-- Amount in Words -->
+                                                    <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
+                                                           FontSize="10"
+                                                           TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
+                                                           FontAttributes="Italic"
+                                                           VerticalOptions="Center"
+                                                           LineBreakMode="TailTruncation"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                                </StackLayout>
                                             </StackLayout>
-                                        </Grid>
 
-                                        <!-- Amount Entry - Full Width -->
-                                        <StackLayout Spacing="4">
+                                            <!-- Description Entry - Full Width -->
                                             <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
                                                     StrokeShape="RoundRectangle 8"
                                                     Stroke="#E0E9F7"
@@ -165,143 +243,138 @@
                                                         <Setter Property="StrokeThickness" Value="2"/>
                                                     </DataTrigger>
                                                 </Border.Triggers>
-                                                <Entry Placeholder="0"
-                                                       Keyboard="Numeric"
-                                                       MaxLength="12"
-                                                       HorizontalTextAlignment="Center"
+                                                <Entry Placeholder="Descripción (opcional)"
                                                        IsEnabled="{Binding IsSelected}"
-                                                       Text="{Binding Amount, Mode=TwoWay}"
-                                                       TextChanged="Amount_TextChanged"
-                                                       Focused="Amount_Focused"
-                                                       Unfocused="Amount_Unfocused"
+                                                       Text="{Binding Notes, Mode=TwoWay}"
                                                        TextColor="#1976D2"
                                                        PlaceholderColor="#9E9E9E"
                                                        BackgroundColor="Transparent"
                                                        FontSize="13"
-                                                       FontAttributes="Bold">
-                                                    <Entry.Triggers>
-                                                        <DataTrigger TargetType="Entry" Binding="{Binding IsPreviouslyPaid}" Value="True">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                    </Entry.Triggers>
-                                                </Entry>
+                                                       MaxLength="100"/>
                                             </Border>
-                                            
-                                            <!-- Amount Display - Both Currency Format and Words -->
-                                            <StackLayout Orientation="Horizontal" 
-                                                         HorizontalOptions="Center"
-                                                         Spacing="8"
-                                                         IsVisible="{Binding IsSelected}">
-                                                <StackLayout.Triggers>
-                                                    <!-- Only show when there's text and item is selected -->
-                                                    <DataTrigger TargetType="StackLayout" 
-                                                                 Binding="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                                 Value="">
-                                                        <Setter Property="IsVisible" Value="False"/>
-                                                    </DataTrigger>
-                                                </StackLayout.Triggers>
-                                                
-                                                <!-- Currency Format -->
-                                                <Label Text="{Binding Amount, StringFormat='$ {0:N2}'}"
-                                                       FontSize="11"
-                                                       TextColor="#2196F3"
-                                                       FontAttributes="Bold"
-                                                       VerticalOptions="Center"/>
-                                                
-                                                <!-- Separator -->
-                                                <Label Text="•"
-                                                       FontSize="10"
-                                                       TextColor="#999999"
-                                                       VerticalOptions="Center"/>
-                                                
-                                                <!-- Amount in Words -->
-                                                <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
-                                                       FontSize="10"
-                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
-                                                       FontAttributes="Italic"
-                                                       VerticalOptions="Center"
-                                                       LineBreakMode="TailTruncation"
-                                                       HorizontalOptions="FillAndExpand"/>
-                                            </StackLayout>
                                         </StackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </Border>
 
-                                        <!-- Description Entry - Full Width -->
-                                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
-                                                StrokeShape="RoundRectangle 8"
-                                                Stroke="#E0E9F7"
-                                                StrokeThickness="1"
-                                                Padding="12,8">
-                                            <Border.Triggers>
-                                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="BackgroundColor" Value="#F0F7FF"/>
-                                                    <Setter Property="Stroke" Value="#90CAF9"/>
-                                                    <Setter Property="StrokeThickness" Value="2"/>
-                                                </DataTrigger>
-                                            </Border.Triggers>
-                                            <Entry Placeholder="Descripción (opcional)"
-                                                   IsEnabled="{Binding IsSelected}"
-                                                   Text="{Binding Notes, Mode=TwoWay}"
-                                                   TextColor="#1976D2"
-                                                   PlaceholderColor="#9E9E9E"
-                                                   BackgroundColor="Transparent"
-                                                   FontSize="13"
-                                                   MaxLength="100"/>
-                                        </Border>
-                                    </StackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </StackLayout>
-                </ScrollView>
-            </Border>
+                <!-- Modern Action Buttons -->
+                <Border Grid.Row="3"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        StrokeShape="RoundRectangle 0,0,20,20"
+                        Padding="16,12">
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <!-- Clear Button -->
+                        <Border Grid.Column="0"
+                                BackgroundColor="#F5F5F5"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0"
+                                HeightRequest="44">
+                            <Border.Shadow>
+                                <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Clear_All"
+                                    FontSize="15" 
+                                    FontAttributes="Bold"
+                                    Text="Borrar" 
+                                    TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
+                                    HeightRequest="44"
+                                    AutomationId="ButtonClearTypeOfCollection"/>
+                        </Border>
+                        
+                        <!-- Add Button -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="#2196F3"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0"
+                                HeightRequest="44">
+                            <Border.Shadow>
+                                <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
+                            </Border.Shadow>
+                            <Button BackgroundColor="Transparent"
+                                    Clicked="Add_Selected"
+                                    FontSize="15" 
+                                    FontAttributes="Bold"
+                                    Text="Agregar" 
+                                    TextColor="White"
+                                    HeightRequest="44"
+                                    AutomationId="ButtonAddTypeCollection"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
 
-            <!-- Modern Action Buttons -->
-            <Border Grid.Row="3"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
-                    StrokeShape="RoundRectangle 0,0,20,20"
-                    Padding="16,12">
+            <!-- ✅ NUEVO: Loading Overlay - Se muestra encima del contenido -->
+            <Grid IsVisible="{Binding IsLoading}"
+                  BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1A1A1A}">
                 
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <!-- Clear Button -->
-                    <Border Grid.Column="0"
-                            BackgroundColor="#F5F5F5"
-                            StrokeShape="RoundRectangle 12"
-                            StrokeThickness="0"
-                            HeightRequest="44">
+                <!-- Centered Loading Content -->
+                <StackLayout VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="20"
+                             Padding="40">
+                    
+                    <!-- Loading Spinner Container with modern design -->
+                    <Border BackgroundColor="#2196F3"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="80"
+                            HeightRequest="80"
+                            HorizontalOptions="Center">
                         <Border.Shadow>
-                            <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
+                            <Shadow Brush="#2196F3" Offset="0,4" Radius="12" Opacity="0.3"/>
                         </Border.Shadow>
-                        <Button BackgroundColor="Transparent"
-                                Clicked="Clear_All"
-                                FontSize="15" 
-                                FontAttributes="Bold"
-                                Text="Borrar" 
-                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
-                                HeightRequest="44"
-                                AutomationId="ButtonClearTypeOfCollection"/>
+                        
+                        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                           Color="White"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
                     </Border>
                     
-                    <!-- Add Button -->
-                    <Border Grid.Column="1"
-                            BackgroundColor="#2196F3"
-                            StrokeShape="RoundRectangle 12"
-                            StrokeThickness="0"
-                            HeightRequest="44">
-                        <Border.Shadow>
-                            <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
-                        </Border.Shadow>
-                        <Button BackgroundColor="Transparent"
-                                Clicked="Add_Selected"
-                                FontSize="15" 
-                                FontAttributes="Bold"
-                                Text="{Binding Add}" 
-                                TextColor="White"
-                                HeightRequest="44"
-                                AutomationId="ButtonAddTypeCollection"/>
-                    </Border>
-                </Grid>
-            </Border>
-            
+                    <!-- Loading Message -->
+                    <StackLayout Spacing="8" 
+                                 HorizontalOptions="Center">
+                        <Label Text="{Binding LoadingMessage}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#2196F3"
+                               HorizontalTextAlignment="Center"/>
+                        
+                        <Label Text="Por favor espere..."
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
+                               HorizontalTextAlignment="Center"
+                               FontAttributes="Italic"/>
+                    </StackLayout>
+                    
+                    <!-- Progress dots animation (visual feedback) -->
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center"
+                                 Spacing="8">
+                        <Ellipse Fill="#2196F3"
+                                 WidthRequest="8"
+                                 HeightRequest="8"
+                                 Opacity="0.4"/>
+                        <Ellipse Fill="#2196F3"
+                                 WidthRequest="8"
+                                 HeightRequest="8"
+                                 Opacity="0.6"/>
+                        <Ellipse Fill="#2196F3"
+                                 WidthRequest="8"
+                                 HeightRequest="8"
+                                 Opacity="0.8"/>
+                        <Ellipse Fill="#2196F3"
+                                 WidthRequest="8"
+                                 HeightRequest="8"
+                                 Opacity="1"/>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
         </Grid>
     </Border>
 </mct:Popup>

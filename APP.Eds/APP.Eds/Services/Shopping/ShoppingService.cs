@@ -452,7 +452,7 @@ public class ShoppingService : INotifyPropertyChanged
     public ShoppingService()
     {
 
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
 
         GetAllProviderData();

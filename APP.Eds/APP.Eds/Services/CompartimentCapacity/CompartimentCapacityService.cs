@@ -109,7 +109,7 @@ public class CompartimentCapacityService : INotifyPropertyChanged
 
     public CompartimentCapacityService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
         GetAllCapacityData();
         GetByIdCompartimentCapacityDataCommand = new Command<int>(async (compartimentCapacityId) => await GetByIdCompartimentCapacityDataAsync(compartimentCapacityId));
         SaveCompartimentCapacityDataCommand = new Command(async () => await SaveCompartimentCapacityDataAsync());

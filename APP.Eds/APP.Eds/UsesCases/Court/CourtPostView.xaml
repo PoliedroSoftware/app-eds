@@ -2,6 +2,7 @@
     x:Class="APP.Eds.UsesCases.Court.CourtPostView"
     x:Name="CortePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:services="clr-namespace:APP.Eds.Services.RegisterShift"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
@@ -87,7 +88,8 @@
                             </Border>
 
                             <!-- EDS -->
-                            <Label Text="EDS" 
+                            <Label 
+                                   Text="EDS" 
                                    FontAttributes="Bold" 
                                    TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
                                    VerticalOptions="Center" 
@@ -150,6 +152,34 @@
                                    TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
+                        <!-- Selector de EDS (solo User y si tiene >1) -->
+                        <Border x:Name="EdsUser"
+                                BackgroundColor="#F8F9FA"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="#DDD6FE"
+                                Padding="12">
+                            <VerticalStackLayout Spacing="6">
+                                    <Label Text="Selecciona EDS"
+                                           FontAttributes="Bold"
+                                           TextColor="#636E72"/>
+                                <Picker Title="Seleccione EDS"
+                                            ItemDisplayBinding="{Binding Name}"
+                                            AutomationId="EdsUserPicker"
+                                            ItemsSource="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=UserEds}"
+                                            SelectedItem="{Binding Source={x:Static services:RegisterShiftUserService.Instance}, Path=SelectedUserEds, Mode=TwoWay}"
+                                            SelectedIndexChanged="OnEdsUserSelected"
+                                            BackgroundColor="Transparent"
+                                            Margin="12,8"/>
+                                <!--IsEnabled="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked}"/> -->
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!--Texto informativo cuando solo hay 1 EDS 
+                        <StackLayout IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker, Converter={StaticResource InverseBoolConverter}}">
+                            <Label Text="{Binding Source={x:Reference CortePage}, Path=BindingContext.EdsName}"
+                                   TextColor="#636E72"
+                                   FontAttributes="Italic"/> 
+                        </StackLayout>-->
 
                         <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
                             <!-- Date -->
@@ -170,6 +200,18 @@
                                                 HorizontalOptions="Center"
                                                 TextColor="#E67E22"/>
                                 </Border>
+                                <!-- Checkbox para registrar turno sin ventas -->
+                                <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                                    <CheckBox x:Name="RegisterShiftCheck"
+                                              IsChecked="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked, Mode=TwoWay}"
+                                              Color="#6A1B9A"
+                                              CheckedChanged="OnRegisterShiftCheckChanged"/>
+                                    <Label Text="Registrar turno sin ventas"
+                                           FontSize="12"
+                                           TextColor="#636E72"
+                                           VerticalTextAlignment="Center"/>
+                                </StackLayout>
+
                             </StackLayout>
 
                             <!-- Start Time -->

@@ -1,39 +1,39 @@
-﻿
+﻿using APP.Eds.Helpers;
 using APP.Eds.Services.Court;
 
 namespace APP.Eds.Services.Authentication
 {
-    public class KeycloakSessionManager
+    /// <summary>
+    /// Gestor de sesión para el backend (reemplaza KeycloakSessionManager)
+    /// </summary>
+    public class BackendSessionManager
     {
-        public void ClearSession(string realm, string clientId)
+        /// <summary>
+        /// Limpia la sesión actual del usuario
+        /// </summary>
+        public void ClearSession()
         {
+            // Limpiar tokens usando el TokenHelper actualizado
+            TokenHelper.ClearTokens();
 
-            Preferences.Remove($"AUTH_{realm}_{clientId}_TOKEN_PART_COUNT");
+            // Limpiar preferencias de usuario
+            Preferences.Remove("Usernamelogin");
+            Preferences.Remove("userRole");
 
-            int chunkCount = Preferences.Get($"AUTH_{realm}_{clientId}_TOKEN_PART_COUNT", 0);
-            for (int i = 0; i < chunkCount; i++)
-            {
-                Preferences.Remove($"AUTH_{realm}_{clientId}_TOKEN_PART_{i}");
-            }
-
-            Preferences.Remove("CURRENT_AUTH_REALM");
-            Preferences.Remove("CURRENT_AUTH_CLIENT_ID");
-
-            Console.WriteLine($"Session cleared for realm={realm}, clientId={clientId}");
-        }
-
-        
-        public void ClearCurrentSession()
-        {
-            string realm = "AppEDS";
-            string clientId = "application-eds";
-
-            ClearSession(realm, clientId);
-
+            // Destruir instancia del servicio de Court si existe
             CourtService.DestroyInstance();
             Shopping.ShoppingService.Instance.ClearProductCache();
 
-            Console.WriteLine($"Current session cleared for realm={realm}, clientId={clientId}");
+            Console.WriteLine("Session cleared successfully");
+        }
+
+        /// <summary>
+        /// Verifica si hay una sesión activa
+        /// </summary>
+        public bool HasActiveSession()
+        {
+            var token = TokenHelper.LoadToken();
+            return !string.IsNullOrEmpty(token);
         }
     }
 }

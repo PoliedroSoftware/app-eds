@@ -9,5 +9,7 @@
         public int HoseNumber { get; set; }
         public int EdsId { get; set; }
         public int IdIsland { get; set; }
+        public int? NumberIsland { get; set; }
+        public string? NameEDS { get; set; }
     }
 }

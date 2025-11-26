@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Models.Island;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Eds;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -36,6 +37,7 @@ public class EditablePendingIsland : INotifyPropertyChanged
             OnPropertyChanged(nameof(Number));
         }
     }
+    public string SelectedEdsName { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -152,7 +154,7 @@ public class IslandService : INotifyPropertyChanged
 
     public IslandService()
     {
-        _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+        _authToken = TokenHelper.LoadToken();
 
         GetByIdIslandDataCommand = new Command<int>(async (islandId) => await GetByIdIslandDataAsync(islandId));
         SaveIslandDataCommand = new Command(async () => await SaveIslandDataAsync());

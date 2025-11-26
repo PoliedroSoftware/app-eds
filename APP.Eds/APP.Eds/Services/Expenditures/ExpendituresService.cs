@@ -167,7 +167,7 @@ namespace APP.Eds.Services.Expenditures
         {
             InitializeCommands();
             InitializeCategories();
-            _authToken = TokenHelper.LoadToken(Configuration.KeycloakCliendId, Configuration.KeycloakRealms);
+            _authToken = TokenHelper.LoadToken();
         }
 
         private void InitializeCommands()
