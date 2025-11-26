@@ -31,6 +31,7 @@ namespace APP.Eds.Services.Authentication
             ClearSession(realm, clientId);
 
             CourtService.DestroyInstance();
+            Shopping.ShoppingService.Instance.ClearProductCache();
 
             Console.WriteLine($"Current session cleared for realm={realm}, clientId={clientId}");
         }
