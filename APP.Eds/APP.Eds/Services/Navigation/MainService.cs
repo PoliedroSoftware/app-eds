@@ -61,6 +61,26 @@
         public ICommand NavigateToWizardCommand { get; }
 
         /// <summary>
+        /// Gets the application version string
+        /// </summary>
+        public string AppVersion
+        {
+            get
+            {
+                try
+                {
+                    var version = AppInfo.Current.VersionString;
+                    var build = AppInfo.Current.BuildString;
+                    return $"v{version} ({build})";
+                }
+                catch
+                {
+                    return "v1.0.1";
+                }
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainService"/> class.
         /// </summary>
         public MainService()
