@@ -40,6 +40,12 @@ public class CourtImagesService
 
             var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/files/court/{courtId}");
 
+            if (string.IsNullOrEmpty(response))
+            {
+                System.Diagnostics.Debug.WriteLine("CourtImagesService.GetCourtImagesAsync: Empty response received");
+                return new List<string>();
+            }
+
             System.Diagnostics.Debug.WriteLine($"CourtImagesService.GetCourtImagesAsync: Response received: {response.Substring(0, Math.Min(200, response.Length))}...");
 
             var result = JsonSerializer.Deserialize<CourtImagesResponse>(response, new JsonSerializerOptions 

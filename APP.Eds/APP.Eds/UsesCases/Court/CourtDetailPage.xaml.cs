@@ -187,7 +187,7 @@ public partial class CourtDetailPage : ContentPage
             ImagesLoadingIndicator.IsRunning = true;
 
             var imagesService = new CourtImagesService();
-            var images = await imagesService.GetCourtImagesAsync((int)_court.Id);
+            var images = await imagesService.GetCourtImagesAsync(_court.Id);
 
             CourtImages.Clear();
             if (images != null && images.Any())
