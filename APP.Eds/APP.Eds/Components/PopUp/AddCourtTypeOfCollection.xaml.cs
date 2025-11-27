@@ -532,9 +532,8 @@ public partial class AddCourtTypeOfCollection : Popup, INotifyPropertyChanged
                 await courtService.AddCourtTypeOfCollectionFromPopup();
             }
 
-            await CustomAlert.ShowSuccessAsync(
-                $"Se agregaron {selected.Count} método(s) por {dataNew:C2}.",
-                "Métodos de Pago Agregados");
+            // ✅ CORREGIDO: No mostrar alerta de confirmación para ventas normales
+            // La alerta solo se muestra en CourtPostView cuando está marcado "Registrar turno sin venta"
 
             // IMPORTANTE: NO resetear TotalSales; el pendiente se actualiza dentro del servicio
             // courtService.TotalSales = 0;  // ← eliminar esta línea si existía
