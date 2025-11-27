@@ -329,7 +329,7 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             return;
         }
     }
-    public async Task SaveRegisterShiftAsync()
+    public async Task SaveRegisterShiftAsync(bool showAlert = true)
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -369,7 +369,11 @@ public class RegisterShiftUserService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
+                // ✅ Solo mostrar alerta si showAlert es true (cuando el checkbox está marcado)
+                if (showAlert)
+                {
+                    await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
+                }
                 ResetUserEds();
             }
             else
