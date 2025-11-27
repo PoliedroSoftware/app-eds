@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace APP.Eds.Models.Court;
 
 public class CourtListItemModel
@@ -16,7 +18,10 @@ public class CourtListItemModel
     public double TotalAccumulatedAmount { get; set; }
     public double TotalAccumulatedGallons { get; set; }
     
-    // Propiedades de listas con inicialización segura
+    [JsonPropertyName("description")]
+    public string Descripcion { get; set; }
+    
+    // Propiedades de listas con inicializaciï¿½n segura
     private List<CollectionItem> _collections;
     public List<CollectionItem> Collections 
     { 
@@ -48,8 +53,8 @@ public class CourtListItemModel
     // Constructor to ensure proper initialization
     public CourtListItemModel()
     {
-        // Las propiedades ya se inicializan automáticamente en sus getters
-        // pero podemos asegurar la inicialización aquí también
+        // Las propiedades ya se inicializan automï¿½ticamente en sus getters
+        // pero podemos asegurar la inicializaciï¿½n aquï¿½ tambiï¿½n
         Collections = new List<CollectionItem>();
         Dispensers = new List<DispenserItem>();
         Documents = new List<DocumentItem>();

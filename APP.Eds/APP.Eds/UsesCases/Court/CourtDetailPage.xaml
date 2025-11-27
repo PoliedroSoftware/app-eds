@@ -515,6 +515,40 @@
                     </CollectionView>
                 </StackLayout>
 
+                <!-- Observations Section -->
+                <StackLayout Spacing="10" IsVisible="{Binding Descripcion, Converter={StaticResource StringNotEmptyConverter}}">
+                    <Border BackgroundColor="#F3E5F5"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#9C27B0"
+                            Padding="10,6">
+                        <Label Text="Observaciones" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#7B1FA2"
+                               HorizontalOptions="Center"/>
+                    </Border>
+
+                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                            Padding="12,10">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,1" Radius="1" Opacity="0.08"/>
+                        </Border.Shadow>
+                        
+                        <StackLayout Spacing="6">
+                            <Label Text="📝" 
+                                   FontSize="20" 
+                                   HorizontalOptions="Start"/>
+                            <Label Text="{Binding Descripcion}" 
+                                   FontSize="12" 
+                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                   LineBreakMode="WordWrap"
+                                   AutomationId="LabelObservationsValue"/>
+                        </StackLayout>
+                    </Border>
+                </StackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
