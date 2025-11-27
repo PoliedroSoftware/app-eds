@@ -1,8 +1,11 @@
 using APP.Eds.Models.Court;
 using APP.Eds.Helpers;
 using APP.Eds.Services.Config;
+using APP.Eds.Services.Court;
+using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.Court;
 
@@ -10,12 +13,25 @@ public partial class CourtDetailPage : ContentPage
 {
     private readonly CourtListItemModel _court;
     private readonly string? _authToken;
+
+    /// <summary>
+    /// Collection of court image URLs for display
+    /// </summary>
+    public ObservableCollection<string> CourtImages { get; set; } = new();
+
+    /// <summary>
+    /// Command to open an image in the browser
+    /// </summary>
+    public ICommand OpenImageCommand { get; }
     
     public CourtDetailPage(CourtListItemModel court)
     {
         InitializeComponent();
         _court = court;
         _authToken = TokenHelper.LoadToken();
+
+        // Initialize the command for opening images
+        OpenImageCommand = new Command<string>(async (imageUrl) => await OpenImageAsync(imageUrl));
         
         // Set initial binding context with list data
         BindingContext = court;
@@ -80,6 +96,9 @@ public partial class CourtDetailPage : ContentPage
         
         // Load full court details from API to get observations
         await LoadFullCourtDetailsAsync();
+
+        // Load court images
+        await LoadCourtImagesAsync();
         
         // Add a subtle entrance animation
         await AnimateEntryAsync();
@@ -149,6 +168,73 @@ public partial class CourtDetailPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error animating court detail page entry: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Loads court images from the backend API
+    /// </summary>
+    private async Task LoadCourtImagesAsync()
+    {
+        if (_court == null)
+        {
+            return;
+        }
+
+        try
+        {
+            ImagesLoadingIndicator.IsVisible = true;
+            ImagesLoadingIndicator.IsRunning = true;
+
+            var imagesService = new CourtImagesService();
+            var images = await imagesService.GetCourtImagesAsync((int)_court.Id);
+
+            CourtImages.Clear();
+            if (images != null && images.Any())
+            {
+                foreach (var imageUrl in images)
+                {
+                    CourtImages.Add(imageUrl);
+                }
+                ImagesCollectionView.IsVisible = true;
+                NoImagesMessage.IsVisible = false;
+            }
+            else
+            {
+                ImagesCollectionView.IsVisible = false;
+                NoImagesMessage.IsVisible = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading court images: {ex.Message}");
+            ImagesCollectionView.IsVisible = false;
+            NoImagesMessage.IsVisible = true;
+        }
+        finally
+        {
+            ImagesLoadingIndicator.IsVisible = false;
+            ImagesLoadingIndicator.IsRunning = false;
+        }
+    }
+
+    /// <summary>
+    /// Opens an image in full screen using the system browser
+    /// </summary>
+    private async Task OpenImageAsync(string imageUrl)
+    {
+        if (string.IsNullOrEmpty(imageUrl))
+            return;
+
+        try
+        {
+            // Open image in full screen using Browser or custom viewer
+            await Browser.Default.OpenAsync(imageUrl, BrowserLaunchMode.SystemPreferred);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error opening image: {ex.Message}");
+            await DisplayAlert("Error", "No se pudo abrir la imagen", "OK");
         }
     }
 }

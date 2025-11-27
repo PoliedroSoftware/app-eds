@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="APP.Eds.UsesCases.Court.CourtDetailPage"
+    x:Name="CourtDetailPageRoot"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
@@ -547,6 +548,88 @@
                                    AutomationId="LabelObservationsValue"/>
                         </StackLayout>
                     </Border>
+                </StackLayout>
+
+                <!-- Images/Documents Section -->
+                <StackLayout Spacing="10" x:Name="ImagesSection">
+                    <Border BackgroundColor="#E3F2FD"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="#2196F3"
+                            Padding="10,6">
+                        <Label Text="Imágenes y Documentos" 
+                               FontSize="13" 
+                               FontAttributes="Bold" 
+                               TextColor="#1976D2"
+                               HorizontalOptions="Center"/>
+                    </Border>
+
+                    <!-- Loading indicator -->
+                    <ActivityIndicator x:Name="ImagesLoadingIndicator" 
+                                       IsVisible="False"
+                                       IsRunning="False"
+                                       Color="#6A1B9A"/>
+
+                    <!-- No images message -->
+                    <Border x:Name="NoImagesMessage"
+                            BackgroundColor="#FAFAFA"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                            Padding="16,12"
+                            IsVisible="False">
+                        <StackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="📷" FontSize="28" HorizontalOptions="Center" Opacity="0.6"/>
+                            <Label Text="No hay imágenes disponibles" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Las imágenes del corte se mostrarán aquí cuando estén disponibles" 
+                                   FontSize="11" 
+                                   TextColor="#999999"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Images grid -->
+                    <CollectionView x:Name="ImagesCollectionView"
+                                    ItemsSource="{Binding Source={x:Reference CourtDetailPageRoot}, Path=CourtImages}"
+                                    IsVisible="False">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                        StrokeShape="RoundRectangle 8"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                        Margin="4"
+                                        Padding="4">
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+                                    </Border.Shadow>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference CourtDetailPageRoot}, Path=OpenImageCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    
+                                    <Grid>
+                                        <Image Source="{Binding .}"
+                                               Aspect="AspectFill"
+                                               HeightRequest="120"
+                                               WidthRequest="120"/>
+                                        <Border BackgroundColor="#80000000"
+                                                StrokeShape="RoundRectangle 4"
+                                                Padding="6,3"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start"
+                                                Margin="4">
+                                            <Label Text="👁️" FontSize="16"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </StackLayout>
 
             </VerticalStackLayout>
