@@ -3383,11 +3383,11 @@ public class CourtService : INotifyPropertyChanged
     private void UpdateAvailableHoses()
     {
         // Get list of hose IDs that are already selected or registered in the current court
-        var selectedHoseIds = selectedHoses.Select(h => h.IdHose).ToHashSet();
-        var usedHoseIds = CourtDispensers?.Select(d => d.IdHose).ToHashSet() ?? new HashSet<int>();
+        var selectedHoseIds = selectedHoses.Select(h => h.IdHose);
+        var usedHoseIds = CourtDispensers?.Select(d => d.IdHose) ?? Enumerable.Empty<int>();
         
         // Combine both sets to filter out all used hoses
-        var allUsedHoseIds = selectedHoseIds.Union(usedHoseIds).ToHashSet();
+        var allUsedHoseIds = selectedHoseIds.Concat(usedHoseIds).ToHashSet();
         
         var filteredHoses = HoseList.Where(h => !allUsedHoseIds.Contains(h.IdHose)).ToList();
         HoseList.Clear();
