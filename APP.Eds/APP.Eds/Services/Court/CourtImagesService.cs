@@ -53,13 +53,21 @@ public class CourtImagesService
                 PropertyNameCaseInsensitive = true 
             });
 
+            // Check for documents (actual backend response format)
+            if (result?.Documents != null && result.Documents.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"CourtImagesService.GetCourtImagesAsync: Found {result.Documents.Count} documents");
+                return result.Documents;
+            }
+
+            // Fallback to Images property for backward compatibility
             if (result?.Images != null && result.Images.Count > 0)
             {
                 System.Diagnostics.Debug.WriteLine($"CourtImagesService.GetCourtImagesAsync: Found {result.Images.Count} images");
                 return result.Images;
             }
 
-            System.Diagnostics.Debug.WriteLine("CourtImagesService.GetCourtImagesAsync: No images found");
+            System.Diagnostics.Debug.WriteLine("CourtImagesService.GetCourtImagesAsync: No images/documents found");
             return new List<string>();
         }
         catch (HttpRequestException httpEx)
@@ -89,6 +97,14 @@ public class CourtImagesService
     /// </summary>
     private class CourtImagesResponse
     {
+        /// <summary>
+        /// List of document URLs (actual backend response format)
+        /// </summary>
+        public List<string>? Documents { get; set; }
+        
+        /// <summary>
+        /// List of image URLs (backward compatibility)
+        /// </summary>
         public List<string>? Images { get; set; }
     }
 }
