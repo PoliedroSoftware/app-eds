@@ -3,8 +3,8 @@ using APP.Eds.Models.Court;
 using APP.Eds.Models.Dispensers;
 using APP.Eds.Models.Eds;
 using APP.Eds.Services.Court;
+using APP.Eds.Services.RegisterShift;
 using APP.Eds.UsesCases.Court.APP.Eds.Models.Business;
-using APP.Eds.UsesCases.LoadingView;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
 using System.ComponentModel;
@@ -16,6 +16,10 @@ namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 {
+    public RegisterShiftUserService _registerShiftUserService;
+    public RegisterShiftUserService RegisterShiftView { get; private set; }
+    public RegisterShiftAdminService _registerShiftAdminService;
+
     private async Task ShowOperationalSectionsAsync()
     {
         // 🔥 MÉTODO SIMPLIFICADO: Ya no se necesita manipular manualmente la visibilidad
@@ -68,6 +72,31 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private bool _isregisterShiftChecked;
+    public bool IsRegisterShiftChecked
+    {
+        get => _isregisterShiftChecked;
+        set
+        {
+            if (_isregisterShiftChecked == value) return;
+            {
+                _isregisterShiftChecked = value;
+                OnPropertyChanged(nameof(IsRegisterShiftChecked));
+            }
+        }
+    }
+
+    private EdsResponse _selectedUserEds;
+    public EdsResponse SelectedUserEds
+    {
+        get => _selectedUserEds;
+        set
+        {
+            _selectedUserEds = value;
+            OnPropertyChanged(nameof(SelectedUserEds));
+        }
+    }
+
     public CourtPostView()
     {
         try { InitializeComponent(); }
@@ -80,6 +109,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         _service = CourtService.Instance;
         _service.DateStarttime = DateTime.Today;
+        _registerShiftUserService = RegisterShiftUserService.Instance;
+        RegisterShiftView = _registerShiftUserService;
+        _registerShiftAdminService = RegisterShiftAdminService.Instance;
 
         // El BindingContext sigue siendo el servicio (todas las bindings Court.* funcionan)
         BindingContext = _service;
@@ -142,9 +174,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
         var loadingOverlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
         var mainContent = this.FindByName<ScrollView>("MainContent");
+
         try
         {
             loadingOverlay?.ShowLoading();
+            await _registerShiftUserService.LoadIslanderAsync();
+            RegisterShiftView.RefreshIslanderCommand.Execute(null);
             if (mainContent != null) mainContent.IsVisible = false;
 
             // Mostrar/ocultar tarjeta Business por rol (Admin la ve)
@@ -152,12 +187,17 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             if (businessBorder != null)
                 businessBorder.IsVisible = (UserRole == "Admin");
 
+            var edsUser = this.FindByName<Border>("EdsUser");
+            if (edsUser != null)
+                edsUser.IsVisible = (UserRole == "User");
+
             await _service.LoadTranslationsAsync();
             await AnimateBottomNavEntry();
         }
         catch (Exception ex)
         {
             await CustomAlert.ShowErrorAsync($"Error al cargar datos:\n\n{ex.Message}", "Error de Carga");
+            Debug.WriteLine($"Error inicializando RegisterShiftUserService: {ex.Message}");
         }
         finally
         {
@@ -393,6 +433,13 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     {
         // Prevent double-click by disabling the button immediately
         var button = sender as Button;
+        var check = this.FindByName<CheckBox>("RegisterShiftCheck");
+        bool registerShift = check?.IsChecked ?? false;
+        if (registerShift)
+        {
+            await CustomAlert.ShowErrorAsync("Has seleccionado registrar turno sin ventas, favor desmarca si desea hacer un corte.", "Registrar turno activo !!!");
+            return;
+        }
         if (button != null && !button.IsEnabled) return;
         if (button != null) button.IsEnabled = false;
 
@@ -439,7 +486,22 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
-            // **✨ NUEVA VALIDACIÓN: Verificar que haya al menos una venta antes de agregar formas de pago**
+            // ✅ VALIDACIÓN: Si el checkbox "Registrar turno sin ventas" está marcado,
+            // permitir agregar formas de pago sin validar ventas
+            var check = this.FindByName<CheckBox>("RegisterShiftCheck");
+            bool registerShift = check?.IsChecked ?? false;
+            
+            if (registerShift)
+            {
+                // Permitir agregar formas de pago sin requerir ventas cuando se registra turno sin venta
+                await ShowPopupSafelyAsync<object>(new AddCourtTypeOfCollection(_service));
+                await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: true);
+                // ✅ SIN alerta de confirmación aquí
+                return;
+            }
+
+            // **✨ VALIDACIÓN ORIGINAL: Verificar que haya al menos una venta antes de agregar formas de pago**
+            // (Esta validación SOLO aplica cuando NO está marcado "Registrar turno sin ventas")
             double totalSales = _service.GetTotalAmount();
 
             if (totalSales <= 0)
@@ -467,7 +529,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
-            // Si hay ventas, proceder normalmente con el popup
+            // Si hay ventas, proceder normalmente con el popup (SIN alerta de confirmación)
             await ShowPopupSafelyAsync<object>(new AddCourtTypeOfCollection(_service));
             // Refrescar SOLO formas de pago
             await RefreshSectionsAsync(refreshDispensers: false, refreshPayments: true);
@@ -488,15 +550,88 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private void OnEdsUserSelected (object sender, EventArgs e)
+    {
+        if (sender is not Picker picker) return;
+        if (UserRole == "User" && picker.SelectedItem is EdsResponse selected)
+        {
+            _registerShiftUserService.SelectedUserEds = selected;
+            _service.SelectedUserEds = selected;
+        }
+    }
+
     // --- Envío del corte
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        var btn = sender as Button;                // una sola variable -> sin CS0136
+        var btn = sender as Button;
         if (btn != null) btn.IsEnabled = false;
 
         try
         {
             if (BindingContext is not CourtService vm) return;
+
+            // ✅ Obtener el estado del checkbox UNA SOLA VEZ al inicio
+            var check = this.FindByName<CheckBox>("RegisterShiftCheck");
+            bool registerShift = check?.IsChecked ?? false;
+
+            // ============================================================================
+            // ✅ FLUJO 1: SOLO registrar turno sin ventas (checkbox marcado)
+            // ============================================================================
+            if (registerShift)
+            {
+                if (string.Equals(UserRole, "User", StringComparison.OrdinalIgnoreCase))
+                {
+                    _registerShiftUserService.DateStart = vm.DateStarttime;
+                    _registerShiftUserService.DateEnd = vm.DateEndtime;
+                    _registerShiftUserService.StartTime = vm.Starttime;
+                    _registerShiftUserService.EndTime = vm.Endtime;
+
+                    var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                    try { overlayRegisterShift?.ShowLoading(); } catch { }
+
+                    // ✅ showAlert: true - SÍ mostrar alerta porque el checkbox está marcado
+                    await _registerShiftUserService.SaveRegisterShiftAsync(showAlert: true);
+
+                    try { overlayRegisterShift?.HideLoading(); } catch { }
+                    
+                    await ResetForNewCloseAsync();
+                    return;
+                }
+                
+                if (string.Equals(UserRole, "Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    _registerShiftAdminService.IdEds = vm.IdEds;
+                    _registerShiftAdminService.IdBusiness = vm.IdBusiness;
+                    _registerShiftAdminService.IdIslander = vm.IdIslander;
+                    _registerShiftAdminService.DateStart = vm.DateStarttime;
+                    _registerShiftAdminService.DateEnd = vm.DateEndtime;
+                    _registerShiftAdminService.StartTime = vm.Starttime;
+                    _registerShiftAdminService.EndTime = vm.Endtime;
+
+                    if (vm.IdEds <= 0 || vm.IdBusiness <= 0 || vm.IdIslander <= 0)
+                    {
+                        await CustomAlert.ShowErrorAsync(
+                            "Debe Seleccionar los tres Campos iniciales Negocio, EDS e Islero.",
+                            "Campos Vacíos");
+                        return;
+                    }
+
+                    var overlayRegisterShift = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
+                    try { overlayRegisterShift?.ShowLoading(); } catch { }
+
+                    // ✅ showAlert: true - SÍ mostrar alerta porque el checkbox está marcado
+                    await _registerShiftAdminService.SaveRegisterShiftAsync(showAlert: true);
+
+                    try { overlayRegisterShift?.HideLoading(); } catch { }
+                    
+                    await ResetForNewCloseAsync();
+                    return;
+                }
+            }
+
+            // ============================================================================
+            // ✅ FLUJO 2: Enviar corte NORMAL con ventas y métodos de pago (checkbox NO marcado)
+            // ============================================================================
 
             // --- Reglas para Administrador (datos maestros) ---
             if (UserRole == "Admin")
@@ -525,9 +660,9 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             }
 
             // --- Totales actuales ---
-            double totalAmount = vm.GetTotalAmount();                  // ventas (dinero)
-            double totalTypeOfCollection = vm.GetTotalTypeOfCollection(); // formas de pago
-            double totalExpenditures = vm.GetTotalExpenditure();       // gastos
+            double totalAmount = vm.GetTotalAmount();
+            double totalTypeOfCollection = vm.GetTotalTypeOfCollection();
+            double totalExpenditures = vm.GetTotalExpenditure();
             double cash = totalTypeOfCollection - totalExpenditures;
 
             // 1) Debe existir al menos un método de pago
@@ -614,24 +749,51 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                 }
             }
 
-            // --- Envío ---
+            // --- Envío del corte ---
             var overlay = this.FindByName<LoadingView.LoadingView>("LoadingOverlay");
             try { overlay?.ShowLoading(); } catch { }
 
             await vm.SendCourtDataAsync();
 
-            try { overlay?.HideLoading(); } catch { }
-
+            // ✅ REGISTRAR EL TURNO AUTOMÁTICAMENTE después del envío exitoso
+            // (showAlert: false - NO mostrar alerta porque el checkbox NO está marcado)
             if (vm.LastSendWasSuccessful)
             {
-                // ✅ Mensaje de éxito profesional y detallado
+                if (UserRole == "Admin")
+                {
+                    _registerShiftAdminService.IdEds = vm.IdEds;
+                    _registerShiftAdminService.IdBusiness = vm.IdBusiness;
+                    _registerShiftAdminService.IdIslander = vm.IdIslander;
+                    _registerShiftAdminService.DateStart = vm.DateStarttime;
+                    _registerShiftAdminService.DateEnd = vm.DateEndtime;
+                    _registerShiftAdminService.StartTime = vm.Starttime;
+                    _registerShiftAdminService.EndTime = vm.Endtime;
+
+                    // ✅ showAlert: false - NO mostrar alerta de "Turno registrado"
+                    await _registerShiftAdminService.SaveRegisterShiftAsync(showAlert: false);
+                }
+                else
+                {
+                    _registerShiftUserService.DateStart = vm.DateStarttime;
+                    _registerShiftUserService.DateEnd = vm.DateEndtime;
+                    _registerShiftUserService.StartTime = vm.Starttime;
+                    _registerShiftUserService.EndTime = vm.Endtime;
+
+                    // ✅ showAlert: false - NO mostrar alerta de "Turno registrado"
+                    await _registerShiftUserService.SaveRegisterShiftAsync(showAlert: false);
+                }
+            }
+
+            try { overlay?.HideLoading(); } catch { }
+
+            // ✅ Verificar resultado del envío
+            if (vm.LastSendWasSuccessful)
+            {
+                // ✅ Solo mostrar la alerta del resumen del corte
                 var successMessage = BuildSuccessMessage(totalAmount, totalTypeOfCollection, totalExpenditures);
                 await CustomAlert.ShowSuccessAsync(successMessage, "✅ Corte Enviado Exitosamente");
 
-                // Evitar doble submit inmediatamente
                 OcultarSeccionesCierre();
-
-                // Preparar NUEVO flujo de cierre (rehabilita y muestra todo)
                 await ResetForNewCloseAsync();
             }
             else
@@ -650,7 +812,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         }
         finally
         {
-            if (btn != null) btn.IsEnabled = true; // re-habilita el MISMO botón
+            if (btn != null) btn.IsEnabled = true;
         }
     }
 
@@ -875,6 +1037,17 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             }
         });
     }
+
+    private async void OnRegisterShiftCheckChanged(object sender, CheckedChangedEventArgs e)
+    {
+        _isregisterShiftChecked = e.Value;
+
+        var sendButton = this.FindByName<Button>("SendData");
+        if (sendButton is null) return;
+
+        sendButton.Text = "Enviar Datos";
+    }
+
 
 
     // INotifyPropertyChanged local para x:Reference CortePage

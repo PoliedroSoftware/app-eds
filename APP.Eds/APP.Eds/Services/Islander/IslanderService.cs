@@ -9,6 +9,8 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
 using APP.Eds.Models.Business;
+using APP.Eds.Services.Rut;
+using APP.Eds.Models.Rut;
 
 namespace APP.Eds.Services.Islander;
 
@@ -37,7 +39,7 @@ public class EnhancedIslanderItem
     public string Email { get; set; } = string.Empty;
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;
-    public int IdEds { get; set; }
+    public int? IdEds { get; set; }
     public string EdsName { get; set; } = string.Empty;
     public string Role { get; set; } = "Operario";
     public string RoleIcon { get; set; } = "👷";
@@ -287,6 +289,7 @@ public class IslanderService : INotifyPropertyChanged
     public ICommand FilterSupervisorCommand { get; private set; }
     public ICommand EditIslanderCommand { get; private set; }
     public ICommand DeleteIslanderCommand { get; private set; }
+    public ICommand ParseRutFromPdfCommand { get; private set; }
 
     public IslanderService()
     {
@@ -305,6 +308,7 @@ public class IslanderService : INotifyPropertyChanged
         FilterSupervisorCommand = new Command(() => FilterIslanders("supervisor"));
         EditIslanderCommand = new Command<EnhancedIslanderItem>(async (islander) => await EditIslanderAsync(islander));
         DeleteIslanderCommand = new Command<EnhancedIslanderItem>(async (islander) => await DeleteIslanderAsync(islander));
+        ParseRutFromPdfCommand = new Command(async () => await ParseRutFromPdfAsync());
     }
 
     private void InitializeRoleOptions()
@@ -709,7 +713,7 @@ public class IslanderService : INotifyPropertyChanged
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander");
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/islander?PageNumber=1&PageSize=100");
             var islanders = JsonSerializer.Deserialize<IslanderApiResponse>(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -724,6 +728,132 @@ public class IslanderService : INotifyPropertyChanged
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Opens a file picker to select a RUT PDF and parses the information
+    /// </summary>
+    public async Task ParseRutFromPdfAsync()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("📄 Iniciando selección de archivo RUT PDF");
+
+            // Create file picker options for PDF files
+            var customFileType = new FilePickerFileType(
+                new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.iOS, new[] { "com.adobe.pdf", "public.pdf" } },
+                    { DevicePlatform.Android, new[] { "application/pdf" } },
+                    { DevicePlatform.WinUI, new[] { ".pdf" } },
+                    { DevicePlatform.macOS, new[] { "pdf" } },
+                });
+
+            var options = new PickOptions
+            {
+                PickerTitle = "Seleccione el archivo RUT en formato PDF",
+                FileTypes = customFileType
+            };
+
+            var result = await FilePicker.Default.PickAsync(options);
+
+            if (result == null)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ No se seleccionó ningún archivo");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"✅ Archivo seleccionado: {result.FileName}");
+
+            // Show loading message
+            await CustomAlert.ShowInfoAsync(
+                $"📄 Procesando documento RUT\n\n" +
+                $"Archivo: {result.FileName}\n\n" +
+                $"Por favor espere mientras se extrae la información...",
+                "Analizando RUT");
+
+            // Create RUT parser service
+            var rutParserService = new RutParserService(_authToken);
+
+            // Parse the RUT PDF
+            var rutData = await rutParserService.ParseRutFromPdfAsync(result.FullPath);
+
+            if (rutData == null)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    "No se pudo extraer la información del RUT.\n\n" +
+                    "Verifique que el archivo sea un RUT válido de la DIAN.",
+                    "Error al Procesar RUT");
+                return;
+            }
+
+            // Map RUT data to form fields
+            MapRutDataToForm(rutData);
+
+            // Show success message with extracted data
+            await CustomAlert.ShowSuccessAsync(
+                $"✅ RUT Procesado Exitosamente\n\n" +
+                $"Se ha extraído la siguiente información:\n\n" +
+                $"• NIT: {rutData.Nit}\n" +
+                $"• Documento: {rutData.DocumentNumber}\n" +
+                $"• Nombre: {rutData.FullName.Display}\n" +
+                $"• Email: {rutData.Email}\n" +
+                $"• Dirección: {rutData.Address}\n" +
+                $"• Ciudad: {rutData.City}\n\n" +
+                $"Los datos han sido cargados en el formulario.",
+                "RUT Cargado");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error al procesar RUT: {ex.Message}");
+            await CustomAlert.ShowErrorAsync(
+                $"Error al procesar el archivo RUT:\n\n{ex.Message}",
+                "Error del Sistema");
+        }
+    }
+
+    /// <summary>
+    /// Maps RUT data to the form fields
+    /// </summary>
+    private void MapRutDataToForm(RutParseResponse rutData)
+    {
+        try
+        {
+            // Map full name to Name field (display format)
+            Name = rutData.FullName.Display;
+
+            // Map first name and last name
+            FirstName = rutData.FullName.FirstName;
+            
+            // Combine last name and second last name
+            if (!string.IsNullOrEmpty(rutData.FullName.SecondLastName))
+            {
+                LastName = $"{rutData.FullName.LastName} {rutData.FullName.SecondLastName}";
+            }
+            else
+            {
+                LastName = rutData.FullName.LastName;
+            }
+
+            // Map email
+            Email = rutData.Email;
+
+            // Map phone number if available (RUT doesn't always have phone)
+            // PhoneNumber = string.Empty; // Not available in RUT
+
+            // Generate a default password suggestion (user should change it)
+            Password = $"{rutData.DocumentNumber}@Rut";
+
+            System.Diagnostics.Debug.WriteLine("✅ Datos del RUT mapeados al formulario exitosamente");
+            System.Diagnostics.Debug.WriteLine($"   - Nombre completo: {Name}");
+            System.Diagnostics.Debug.WriteLine($"   - Primer nombre: {FirstName}");
+            System.Diagnostics.Debug.WriteLine($"   - Apellidos: {LastName}");
+            System.Diagnostics.Debug.WriteLine($"   - Email: {Email}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"⚠️ Error al mapear datos del RUT: {ex.Message}");
         }
     }
 
