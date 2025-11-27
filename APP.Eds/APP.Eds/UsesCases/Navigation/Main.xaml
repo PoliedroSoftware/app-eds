@@ -222,6 +222,61 @@
                                AutomationId="ButtonLogout"/>
                     </Grid>
                 </Border>
+
+                <!-- Version and Update Section -->
+                <Border Margin="0,20,0,10"
+                        BackgroundColor="{StaticResource White}"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="1"
+                        Stroke="{StaticResource Gray200}"
+                        Padding="20,15">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource Gray300}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12">
+                        <!-- Version Info -->
+                        <HorizontalStackLayout Spacing="8" 
+                                             HorizontalOptions="Center">
+                            <Label Text="📱"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Label Text="Versión:"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray600}"
+                                   VerticalOptions="Center"/>
+                            <Label x:Name="VersionLabel"
+                                   Text="{Binding AppVersion}"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Update Button -->
+                        <Border StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource Primary}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnUpdateClicked" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8" 
+                                                 Padding="15,10"
+                                                 HorizontalOptions="Center">
+                                <Label Text="🔄"
+                                       FontSize="16"
+                                       VerticalOptions="Center"/>
+                                <Label Text="Buscar Actualizaciones"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource White}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
             </StackLayout>
         </ScrollView>
         
