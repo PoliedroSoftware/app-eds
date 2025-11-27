@@ -12,4 +12,11 @@ public static class Configuration
     // ✨ NUEVO: Billing API Authentication
     public static string BillingApiToken => "59884a7d9bca1eb502186c76";
     public static string BillingApiEnvironment => "production-billing";
+    
+    // ✨ Feature Flags
+    /// <summary>
+    /// Controls whether automatic version checking is enabled on app startup.
+    /// Set to false to disable automatic version checks (useful for testing before full integration).
+    /// </summary>
+    public static bool EnableAutoVersionCheck => false; // TODO: Set to true after testing
 }
