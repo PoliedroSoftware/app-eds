@@ -3,6 +3,8 @@ using APP.Eds.Models.PointOfSale;
 using APP.Eds.Services.PointOfSale;
 using Microsoft.Maui.Controls.Shapes;
 using System.Globalization;
+using CommunityToolkit.Maui.Views;
+using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.PointOfSale;
 
@@ -179,6 +181,21 @@ public partial class PointOfSaleView : ContentPage
         activityIndicator.SetBinding(VisualElement.IsVisibleProperty, "IsSearching");
         clientStack.Add(activityIndicator);
 
+        // ⭐ NUEVO: Botón para crear tercero desde RUT
+        var createClientButton = new Button
+        {
+            Text = "📄 Crear Tercero desde RUT",
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            BackgroundColor = Color.FromArgb("#10B981"),
+            TextColor = Colors.White,
+            CornerRadius = 10,
+            HeightRequest = 45,
+            Margin = new Thickness(0, 8, 0, 0)
+        };
+        createClientButton.Clicked += OnCreateClientFromRutClicked;
+        clientStack.Add(createClientButton);
+
         // Hint label
         var hintLabel = new Label
         {
@@ -195,6 +212,39 @@ public partial class PointOfSaleView : ContentPage
 
         frame.Content = stackLayout;
         return frame;
+    }
+
+    // ⭐ ACTUALIZADO: Método para manejar la creación de cliente desde RUT
+    private async void OnCreateClientFromRutClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // Show the RUT popup
+            var popup = new CreateClientFromRutPopup();
+            var result = await this.ShowPopupAsync(popup);
+
+            if (result is ClientLegalModel createdClient && createdClient.Id > 0)
+            {
+                // Update the selected client in the ViewModel
+                if (_viewModel != null)
+                {
+                    _viewModel.SelectedClient = createdClient;
+                    _viewModel.ClientSearchText = createdClient.DocumentNumber;
+                }
+
+                await DisplayAlert(
+                    "Cliente Seleccionado",
+                    $"El cliente '{createdClient.Name}' ha sido creado y seleccionado correctamente.",
+                    "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert(
+                "Error",
+                $"Error al procesar la creación del tercero:\n\n{ex.Message}",
+                "OK");
+        }
     }
 
     private Frame CreateProductsSection()
