@@ -1,15 +1,23 @@
 using APP.Eds.Models.Court;
+using APP.Eds.Helpers;
+using APP.Eds.Services.Config;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace APP.Eds.UsesCases.Court;
 
 public partial class CourtDetailPage : ContentPage
 {
     private readonly CourtListItemModel _court;
+    private readonly string? _authToken;
     
     public CourtDetailPage(CourtListItemModel court)
     {
         InitializeComponent();
         _court = court;
+        _authToken = TokenHelper.LoadToken();
+        
+        // Set initial binding context with list data
         BindingContext = court;
         
         // Debug information about Collections
@@ -55,7 +63,7 @@ public partial class CourtDetailPage : ContentPage
         System.Diagnostics.Debug.WriteLine($"CourtDetailPage - Total from Collections: ${totalFromCollections:C}");
         System.Diagnostics.Debug.WriteLine($"CourtDetailPage - TotalAccumulatedAmount: ${court.TotalAccumulatedAmount:C}");
         
-        if (difference > 0.01) // Permitir pequeñas diferencias de redondeo
+        if (difference > 0.01) // Permitir pequeï¿½as diferencias de redondeo
         {
             System.Diagnostics.Debug.WriteLine($"?? WARNING: Payment methods total (${totalFromCollections:C}) doesn't match accumulated amount (${court.TotalAccumulatedAmount:C})");
             System.Diagnostics.Debug.WriteLine($"   Difference: ${difference:C}");
@@ -70,8 +78,58 @@ public partial class CourtDetailPage : ContentPage
     {
         base.OnAppearing();
         
+        // Load full court details from API to get observations
+        await LoadFullCourtDetailsAsync();
+        
         // Add a subtle entrance animation
         await AnimateEntryAsync();
+    }
+
+    private async Task LoadFullCourtDetailsAsync()
+    {
+        if (string.IsNullOrEmpty(_authToken) || _court == null)
+        {
+            return;
+        }
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtDetailPage - Loading full details for court {_court.Id}");
+            
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            
+            // Call the API to get full court details including observations
+            var response = await httpClient.GetStringAsync($"{Configuration.BaseUrl}/api/v1/court/{_court.Id}");
+            
+            System.Diagnostics.Debug.WriteLine($"CourtDetailPage - API Response: {response.Substring(0, Math.Min(200, response.Length))}...");
+            
+            // Deserialize the full court details
+            var fullCourtDetails = JsonSerializer.Deserialize<CourtListItemModel>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            
+            if (fullCourtDetails != null)
+            {
+                // Update the Descripcion property if it exists in the API response
+                if (!string.IsNullOrWhiteSpace(fullCourtDetails.Descripcion))
+                {
+                    _court.Descripcion = fullCourtDetails.Descripcion;
+                    System.Diagnostics.Debug.WriteLine($"CourtDetailPage - Observations loaded: {fullCourtDetails.Descripcion}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("CourtDetailPage - No observations found in API response");
+                }
+                
+                // Refresh the binding context to update the UI
+                BindingContext = null;
+                BindingContext = _court;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CourtDetailPage - Error loading full court details: {ex.Message}");
+            // Don't show error to user, just log it - the page will still work with list data
+        }
     }
 
     private async Task AnimateEntryAsync()

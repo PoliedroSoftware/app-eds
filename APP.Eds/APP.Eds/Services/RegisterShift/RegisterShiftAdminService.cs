@@ -166,7 +166,7 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
         OnPropertyChanged(nameof(IdEds));
         OnPropertyChanged(nameof(IdIslander));
     }
-    public async Task SaveRegisterShiftAsync()
+    public async Task SaveRegisterShiftAsync(bool showAlert = true)
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -205,7 +205,11 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
 
             if (response.IsSuccessStatusCode)
             {
-                await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
+                // ✅ Solo mostrar alerta si showAlert es true (cuando el checkbox está marcado)
+                if (showAlert)
+                {
+                    await CustomAlert.ShowSuccessAsync("Turno registrado correctamente", "Éxito");
+                }
                 ResetAdminEds();
             }
             else
