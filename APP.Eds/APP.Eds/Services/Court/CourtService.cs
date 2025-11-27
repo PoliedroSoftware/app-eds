@@ -3261,8 +3261,12 @@ public class CourtService : INotifyPropertyChanged
 
     public void LoadHoseByEds(int edsId)
     {
+        // Get list of hose IDs that are already registered in the current court
+        var usedHoseIds = CourtDispensers?.Select(d => d.IdHose).ToHashSet() ?? new HashSet<int>();
+
         var filteredIsHoseByEds = HoseList
             .Where(x => x.EdsEntity.IdEds == edsId)
+            .Where(x => !usedHoseIds.Contains(x.IdHose)) // Filter out hoses already used in this court
             .OrderBy(x => x.IdDispensers)
             .ThenBy(x => x.Number)
             .ToList();
@@ -3304,7 +3308,7 @@ public class CourtService : INotifyPropertyChanged
 
             UpdateHose(hoseList?.Data ?? new List<HoseCourtModel>());
 
-            // If an EDS is selected, filter hoses by EDS
+            // If an EDS is selected, filter hoses by EDS (this also filters out used hoses)
             if (SelectedEds != null)
             {
                 LoadHoseByEds(SelectedEds.IdEds);
@@ -3313,6 +3317,11 @@ public class CourtService : INotifyPropertyChanged
             else if (SelectedUserEds != null)
             {
                 LoadHoseByEds(SelectedUserEds.IdEds);
+            }
+            else
+            {
+                // No EDS selected - still filter out hoses already used in this court
+                FilterOutUsedHoses();
             }
 
             System.Diagnostics.Debug.WriteLine($"CourtService.ReloadHosesAsync: Mangueras cargadas exitosamente. Total: {HoseList?.Count ?? 0}");
@@ -3338,9 +3347,34 @@ public class CourtService : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Filters out hoses that are already registered in the current court's dispensers
+    /// </summary>
+    private void FilterOutUsedHoses()
+    {
+        // Get list of hose IDs that are already registered in the current court
+        var usedHoseIds = CourtDispensers?.Select(d => d.IdHose).ToHashSet() ?? new HashSet<int>();
+        
+        if (usedHoseIds.Count == 0)
+        {
+            // No filtering needed
+            return;
+        }
+        
+        var filteredHoses = HoseList.Where(h => !usedHoseIds.Contains(h.IdHose)).ToList();
+        HoseList.Clear();
+        foreach (var hose in filteredHoses)
+        {
+            HoseList.Add(hose);
+        }
+        OnPropertyChanged(nameof(HoseList));
+        OnPropertyChanged(nameof(AreAvailableHoses));
+        OnPropertyChanged(nameof(NewSaleEnabled));
+    }
+
     public void AddSelectedHose(HoseCourtModel hose)
     {
-        if (hose != null && !selectedHoses.Contains(hose))
+        if (hose != null && !selectedHoses.Any(h => h.IdHose == hose.IdHose))
         {
             selectedHoses.Add(hose);
             UpdateAvailableHoses();
@@ -3348,7 +3382,14 @@ public class CourtService : INotifyPropertyChanged
     }
     private void UpdateAvailableHoses()
     {
-        var filteredHoses = HoseList.Where(h => !selectedHoses.Contains(h)).ToList();
+        // Get list of hose IDs that are already selected or registered in the current court
+        var selectedHoseIds = selectedHoses.Select(h => h.IdHose).ToHashSet();
+        var usedHoseIds = CourtDispensers?.Select(d => d.IdHose).ToHashSet() ?? new HashSet<int>();
+        
+        // Combine both sets to filter out all used hoses
+        var allUsedHoseIds = selectedHoseIds.Union(usedHoseIds).ToHashSet();
+        
+        var filteredHoses = HoseList.Where(h => !allUsedHoseIds.Contains(h.IdHose)).ToList();
         HoseList.Clear();
         foreach (var hose in filteredHoses)
         {
