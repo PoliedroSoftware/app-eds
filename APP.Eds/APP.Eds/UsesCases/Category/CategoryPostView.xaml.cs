@@ -20,7 +20,7 @@ public partial class CategoryPostView : ContentPage
         if (sender is Entry entry)
         {
             // Only allow letters, spaces, and some common characters for category names
-            string newText = Regex.Replace(e.NewTextValue, @"[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]", "");
+            string newText = Regex.Replace(e.NewTextValue, @"[^a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\s-]", "");
 
             if (newText != e.NewTextValue)
             {
@@ -44,19 +44,25 @@ public partial class CategoryPostView : ContentPage
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_categoryService.Description))
             {
-                await CustomAlert.ShowErrorAsync("La descripción de la categoría es obligatoria para el registro", "Descripción Requerida");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar una categorÃ­a o ingresar una categorÃ­a personalizada", "CategorÃ­a Requerida");
+                return;
+            }
+
+            if (_categoryService.Description == "Personalizado...")
+            {
+                await CustomAlert.ShowErrorAsync("Debe ingresar el nombre de la categorÃ­a personalizada", "CategorÃ­a Personalizada Requerida");
                 return;
             }
 
             if (_categoryService.Description.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 3 caracteres para ser válida", "Descripción Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripciï¿½n debe tener al menos 3 caracteres para ser vï¿½lida", "Descripciï¿½n Muy Corta");
                 return;
             }
 
             if (_categoryService.Description.Length > 50)
             {
-                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 50 caracteres", "Descripción Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripciï¿½n no puede exceder 50 caracteres", "Descripciï¿½n Muy Larga");
                 return;
             }
 
@@ -66,27 +72,28 @@ public partial class CategoryPostView : ContentPage
             
             if (originalDescription != _categoryService.Description)
             {
-                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente", "Descripción Limpiada");
+                await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automï¿½ticamente", "Descripciï¿½n Limpiada");
             }
 
             // Check for duplicates or invalid patterns
             if (_categoryService.Description.Contains("  "))
             {
-                await CustomAlert.ShowWarningAsync("Se detectaron espacios dobles en la descripción. Se corregirán automáticamente.", "Espacios Detectados");
+                await CustomAlert.ShowWarningAsync("Se detectaron espacios dobles en la descripciï¿½n. Se corregirï¿½n automï¿½ticamente.", "Espacios Detectados");
                 _categoryService.Description = Regex.Replace(_categoryService.Description, @"\s+", " ");
             }
 
             LoadingOverlay.ShowLoading();
             await _categoryService.SaveCategoryDataAsync();
             
-            await CustomAlert.ShowSuccessAsync($"La categoría '{_categoryService.Description}' ha sido creada exitosamente", "Categoría Creada");
+            await CustomAlert.ShowSuccessAsync($"La categorï¿½a '{_categoryService.Description}' ha sido creada exitosamente", "Categorï¿½a Creada");
 
             // Clear form field after successful submission
             Description = string.Empty;
+            _categoryService.SelectedDefaultCategory = null;
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar la categoría:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la categorï¿½a:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
