@@ -13,7 +13,7 @@ namespace APP.Eds
         private readonly BackendAuthService _authService;
         
         // WhatsApp support configuration
-        private const string WHATSAPP_SUPPORT_NUMBER = "573154286798"; // +57 315 428 6798 (Poliedro Software – Ventas)
+        private const string WHATSAPP_SUPPORT_NUMBER = "573154286798"; // +57 315 428 6798 (Poliedro Software - Soporte)
         private const string WHATSAPP_SUPPORT_MESSAGE = "Hola, necesito ayuda con la App EDS.";
         
         public MainPage()
