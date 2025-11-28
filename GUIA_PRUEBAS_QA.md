@@ -37,7 +37,7 @@ La aplicación cuenta con los siguientes usuarios de prueba configurados:
 - ✅ La aplicación debe iniciar sesión exitosamente
 - ✅ Se debe mostrar el menú principal con todas las opciones administrativas
 - ✅ El rol debe ser "Admin" (verificable en el perfil o configuración)
-- ✅ Deben estar visibles todas las categorías del menú:
+- ✅ Deben estar visibles todas las categorías del menú (la disponibilidad de elementos puede variar según la configuración):
   - Administración
   - Configuración Inicial
   - Punto de Venta
@@ -49,6 +49,8 @@ La aplicación cuenta con los siguientes usuarios de prueba configurados:
   - Tanques y compartimentos
   - EDS y otros
   - Inventario
+
+> **📝 Nota:** La visibilidad de los elementos del menú puede variar según la configuración del sistema y los permisos específicos del usuario. La lista anterior representa el menú completo de administrador estándar.
 
 ---
 
@@ -271,7 +273,7 @@ Esta es una prueba integral que simula un cierre de caja completo con todas sus 
 - ✅ Debe aparecer en el historial de cortes
 - ✅ Los datos deben ser consistentes
 - ✅ La navegación debe funcionar correctamente
-- ✅ Mensaje de éxito: **"Corte testing Success!!"** (en pruebas automatizadas)
+- ✅ En pruebas automatizadas, se mostrará el mensaje: **"Court testing Success!!"** (del código de prueba existente)
 
 ---
 
