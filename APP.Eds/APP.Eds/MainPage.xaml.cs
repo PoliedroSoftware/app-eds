@@ -12,6 +12,10 @@ namespace APP.Eds
     {
         private readonly BackendAuthService _authService;
         
+        // WhatsApp support configuration
+        private const string WHATSAPP_SUPPORT_NUMBER = "573154286798"; // +57 315 428 6798 (Poliedro Software – Ventas)
+        private const string WHATSAPP_SUPPORT_MESSAGE = "Hola, necesito ayuda con la App EDS.";
+        
         public MainPage()
         {
             _authService = new BackendAuthService(Configuration.BaseUrl);
@@ -203,11 +207,9 @@ namespace APP.Eds
         {
             try
             {
-                // WhatsApp number: +57 315 428 6798 (Poliedro Software – Ventas)
                 // Format: https://wa.me/<country_code><phone_number>?text=<pre-filled_message>
-                string whatsappNumber = "573154286798";
-                string message = Uri.EscapeDataString("Hola, necesito ayuda con la App EDS.");
-                string whatsappUrl = $"https://wa.me/{whatsappNumber}?text={message}";
+                string message = Uri.EscapeDataString(WHATSAPP_SUPPORT_MESSAGE);
+                string whatsappUrl = $"https://wa.me/{WHATSAPP_SUPPORT_NUMBER}?text={message}";
 
                 await Launcher.OpenAsync(new Uri(whatsappUrl));
             }
@@ -217,7 +219,7 @@ namespace APP.Eds
                 // Fallback: Try opening WhatsApp without pre-filled message
                 try
                 {
-                    await Launcher.OpenAsync(new Uri("https://wa.me/573154286798"));
+                    await Launcher.OpenAsync(new Uri($"https://wa.me/{WHATSAPP_SUPPORT_NUMBER}"));
                 }
                 catch (Exception fallbackEx)
                 {
