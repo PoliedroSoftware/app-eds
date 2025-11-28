@@ -195,5 +195,36 @@ namespace APP.Eds
         {
             RememberMeCheckBox.IsChecked = !RememberMeCheckBox.IsChecked;
         }
+
+        /// <summary>
+        /// Opens WhatsApp to contact support when help button is tapped
+        /// </summary>
+        private async void OnHelpButtonTapped(object sender, EventArgs e)
+        {
+            try
+            {
+                // WhatsApp number: +57 315 428 6798 (Poliedro Software – Ventas)
+                // Format: https://wa.me/<country_code><phone_number>?text=<pre-filled_message>
+                string whatsappNumber = "573154286798";
+                string message = Uri.EscapeDataString("Hola, necesito ayuda con la App EDS.");
+                string whatsappUrl = $"https://wa.me/{whatsappNumber}?text={message}";
+
+                await Launcher.OpenAsync(new Uri(whatsappUrl));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error al abrir WhatsApp: {ex.Message}");
+                // Fallback: Try opening WhatsApp without pre-filled message
+                try
+                {
+                    await Launcher.OpenAsync(new Uri("https://wa.me/573154286798"));
+                }
+                catch (Exception fallbackEx)
+                {
+                    Debug.WriteLine($"Error al abrir WhatsApp (fallback): {fallbackEx.Message}");
+                    await DisplayAlert("Error", "No se pudo abrir WhatsApp. Por favor, instala la aplicación o contacta al soporte.", "OK");
+                }
+            }
+        }
     }
 }
