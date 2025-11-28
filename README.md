@@ -9,7 +9,11 @@ TODO: Guide users through getting your code up and running on their own system. 
 4.	API references
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+TODO: Describe and show how to build your code and run the tests.
+
+# Testing & QA
+- [Guía de Pruebas QA (Spanish)](GUIA_PRUEBAS_QA.md) - Comprehensive QA testing guide with step-by-step instructions for login scenarios and administrative features
+- [Manual Testing Guide](MANUAL_TESTING_GUIDE.md) - Manual testing guide for version update notification feature 
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
