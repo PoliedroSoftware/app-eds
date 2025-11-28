@@ -14,6 +14,8 @@ La aplicación cuenta con los siguientes usuarios de prueba configurados:
 | islander  | islander   | Islero       | Usuario operador (rol limitado)                |
 | apolo     | 123456     | Usuario      | Usuario de prueba adicional                    |
 
+> **⚠️ NOTA DE SEGURIDAD:** Estos usuarios y contraseñas son **únicamente para entornos de prueba y desarrollo**. En producción, se deben utilizar contraseñas seguras con al menos 12 caracteres, combinando mayúsculas, minúsculas, números y caracteres especiales. Nunca utilice contraseñas simples o predecibles en entornos de producción.
+
 ---
 
 ## 🔐 Pruebas de Inicio de Sesión
@@ -269,7 +271,7 @@ Esta es una prueba integral que simula un cierre de caja completo con todas sus 
 - ✅ Debe aparecer en el historial de cortes
 - ✅ Los datos deben ser consistentes
 - ✅ La navegación debe funcionar correctamente
-- ✅ Mensaje de éxito: **"Court testing Success!!"** (en pruebas automatizadas)
+- ✅ Mensaje de éxito: **"Corte testing Success!!"** (en pruebas automatizadas)
 
 ---
 
