@@ -223,7 +223,6 @@ namespace APP.Eds.Services.Category
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Categoría guardada correctamente", "OK");
                     return true;
                 }
                 else
