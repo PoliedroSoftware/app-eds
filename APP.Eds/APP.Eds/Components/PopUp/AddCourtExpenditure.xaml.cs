@@ -52,7 +52,7 @@ public partial class AddCourtExpenditure : Popup
 
             if (string.IsNullOrWhiteSpace(courtService.ExpenditureDescription))
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripci�n para el gasto", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese una descripción para el gasto", "OK");
                 return;
             }
 

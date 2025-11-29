@@ -21,7 +21,7 @@ public class CourtListItemModel
     [JsonPropertyName("description")]
     public string Descripcion { get; set; }
     
-    // Propiedades de listas con inicializaci�n segura
+    // Propiedades de listas con inicialización segura
     private List<CollectionItem> _collections;
     public List<CollectionItem> Collections 
     { 
@@ -53,8 +53,8 @@ public class CourtListItemModel
     // Constructor to ensure proper initialization
     public CourtListItemModel()
     {
-        // Las propiedades ya se inicializan autom�ticamente en sus getters
-        // pero podemos asegurar la inicializaci�n aqu� tambi�n
+        // Las propiedades ya se inicializan automáticamente en sus getters
+        // pero podemos asegurar la inicialización aquí también
         Collections = new List<CollectionItem>();
         Dispensers = new List<DispenserItem>();
         Documents = new List<DocumentItem>();
