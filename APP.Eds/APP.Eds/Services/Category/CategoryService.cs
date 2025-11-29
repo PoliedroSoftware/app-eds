@@ -189,12 +189,12 @@ namespace APP.Eds.Services.Category
             }
         }
 
-        public async Task SaveCategoryDataAsync()
+        public async Task<bool> SaveCategoryDataAsync()
         {
             if (string.IsNullOrEmpty(_authToken))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-                return;
+                return false;
             }
             try
             {
@@ -202,7 +202,7 @@ namespace APP.Eds.Services.Category
                 if (string.IsNullOrWhiteSpace(Description))
                 {
                     await Application.Current.MainPage.DisplayAlert("Error de Validación", "Debe ingresar los datos en el campo categoría.", "Aceptar");
-                    return; 
+                    return false; 
                 }
 
                 Category = new CategoryModel
@@ -224,6 +224,7 @@ namespace APP.Eds.Services.Category
                 if (response.IsSuccessStatusCode)
                 {
                     await Application.Current.MainPage.DisplayAlert("Éxito", "Categoría guardada correctamente", "OK");
+                    return true;
                 }
                 else
                 {
@@ -235,11 +236,13 @@ namespace APP.Eds.Services.Category
                     
                     var userFriendlyError = TranslateCategoryError(serverError, Description, response.StatusCode);
                     await Application.Current.MainPage.DisplayAlert("Error", userFriendlyError, "OK");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+                return false;
             }
         }
 
