@@ -243,124 +243,149 @@ public class HoseService : INotifyPropertyChanged
         }
     }
 
-    public async Task SaveHoseDataAsync()
+    public async Task<bool> SaveHoseDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
         {
             await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
-            return;
+            return false;
         }
         try
         {
             if (SelectedDispensers is null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un Dispensers", "OK");
-                return;
+                return false;
             }
 
             if (SelectProductType is null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de producto", "OK");
-                return;
+                return false;
+            }
+
+            if (SelectCompartiment is null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un compartimiento", "OK");
+                return false;
             }
 
             if (Number <= 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "El campo 'Number' debe ser mayor que 0", "OK");
-                return;
+                return false;
             }
 
             if (AccumulatedAmount <= 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "El campo 'AccumulatedAmount' debe ser mayor que 0", "OK");
-                return;
+                return false;
             }
 
             if (AccumulatedGallons <= 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "El campo 'AccumulatedGallons' debe ser mayor que 0", "OK");
-                return;
+                return false;
             }
 
             if(IdHose > 0)
             {
-                await UpdateAsync();
+                return await UpdateAsync();
             }
             else
             {
-                await CreateAsync();
+                return await CreateAsync();
             }
         }
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", $"Error al enviar los datos: {ex.Message}", "OK");
+            return false;
         }
     }
 
-    private async Task UpdateAsync()
+    private async Task<bool> UpdateAsync()
     {
-        Hose = new HoseModel
+        try
         {
-            IdHose = IdHose,
-            Number = Number,
-            AccumulatedAmount = AccumulatedAmount,
-            AccumulatedGallons = AccumulatedGallons,
-            IdDispensers = SelectedDispensers.IdDispensers,
-            IdProductType = SelectProductType.IdProductType,
-            IdCompartiment = SelectCompartiment.IdCompartment
-        };
+            Hose = new HoseModel
+            {
+                IdHose = IdHose,
+                Number = Number,
+                AccumulatedAmount = AccumulatedAmount,
+                AccumulatedGallons = AccumulatedGallons,
+                IdDispensers = SelectedDispensers.IdDispensers,
+                IdProductType = SelectProductType.IdProductType,
+                IdCompartiment = SelectCompartiment.IdCompartment
+            };
 
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-        var json = JsonSerializer.Serialize(Hose, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(Hose, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-            await GetHoseAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                await GetHoseAsync();
+                IdHose = 0;
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                return false;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            var error = await response.Content.ReadAsStringAsync();
-            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al actualizar: {ex.Message}", "OK");
+            return false;
         }
-        IdHose = 0;
     }
 
-    private async Task CreateAsync()
+    private async Task<bool> CreateAsync()
     {
-        Hose = new HoseModel
+        try
         {
-            Number = Number,
-            AccumulatedAmount = AccumulatedAmount,
-            AccumulatedGallons = AccumulatedGallons,
-            IdDispensers = SelectedDispensers.IdDispensers,
-            IdProductType = SelectProductType.IdProductType,
-            IdCompartiment = SelectCompartiment.IdCompartment
-        };
+            Hose = new HoseModel
+            {
+                Number = Number,
+                AccumulatedAmount = AccumulatedAmount,
+                AccumulatedGallons = AccumulatedGallons,
+                IdDispensers = SelectedDispensers.IdDispensers,
+                IdProductType = SelectProductType.IdProductType,
+                IdCompartiment = SelectCompartiment.IdCompartment
+            };
 
-        Request = new HoseRequest
-        {
-            Request = Hose
-        };
+            Request = new HoseRequest
+            {
+                Request = Hose
+            };
 
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
-        var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
+            var json = JsonSerializer.Serialize(Request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/hose", content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            await Application.Current.MainPage.DisplayAlert("Éxito", "Datos enviados correctamente", "OK");
-            await GetHoseAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                await GetHoseAsync();
+                return true;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+                return false;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            var error = await response.Content.ReadAsStringAsync();
-            await Application.Current.MainPage.DisplayAlert("Error", $"No se pudo enviar el dato: {response.StatusCode}\n{error}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Error al crear: {ex.Message}", "OK");
+            return false;
         }
     }
 
