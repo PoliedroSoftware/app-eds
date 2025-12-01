@@ -83,13 +83,17 @@ public partial class CategoryPostView : ContentPage
             }
 
             LoadingOverlay.ShowLoading();
-            await _categoryService.SaveCategoryDataAsync();
+            bool success = await _categoryService.SaveCategoryDataAsync();
             
-            await CustomAlert.ShowSuccessAsync($"La categor�a '{_categoryService.Description}' ha sido creada exitosamente", "Categor�a Creada");
+            // Only show success message if the operation actually succeeded
+            if (success)
+            {
+                await CustomAlert.ShowSuccessAsync($"La categor�a '{_categoryService.Description}' ha sido creada exitosamente", "Categor�a Creada");
 
-            // Clear form field after successful submission
-            Description = string.Empty;
-            _categoryService.SelectedDefaultCategory = null;
+                // Clear form field after successful submission
+                Description = string.Empty;
+                _categoryService.SelectedDefaultCategory = null;
+            }
         }
         catch (Exception ex)
         {
