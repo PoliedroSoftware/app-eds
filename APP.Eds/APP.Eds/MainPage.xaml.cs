@@ -12,6 +12,10 @@ namespace APP.Eds
     {
         private readonly BackendAuthService _authService;
         
+        // WhatsApp support configuration
+        private const string WHATSAPP_SUPPORT_NUMBER = "573154286798"; // +57 315 428 6798 (Poliedro Software - Soporte)
+        private const string WHATSAPP_SUPPORT_MESSAGE = "Hola, necesito ayuda con la App EDS.";
+        
         public MainPage()
         {
             _authService = new BackendAuthService(Configuration.BaseUrl);
@@ -194,6 +198,35 @@ namespace APP.Eds
         private void OnRememberMeTapped(object sender, EventArgs e)
         {
             RememberMeCheckBox.IsChecked = !RememberMeCheckBox.IsChecked;
+        }
+
+        /// <summary>
+        /// Opens WhatsApp to contact support when help button is tapped
+        /// </summary>
+        private async void OnHelpButtonTapped(object sender, EventArgs e)
+        {
+            try
+            {
+                // Format: https://wa.me/<country_code><phone_number>?text=<pre-filled_message>
+                string message = Uri.EscapeDataString(WHATSAPP_SUPPORT_MESSAGE);
+                string whatsappUrl = $"https://wa.me/{WHATSAPP_SUPPORT_NUMBER}?text={message}";
+
+                await Launcher.OpenAsync(new Uri(whatsappUrl));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error al abrir WhatsApp: {ex.Message}");
+                // Fallback: Try opening WhatsApp without pre-filled message
+                try
+                {
+                    await Launcher.OpenAsync(new Uri($"https://wa.me/{WHATSAPP_SUPPORT_NUMBER}"));
+                }
+                catch (Exception fallbackEx)
+                {
+                    Debug.WriteLine($"Error al abrir WhatsApp (fallback): {fallbackEx.Message}");
+                    await DisplayAlert("Error", "No se pudo abrir WhatsApp. Por favor, instala la aplicación o contacta al soporte.", "OK");
+                }
+            }
         }
     }
 }

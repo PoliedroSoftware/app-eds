@@ -197,17 +197,47 @@
                 </StackLayout>
             </Border>
             
-            <!-- Footer with dark text for white background -->
-            <StackLayout Grid.Row="2" Spacing="12" HorizontalOptions="Center">
-                <Label Text="¿Necesitas ayuda?"
-                       FontSize="14"
-                       TextColor="{StaticResource Gray600}"
-                       HorizontalOptions="Center"/>
-                <Label Text="Contacta al administrador del sistema"
-                       FontSize="12"
-                       TextColor="{StaticResource Gray500}"
-                       HorizontalOptions="Center"/>
-            </StackLayout>
+            <!-- Footer with dark text for white background - Interactive WhatsApp Help Button -->
+            <Border Grid.Row="2" 
+                    BackgroundColor="Transparent"
+                    StrokeThickness="0"
+                    Padding="15,10"
+                    HorizontalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHelpButtonTapped"/>
+                </Border.GestureRecognizers>
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <StackLayout Spacing="8" HorizontalOptions="Center">
+                    <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
+                        <Label Text="💬"
+                               FontSize="16"
+                               VerticalOptions="Center"/>
+                        <Label Text="¿Necesitas ayuda?"
+                               FontSize="14"
+                               TextColor="#2196F3"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                    <Label Text="Contacta al administrador del sistema vía WhatsApp"
+                           FontSize="12"
+                           TextColor="{StaticResource Gray500}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
             
         </Grid>
     </ScrollView>

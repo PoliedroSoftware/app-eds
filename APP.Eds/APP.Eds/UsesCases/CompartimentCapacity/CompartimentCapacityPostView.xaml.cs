@@ -40,7 +40,7 @@ public partial class CompartimentCapacityPostView : ContentPage
 
             if (_compartimentCapacityService.Default <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad vï¿½lida mayor que 0", "Capacidad Invï¿½lida");
                 return;
             }
 
@@ -56,8 +56,8 @@ public partial class CompartimentCapacityPostView : ContentPage
             byte capacity = (byte)_compartimentCapacityService.Default;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.", 
-                "Confirmar Configuración", 
+                $"ï¿½Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuraciï¿½n afectarï¿½ las operaciones del compartimento.", 
+                "Confirmar Configuraciï¿½n", 
                 "Confirmar", 
                 "Cancelar");
 
@@ -73,7 +73,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar la configuración de capacidad:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la configuraciï¿½n de capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {
@@ -83,7 +83,7 @@ public partial class CompartimentCapacityPostView : ContentPage
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "?? Enviar Datos"; // Restore original text
+                button.Text = "Enviar Datos"; // Restore original text
             }
         }
     }
