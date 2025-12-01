@@ -38,25 +38,25 @@ public partial class CapacityPostView : ContentPage
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_capacityService.Code))
             {
-                await CustomAlert.ShowErrorAsync("El código de la capacidad es obligatorio para identificar la configuración", "Código Requerido");
+                await CustomAlert.ShowErrorAsync("El cï¿½digo de la capacidad es obligatorio para identificar la configuraciï¿½n", "Cï¿½digo Requerido");
                 return;
             }
 
             if (_capacityService.Code.Length < 2)
             {
-                await CustomAlert.ShowErrorAsync("El código debe tener al menos 2 caracteres", "Código Muy Corto");
+                await CustomAlert.ShowErrorAsync("El cï¿½digo debe tener al menos 2 caracteres", "Cï¿½digo Muy Corto");
                 return;
             }
 
             if (_capacityService.Code.Length > 20)
             {
-                await CustomAlert.ShowErrorAsync("El código no puede exceder 20 caracteres", "Código Muy Largo");
+                await CustomAlert.ShowErrorAsync("El cï¿½digo no puede exceder 20 caracteres", "Cï¿½digo Muy Largo");
                 return;
             }
 
             if (_capacityService.Height == null || _capacityService.Height <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe especificar una altura válida (mayor que 0 metros)", "Altura Inválida");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese una altura mayor a 0 metros y que indique hasta que medida es permitida.", "Altura Invï¿½lida");
                 return;
             }
 
@@ -68,13 +68,13 @@ public partial class CapacityPostView : ContentPage
 
             if (_capacityService.Gallon == null || _capacityService.Gallon <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe especificar una capacidad en galones válida (mayor que 0)", "Capacidad en Galones Inválida");
+                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de galones mayor a 0 y que indique hasta que cantidad es permitida", "Capacidad en Galones Invï¿½lida");
                 return;
             }
 
             if (_capacityService.Liters == null || _capacityService.Liters <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe especificar una capacidad en litros válida (mayor que 0)", "Capacidad en Litros Inválida");
+                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de litros mayor a 0 y que indique hasta que cantidad es permitida", "Capacidad en Litros Invï¿½lida");
                 return;
             }
 
@@ -86,13 +86,13 @@ public partial class CapacityPostView : ContentPage
             if (Math.Abs(expectedLiters - actualLiters) > tolerance)
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
-                    $"Los valores de galones y litros no coinciden con la conversión estándar:\n\n" +
-                    $"• Galones ingresados: {_capacityService.Gallon.GetValueOrDefault():F2}\n" +
-                    $"• Litros ingresados: {actualLiters:F0} L\n" +
-                    $"• Litros calculados: {expectedLiters:F0} L\n" +
-                    $"• Diferencia: {Math.Abs(expectedLiters - actualLiters):F0} L\n\n" +
-                    $"¿Desea continuar con estos valores?",
-                    "Conversión Inconsistente",
+                    $"Los valores de galones y litros no coinciden con la conversiï¿½n estï¿½ndar:\n\n" +
+                    $"ï¿½ Galones ingresados: {_capacityService.Gallon.GetValueOrDefault():F2}\n" +
+                    $"ï¿½ Litros ingresados: {actualLiters:F0} L\n" +
+                    $"ï¿½ Litros calculados: {expectedLiters:F0} L\n" +
+                    $"ï¿½ Diferencia: {Math.Abs(expectedLiters - actualLiters):F0} L\n\n" +
+                    $"ï¿½Desea continuar con estos valores?",
+                    "Conversiï¿½n Inconsistente",
                     "Continuar",
                     "Revisar");
 
@@ -104,9 +104,9 @@ public partial class CapacityPostView : ContentPage
 
             await CustomAlert.ShowSuccessAsync(
                 $"Capacidad registrada exitosamente:\n\n" +
-                $"• Código: {_capacityService.Code}\n" +
-                $"• Altura: {_capacityService.Height.GetValueOrDefault():F2} m\n" +
-                $"• Capacidad: {_capacityService.Gallon.GetValueOrDefault():F2} gal / {_capacityService.Liters:F0} L",
+                $"ï¿½ Cï¿½digo: {_capacityService.Code}\n" +
+                $"ï¿½ Altura: {_capacityService.Height.GetValueOrDefault():F2} m\n" +
+                $"ï¿½ Capacidad: {_capacityService.Gallon.GetValueOrDefault():F2} gal / {_capacityService.Liters:F0} L",
                 "Capacidad Registrada");
 
             // Clear form fields after successful submission
