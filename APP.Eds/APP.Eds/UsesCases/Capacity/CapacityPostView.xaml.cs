@@ -56,7 +56,7 @@ public partial class CapacityPostView : ContentPage
 
             if (_capacityService.Height == null || _capacityService.Height <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Por favor ingrese una altura mayor a 0 metros y que indique hasta que medida es permitida.", "Altura Inv�lida");
+                await CustomAlert.ShowErrorAsync("Por favor ingrese una altura mayor a 0 metros.", "Altura Inv�lida");
                 return;
             }
 
@@ -68,13 +68,13 @@ public partial class CapacityPostView : ContentPage
 
             if (_capacityService.Gallon == null || _capacityService.Gallon <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de galones mayor a 0 y que indique hasta que cantidad es permitida", "Capacidad en Galones Inv�lida");
+                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de galones mayor a 0", "Capacidad en Galones Inv�lida");
                 return;
             }
 
             if (_capacityService.Liters == null || _capacityService.Liters <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de litros mayor a 0 y que indique hasta que cantidad es permitida", "Capacidad en Litros Inv�lida");
+                await CustomAlert.ShowErrorAsync("Ingrese una cantidad de litros mayor a 0", "Capacidad en Litros Inv�lida");
                 return;
             }
 
