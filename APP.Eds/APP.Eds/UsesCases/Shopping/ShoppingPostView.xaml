@@ -422,7 +422,7 @@
                             </Border>
 
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Total a pagar" 
+                                <Label Text="Resumen de la Compra" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
