@@ -35,7 +35,7 @@ public partial class ProviderPostView : ContentPage
 
             if (_providerService.Name.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("El nombre del proveedor debe tener al menos 3 caracteres para ser v�lido", "Nombre Muy Corto");
+                await CustomAlert.ShowErrorAsync("El nombre del proveedor debe tener al menos 3 caracteres para ser válido", "Nombre Muy Corto");
                 return;
             }
 

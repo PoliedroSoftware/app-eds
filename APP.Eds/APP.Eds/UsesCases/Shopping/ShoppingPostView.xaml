@@ -422,7 +422,7 @@
                             </Border>
 
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Total a pagar" 
+                                <Label Text="Resumen de la Compra" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
@@ -517,7 +517,7 @@
                                         Radius="8" 
                                         Opacity="0.3"/>
                             </Border.Shadow>
-                            <Button Text="📦 Agregar" 
+                            <Button Text="📦 Agregar producto" 
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="OpenShoppingPopUp"
@@ -530,7 +530,7 @@
 
                         <!-- Register Purchase Button -->
                         <Border Style="{StaticResource PrimarySendButtonStyle}" Grid.Column="1">
-                            <Button Text="✅ Comprar"
+                            <Button Text="✅ Finalizar compra"
                                     TextColor="White" 
                                     BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"

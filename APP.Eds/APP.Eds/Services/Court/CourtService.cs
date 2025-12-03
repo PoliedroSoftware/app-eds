@@ -97,7 +97,7 @@ public class CourtService : INotifyPropertyChanged
             // Notify visibility properties after clearing collections
             _instance.OnPropertyChanged(nameof(ShouldShowDispensersSection));
             _instance.OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
-            // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja despu�s del reset
+            // ?? Notificar cambio en la visibilidad de la sección de Arqueo De Caja después del reset
             _instance.OnPropertyChanged(nameof(ShouldShowCashCountSection));
             
         }
@@ -129,17 +129,17 @@ public class CourtService : INotifyPropertyChanged
 
     // ?? NUEVAS PROPIEDADES PARA CONTROLAR LA VISIBILIDAD DE LAS SECCIONES
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Ventas por mangueras" bas�ndose en si hay dispensers agregados
+    /// Determina si se debe mostrar la sección "Ventas por mangueras" basándose en si hay dispensers agregados
     /// </summary>
     public bool ShouldShowDispensersSection => CourtDispensers != null && CourtDispensers.Any();
 
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Formas de pago" bas�ndose en si hay m�todos de pago agregados
+    /// Determina si se debe mostrar la sección "Formas de pago" basándose en si hay métodos de pago agregados
     /// </summary>
     public bool ShouldShowPaymentMethodsSection => CourtTypeOfCollections != null && CourtTypeOfCollections.Any();
 
     /// <summary>
-    /// Determina si se debe mostrar la secci�n "Arqueo De Caja" bas�ndose en si hay al menos un valor diferente de cero
+    /// Determina si se debe mostrar la sección "Arqueo De Caja" basándose en si hay al menos un valor diferente de cero
     /// </summary>
     public bool ShouldShowCashCountSection =>
         TotalAmount > 0 ||
@@ -726,7 +726,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _distintic = value;
             OnPropertyChanged(nameof(Distintic)); // Fixed: Use the correct property name
-            // ?? Notificar cambio en la visibilidad de la secci�n de Arqueo De Caja cuando cambia el distintivo
+            // ?? Notificar cambio en la visibilidad de la sección de Arqueo De Caja cuando cambia el distintivo
             OnPropertyChanged(nameof(ShouldShowCashCountSection));
         }
     }
@@ -2197,7 +2197,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _courtDispensers = value;
             OnPropertyChanged(nameof(CourtDispensers));
-            // ?? Notificar cambio en la visibilidad cuando cambie la colecci�n
+            // ?? Notificar cambio en la visibilidad cuando cambie la colección
             OnPropertyChanged(nameof(ShouldShowDispensersSection));
         }
     }
@@ -2232,7 +2232,7 @@ public class CourtService : INotifyPropertyChanged
         {
             _courtTypeOfCollections = value;
             OnPropertyChanged(nameof(CourtTypeOfCollections));
-            // ?? Notificar cambio en la visibilidad cuando cambie la colecci�n
+            // ?? Notificar cambio en la visibilidad cuando cambie la colección
             OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
     }
@@ -2772,7 +2772,7 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return new Dictionary<string, string>();
         }
         using var httpClient = new HttpClient();
@@ -2792,7 +2792,7 @@ public class CourtService : INotifyPropertyChanged
     {
         if (string.IsNullOrEmpty(_authToken))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "No se encontr� el token de autenticaci�n", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "No se encontró el token de autenticación", "OK");
             return;
         }
         try
@@ -2820,7 +2820,7 @@ public class CourtService : INotifyPropertyChanged
             CourtTypeOfCollections.Remove(collection);
             TotalSales = GetTotalSales();
             OnPropertyChanged(nameof(CourtTypeOfCollections));
-            // ?? Notificar cambio en la visibilidad despu�s de eliminar el m�todo de pago
+            // ?? Notificar cambio en la visibilidad después de eliminar el método de pago
             OnPropertyChanged(nameof(ShouldShowPaymentMethodsSection));
         }
     }
@@ -2830,10 +2830,10 @@ public class CourtService : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    // Implementaci�n expl�cita de INotifyPropertyChanged
+    // Implementación explícita de INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    // M�todos restantes del servicio (SendCourtDataAsync, etc.)
+    // Métodos restantes del servicio (SendCourtDataAsync, etc.)
     public async Task SendCourtDataAsync()
     {
         if (string.IsNullOrEmpty(_authToken))
@@ -3006,7 +3006,7 @@ public class CourtService : INotifyPropertyChanged
     // is now handled exclusively in CourtPostView.BuildSuccessMessage() to maintain
     // proper separation of concerns (Service layer should not display UI alerts)
 
-    // Resto de m�todos necesarios
+    // Resto de métodos necesarios
     public async Task AddDispenserFromPopup()
     {
         if (Court == null)
@@ -3084,11 +3084,11 @@ public class CourtService : INotifyPropertyChanged
         //  Verificar que hay suficiente efectivo para cubrir el gasto
         double montoGasto = CourtExpenditureAmount;
 
-        // Calcular el efectivo disponible en los m�todos de pago
+        // Calcular el efectivo disponible en los métodos de pago
         double efectivoDisponible = 0;
         if (CourtTypeOfCollections != null && CourtTypeOfCollections.Any())
         {
-            // Buscar m�todos de pago que sean efectivo (case-insensitive)
+            // Buscar métodos de pago que sean efectivo (case-insensitive)
             var metodosEfectivo = CourtTypeOfCollections.Where(m =>
                 m.TypeOfCollectionName != null &&
                 m.TypeOfCollectionName.Contains("Efectivo", StringComparison.OrdinalIgnoreCase));
@@ -3099,7 +3099,7 @@ public class CourtService : INotifyPropertyChanged
         // Calcular el total de gastos YA registrados
         double gastosYaRegistrados = CourtExpenditures?.Sum(g => g.Amount) ?? 0;
 
-        // Calcular el efectivo disponible despu�s de restar los gastos ya registrados
+        // Calcular el efectivo disponible después de restar los gastos ya registrados
         double efectivoRestante = efectivoDisponible - gastosYaRegistrados;
 
         // Validar que el nuevo gasto no exceda el efectivo disponible

@@ -20,7 +20,7 @@ public partial class HosePostView : ContentPage
     {
         base.OnAppearing();
 
-        // Llamada correcta al m�todo GetHoseAsync del servicio
+        // Llamada correcta al método GetHoseAsync del servicio
         await _hoseService.GetHoseAsync();
 
     }
@@ -49,26 +49,26 @@ public partial class HosePostView : ContentPage
                 // Enhanced validation with professional alerts
                 if (vm.Number <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un n�mero de manguera v�lido (mayor que 0)", "N�mero Inv�lido");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un número de manguera válido (mayor que 0)", "Número Inválido");
                     return;
                 }
 
                 if (vm.Number > 20)
                 {
-                    await CustomAlert.ShowErrorAsync("El n�mero de manguera no puede exceder 20", "N�mero Excesivo");
+                    await CustomAlert.ShowErrorAsync("El número de manguera no puede exceder 20", "Número Excesivo");
                     return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado v�lido (mayor que 0)", "Monto Acumulado Inv�lido");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado válido (mayor que 0)", "Monto Acumulado Inválido");
                     return;
                 }
 
                 if (vm.AccumulatedAmount > 10000000)
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\n�Confirma que este valor es correcto?",
+                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
                         "Monto Elevado",
                         "Confirmar",
                         "Revisar");
@@ -78,7 +78,7 @@ public partial class HosePostView : ContentPage
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados v�lidos (mayor que 0)", "Galones Inv�lidos");
+                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados válidos (mayor que 0)", "Galones Inválidos");
                     return;
                 }
 
@@ -104,11 +104,11 @@ public partial class HosePostView : ContentPage
                 if (pricePerGallon < 1000 || pricePerGallon > 20000)
                 {
                     bool confirmPrice = await CustomAlert.ShowConfirmAsync(
-                        $"El precio por gal�n calculado (${pricePerGallon:F0}) parece inusual.\n\n" +
-                        $"� Monto: ${vm.AccumulatedAmount:F2}\n" +
-                        $"� Galones: {vm.AccumulatedGallons:F2}\n" +
-                        $"� Precio/Gal�n: ${pricePerGallon:F0}\n\n" +
-                        $"�Desea continuar con estos valores?",
+                        $"El precio por galón calculado (${pricePerGallon:F0}) parece inusual.\n\n" +
+                        $"• Monto: ${vm.AccumulatedAmount:F2}\n" +
+                        $"• Galones: {vm.AccumulatedGallons:F2}\n" +
+                        $"• Precio/Galón: ${pricePerGallon:F0}\n\n" +
+                        $"¿Desea continuar con estos valores?",
                         "Precio Inusual",
                         "Continuar",
                         "Revisar");
@@ -121,11 +121,11 @@ public partial class HosePostView : ContentPage
                 
                 await CustomAlert.ShowSuccessAsync(
                     $"Manguera #{vm.Number} registrada exitosamente:\n\n" +
-                    $"� Dispensador: {vm.SelectedDispensers.Code}\n" +
-                    $"� Tipo de Producto: {vm.SelectProductType.Description}\n" +
-                    $"� Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
-                    $"� Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
-                    $"� Precio por Gal�n: ${pricePerGallon:F0}",
+                    $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
+                    $"• Tipo de Producto: {vm.SelectProductType.Description}\n" +
+                    $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
+                    $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
+                    $"• Precio por Galón: ${pricePerGallon:F0}",
                     "Manguera Registrada");
 
                 // Clear form fields after successful submission
