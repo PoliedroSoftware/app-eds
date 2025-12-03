@@ -2,9 +2,11 @@
 using APP.Eds.Models.Client;
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
+using APP.Eds.Models.Setup;
 using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace APP.Eds.Services.PointOfSale;
@@ -200,9 +202,21 @@ public class PointOfSaleService : IPointOfSaleService
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            // TODO: Implementar cuando exista el endpoint de ventas en el backend
-            // Por ahora retornamos true para continuar el flujo
-            System.Diagnostics.Debug.WriteLine("ℹ️ Registro de venta en backend no implementado aún");
+            PointOfSaleModel model = new PointOfSaleModel()
+            {
+                InvoiceNumber = sale.SaleId.ToString(),
+               // todo facturacion electronica  Details = sale.Items
+            };
+
+            var request = new PointOfSaleRequest
+            {
+                Request = model
+            };
+            
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var url = $"{Configuration.BaseUrl}/api/v1/pos-of-sale";
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
 
             return true;
         }
