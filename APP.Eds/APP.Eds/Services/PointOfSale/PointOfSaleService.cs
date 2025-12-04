@@ -201,10 +201,24 @@ public class PointOfSaleService : IPointOfSaleService
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
+            var details = sale.Items.Select(x => new PosOfSaleDetailsModel()
+            {
+                ProductCode = x.ProductId.ToString(),//Todo update real product code
+                ProductName = x.ProductName,
+                Quantity = x.Quantity,
+                UnitPrice = Convert.ToDecimal(x.UnitPrice),
+                TotalAmount = Convert.ToDecimal(x.TotalAmount)
+            }).ToList();
+
             PointOfSaleModel model = new PointOfSaleModel()
             {
-                InvoiceNumber = sale.SaleId.ToString(),
-               // todo facturacion electronica  Details = sale.Items
+                Details = details,
+                IssueDatetime = DateTime.Now,
+                SubtotalAmount = Convert.ToDecimal(sale.SubTotal),
+                TaxAmount = Convert.ToDecimal(sale.Tax),
+                DiscountAmount = Convert.ToDecimal(sale.Discount),
+                TotalAmount = Convert.ToDecimal(sale.Total),
+                PaymentMethod = sale.PaymentMethod.ToString()
             };
 
             var request = new PointOfSaleRequest
