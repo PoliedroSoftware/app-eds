@@ -2,7 +2,8 @@
 
 public class PointOfSaleModel
 {
-    public string InvoiceNumber { get; set; }
+    public int IdPos { get; set; }
+    public string? InvoiceNumber { get; set; }
     public string? ExternalUuid { get; set; }
     public string? Cufe { get; set; }
     public string? Status { get; set; }
@@ -33,4 +34,5 @@ public class PointOfSaleModel
     public int? EdsId { get; set; }
     public int? IsleroId { get; set; }
     public string? ProviderTag { get; set; }
+    public List<PosOfSaleDetailsModel>? Details { get; set; } = new List<PosOfSaleDetailsModel>();
 }
