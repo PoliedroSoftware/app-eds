@@ -1393,6 +1393,14 @@ public class ShoppingService : INotifyPropertyChanged
             _instance.AddeShopping = string.Empty;
             _instance.IdCompartment = 0;
             
+            // Notificar cambios para actualizar UI (si está visible)
+            _instance.OnPropertyChanged(nameof(Invoice));
+            _instance.OnPropertyChanged(nameof(Date));
+            _instance.OnPropertyChanged(nameof(SelectedEds));
+            _instance.OnPropertyChanged(nameof(SelectedProvider));
+            _instance.OnPropertyChanged(nameof(SelectedCategory));
+            _instance.OnPropertyChanged(nameof(TotalAccumulatedAmount));
+            
             System.Diagnostics.Debug.WriteLine("ShoppingService: All instance fields reset successfully");
         }
     }

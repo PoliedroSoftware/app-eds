@@ -190,6 +190,16 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
             _instance.StartTime = new TimeSpan(6, 0, 0);
             _instance.EndTime = new TimeSpan(14, 0, 0);
             
+            // Notificar cambios para actualizar UI (si está visible)
+            _instance.OnPropertyChanged(nameof(IdEds));
+            _instance.OnPropertyChanged(nameof(IdBusiness));
+            _instance.OnPropertyChanged(nameof(IdIslander));
+            _instance.OnPropertyChanged(nameof(IslanderName));
+            _instance.OnPropertyChanged(nameof(DateStart));
+            _instance.OnPropertyChanged(nameof(DateEnd));
+            _instance.OnPropertyChanged(nameof(StartTime));
+            _instance.OnPropertyChanged(nameof(EndTime));
+            
             System.Diagnostics.Debug.WriteLine("RegisterShiftAdminService: All instance fields reset successfully");
         }
     }

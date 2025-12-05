@@ -247,6 +247,18 @@ public class RegisterShiftUserService : INotifyPropertyChanged
             // Limpiar banderas
             _instance.ShowEdsPicker = false;
             
+            // Notificar cambios para actualizar UI (si está visible)
+            _instance.OnPropertyChanged(nameof(SelectedUserEds));
+            _instance.OnPropertyChanged(nameof(IdEds));
+            _instance.OnPropertyChanged(nameof(IdBusiness));
+            _instance.OnPropertyChanged(nameof(IdIslander));
+            _instance.OnPropertyChanged(nameof(EdsName));
+            _instance.OnPropertyChanged(nameof(IslanderName));
+            _instance.OnPropertyChanged(nameof(DateStart));
+            _instance.OnPropertyChanged(nameof(DateEnd));
+            _instance.OnPropertyChanged(nameof(StartTime));
+            _instance.OnPropertyChanged(nameof(EndTime));
+            
             System.Diagnostics.Debug.WriteLine("RegisterShiftUserService: All instance fields reset successfully");
         }
     }
