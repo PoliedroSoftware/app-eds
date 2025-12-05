@@ -8,6 +8,15 @@ namespace APP.Eds.Services.Authentication
     /// </summary>
     public class BackendSessionManager
     {
+        // Claves de Preferences que deben limpiarse al cerrar sesión
+        private static readonly string[] CACHE_KEYS_TO_CLEAR = new[]
+        {
+            "LastSelectedBusiness",
+            "LastSelectedEds",
+            "CachedFormData",
+            // Agregar más claves según sea necesario
+        };
+
         /// <summary>
         /// Limpia la sesión actual del usuario y todos los datos de la aplicación.
         /// Este método garantiza que todos los formularios, servicios y estado
@@ -42,21 +51,9 @@ namespace APP.Eds.Services.Authentication
         /// </summary>
         private void ClearApplicationCache()
         {
-            // Lista de claves de Preferences que deben limpiarse en logout
-            var keysToRemove = new[]
+            foreach (var key in CACHE_KEYS_TO_CLEAR)
             {
-                "LastSelectedBusiness",
-                "LastSelectedEds",
-                "CachedFormData",
-                // Agregar más claves según sea necesario
-            };
-
-            foreach (var key in keysToRemove)
-            {
-                if (Preferences.ContainsKey(key))
-                {
-                    Preferences.Remove(key);
-                }
+                Preferences.Remove(key);
             }
         }
 
