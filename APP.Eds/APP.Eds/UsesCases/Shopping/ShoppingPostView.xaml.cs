@@ -1,5 +1,6 @@
 using APP.Eds.Components.PopUp;
 using APP.Eds.Services.Shopping;
+using APP.Eds.Constants;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.UsesCases.Shopping;
@@ -18,12 +19,35 @@ public partial class ShoppingPostView : ContentPage
 
     private async void OpenShoppingPopUp(object sender, EventArgs e)
     {
+        Button button = sender as Button;
+        
         try
         {
             // Disable the button temporarily to prevent double-tap
-            if (sender is Button button)
+            if (button != null)
             {
                 button.IsEnabled = false;
+            }
+
+            // ✅ VALIDACIÓN: Verificar que se haya seleccionado un EDS antes de abrir el popup
+            if (_shoppingService.SelectedEds == null)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    ShoppingValidationMessages.EdsRequired,
+                    ShoppingValidationMessages.EdsRequiredTitle);
+                return;
+            }
+
+            // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
+            // Safe to access SelectedEds.Name here because null check passed above (line 33)
+            string edsName = _shoppingService.SelectedEds.Name;
+            if (_shoppingService.FilteredProductCompartimentPairs == null || 
+                _shoppingService.FilteredProductCompartimentPairs.Count == 0)
+            {
+                await CustomAlert.ShowWarningAsync(
+                    ShoppingValidationMessages.GetNoProductsMessage(edsName),
+                    ShoppingValidationMessages.NoProductsTitle);
+                return;
             }
 
             _shoppingService.ResetProductForm();
@@ -71,7 +95,7 @@ public partial class ShoppingPostView : ContentPage
         finally
         {
             // Re-enable the button
-            if (sender is Button button)
+            if (button != null)
             {
                 // Add small delay before re-enabling to prevent rapid successive taps
                 await Task.Delay(500);
