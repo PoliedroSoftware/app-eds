@@ -26,6 +26,30 @@ public partial class ShoppingPostView : ContentPage
                 button.IsEnabled = false;
             }
 
+            // ✅ VALIDACIÓN: Verificar que se haya seleccionado un EDS antes de abrir el popup
+            if (_shoppingService.SelectedEds == null)
+            {
+                await CustomAlert.ShowErrorAsync(
+                    "Debe seleccionar una Estación de Servicio (EDS) antes de agregar productos.\n\n" +
+                    "Por favor, seleccione un EDS en el campo correspondiente y luego intente agregar productos.",
+                    "EDS Requerido");
+                return;
+            }
+
+            // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
+            if (_shoppingService.FilteredProductCompartimentPairs == null || 
+                _shoppingService.FilteredProductCompartimentPairs.Count == 0)
+            {
+                await CustomAlert.ShowWarningAsync(
+                    $"No hay productos ni compartimentos configurados para el EDS '{_shoppingService.SelectedEds.Name}'.\n\n" +
+                    "Por favor:\n" +
+                    "• Verifique que el EDS tenga tanques asignados\n" +
+                    "• Verifique que los tanques tengan compartimentos configurados\n" +
+                    "• Verifique que los compartimentos tengan productos asociados",
+                    "Sin Productos Disponibles");
+                return;
+            }
+
             _shoppingService.ResetProductForm();
 
             // Add a small delay to ensure UI thread is ready (especially important on physical devices)

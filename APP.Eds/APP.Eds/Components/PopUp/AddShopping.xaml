@@ -107,8 +107,9 @@
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
-                            <!-- Picker Container -->
-                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                            <!-- Picker Container - Visible cuando hay productos -->
+                            <Border x:Name="PickerContainer"
+                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
                                     StrokeShape="RoundRectangle 12"
                                     Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
                                     StrokeThickness="2"
@@ -131,6 +132,34 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="FillAndExpand"
                                             AutomationId="PickerProductCompartimentPair"/>
+                                </StackLayout>
+                            </Border>
+                            
+                            <!-- Empty State Message - Visible cuando NO hay productos -->
+                            <Border x:Name="EmptyStateContainer"
+                                    BackgroundColor="#FFF3CD" 
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="#F59E0B"
+                                    StrokeThickness="2"
+                                    Padding="16"
+                                    IsVisible="False">
+                                <StackLayout Spacing="12">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
+                                        <Label Text="⚠️" 
+                                               FontSize="24" 
+                                               VerticalOptions="Center"/>
+                                        <Label Text="Sin Productos Disponibles" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold"
+                                               TextColor="#92400E"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                    <Label x:Name="EmptyStateMessage"
+                                           Text="No hay productos ni compartimentos configurados para esta EDS."
+                                           FontSize="13"
+                                           TextColor="#92400E"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="WordWrap"/>
                                 </StackLayout>
                             </Border>
                         </VerticalStackLayout>

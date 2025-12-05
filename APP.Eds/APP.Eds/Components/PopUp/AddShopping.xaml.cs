@@ -18,11 +18,53 @@ public partial class AddShopping : Popup
 
             // Ensure popup is properly sized for different screen sizes
             ConfigurePopupForDevice();
+            
+            // ✅ Verificar si hay productos disponibles y mostrar el estado apropiado
+            UpdateEmptyStateVisibility();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error initializing AddShopping popup: {ex.Message}");
             throw;
+        }
+    }
+    
+    /// <summary>
+    /// Actualiza la visibilidad del mensaje de estado vacío según los productos disponibles
+    /// </summary>
+    private void UpdateEmptyStateVisibility()
+    {
+        try
+        {
+            bool hasProducts = shoppingService.FilteredProductCompartimentPairs != null && 
+                              shoppingService.FilteredProductCompartimentPairs.Count > 0;
+            
+            // Mostrar/ocultar el picker y el mensaje de estado vacío
+            if (PickerContainer != null)
+                PickerContainer.IsVisible = hasProducts;
+                
+            if (EmptyStateContainer != null)
+                EmptyStateContainer.IsVisible = !hasProducts;
+            
+            // Deshabilitar el botón de agregar si no hay productos
+            if (AddButton != null)
+                AddButton.IsEnabled = hasProducts;
+            
+            // Actualizar el mensaje de estado vacío con información del EDS
+            if (!hasProducts && EmptyStateMessage != null && shoppingService.SelectedEds != null)
+            {
+                EmptyStateMessage.Text = $"No hay productos ni compartimentos configurados para el EDS '{shoppingService.SelectedEds.Name}'.\n\n" +
+                                        "Por favor, verifique:\n" +
+                                        "• Que el EDS tenga tanques asignados\n" +
+                                        "• Que los tanques tengan compartimentos\n" +
+                                        "• Que los compartimentos tengan productos";
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Empty state visibility updated - Has products: {hasProducts}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating empty state visibility: {ex.Message}");
         }
     }
 
