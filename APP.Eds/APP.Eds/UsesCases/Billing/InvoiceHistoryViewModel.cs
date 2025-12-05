@@ -13,22 +13,53 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
     private bool _isLoading;
     private bool _isEmpty;
     private ElectronicInvoiceModel _selectedInvoice;
+    private InvoiceFilterModel _currentFilter;
+    private ObservableCollection<ElectronicInvoiceModel> _filteredInvoices;
+    private string _userRole;
+    private string _currentUserId;
+    private string _currentUserName;
+
+    // Filter properties
+    private string _selectedEdsId;
+    private string _selectedEdsName;
+    private string _selectedIslanderId;
+    private string _selectedIslanderName;
+    private string _selectedStatus;
+    private DateTime? _dateFrom;
+    private DateTime? _dateTo;
 
     public InvoiceHistoryViewModel()
     {
         _billingService = new ElectronicBillingService();
+        
+        // Get current user information
+        _userRole = Preferences.Get("userRole", "");
+        _currentUserId = Preferences.Get("userId", "");
+        _currentUserName = Preferences.Get("userName", "Usuario");
 
-        // Comandos
+        System.Diagnostics.Debug.WriteLine($"📋 InvoiceHistoryViewModel iniciado");
+        System.Diagnostics.Debug.WriteLine($"   - Rol: {_userRole}");
+        System.Diagnostics.Debug.WriteLine($"   - Usuario ID: {_currentUserId}");
+        System.Diagnostics.Debug.WriteLine($"   - Usuario: {_currentUserName}");
+
+        // Initialize filter based on role
+        InitializeFilter();
+
+        // Commands
         ViewPdfCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await ViewPdf(invoice));
         SharePdfCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await SharePdf(invoice));
-        CreditNoteCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await GenerateCreditNote(invoice)); // ✨ NEW
+        CreditNoteCommand = new Command<ElectronicInvoiceModel>(async (invoice) => await GenerateCreditNote(invoice));
         RefreshCommand = new Command(async () => await Refresh());
+        ApplyFiltersCommand = new Command(ApplyFilters);
+        ClearFiltersCommand = new Command(ClearFilters);
 
-        // Cargar datos iniciales
+        // Load initial data
         LoadInvoices();
     }
 
-    public ObservableCollection<ElectronicInvoiceModel> Invoices => _billingService.InvoiceHistory;
+    #region Properties
+
+    public ObservableCollection<ElectronicInvoiceModel> Invoices => _filteredInvoices ?? new ObservableCollection<ElectronicInvoiceModel>();
 
     public bool IsLoading
     {
@@ -48,17 +79,223 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         set => SetProperty(ref _selectedInvoice, value);
     }
 
+    // Role and permissions
+    public bool IsAdmin => _userRole == "Admin";
+    public bool IsIslander => _userRole == "User";
+    public bool CanEditFilters => IsAdmin; // Solo admin puede editar filtros EDS/Islero
+    public string UserDisplayName => _currentUserName;
+
+    // Filter properties
+    public string SelectedEdsId
+    {
+        get => _selectedEdsId;
+        set => SetProperty(ref _selectedEdsId, value);
+    }
+
+    public string SelectedEdsName
+    {
+        get => _selectedEdsName;
+        set => SetProperty(ref _selectedEdsName, value);
+    }
+
+    public string SelectedIslanderId
+    {
+        get => _selectedIslanderId;
+        set => SetProperty(ref _selectedIslanderId, value);
+    }
+
+    public string SelectedIslanderName
+    {
+        get => _selectedIslanderName;
+        set => SetProperty(ref _selectedIslanderName, value);
+    }
+
+    public string SelectedStatus
+    {
+        get => _selectedStatus;
+        set => SetProperty(ref _selectedStatus, value);
+    }
+
+    public DateTime? DateFrom
+    {
+        get => _dateFrom;
+        set => SetProperty(ref _dateFrom, value);
+    }
+
+    public DateTime? DateTo
+    {
+        get => _dateTo;
+        set => SetProperty(ref _dateTo, value);
+    }
+
+    // Available options for pickers
+    public List<(string Id, string Name)> AvailableEds => _billingService.GetAvailableEds();
+    public List<(string Id, string Name)> AvailableIslanders => _billingService.GetAvailableIslanders();
+    
+    public List<string> AvailableStatuses => new List<string>
+    {
+        "TODOS",
+        "EMITIDA",
+        "ANULADA",
+        "SIN_EMITIR"
+    };
+
+    #endregion
+
+    #region Commands
+
     public ICommand ViewPdfCommand { get; }
     public ICommand SharePdfCommand { get; }
-    public ICommand CreditNoteCommand { get; } // ✨ NEW
+    public ICommand CreditNoteCommand { get; }
     public ICommand RefreshCommand { get; }
+    public ICommand ApplyFiltersCommand { get; }
+    public ICommand ClearFiltersCommand { get; }
+
+    #endregion
+
+    #region Private Methods
+
+    private void InitializeFilter()
+    {
+        if (IsIslander)
+        {
+            // Para isleros, crear filtro automático con sus datos
+            _currentFilter = InvoiceFilterModel.CreateForIslander(_currentUserId, _currentUserName);
+            _selectedIslanderId = _currentUserId;
+            _selectedIslanderName = _currentUserName;
+            _selectedStatus = "EMITIDA";
+            System.Diagnostics.Debug.WriteLine($"🔒 Filtro de Islero aplicado automáticamente");
+        }
+        else
+        {
+            // Para admin, crear filtro por defecto
+            _currentFilter = InvoiceFilterModel.CreateDefault();
+            _selectedStatus = "TODOS";
+            System.Diagnostics.Debug.WriteLine($"🔓 Filtro de Admin - acceso completo");
+        }
+
+        // Set default date range (last 30 days)
+        _dateFrom = DateTime.Now.AddDays(-30);
+        _dateTo = DateTime.Now;
+        
+        _currentFilter.DateFrom = _dateFrom;
+        _currentFilter.DateTo = _dateTo;
+        _currentFilter.UserRole = _userRole;
+        _currentFilter.CurrentUserId = _currentUserId;
+    }
 
     private void LoadInvoices()
     {
-        // Actualizar estado de vacío
-        IsEmpty = !Invoices.Any();
-        OnPropertyChanged(nameof(Invoices));
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"📂 Cargando facturas con filtro actual...");
+            
+            // Apply current filter
+            _filteredInvoices = _billingService.FilterInvoices(_currentFilter);
+            
+            // Update empty state
+            IsEmpty = !_filteredInvoices.Any();
+            
+            OnPropertyChanged(nameof(Invoices));
+            OnPropertyChanged(nameof(AvailableEds));
+            OnPropertyChanged(nameof(AvailableIslanders));
+            
+            System.Diagnostics.Debug.WriteLine($"✅ {_filteredInvoices.Count} facturas cargadas");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error cargando facturas: {ex.Message}");
+            _filteredInvoices = new ObservableCollection<ElectronicInvoiceModel>();
+            IsEmpty = true;
+        }
     }
+
+    private void ApplyFilters()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"🔍 Aplicando filtros...");
+
+            // Update filter model
+            _currentFilter.EdsId = _selectedEdsId;
+            _currentFilter.EdsName = _selectedEdsName;
+            
+            // For islanders, force their own ID
+            if (IsIslander)
+            {
+                _currentFilter.IslanderId = _currentUserId;
+                _currentFilter.IslanderName = _currentUserName;
+                _currentFilter.Status = "EMITIDA";
+            }
+            else
+            {
+                _currentFilter.IslanderId = _selectedIslanderId;
+                _currentFilter.IslanderName = _selectedIslanderName;
+                _currentFilter.Status = _selectedStatus ?? "TODOS";
+            }
+            
+            _currentFilter.DateFrom = _dateFrom;
+            _currentFilter.DateTo = _dateTo;
+            _currentFilter.UserRole = _userRole;
+            _currentFilter.CurrentUserId = _currentUserId;
+
+            // Reload invoices with new filter
+            LoadInvoices();
+
+            System.Diagnostics.Debug.WriteLine($"✅ Filtros aplicados correctamente");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error aplicando filtros: {ex.Message}");
+        }
+    }
+
+    private void ClearFilters()
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"🔄 Limpiando filtros...");
+
+            if (IsIslander)
+            {
+                // For islanders, can only clear date range
+                _dateFrom = DateTime.Now.AddDays(-30);
+                _dateTo = DateTime.Now;
+            }
+            else
+            {
+                // For admin, clear all filters
+                _selectedEdsId = null;
+                _selectedEdsName = null;
+                _selectedIslanderId = null;
+                _selectedIslanderName = null;
+                _selectedStatus = "TODOS";
+                _dateFrom = DateTime.Now.AddDays(-30);
+                _dateTo = DateTime.Now;
+            }
+
+            OnPropertyChanged(nameof(SelectedEdsId));
+            OnPropertyChanged(nameof(SelectedEdsName));
+            OnPropertyChanged(nameof(SelectedIslanderId));
+            OnPropertyChanged(nameof(SelectedIslanderName));
+            OnPropertyChanged(nameof(SelectedStatus));
+            OnPropertyChanged(nameof(DateFrom));
+            OnPropertyChanged(nameof(DateTo));
+
+            // Reapply with cleared filters
+            ApplyFilters();
+
+            System.Diagnostics.Debug.WriteLine($"✅ Filtros limpiados");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error limpiando filtros: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    #region Command Implementations
 
     private async Task ViewPdf(ElectronicInvoiceModel invoice)
     {
@@ -238,6 +475,10 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region INotifyPropertyChanged Implementation
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -254,4 +495,6 @@ public class InvoiceHistoryViewModel : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true;
     }
+
+    #endregion
 }

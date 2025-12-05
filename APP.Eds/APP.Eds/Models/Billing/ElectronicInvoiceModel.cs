@@ -51,8 +51,14 @@ public class ElectronicInvoiceModel
     public string TechProviderFootNote { get; set; }
 
     // ✨ NEW: Islander and EDS information
+    [JsonPropertyName("islanderId")]
+    public string IslanderId { get; set; }
+
     [JsonPropertyName("islanderName")]
     public string IslanderName { get; set; }
+
+    [JsonPropertyName("edsId")]
+    public string EdsId { get; set; }
 
     [JsonPropertyName("edsName")]
     public string EdsName { get; set; }

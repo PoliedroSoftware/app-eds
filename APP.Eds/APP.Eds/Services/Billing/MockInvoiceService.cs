@@ -87,6 +87,10 @@ public class MockInvoiceService
         var client = clients[index % clients.Length];
         var paymentMethods = new[] { "Efectivo", "Tarjeta", "Transferencia" };
         var statuses = new[] { "Emitida", "Emitida", "Emitida", "Emitida", "Emitida" }; // Mayoría emitidas
+        
+        // ✨ NEW: Generate consistent IDs for islanders and EDS
+        var islanderIndex = _random.Next(IslanderNames.Length);
+        var edsIndex = _random.Next(EdsNames.Length);
 
         return new ElectronicInvoiceModel
         {
@@ -104,9 +108,11 @@ public class MockInvoiceService
             Email = client.Email,
             QRCode = GenerateMockQRCode(),
             TechProviderFootNote = "Factura Electrónica generada por Poliedro Software - Sistema EDS",
-            // ✨ NEW: Add mock islander and EDS information
-            IslanderName = IslanderNames[_random.Next(IslanderNames.Length)],
-            EdsName = EdsNames[_random.Next(EdsNames.Length)]
+            // ✨ NEW: Add mock islander and EDS information with IDs
+            IslanderId = $"ISL{islanderIndex + 1:D3}",
+            IslanderName = IslanderNames[islanderIndex],
+            EdsId = $"EDS{edsIndex + 1:D3}",
+            EdsName = EdsNames[edsIndex]
         };
     }
 

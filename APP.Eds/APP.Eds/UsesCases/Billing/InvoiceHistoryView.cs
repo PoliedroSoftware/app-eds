@@ -1,4 +1,5 @@
 ﻿using APP.Eds.Models.Billing;
+using APP.Eds.Converters;
 
 namespace APP.Eds.UsesCases.Billing;
 
@@ -21,10 +22,15 @@ public partial class InvoiceHistoryView : ContentPage
         {
             RowDefinitions =
              {
-                new RowDefinition { Height = GridLength.Star }
+                new RowDefinition { Height = GridLength.Auto },  // Filter bar
+                new RowDefinition { Height = GridLength.Star }   // Invoices list
              },
             Padding = 0
         };
+
+        // Add filter bar at the top
+        var filterBar = CreateFilterBar();
+        mainLayout.Add(filterBar, 0, 0);
 
         var invoicesCollection = new CollectionView
         {
@@ -39,7 +45,7 @@ public partial class InvoiceHistoryView : ContentPage
             Content = invoicesCollection
         };
 
-        mainLayout.Add(scrollView, 0, 0);
+        mainLayout.Add(scrollView, 0, 1);
 
         var loadingOverlay = new Frame
         {
@@ -56,11 +62,188 @@ public partial class InvoiceHistoryView : ContentPage
                 VerticalOptions = LayoutOptions.Center
             }
         };
-        loadingOverlay.SetBinding(VisualElement.IsVisibleProperty, nameof(InvoiceHistoryViewModel.IsLoading)); // ✨ CORREGIDO
+        loadingOverlay.SetBinding(VisualElement.IsVisibleProperty, nameof(InvoiceHistoryViewModel.IsLoading));
 
-        mainLayout.Add(loadingOverlay, 0, 0);
+        mainLayout.Add(loadingOverlay, 0, 1);
 
         Content = mainLayout;
+    }
+
+    private View CreateFilterBar()
+    {
+        var filterFrame = new Frame
+        {
+            BackgroundColor = Color.FromArgb("#F5F5F5"),
+            Padding = 12,
+            CornerRadius = 0,
+            HasShadow = true,
+            BorderColor = Color.FromArgb("#E0E0E0")
+        };
+
+        var filterLayout = new VerticalStackLayout
+        {
+            Spacing = 12
+        };
+
+        // Header with filter icon and toggle
+        var headerStack = new HorizontalStackLayout
+        {
+            Spacing = 8,
+            HorizontalOptions = LayoutOptions.FillAndExpand
+        };
+
+        var filterIcon = new Label
+        {
+            Text = "🔍",
+            FontSize = 20,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var filterTitle = new Label
+        {
+            Text = "Filtros",
+            FontSize = 16,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Color.FromArgb("#333333"),
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Start
+        };
+
+        // Role indicator
+        var roleLabel = new Label
+        {
+            FontSize = 11,
+            TextColor = Color.FromArgb("#6200E8"),
+            FontAttributes = FontAttributes.Bold,
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.End
+        };
+        roleLabel.SetBinding(Label.TextProperty, new Binding
+        {
+            Path = nameof(InvoiceHistoryViewModel.IsAdmin),
+            Converter = new FuncConverter<bool, string>(isAdmin => isAdmin ? "👑 Admin" : "👤 Islero")
+        });
+
+        headerStack.Add(filterIcon);
+        headerStack.Add(filterTitle);
+        headerStack.Add(roleLabel);
+
+        filterLayout.Add(headerStack);
+
+        // Filter controls container
+        var filtersContainer = new VerticalStackLayout
+        {
+            Spacing = 10
+        };
+
+        // Date range filters (visible for all roles)
+        var dateRangeStack = new HorizontalStackLayout
+        {
+            Spacing = 8
+        };
+
+        var dateFromPicker = new DatePicker
+        {
+            Format = "dd/MM/yyyy",
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            TextColor = Color.FromArgb("#333333")
+        };
+        dateFromPicker.SetBinding(DatePicker.DateProperty, nameof(InvoiceHistoryViewModel.DateFrom));
+
+        var dateToLabel = new Label
+        {
+            Text = "hasta",
+            FontSize = 12,
+            TextColor = Color.FromArgb("#666666"),
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var dateToPicker = new DatePicker
+        {
+            Format = "dd/MM/yyyy",
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            TextColor = Color.FromArgb("#333333")
+        };
+        dateToPicker.SetBinding(DatePicker.DateProperty, nameof(InvoiceHistoryViewModel.DateTo));
+
+        dateRangeStack.Add(dateFromPicker);
+        dateRangeStack.Add(dateToLabel);
+        dateRangeStack.Add(dateToPicker);
+
+        filtersContainer.Add(dateRangeStack);
+
+        // Status picker (only for admin)
+        var statusStack = new HorizontalStackLayout
+        {
+            Spacing = 8
+        };
+        statusStack.SetBinding(VisualElement.IsVisibleProperty, nameof(InvoiceHistoryViewModel.IsAdmin));
+
+        var statusLabel = new Label
+        {
+            Text = "Estado:",
+            FontSize = 13,
+            TextColor = Color.FromArgb("#666666"),
+            VerticalOptions = LayoutOptions.Center,
+            WidthRequest = 80
+        };
+
+        var statusPicker = new Picker
+        {
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            TextColor = Color.FromArgb("#333333"),
+            Title = "Seleccionar estado"
+        };
+        statusPicker.SetBinding(Picker.ItemsSourceProperty, nameof(InvoiceHistoryViewModel.AvailableStatuses));
+        statusPicker.SetBinding(Picker.SelectedItemProperty, nameof(InvoiceHistoryViewModel.SelectedStatus));
+
+        statusStack.Add(statusLabel);
+        statusStack.Add(statusPicker);
+
+        filtersContainer.Add(statusStack);
+
+        // Action buttons
+        var buttonsStack = new HorizontalStackLayout
+        {
+            Spacing = 8,
+            HorizontalOptions = LayoutOptions.FillAndExpand
+        };
+
+        var applyButton = new Button
+        {
+            Text = "Aplicar",
+            BackgroundColor = Color.FromArgb("#6200E8"),
+            TextColor = Colors.White,
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            CornerRadius = 8,
+            Padding = new Thickness(20, 10),
+            HorizontalOptions = LayoutOptions.FillAndExpand
+        };
+        applyButton.SetBinding(Button.CommandProperty, nameof(InvoiceHistoryViewModel.ApplyFiltersCommand));
+
+        var clearButton = new Button
+        {
+            Text = "Limpiar",
+            BackgroundColor = Color.FromArgb("#E0E0E0"),
+            TextColor = Color.FromArgb("#333333"),
+            FontSize = 14,
+            CornerRadius = 8,
+            Padding = new Thickness(20, 10),
+            HorizontalOptions = LayoutOptions.FillAndExpand
+        };
+        clearButton.SetBinding(Button.CommandProperty, nameof(InvoiceHistoryViewModel.ClearFiltersCommand));
+
+        buttonsStack.Add(applyButton);
+        buttonsStack.Add(clearButton);
+
+        filtersContainer.Add(buttonsStack);
+
+        filterLayout.Add(filtersContainer);
+
+        filterFrame.Content = filterLayout;
+
+        return filterFrame;
     }
 
     private View CreateInvoiceTemplate()
