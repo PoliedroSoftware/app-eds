@@ -25,18 +25,12 @@ public static class ShoppingValidationMessages
     /// <summary>
     /// Gets the message for when an EDS has no products configured
     /// </summary>
-    /// <param name="edsName">Name of the EDS (can include article, e.g., "la EDS seleccionada" or just the name)</param>
+    /// <param name="edsName">Name of the EDS without article (e.g., "Eds prueba", "La paz")</param>
     /// <returns>Formatted message</returns>
     public static string GetNoProductsMessage(string edsName)
     {
-        // Ensure proper article usage - use StartsWith for more accurate detection
-        string displayName = edsName;
-        if (!edsName.StartsWith("la ", StringComparison.OrdinalIgnoreCase) && 
-            !edsName.StartsWith("el ", StringComparison.OrdinalIgnoreCase) &&
-            !edsName.Contains("EDS", StringComparison.OrdinalIgnoreCase))
-        {
-            displayName = $"la EDS '{edsName}'";
-        }
+        // Always use "la EDS" article pattern for consistency, wrapping the name in quotes
+        string displayName = $"la EDS '{edsName}'";
         
         return $"No hay productos ni compartimentos configurados para {displayName}.\n\n" +
                "Por favor, verifique:\n" +

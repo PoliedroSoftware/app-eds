@@ -39,7 +39,7 @@ public partial class ShoppingPostView : ContentPage
             }
 
             // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
-            // At this point we know SelectedEds is not null (validated above)
+            // Safe to access SelectedEds.Name here because null check passed above (line 33)
             string edsName = _shoppingService.SelectedEds.Name;
             if (_shoppingService.FilteredProductCompartimentPairs == null || 
                 _shoppingService.FilteredProductCompartimentPairs.Count == 0)
