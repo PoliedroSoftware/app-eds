@@ -39,8 +39,8 @@ public partial class ShoppingPostView : ContentPage
             }
 
             // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
-            // Capture EDS name before check to avoid potential race condition
-            string edsName = _shoppingService.SelectedEds?.Name ?? "la EDS seleccionada";
+            // At this point we know SelectedEds is not null (validated above)
+            string edsName = _shoppingService.SelectedEds.Name;
             if (_shoppingService.FilteredProductCompartimentPairs == null || 
                 _shoppingService.FilteredProductCompartimentPairs.Count == 0)
             {

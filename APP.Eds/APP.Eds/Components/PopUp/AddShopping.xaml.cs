@@ -52,9 +52,11 @@ public partial class AddShopping : Popup
                 AddButton.IsEnabled = hasProducts;
             
             // Actualizar el mensaje de estado vacío con información de la EDS
+            // Note: SelectedEds should not be null at this point (validated before popup opens)
+            // but we check defensively in case the popup is opened through other means
             if (!hasProducts && EmptyStateMessage != null && shoppingService.SelectedEds != null)
             {
-                string edsName = shoppingService.SelectedEds?.Name ?? "la EDS seleccionada";
+                string edsName = shoppingService.SelectedEds.Name;
                 EmptyStateMessage.Text = ShoppingValidationMessages.GetNoProductsMessage(edsName);
             }
             

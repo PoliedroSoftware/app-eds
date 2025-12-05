@@ -29,9 +29,11 @@ public static class ShoppingValidationMessages
     /// <returns>Formatted message</returns>
     public static string GetNoProductsMessage(string edsName)
     {
-        // Ensure proper article usage
+        // Ensure proper article usage - use StartsWith for more accurate detection
         string displayName = edsName;
-        if (!edsName.ToLower().Contains("la ") && !edsName.ToLower().Contains("el "))
+        if (!edsName.StartsWith("la ", StringComparison.OrdinalIgnoreCase) && 
+            !edsName.StartsWith("el ", StringComparison.OrdinalIgnoreCase) &&
+            !edsName.Contains("EDS", StringComparison.OrdinalIgnoreCase))
         {
             displayName = $"la EDS '{edsName}'";
         }
