@@ -9,11 +9,12 @@
     AutomationId="PopupAddShopping">
 
     <!-- Main Container with Modern Design -->
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border x:Name="PopupBorder"
+            BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 24"
             StrokeThickness="0"
-            WidthRequest="380"
-            HeightRequest="650"
+            WidthRequest="400"
+            HeightRequest="700"
             AutomationId="FrameAddShopping">
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,8" Radius="24" Opacity="0.15"/>
@@ -127,7 +128,7 @@
                                             SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}" 
                                             SelectedIndexChanged="ProductCompartimentPickerSelected"
                                             BackgroundColor="Transparent"
-                                            FontSize="14"
+                                            FontSize="15"
                                             TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
                                             VerticalOptions="Center"
                                             HorizontalOptions="FillAndExpand"

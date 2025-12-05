@@ -77,19 +77,38 @@ public partial class AddShopping : Popup
             var screenWidth = mainDisplayInfo.Width / mainDisplayInfo.Density;
             var screenHeight = mainDisplayInfo.Height / mainDisplayInfo.Density;
 
-            // Adjust popup size for smaller screens
+            // Get the border element
+            var border = this.Content as Border;
+            if (border == null) return;
+
+            // Calculate optimal popup size based on screen dimensions
+            double popupWidth;
+            double popupHeight;
+
             if (screenWidth < 400)
             {
-                // For smaller screens, use percentage-based sizing
-                var border = this.Content as Border;
-                if (border != null)
-                {
-                    border.WidthRequest = screenWidth * 0.9; // 90% of screen width
-                    border.HeightRequest = Math.Min(650, screenHeight * 0.8); // Max 80% of screen height
-                }
+                // Small screens (phones in portrait)
+                popupWidth = screenWidth * 0.95; // 95% of screen width
+                popupHeight = screenHeight * 0.85; // 85% of screen height
+            }
+            else if (screenWidth < 600)
+            {
+                // Medium screens (larger phones, small tablets)
+                popupWidth = Math.Min(450, screenWidth * 0.9);
+                popupHeight = Math.Min(750, screenHeight * 0.8);
+            }
+            else
+            {
+                // Large screens (tablets, desktop)
+                popupWidth = Math.Min(500, screenWidth * 0.7);
+                popupHeight = Math.Min(800, screenHeight * 0.75);
             }
 
-            System.Diagnostics.Debug.WriteLine($"AddShopping popup configured for screen: {screenWidth}x{screenHeight}");
+            // Apply calculated dimensions
+            border.WidthRequest = popupWidth;
+            border.HeightRequest = popupHeight;
+
+            System.Diagnostics.Debug.WriteLine($"AddShopping popup configured - Screen: {screenWidth}x{screenHeight}, Popup: {popupWidth}x{popupHeight}");
         }
         catch (Exception ex)
         {
