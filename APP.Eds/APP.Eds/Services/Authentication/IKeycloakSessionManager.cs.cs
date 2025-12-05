@@ -1,5 +1,6 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Services.Court;
+using APP.Eds.Services.Shopping;
 
 namespace APP.Eds.Services.Authentication
 {
@@ -42,6 +43,9 @@ namespace APP.Eds.Services.Authentication
             // no persistan entre sesiones de diferentes usuarios
             CourtService.ResetInstanceFields();
             CourtService.DestroyInstance();
+            
+            ShoppingService.ResetInstanceFields();
+            ShoppingService.DestroyInstance();
 
             // Limpiar cualquier dato en caché de Preferences que pueda persistir
             // entre sesiones (excepto configuraciones de sistema)
