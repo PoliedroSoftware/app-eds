@@ -155,7 +155,7 @@
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                     <Label x:Name="EmptyStateMessage"
-                                           Text="No hay productos ni compartimentos configurados para esta EDS."
+                                           Text="No hay productos ni compartimentos configurados para la EDS seleccionada."
                                            FontSize="13"
                                            TextColor="#92400E"
                                            HorizontalTextAlignment="Center"
