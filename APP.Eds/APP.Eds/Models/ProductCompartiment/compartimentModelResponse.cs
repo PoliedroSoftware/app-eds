@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace APP.Eds.Models.ProductCompartiment;
 
 public class CompartimentModelResponse
 {
-    [JsonProperty("idCompartiment")]
+    [JsonPropertyName("idCompartiment")]
     public int IdCompartiment { get; set; }
 
-    [JsonProperty("number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; }
 }
