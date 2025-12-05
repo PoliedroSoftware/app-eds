@@ -14,6 +14,11 @@ namespace APP.Eds.Services.Authentication
             "LastSelectedBusiness",
             "LastSelectedEds",
             "CachedFormData",
+            "islanderId",
+            "edsId",
+            "edsName",
+            "businessId",
+            "businessName",
             // Agregar más claves según sea necesario
         };
 
