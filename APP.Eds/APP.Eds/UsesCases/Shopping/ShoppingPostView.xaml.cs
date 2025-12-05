@@ -1,5 +1,6 @@
 using APP.Eds.Components.PopUp;
 using APP.Eds.Services.Shopping;
+using APP.Eds.Constants;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.UsesCases.Shopping;
@@ -18,10 +19,12 @@ public partial class ShoppingPostView : ContentPage
 
     private async void OpenShoppingPopUp(object sender, EventArgs e)
     {
+        Button button = sender as Button;
+        
         try
         {
             // Disable the button temporarily to prevent double-tap
-            if (sender is Button button)
+            if (button != null)
             {
                 button.IsEnabled = false;
             }
@@ -30,23 +33,20 @@ public partial class ShoppingPostView : ContentPage
             if (_shoppingService.SelectedEds == null)
             {
                 await CustomAlert.ShowErrorAsync(
-                    "Debe seleccionar una Estación de Servicio (EDS) antes de agregar productos.\n\n" +
-                    "Por favor, seleccione un EDS en el campo correspondiente y luego intente agregar productos.",
-                    "EDS Requerido");
+                    ShoppingValidationMessages.EdsRequired,
+                    ShoppingValidationMessages.EdsRequiredTitle);
                 return;
             }
 
             // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
+            // Capture EDS name before check to avoid potential race condition
+            string edsName = _shoppingService.SelectedEds?.Name ?? "la EDS seleccionada";
             if (_shoppingService.FilteredProductCompartimentPairs == null || 
                 _shoppingService.FilteredProductCompartimentPairs.Count == 0)
             {
                 await CustomAlert.ShowWarningAsync(
-                    $"No hay productos ni compartimentos configurados para el EDS '{_shoppingService.SelectedEds.Name}'.\n\n" +
-                    "Por favor:\n" +
-                    "• Verifique que el EDS tenga tanques asignados\n" +
-                    "• Verifique que los tanques tengan compartimentos configurados\n" +
-                    "• Verifique que los compartimentos tengan productos asociados",
-                    "Sin Productos Disponibles");
+                    ShoppingValidationMessages.GetNoProductsMessage(edsName),
+                    ShoppingValidationMessages.NoProductsTitle);
                 return;
             }
 
@@ -95,7 +95,7 @@ public partial class ShoppingPostView : ContentPage
         finally
         {
             // Re-enable the button
-            if (sender is Button button)
+            if (button != null)
             {
                 // Add small delay before re-enabling to prevent rapid successive taps
                 await Task.Delay(500);

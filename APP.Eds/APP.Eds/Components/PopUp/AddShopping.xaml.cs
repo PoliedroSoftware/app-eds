@@ -1,5 +1,6 @@
 ﻿using APP.Eds.Services.Shopping;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Constants;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -53,11 +54,8 @@ public partial class AddShopping : Popup
             // Actualizar el mensaje de estado vacío con información del EDS
             if (!hasProducts && EmptyStateMessage != null && shoppingService.SelectedEds != null)
             {
-                EmptyStateMessage.Text = $"No hay productos ni compartimentos configurados para el EDS '{shoppingService.SelectedEds.Name}'.\n\n" +
-                                        "Por favor, verifique:\n" +
-                                        "• Que el EDS tenga tanques asignados\n" +
-                                        "• Que los tanques tengan compartimentos\n" +
-                                        "• Que los compartimentos tengan productos";
+                string edsName = shoppingService.SelectedEds?.Name ?? "esta EDS";
+                EmptyStateMessage.Text = ShoppingValidationMessages.GetNoProductsMessage(edsName);
             }
             
             System.Diagnostics.Debug.WriteLine($"Empty state visibility updated - Has products: {hasProducts}");
