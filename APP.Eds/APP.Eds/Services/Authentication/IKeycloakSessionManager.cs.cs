@@ -1,6 +1,7 @@
 ﻿using APP.Eds.Helpers;
 using APP.Eds.Services.Court;
 using APP.Eds.Services.Shopping;
+using APP.Eds.Services.RegisterShift;
 
 namespace APP.Eds.Services.Authentication
 {
@@ -46,6 +47,12 @@ namespace APP.Eds.Services.Authentication
             
             ShoppingService.ResetInstanceFields();
             ShoppingService.DestroyInstance();
+            
+            RegisterShiftUserService.ResetInstanceFields();
+            RegisterShiftUserService.DestroyInstance();
+            
+            RegisterShiftAdminService.ResetInstanceFields();
+            RegisterShiftAdminService.DestroyInstance();
 
             // Limpiar cualquier dato en caché de Preferences que pueda persistir
             // entre sesiones (excepto configuraciones de sistema)
