@@ -235,8 +235,8 @@ public partial class AddShopping : Popup
                 vm.ResetProductForm();
 
                 // Clear form UI elements
-                if (ProductCompartimentPicker != null)
-                    ProductCompartimentPicker.SelectedItem = null;
+                if (ProductCompartimentList != null)
+                    ProductCompartimentList.SelectedItem = null;
 
                 if (FirstEntry != null)
                 {
@@ -289,11 +289,11 @@ public partial class AddShopping : Popup
         }
     }
 
-    private void ProductCompartimentPickerSelected(object sender, EventArgs e)
+    private void ProductCompartimentListSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         try
         {
-            if (ProductCompartimentPicker?.SelectedIndex != -1 && FirstEntry != null)
+            if (e.CurrentSelection?.Count > 0 && FirstEntry != null)
             {
                 FirstEntry.Focus();
                 FirstEntry.CursorPosition = FirstEntry.Text?.Length ?? 0;
@@ -301,7 +301,7 @@ public partial class AddShopping : Popup
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error in ProductCompartimentPickerSelected: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Error in ProductCompartimentListSelectionChanged: {ex.Message}");
         }
     }
 
