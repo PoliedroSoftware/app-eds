@@ -5,6 +5,7 @@ using APP.Eds.Models.Product;
 using APP.Eds.Models.ShoppingProduct;
 using APP.Eds.Services.Config;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace APP.Eds.Services.PointOfSale;
@@ -200,9 +201,35 @@ public class PointOfSaleService : IPointOfSaleService
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authToken);
 
-            // TODO: Implementar cuando exista el endpoint de ventas en el backend
-            // Por ahora retornamos true para continuar el flujo
-            System.Diagnostics.Debug.WriteLine("ℹ️ Registro de venta en backend no implementado aún");
+            var details = sale.Items.Select(x => new PosOfSaleDetailsModel()
+            {
+                ProductCode = x.ProductId.ToString(),//Todo update real product code
+                ProductName = x.ProductName,
+                Quantity = x.Quantity,
+                UnitPrice = Convert.ToDecimal(x.UnitPrice),
+                TotalAmount = Convert.ToDecimal(x.TotalAmount)
+            }).ToList();
+
+            PointOfSaleModel model = new PointOfSaleModel()
+            {
+                Details = details,
+                IssueDatetime = DateTime.Now,
+                SubtotalAmount = Convert.ToDecimal(sale.SubTotal),
+                TaxAmount = Convert.ToDecimal(sale.Tax),
+                DiscountAmount = Convert.ToDecimal(sale.Discount),
+                TotalAmount = Convert.ToDecimal(sale.Total),
+                PaymentMethod = sale.PaymentMethod.ToString()
+            };
+
+            var request = new PointOfSaleRequest
+            {
+                Request = model
+            };
+            
+            var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var url = $"{Configuration.BaseUrl}/api/v1/pos-of-sale";
+            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
 
             return true;
         }
@@ -301,8 +328,39 @@ public class PointOfSaleService : IPointOfSaleService
             });
 
             // Buscar por número de documento en clientes jurídicos
+
             var legalClient = legalClientResponse?.Data?.FirstOrDefault(c =>
-             c.DocumentNumber?.Trim().Equals(documentNumber, StringComparison.OrdinalIgnoreCase) == true);
+            {
+                bool result = false;
+
+                if (!string.IsNullOrWhiteSpace(c.DocumentNumber))
+                {
+                    string doc = c.DocumentNumber.Trim();
+                    string input = documentNumber.Trim();
+
+                    if (doc == input)
+                    {
+                        result = true;
+                    }
+                    else if (input.Contains("-"))
+                    {
+                        var parts = input.Split('-');
+                        string num = parts[0];
+                        string dv = parts[1];
+
+                        result = doc == num && c.VerificationDigit.ToString() == dv;
+                    }
+                    else if (input.Length > 1)
+                    {
+                        string num = input[..^1];
+                        string dv = input[^1].ToString();
+
+                        result = doc == num && c.VerificationDigit.ToString() == dv;
+                    }
+                }
+
+                return result;
+            });
 
             if (legalClient != null)
             {
@@ -415,4 +473,35 @@ public class PointOfSaleService : IPointOfSaleService
             return new List<ClientLegalModel>();
         }
     }
+
+    private (string Number, int? DV) ParseDocument(string input)
+    {
+        input = input.Replace(" ", string.Empty).Trim();
+
+        if (string.IsNullOrWhiteSpace(input))
+            return (string.Empty, null);
+
+        // Case 1
+        if (input.Contains("-"))
+        {
+            var parts = input.Split('-');
+            return (parts[0], int.TryParse(parts[1], out var dv) ? dv : (int?)null);
+        }
+
+        // case 2
+        if (input.Length > 1)
+        {
+            var number = input.Substring(0, input.Length - 1);
+            var dvChar = input[input.Length - 1];
+
+            if (char.IsDigit(dvChar))
+            {
+                return (number, int.Parse(dvChar.ToString()));
+            }
+        }
+
+        // Case 3
+        return (input, null);
+    }
+
 }

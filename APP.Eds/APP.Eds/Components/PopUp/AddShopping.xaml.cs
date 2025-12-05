@@ -1,5 +1,6 @@
 ﻿using APP.Eds.Services.Shopping;
 using APP.Eds.Components.PopUp;
+using APP.Eds.Constants;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -18,11 +19,52 @@ public partial class AddShopping : Popup
 
             // Ensure popup is properly sized for different screen sizes
             ConfigurePopupForDevice();
+            
+            // ✅ Verificar si hay productos disponibles y mostrar el estado apropiado
+            UpdateEmptyStateVisibility();
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error initializing AddShopping popup: {ex.Message}");
             throw;
+        }
+    }
+    
+    /// <summary>
+    /// Actualiza la visibilidad del mensaje de estado vacío según los productos disponibles
+    /// </summary>
+    private void UpdateEmptyStateVisibility()
+    {
+        try
+        {
+            bool hasProducts = shoppingService.FilteredProductCompartimentPairs != null && 
+                              shoppingService.FilteredProductCompartimentPairs.Count > 0;
+            
+            // Mostrar/ocultar el picker y el mensaje de estado vacío
+            if (PickerContainer != null)
+                PickerContainer.IsVisible = hasProducts;
+                
+            if (EmptyStateContainer != null)
+                EmptyStateContainer.IsVisible = !hasProducts;
+            
+            // Deshabilitar el botón de agregar si no hay productos
+            if (AddButton != null)
+                AddButton.IsEnabled = hasProducts;
+            
+            // Actualizar el mensaje de estado vacío con información de la EDS
+            // Note: SelectedEds should not be null at this point (validated before popup opens)
+            // but we check defensively in case the popup is opened through other means
+            if (!hasProducts && EmptyStateMessage != null && shoppingService.SelectedEds != null)
+            {
+                string edsName = shoppingService.SelectedEds.Name;
+                EmptyStateMessage.Text = ShoppingValidationMessages.GetNoProductsMessage(edsName);
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Empty state visibility updated - Has products: {hasProducts}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating empty state visibility: {ex.Message}");
         }
     }
 
@@ -35,19 +77,38 @@ public partial class AddShopping : Popup
             var screenWidth = mainDisplayInfo.Width / mainDisplayInfo.Density;
             var screenHeight = mainDisplayInfo.Height / mainDisplayInfo.Density;
 
-            // Adjust popup size for smaller screens
+            // Get the border element
+            var border = this.Content as Border;
+            if (border == null) return;
+
+            // Calculate optimal popup size based on screen dimensions
+            double popupWidth;
+            double popupHeight;
+
             if (screenWidth < 400)
             {
-                // For smaller screens, use percentage-based sizing
-                var border = this.Content as Border;
-                if (border != null)
-                {
-                    border.WidthRequest = screenWidth * 0.9; // 90% of screen width
-                    border.HeightRequest = Math.Min(650, screenHeight * 0.8); // Max 80% of screen height
-                }
+                // Small screens (phones in portrait)
+                popupWidth = screenWidth * 0.95; // 95% of screen width
+                popupHeight = screenHeight * 0.85; // 85% of screen height
+            }
+            else if (screenWidth < 600)
+            {
+                // Medium screens (larger phones, small tablets)
+                popupWidth = Math.Min(450, screenWidth * 0.9);
+                popupHeight = Math.Min(750, screenHeight * 0.8);
+            }
+            else
+            {
+                // Large screens (tablets, desktop)
+                popupWidth = Math.Min(500, screenWidth * 0.7);
+                popupHeight = Math.Min(800, screenHeight * 0.75);
             }
 
-            System.Diagnostics.Debug.WriteLine($"AddShopping popup configured for screen: {screenWidth}x{screenHeight}");
+            // Apply calculated dimensions
+            border.WidthRequest = popupWidth;
+            border.HeightRequest = popupHeight;
+
+            System.Diagnostics.Debug.WriteLine($"AddShopping popup configured - Screen: {screenWidth}x{screenHeight}, Popup: {popupWidth}x{popupHeight}");
         }
         catch (Exception ex)
         {
@@ -174,8 +235,8 @@ public partial class AddShopping : Popup
                 vm.ResetProductForm();
 
                 // Clear form UI elements
-                if (ProductCompartimentPicker != null)
-                    ProductCompartimentPicker.SelectedItem = null;
+                if (ProductCompartimentList != null)
+                    ProductCompartimentList.SelectedItem = null;
 
                 if (FirstEntry != null)
                 {
@@ -228,11 +289,11 @@ public partial class AddShopping : Popup
         }
     }
 
-    private void ProductCompartimentPickerSelected(object sender, EventArgs e)
+    private void ProductCompartimentListSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         try
         {
-            if (ProductCompartimentPicker?.SelectedIndex != -1 && FirstEntry != null)
+            if (e.CurrentSelection?.Count > 0 && FirstEntry != null)
             {
                 FirstEntry.Focus();
                 FirstEntry.CursorPosition = FirstEntry.Text?.Length ?? 0;
@@ -240,7 +301,7 @@ public partial class AddShopping : Popup
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error in ProductCompartimentPickerSelected: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Error in ProductCompartimentListSelectionChanged: {ex.Message}");
         }
     }
 

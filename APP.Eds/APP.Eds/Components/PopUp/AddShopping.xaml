@@ -9,11 +9,12 @@
     AutomationId="PopupAddShopping">
 
     <!-- Main Container with Modern Design -->
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border x:Name="PopupBorder"
+            BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
             StrokeShape="RoundRectangle 24"
             StrokeThickness="0"
-            WidthRequest="380"
-            HeightRequest="650"
+            WidthRequest="400"
+            HeightRequest="700"
             AutomationId="FrameAddShopping">
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,8" Radius="24" Opacity="0.15"/>
@@ -107,30 +108,138 @@
                                        VerticalOptions="Center"/>
                             </StackLayout>
                             
-                            <!-- Picker Container -->
-                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                            <!-- Product List Container - Visible cuando hay productos -->
+                            <VerticalStackLayout x:Name="PickerContainer" Spacing="8">
+                                <!-- Header -->
+                                <Label Text="Seleccione producto y compartimento"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                       Margin="4,0,0,4"/>
+                                
+                                <!-- Scrollable Product List -->
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1E1E1E}" 
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                        StrokeThickness="2"
+                                        HeightRequest="320">
+                                    <CollectionView x:Name="ProductCompartimentList"
+                                                    ItemsSource="{Binding FilteredProductCompartimentPairs}"
+                                                    SelectionMode="Single"
+                                                    SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}"
+                                                    SelectionChanged="ProductCompartimentListSelectionChanged"
+                                                    AutomationId="CollectionViewProductCompartimentPair">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                                        StrokeShape="RoundRectangle 8"
+                                                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                                                        StrokeThickness="1"
+                                                        Padding="12,10"
+                                                        Margin="8,4">
+                                                    <Border.Shadow>
+                                                        <Shadow Brush="Black" Offset="0,1" Radius="2" Opacity="0.05"/>
+                                                    </Border.Shadow>
+                                                    
+                                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                                        <!-- Product Icon -->
+                                                        <Border Grid.Column="0"
+                                                                BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1E3A5F}"
+                                                                StrokeShape="RoundRectangle 12"
+                                                                WidthRequest="32" HeightRequest="32"
+                                                                VerticalOptions="Center">
+                                                            <Label Text="📦"
+                                                                   FontSize="16"
+                                                                   HorizontalOptions="Center"
+                                                                   VerticalOptions="Center"/>
+                                                        </Border>
+                                                        
+                                                        <!-- Product Info -->
+                                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                                            <Label Text="{Binding ProductName}"
+                                                                   FontSize="15"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
+                                                            <Label FontSize="13"
+                                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
+                                                                   LineBreakMode="WordWrap">
+                                                                <Label.FormattedText>
+                                                                    <FormattedString>
+                                                                        <Span Text="Compartimento " FontAttributes="Bold"/>
+                                                                        <Span Text="{Binding Number}"/>
+                                                                        <Span Text=" | Capacidad: "/>
+                                                                        <Span Text="{Binding Operative, StringFormat='{0:N0}'}"/>
+                                                                        <Span Text=" | Stock: "/>
+                                                                        <Span Text="{Binding Stock, StringFormat='{0:N0}'}"/>
+                                                                    </FormattedString>
+                                                                </Label.FormattedText>
+                                                            </Label>
+                                                        </VerticalStackLayout>
+                                                    </Grid>
+                                                    
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup Name="CommonStates">
+                                                            <VisualState Name="Normal">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#252525}"/>
+                                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                            <VisualState Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EBF5FF, Dark=#1A2F4A}"/>
+                                                                    <Setter Property="Stroke" Value="#2196F3"/>
+                                                                    <Setter Property="StrokeThickness" Value="2"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                </Border>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                        
+                                        <!-- Empty View -->
+                                        <CollectionView.EmptyView>
+                                            <VerticalStackLayout Padding="20" Spacing="12" VerticalOptions="Center">
+                                                <Label Text="🔍"
+                                                       FontSize="32"
+                                                       HorizontalOptions="Center"/>
+                                                <Label Text="No hay productos disponibles"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                                       HorizontalOptions="Center"/>
+                                            </VerticalStackLayout>
+                                        </CollectionView.EmptyView>
+                                    </CollectionView>
+                                </Border>
+                            </VerticalStackLayout>
+                            
+                            <!-- Empty State Message - Visible cuando NO hay productos -->
+                            <Border x:Name="EmptyStateContainer"
+                                    BackgroundColor="#FFF3CD" 
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                    Stroke="#F59E0B"
                                     StrokeThickness="2"
-                                    Padding="0">
-                                <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                    <Label Text="🔗" 
-                                           FontSize="16" 
-                                           TextColor="#2196F3" 
-                                           VerticalOptions="Center"/>
-                                    
-                                    <Picker x:Name="ProductCompartimentPicker" 
-                                            Title="Seleccione producto y compartimento"
-                                            ItemsSource="{Binding FilteredProductCompartimentPairs}" 
-                                            ItemDisplayBinding="{Binding Display}" 
-                                            SelectedItem="{Binding SelectedProductCompartimentPair, Mode=TwoWay}" 
-                                            SelectedIndexChanged="ProductCompartimentPickerSelected"
-                                            BackgroundColor="Transparent"
-                                            FontSize="14"
-                                            TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="FillAndExpand"
-                                            AutomationId="PickerProductCompartimentPair"/>
+                                    Padding="16"
+                                    IsVisible="False">
+                                <StackLayout Spacing="12">
+                                    <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
+                                        <Label Text="⚠️" 
+                                               FontSize="24" 
+                                               VerticalOptions="Center"/>
+                                        <Label Text="Sin Productos Disponibles" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold"
+                                               TextColor="#92400E"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                    <Label x:Name="EmptyStateMessage"
+                                           Text="Cargando información..."
+                                           FontSize="13"
+                                           TextColor="#92400E"
+                                           HorizontalTextAlignment="Center"
+                                           LineBreakMode="WordWrap"/>
                                 </StackLayout>
                             </Border>
                         </VerticalStackLayout>
