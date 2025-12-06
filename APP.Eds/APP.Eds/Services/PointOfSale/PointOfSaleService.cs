@@ -13,7 +13,7 @@ namespace APP.Eds.Services.PointOfSale;
 public interface IPointOfSaleService
 {
     Task<List<ProductModel>> GetAvailableProductsAsync();
-    Task<bool> ProcessSaleAsync(SaleModel sale);
+    Task<bool> ProcessSaleAsync(SaleModel sale, string whatsAppNumber = "");
     Task<List<SaleModel>> GetSalesHistoryAsync();
     Task<List<ClientLegalModel>> GetClientsAsync();
     Task<ClientLegalModel?> SearchClientByDocumentAsync(string documentNumber);
@@ -78,7 +78,7 @@ public class PointOfSaleService : IPointOfSaleService
     /// </summary>
     /// <param name="sale">Modelo de venta con items, totales y método de pago</param>
     /// <returns>True si la venta se procesó correctamente, False en caso contrario</returns>
-    public async Task<bool> ProcessSaleAsync(SaleModel sale)
+    public async Task<bool> ProcessSaleAsync(SaleModel sale, string whatsAppNumber = "")
     {
         if (string.IsNullOrEmpty(_authToken))
         {
@@ -114,7 +114,7 @@ public class PointOfSaleService : IPointOfSaleService
             System.Diagnostics.Debug.WriteLine("✅ Stock validado correctamente");
 
             // ✅ PASO 3: Registrar la venta en el backend (si tienes endpoint)
-            var saleRegistered = await RegisterSaleInBackend(sale);
+            var saleRegistered = await RegisterSaleInBackend(sale, whatsAppNumber);
 
             if (!saleRegistered)
             {
@@ -194,7 +194,7 @@ public class PointOfSaleService : IPointOfSaleService
     /// <summary>
     /// Registra la venta en el backend (si existe endpoint)
     /// </summary>
-    private async Task<bool> RegisterSaleInBackend(SaleModel sale)
+    private async Task<bool> RegisterSaleInBackend(SaleModel sale, string whatsAppNumber = "")
     {
         try
         {
@@ -218,7 +218,8 @@ public class PointOfSaleService : IPointOfSaleService
                 TaxAmount = Convert.ToDecimal(sale.Tax),
                 DiscountAmount = Convert.ToDecimal(sale.Discount),
                 TotalAmount = Convert.ToDecimal(sale.Total),
-                PaymentMethod = sale.PaymentMethod.ToString()
+                PaymentMethod = sale.PaymentMethod.ToString(),
+                WhatsappPhone = whatsAppNumber
             };
 
             var request = new PointOfSaleRequest
@@ -229,7 +230,7 @@ public class PointOfSaleService : IPointOfSaleService
             var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var url = $"{Configuration.BaseUrl}/api/v1/pos-of-sale";
-            var response = await httpClient.PostAsync($"{Configuration.BaseUrl}/api/v1/bootstrap/setup", content);
+            var response = await httpClient.PostAsync(url, content);
 
             return true;
         }
@@ -473,35 +474,4 @@ public class PointOfSaleService : IPointOfSaleService
             return new List<ClientLegalModel>();
         }
     }
-
-    private (string Number, int? DV) ParseDocument(string input)
-    {
-        input = input.Replace(" ", string.Empty).Trim();
-
-        if (string.IsNullOrWhiteSpace(input))
-            return (string.Empty, null);
-
-        // Case 1
-        if (input.Contains("-"))
-        {
-            var parts = input.Split('-');
-            return (parts[0], int.TryParse(parts[1], out var dv) ? dv : (int?)null);
-        }
-
-        // case 2
-        if (input.Length > 1)
-        {
-            var number = input.Substring(0, input.Length - 1);
-            var dvChar = input[input.Length - 1];
-
-            if (char.IsDigit(dvChar))
-            {
-                return (number, int.Parse(dvChar.ToString()));
-            }
-        }
-
-        // Case 3
-        return (input, null);
-    }
-
 }
