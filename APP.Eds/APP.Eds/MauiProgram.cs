@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Maui;
-using Microsoft.Extensions.Logging;
-using APP.Eds.Services.PointOfSale;
+﻿using APP.Eds.Services.PointOfSale;
 using APP.Eds.Services.VersionCheck;
+using APP.Eds.Services.WhatsApp;
+using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace APP.Eds
 {
@@ -14,15 +15,15 @@ namespace APP.Eds
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit();
             builder.UseMauiApp<App>().ConfigureFonts(fonts =>
-
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             }).UseMauiCommunityToolkit();
 
-            // Register Point of Sale Service
+            // Register Services
             builder.Services.AddSingleton<IPointOfSaleService, PointOfSaleService>();
-            
+            builder.Services.AddSingleton<IWhatsAppMessageService, WhatsAppMessageService>();
+
             // Register Version Check Service
             builder.Services.AddSingleton<IVersionCheckService, VersionCheckService>();
 
