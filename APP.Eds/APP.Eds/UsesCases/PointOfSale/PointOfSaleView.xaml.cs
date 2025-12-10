@@ -1,10 +1,11 @@
-﻿using APP.Eds.Models.Client;
+﻿using APP.Eds.Components.PopUp;
+using APP.Eds.Models.Client;
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Services.PointOfSale;
+using APP.Eds.Services.WhatsApp;
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Shapes;
 using System.Globalization;
-using CommunityToolkit.Maui.Views;
-using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.PointOfSale;
 
@@ -16,7 +17,9 @@ public partial class PointOfSaleView : ContentPage
     {
         var pointOfSaleService = Application.Current?.Handler?.MauiContext?.Services?.GetService<IPointOfSaleService>()
     ?? new PointOfSaleService();
-        _viewModel = new PointOfSaleViewModel(pointOfSaleService);
+        var whatsAppMessageService = Application.Current?.Handler?.MauiContext?.Services?.GetService<IWhatsAppMessageService>()
+    ?? new WhatsAppMessageService();
+        _viewModel = new PointOfSaleViewModel(pointOfSaleService, whatsAppMessageService);
         BindingContext = _viewModel;
 
         Title = "Punto de Venta";
@@ -814,7 +817,7 @@ public partial class PointOfSaleView : ContentPage
 
         var whatsappEntry = new Entry
         {
-            Placeholder = "Ej: +573154286798",
+            Placeholder = "Ej: 3154286798",
             FontSize = 16,
             BackgroundColor = Colors.White,
             TextColor = Color.FromArgb("#374151"),
