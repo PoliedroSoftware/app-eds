@@ -65,11 +65,15 @@ public class ElectronicBillingService
             var billingRequest = BuildBillingRequest(sale, client, whatsappNumber);
 
             // ✨ NEW: Get current islander and EDS information from Preferences
+            var islanderId = Preferences.Get("userId", "");
             var islanderName = Preferences.Get("userName", "Usuario no identificado");
+            var edsId = Preferences.Get("edsId", "");
             var edsName = Preferences.Get("edsName", "EDS no identificada");
 
             System.Diagnostics.Debug.WriteLine($"📋 Información de facturación:");
+            System.Diagnostics.Debug.WriteLine($"   - Islandero ID: {islanderId}");
             System.Diagnostics.Debug.WriteLine($"   - Islandero: {islanderName}");
+            System.Diagnostics.Debug.WriteLine($"   - EDS ID: {edsId}");
             System.Diagnostics.Debug.WriteLine($"   - EDS: {edsName}");
 
             using var httpClient = new HttpClient();
@@ -110,15 +114,19 @@ public class ElectronicBillingService
                         Status = "Emitida",
                         PaymentMethod = sale.PaymentMethod == PaymentMethod.Cash ? "Efectivo" : "Tarjeta",
                         Email = client.Email ?? "",
-                        // ✨ NEW: Add islander and EDS information
+                        // ✨ NEW: Add islander and EDS information with IDs
+                        IslanderId = islanderId,
                         IslanderName = islanderName,
+                        EdsId = edsId,
                         EdsName = edsName
                     };
 
                     _invoiceHistory.Insert(0, invoice);
 
                     System.Diagnostics.Debug.WriteLine($"✅ Factura guardada en historial con CUDE: {apiResponse.Data.Cude}");
+                    System.Diagnostics.Debug.WriteLine($"   - Generada por (ID): {islanderId}");
                     System.Diagnostics.Debug.WriteLine($"   - Generada por: {islanderName}");
+                    System.Diagnostics.Debug.WriteLine($"   - En EDS (ID): {edsId}");
                     System.Diagnostics.Debug.WriteLine($"   - En EDS: {edsName}");
 
                     return new BillingResult
@@ -630,6 +638,118 @@ public class ElectronicBillingService
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Filtra el historial de facturas según el rol del usuario y los criterios especificados
+    /// </summary>
+    public ObservableCollection<ElectronicInvoiceModel> FilterInvoices(InvoiceFilterModel filter)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"🔍 Aplicando filtros al historial de facturas");
+            System.Diagnostics.Debug.WriteLine($"   - Rol: {filter.UserRole}");
+            System.Diagnostics.Debug.WriteLine($"   - EDS: {filter.EdsName ?? "Todos"}");
+            System.Diagnostics.Debug.WriteLine($"   - Islero: {filter.IslanderName ?? "Todos"}");
+            System.Diagnostics.Debug.WriteLine($"   - Estado: {filter.Status}");
+            System.Diagnostics.Debug.WriteLine($"   - Desde: {filter.DateFrom?.ToString("yyyy-MM-dd") ?? "Sin límite"}");
+            System.Diagnostics.Debug.WriteLine($"   - Hasta: {filter.DateTo?.ToString("yyyy-MM-dd") ?? "Sin límite"}");
+
+            // Validar que el filtro sea válido para el rol
+            if (!filter.IsValidForRole())
+            {
+                System.Diagnostics.Debug.WriteLine($"⚠️ Filtro inválido para rol {filter.UserRole}");
+                return new ObservableCollection<ElectronicInvoiceModel>();
+            }
+
+            // Comenzar con todas las facturas
+            IEnumerable<ElectronicInvoiceModel> filtered = InvoiceHistory;
+
+            // Filtrar por EDS (solo si se especifica)
+            if (!string.IsNullOrWhiteSpace(filter.EdsId))
+            {
+                filtered = filtered.Where(i => i.EdsId == filter.EdsId);
+                System.Diagnostics.Debug.WriteLine($"   ✓ Filtrado por EDS ID: {filter.EdsId}");
+            }
+
+            // Filtrar por Islero (forzado para rol User/Islero)
+            if (!string.IsNullOrWhiteSpace(filter.IslanderId))
+            {
+                filtered = filtered.Where(i => i.IslanderId == filter.IslanderId);
+                System.Diagnostics.Debug.WriteLine($"   ✓ Filtrado por Islero ID: {filter.IslanderId}");
+            }
+
+            // Filtrar por Estado
+            if (filter.Status != "TODOS")
+            {
+                var statusToFilter = filter.Status switch
+                {
+                    "EMITIDA" => "Emitida",
+                    "ANULADA" => "Anulada",
+                    "SIN_EMITIR" => "Sin Emitir",
+                    _ => null
+                };
+
+                if (statusToFilter != null)
+                {
+                    filtered = filtered.Where(i => i.Status == statusToFilter);
+                    System.Diagnostics.Debug.WriteLine($"   ✓ Filtrado por Estado: {statusToFilter}");
+                }
+            }
+
+            // Filtrar por rango de fechas
+            if (filter.DateFrom.HasValue)
+            {
+                filtered = filtered.Where(i => i.Date.Date >= filter.DateFrom.Value.Date);
+                System.Diagnostics.Debug.WriteLine($"   ✓ Filtrado desde: {filter.DateFrom.Value:yyyy-MM-dd}");
+            }
+
+            if (filter.DateTo.HasValue)
+            {
+                filtered = filtered.Where(i => i.Date.Date <= filter.DateTo.Value.Date);
+                System.Diagnostics.Debug.WriteLine($"   ✓ Filtrado hasta: {filter.DateTo.Value:yyyy-MM-dd}");
+            }
+
+            // Ordenar por fecha descendente (más recientes primero)
+            filtered = filtered.OrderByDescending(i => i.Date);
+
+            var result = new ObservableCollection<ElectronicInvoiceModel>(filtered);
+            System.Diagnostics.Debug.WriteLine($"✅ Filtrado completado: {result.Count} facturas encontradas");
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Error filtrando facturas: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+            return new ObservableCollection<ElectronicInvoiceModel>();
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una lista única de EDS de todas las facturas
+    /// </summary>
+    public List<(string Id, string Name)> GetAvailableEds()
+    {
+        return InvoiceHistory
+            .Where(i => !string.IsNullOrWhiteSpace(i.EdsId) && !string.IsNullOrWhiteSpace(i.EdsName))
+            .Select(i => (i.EdsId, i.EdsName))
+            .Distinct()
+            .OrderBy(eds => eds.Name)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Obtiene una lista única de Isleros de todas las facturas
+    /// </summary>
+    public List<(string Id, string Name)> GetAvailableIslanders()
+    {
+        return InvoiceHistory
+            .Where(i => !string.IsNullOrWhiteSpace(i.IslanderId) && !string.IsNullOrWhiteSpace(i.IslanderName))
+            .Select(i => (i.IslanderId, i.IslanderName))
+            .Distinct()
+            .OrderBy(islander => islander.Name)
+            .ToList();
     }
 
     // ...existing code...
