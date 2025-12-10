@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace APP.Eds.Models.CompartimentCapacity;
 
 public class CapacityModelResponse
 {
-    [JsonProperty("idcapacity")]
+    [JsonPropertyName("idcapacity")]
     public int IdCapacity { get; set; }
 
-    [JsonProperty("code")]
+    [JsonPropertyName("code")]
     public string Code { get; set; }
 }

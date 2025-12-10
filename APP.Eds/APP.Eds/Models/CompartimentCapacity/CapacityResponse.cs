@@ -1,18 +1,18 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace APP.Eds.Models.CompartimentCapacity;
 
 public class CapacityResponse
 {
-    [JsonProperty("statusCode")]
+    [JsonPropertyName("statusCode")]
     public int StatusCode { get; set; }
 
-    [JsonProperty("success")]
+    [JsonPropertyName("success")]
     public bool Success { get; set; }
 
-    [JsonProperty("message")]
+    [JsonPropertyName("message")]
     public string Message { get; set; }
 
-    [JsonProperty("data")]
+    [JsonPropertyName("data")]
     public List<CapacityModelResponse> Data { get; set; }
 }
