@@ -1,11 +1,14 @@
 ﻿using APP.Eds.Models.Client;
+using APP.Eds.Models.Court;
 using APP.Eds.Models.PointOfSale;
 using APP.Eds.Models.Product;
 using APP.Eds.Services.Billing;
 using APP.Eds.Services.PointOfSale;
+using APP.Eds.Services.WhatsApp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 namespace APP.Eds.UsesCases.PointOfSale;
@@ -13,6 +16,7 @@ namespace APP.Eds.UsesCases.PointOfSale;
 public class PointOfSaleViewModel : INotifyPropertyChanged
 {
     private readonly IPointOfSaleService _pointOfSaleService;
+    private readonly IWhatsAppMessageService _whatsAppMessageService;
     private readonly ElectronicBillingService _billingService;
     private bool _isLoading;
     private double _cashReceived;
@@ -23,9 +27,10 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
     private bool _isSearching;
     private string _clientWhatsAppNumber;
 
-    public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService)
+    public PointOfSaleViewModel(IPointOfSaleService pointOfSaleService, IWhatsAppMessageService whatsAppMessageService)
     {
         _pointOfSaleService = pointOfSaleService;
+        _whatsAppMessageService = whatsAppMessageService;
         _billingService = new ElectronicBillingService();
         Products = [];
         CartItems = [];
@@ -331,75 +336,87 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         IsLoading = true;
         try
         {
-            var sale = new SaleModel
+            bool isValidWhatsAppNumber = await ValidateWhatsAppNumberAsync();
+
+            if (isValidWhatsAppNumber)
             {
-                Items = CartItems.ToList(),
-                Tax = Tax,
-                PaymentMethod = SelectedPaymentMethod,
-                Status = SaleStatus.Pending,
-                Date = DateTime.Now,
-                SaleId = GenerateSaleId() // ✨ NUEVO: Generar ID único para la venta
-            };
+                var sale = new SaleModel
+                {
+                    Items = CartItems.ToList(),
+                    Tax = Tax,
+                    PaymentMethod = SelectedPaymentMethod,
+                    Status = SaleStatus.Pending,
+                    Date = DateTime.Now,
+                    SaleId = GenerateSaleId() // ✨ NUEVO: Generar ID único para la venta
+                };
 
-            // ✨ NUEVO: Procesar la venta localmente primero
-            var success = await _pointOfSaleService.ProcessSaleAsync(sale);
+                // ✨ NUEVO: Procesar la venta localmente primero
+                var success = await _pointOfSaleService.ProcessSaleAsync(sale, ClientWhatsAppNumber);
 
-            if (!success)
-            {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    "❌ No se pudo procesar la venta.\n\n" +
-                    "Verifique el stock disponible de los productos.",
-                    "OK");
-                return;
-            }
-
-
-            var billingResult = await _billingService.GenerateElectronicInvoiceAsync(
-                sale,
-                SelectedClient,
-                ClientWhatsAppNumber
-            );
-
-            if (billingResult.Success)
-            {
-                string clientInfo = $"\nCliente: {SelectedClient.Name}";
-                string whatsappInfo = !string.IsNullOrWhiteSpace(ClientWhatsAppNumber)
-                     ? $"\nWhatsApp: {ClientWhatsAppNumber}"
-                   : "";
+                if (!success)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        "❌ No se pudo procesar la venta.\n\n" +
+                        "Verifique el stock disponible de los productos.",
+                        "OK");
+                    return;
+                }
 
 
-                string cudeInfo = !string.IsNullOrWhiteSpace(billingResult.InvoiceHash)
-                        ? $"\n🔐 CUDE: {billingResult.InvoiceHash.Substring(0, Math.Min(16, billingResult.InvoiceHash.Length))}..."
-                        : "";
+                var billingResult = await _billingService.GenerateElectronicInvoiceAsync(
+                    sale,
+                    SelectedClient,
+                    ClientWhatsAppNumber
+                );
 
-                await Application.Current.MainPage.DisplayAlert(
-                   "✅ Factura Electrónica Generada",
-                      $"Venta procesada y factura electrónica generada correctamente{clientInfo}{whatsappInfo}\n\n" +
-                       $"📄 Número de Factura: FE-{billingResult.InvoiceNumber}\n" +
-                $"💰 Total: ${Total:N2}\n" +
-                $"📦 Productos: {CartItems.Count}{cudeInfo}\n\n" +
-                  $"✅ La factura ha sido enviada al correo electrónico del cliente.\n" +
-               $"📱 Puede consultar el PDF desde el Historial de Facturas.",
-                   "OK");
+                if (billingResult.Success)
+                {
+                    string clientInfo = $"\nCliente: {SelectedClient.Name}";
+                    string whatsappInfo = !string.IsNullOrWhiteSpace(ClientWhatsAppNumber)
+                         ? $"\nWhatsApp: {ClientWhatsAppNumber}"
+                       : "";
 
-                ClearCart();
-                LoadProducts();
-            }
-            else
-            {
 
-                await Application.Current.MainPage.DisplayAlert(
-                    "⚠️ Venta Procesada - Error en Factura Electrónica",
-                    $"La venta se procesó correctamente, pero hubo un problema al generar la factura electrónica:\n\n" +
-                    $"{billingResult.Message}\n\n" +
+                    string cudeInfo = !string.IsNullOrWhiteSpace(billingResult.InvoiceHash)
+                            ? $"\n🔐 CUDE: {billingResult.InvoiceHash.Substring(0, Math.Min(16, billingResult.InvoiceHash.Length))}..."
+                            : "";
+
+                    await Application.Current.MainPage.DisplayAlert(
+                       "✅ Factura Electrónica Generada",
+                          $"Venta procesada y factura electrónica generada correctamente{clientInfo}{whatsappInfo}\n\n" +
+                           $"📄 Número de Factura: FE-{billingResult.InvoiceNumber}\n" +
                     $"💰 Total: ${Total:N2}\n" +
-                    $"📦 Productos: {CartItems.Count}\n\n" +
-                    $"Por favor, contacte soporte técnico para generar la factura manualmente.",
-                    "OK");
+                    $"📦 Productos: {CartItems.Count}{cudeInfo}\n\n" +
+                      $"✅ La factura ha sido enviada al correo electrónico del cliente.\n" +
+                   $"📱 Puede consultar el PDF desde el Historial de Facturas.",
+                       "OK");
 
-                ClearCart();
-                LoadProducts();
+
+                    if (!string.IsNullOrWhiteSpace(ClientWhatsAppNumber))
+                    {
+                        CourtModel court = GetCourt();
+                        await _whatsAppMessageService.SendMessageAsync(ClientWhatsAppNumber, court);
+                    }
+
+                    ClearCart();
+                    LoadProducts();
+                }
+                else
+                {
+
+                    await Application.Current.MainPage.DisplayAlert(
+                        "⚠️ Venta Procesada - Error en Factura Electrónica",
+                        $"La venta se procesó correctamente, pero hubo un problema al generar la factura electrónica:\n\n" +
+                        $"{billingResult.Message}\n\n" +
+                        $"💰 Total: ${Total:N2}\n" +
+                        $"📦 Productos: {CartItems.Count}\n\n" +
+                        $"Por favor, contacte soporte técnico para generar la factura manualmente.",
+                        "OK");
+
+                    ClearCart();
+                    LoadProducts();
+                }
             }
         }
         catch (Exception ex)
@@ -415,6 +432,48 @@ public class PointOfSaleViewModel : INotifyPropertyChanged
         {
             IsLoading = false;
         }
+    }
+
+    //TO-DO REAL DATA
+    private static CourtModel GetCourt()
+    {
+        return new CourtModel()
+        {
+            IdIslander = 1,
+            IdEds = 1,
+            Starttime = DateTime.Now.ToString("HH:mm:ss"),
+            Endtime = DateTime.Now.AddHours(8).ToString("HH:mm:ss"),
+            DateStarttime = DateTime.Today.ToString("yyyy-MM-dd"),
+            DateEndtime = DateTime.Today.ToString("yyyy-MM-dd"),
+            Descripcion = "Observación de prueba",
+            CourtExpenditures = new List<CourtExpenditure>(),
+            CourtTypeOfCollections = new List<CourtTypeOfCollection>(),
+            CourtDispensers = new List<CourtDispenser>(),
+            CourtDocuments = new List<CourtDocument>(),
+        };
+    }
+
+    private async Task<bool> ValidateWhatsAppNumberAsync()
+    {
+        bool isValid = true;
+        string? number = ClientWhatsAppNumber;
+
+        if (!string.IsNullOrWhiteSpace(number))
+        {
+            // WhatsApp colombiano sin +57: debe empezar por 3 y tener 10 dígitos
+            var regex = new Regex(@"^3\d{9}$");
+
+            if (!regex.IsMatch(number))
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                   "Error del Sistema",
+                   "El WhatsApp debe tener 10 dígitos, iniciar con 3 y no incluir + 57.",
+                   "OK");
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
     private int GenerateSaleId()

@@ -833,7 +833,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
                 await CustomAlert.ShowSuccessAsync(
                     $"Tercero Creado Exitosamente\n\n" +
                     $"Tipo: {(SelectedClientType == "Natural" ? "Persona Natural" : "Persona Jurídica")}\n" +
-                    $"Nombre: {_rutData.FullName}\n" +
+                    $"Nombre: {_rutData.FullName.Display}\n" +
                     $"Documento: {_rutData.DocumentNumber}\n" +
                     $"Email: {Email}\n\n" +
                     $"El tercero ha sido registrado y seleccionado correctamente.",
