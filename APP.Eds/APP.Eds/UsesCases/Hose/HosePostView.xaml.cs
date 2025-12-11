@@ -99,6 +99,12 @@ public partial class HosePostView : ContentPage
                     return;
                 }
 
+                if (vm.SelectCompartiment is null)
+                {
+                    await CustomAlert.ShowErrorAsync("Debe seleccionar el compartimiento asociado a esta manguera", "Compartimiento Requerido");
+                    return;
+                }
+
                 // Calculate price per gallon if possible
                 double pricePerGallon = vm.AccumulatedAmount / vm.AccumulatedGallons;
                 if (pricePerGallon < 1000 || pricePerGallon > 20000)
@@ -117,23 +123,27 @@ public partial class HosePostView : ContentPage
                 }
 
                 LoadingOverlay.ShowLoading();
-                await vm.SaveHoseDataAsync();
+                bool success = await vm.SaveHoseDataAsync();
                 
-                await CustomAlert.ShowSuccessAsync(
-                    $"Manguera #{vm.Number} registrada exitosamente:\n\n" +
-                    $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
-                    $"• Tipo de Producto: {vm.SelectProductType.Description}\n" +
-                    $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
-                    $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
-                    $"• Precio por Galón: ${pricePerGallon:F0}",
-                    "Manguera Registrada");
+                if (success)
+                {
+                    await CustomAlert.ShowSuccessAsync(
+                        $"Manguera #{vm.Number} registrada exitosamente:\n\n" +
+                        $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
+                        $"• Tipo de Producto: {vm.SelectProductType.Description}\n" +
+                        $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
+                        $"• Galones Acumulados: {vm.AccumulatedGallons:F2}\n" +
+                        $"• Precio por Galón: ${pricePerGallon:F0}",
+                        "Manguera Registrada");
 
-                // Clear form fields after successful submission
-                Number = 0;
-                AccumulatedAmount = 0;
-                AccumulatedGallons = 0;
-                _hoseService.SelectedDispensers = default!;
-                _hoseService.SelectProductType = default!;
+                    // Clear form fields after successful submission
+                    Number = 0;
+                    AccumulatedAmount = 0;
+                    AccumulatedGallons = 0;
+                    _hoseService.SelectedDispensers = default!;
+                    _hoseService.SelectProductType = default!;
+                    _hoseService.SelectCompartiment = default!;
+                }
             }
             catch (Exception ex)
             {
