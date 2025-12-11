@@ -1410,4 +1410,10 @@ public class ShoppingService : INotifyPropertyChanged
             return $"Error: {ex.Message}";
         }
     }
+public void ClearProductCache()
+    {
+        ProductCompartimentPairs.Clear();
+        FilteredProductCompartimentPairs.Clear();
+        System.Diagnostics.Debug.WriteLine("Caché de productos por EDS limpiada.");
+    }
 }

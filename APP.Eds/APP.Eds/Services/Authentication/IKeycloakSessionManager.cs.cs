@@ -22,6 +22,7 @@ namespace APP.Eds.Services.Authentication
 
             // Destruir instancia del servicio de Court si existe
             CourtService.DestroyInstance();
+            Shopping.ShoppingService.Instance.ClearProductCache();
 
             Console.WriteLine("Session cleared successfully");
         }
