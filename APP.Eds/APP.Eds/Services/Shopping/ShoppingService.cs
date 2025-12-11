@@ -1342,6 +1342,77 @@ public class ShoppingService : INotifyPropertyChanged
         OnPropertyChanged(nameof(MaxQuantityAllowed));
     }
 
+    /// <summary>
+    /// Reinicia todos los campos del formulario de compras y el estado del servicio.
+    /// Este método debe llamarse al cerrar sesión para limpiar completamente
+    /// todos los datos del usuario anterior.
+    /// </summary>
+    public static void ResetInstanceFields()
+    {
+        if (_instance != null)
+        {
+            // Limpiar campos principales del formulario
+            _instance.Invoice = string.Empty;
+            _instance.Date = DateTime.Today;
+            _instance.SelectedEds = null;
+            _instance.IdEds = 0;
+            _instance.SelectedProvider = null;
+            _instance.IdProvider = 0;
+            _instance.SelectedCategory = null;
+            _instance.IdCategory = 0;
+            
+            // Limpiar listas y colecciones
+            _instance.ShoppingProduct.Clear();
+            _instance.ProductCompartimentPairs.Clear();
+            _instance.FilteredProductCompartimentPairs.Clear();
+            _instance.EdsList.Clear();
+            _instance.ProviderList.Clear();
+            _instance.CategoryList.Clear();
+            _instance.ShoppingList.Clear();
+            
+            // Limpiar campos de productos
+            _instance.SelectedProduct = null;
+            _instance.SelectedCompartiment = null;
+            _instance.SelectedProductCompartimentPair = null;
+            _instance.SelectedName = null;
+            _instance.PurchasePrice = 0;
+            _instance.Quantity = 0;
+            _instance.SellPrice = 0;
+            _instance.CurrentStock = null;
+            
+            // Limpiar totales acumulados
+            _instance.TotalAccumulatedQuantity = 0;
+            _instance.TotalAccumulatedPrice = 0;
+            _instance.TotalAccumulatedAmount = 0;
+            
+            // Limpiar otros campos
+            _instance.NewProduct = string.Empty;
+            _instance.IdShopping = 0;
+            _instance.IdProduct = 0;
+            _instance.ProductName = null;
+            _instance.AddeShopping = string.Empty;
+            _instance.IdCompartment = 0;
+            
+            // Notificar cambios para actualizar UI (si está visible)
+            _instance.OnPropertyChanged(nameof(Invoice));
+            _instance.OnPropertyChanged(nameof(Date));
+            _instance.OnPropertyChanged(nameof(SelectedEds));
+            _instance.OnPropertyChanged(nameof(SelectedProvider));
+            _instance.OnPropertyChanged(nameof(SelectedCategory));
+            _instance.OnPropertyChanged(nameof(TotalAccumulatedAmount));
+            
+            System.Diagnostics.Debug.WriteLine("ShoppingService: All instance fields reset successfully");
+        }
+    }
+
+    /// <summary>
+    /// Destruye la instancia singleton del servicio de compras.
+    /// </summary>
+    public static void DestroyInstance()
+    {
+        _instance = null;
+    }
+
     private void DeleteProduct(ShoppingProductNestedModel product)
     {
         if (product != null && ShoppingProduct.Contains(product))

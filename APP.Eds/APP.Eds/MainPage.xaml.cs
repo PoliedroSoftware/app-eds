@@ -29,6 +29,43 @@ namespace APP.Eds
             }
         }
 
+        /// <summary>
+        /// Called when the page appears. Ensures form fields are cleared
+        /// when returning to login after logout or user change.
+        /// </summary>
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            ResetLoginForm();
+        }
+
+        /// <summary>
+        /// Resets all login form fields and UI state to ensure a clean login experience
+        /// for new users or after logout.
+        /// </summary>
+        private void ResetLoginForm()
+        {
+            // Clear entry fields
+            UsernameEntry.Text = string.Empty;
+            PasswordEntry.Text = string.Empty;
+            
+            // Reset checkbox state
+            RememberMeCheckBox.IsChecked = false;
+            
+            // Hide error section
+            ErrorSection.IsVisible = false;
+            
+            // Hide loading section
+            LoadingSection.IsVisible = false;
+            LoadingIndicator.IsVisible = false;
+            LoadingIndicator.IsRunning = false;
+            
+            // Ensure login button is enabled
+            LoginButton.IsEnabled = true;
+            
+            Debug.WriteLine("Login form reset successfully");
+        }
+
         private async void OnLoginClicked(object sender, EventArgs e)
         {
             try

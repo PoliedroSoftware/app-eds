@@ -166,6 +166,52 @@ public class RegisterShiftAdminService : INotifyPropertyChanged
         OnPropertyChanged(nameof(IdEds));
         OnPropertyChanged(nameof(IdIslander));
     }
+
+    /// <summary>
+    /// Reinicia todos los campos del servicio de registro de turnos de administrador.
+    /// Este método debe llamarse al cerrar sesión para limpiar completamente
+    /// todos los datos del usuario anterior.
+    /// </summary>
+    public static void ResetInstanceFields()
+    {
+        if (_instance != null)
+        {
+            // Limpiar IDs
+            _instance.IdEds = null;
+            _instance.IdBusiness = null;
+            _instance.IdIslander = null;
+            
+            // Limpiar nombres
+            _instance.IslanderName = string.Empty;
+            
+            // Reiniciar fechas y horas a valores por defecto
+            _instance.DateStart = DateTime.Now.Date;
+            _instance.DateEnd = DateTime.Now.Date;
+            _instance.StartTime = new TimeSpan(6, 0, 0);
+            _instance.EndTime = new TimeSpan(14, 0, 0);
+            
+            // Notificar cambios para actualizar UI (si está visible)
+            _instance.OnPropertyChanged(nameof(IdEds));
+            _instance.OnPropertyChanged(nameof(IdBusiness));
+            _instance.OnPropertyChanged(nameof(IdIslander));
+            _instance.OnPropertyChanged(nameof(IslanderName));
+            _instance.OnPropertyChanged(nameof(DateStart));
+            _instance.OnPropertyChanged(nameof(DateEnd));
+            _instance.OnPropertyChanged(nameof(StartTime));
+            _instance.OnPropertyChanged(nameof(EndTime));
+            
+            System.Diagnostics.Debug.WriteLine("RegisterShiftAdminService: All instance fields reset successfully");
+        }
+    }
+
+    /// <summary>
+    /// Destruye la instancia singleton del servicio.
+    /// </summary>
+    public static void DestroyInstance()
+    {
+        _instance = null;
+    }
+
     public async Task SaveRegisterShiftAsync(bool showAlert = true)
     {
         if (string.IsNullOrEmpty(_authToken))
