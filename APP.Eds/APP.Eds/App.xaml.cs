@@ -23,7 +23,8 @@ public partial class App : Application
 
         // Limpiar sesión anterior
         sessionManager.ClearSession();
-        MainPage = new NavigationPage(new MainPage());
+        MainPage = new Controls.BrandSplashPage(() =>
+            MainPage = new NavigationPage(new MainPage()));
     }
 
     protected override void OnStart()
