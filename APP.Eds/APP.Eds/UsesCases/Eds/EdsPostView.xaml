@@ -348,16 +348,12 @@
                             </Border.Background>
 
 
-                            <button:HoverButton
+                            <Button Style="{StaticResource PoliedroPrimaryButton}"
                                 Text="{Binding SendData}"
-                                TextColor="{StaticResource OnBrand}"
-                                BackgroundColor="Transparent"
                                 Clicked="Button_Clicked_1"
                                 AutomationId="ButtonSendData"
                                 FontSize="18"
-                                FontAttributes="Bold"
-                                HoverColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
-                                PressedColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
+                                FontAttributes="Bold"/>
                         </Border>
                     </StackLayout>
                 </Border>

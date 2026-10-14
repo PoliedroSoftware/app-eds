@@ -249,18 +249,14 @@
 
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
-                                <button:HoverButton
+                                <Button Style="{StaticResource PoliedroPrimaryButton}"
                                     Text="Registrar Historial"
-                                    TextColor="{StaticResource OnBrand}"
-                                    BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
                                     AutomationId="ButtonSendData"
                                     FontSize="18"
                                     FontAttributes="Bold"
                                     MinimumHeightRequest="52"
-                                    CornerRadius="16"
-                                    HoverColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
-                                    PressedColor="AliceBlue"/>
+                                    CornerRadius="16"/>
                             </Border>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
