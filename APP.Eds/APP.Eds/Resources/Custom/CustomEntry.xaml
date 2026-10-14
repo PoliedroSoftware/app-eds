@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Grid
 	x:Class="APP.Eds.Resources.Custom.CustomEntry"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -12,7 +12,7 @@
 		Padding="0"
 		HeightRequest="55"
 		Stroke="Transparent"
-		StrokeShape="RoundRectangle 6">
+		StrokeShape="RoundRectangle 10">
 		<custom:CustomClassEmpty
 			x:Name="txtEntry"
 			ClearButtonVisibility="WhileEditing"
@@ -24,7 +24,7 @@
 			MaxLength="{Binding Source={x:Reference this}, Path=MaxLength}"
 			Placeholder="{Binding Source={x:Reference this}, Path=Placeholder}"
 			ReturnType="{Binding Source={x:Reference this}, Path=ReturnType}"
-			Style="{StaticResource CustomEntryStyle}"
+			BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
 			Text="{Binding Source={x:Reference this}, Path=Text}"
 			Unfocused="TxtEntry_Unfocused" />
 	</Border>

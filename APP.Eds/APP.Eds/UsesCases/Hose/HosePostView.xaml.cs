@@ -1,4 +1,4 @@
-using APP.Eds.Services.Hose;
+﻿using APP.Eds.Services.Hose;
 using APP.Eds.UsesCases.Compartiment;
 using APP.Eds.Controls;
 using APP.Eds.Components.PopUp;

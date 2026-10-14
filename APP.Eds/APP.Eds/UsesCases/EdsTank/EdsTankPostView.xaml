@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.EdsTank.EdsTankPostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              xmlns:converters="clr-namespace:APP.Eds.Converters"
              Title="Gestion de Tanques - EDS"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
-            
+
             <!-- Local Icon Styles -->
             <Style x:Key="IconLabel" TargetType="Label">
                 <Setter Property="FontFamily" Value="{OnPlatform Android='monospace', iOS='Menlo', MacCatalyst='Menlo', WinUI='Segoe UI Symbol', Default='Courier New'}" />
@@ -35,35 +35,33 @@
 
             <!-- Header con icono y titulo -->
             <Border Grid.Row="0"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 16"
                     Padding="20,24"
                     StrokeThickness="0">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
-                </Border.Shadow>
-                
+
+
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
-                    <Border Grid.Column="0" 
-                            BackgroundColor="#E3F2FD" 
+                    <Border Grid.Column="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 12"
-                            WidthRequest="56" 
+                            WidthRequest="56"
                             HeightRequest="56">
-                        <Label Text="T" 
+                        <Label Text="T"
                                Style="{StaticResource IconLabel}"
                                FontSize="36"
                                FontAttributes="Bold"
-                               TextColor="#1565C0"/>
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                     </Border>
-                    
+
                     <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
-                        <Label Text="Gestion de Tanques" 
-                               FontSize="22" 
-                               FontAttributes="Bold" 
-                               TextColor="#1A1A1A"/>
-                        <Label Text="Asigne tanques a las estaciones de servicio" 
-                               FontSize="14" 
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
+                        <Label Text="Gestion de Tanques"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                        <Label Text="Asigne tanques a las estaciones de servicio"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                LineBreakMode="WordWrap"/>
                     </StackLayout>
                 </Grid>
@@ -71,77 +69,75 @@
 
             <!-- Seccion EDS -->
             <Border Grid.Row="1"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 16"
                     Padding="20"
                     StrokeThickness="0">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
-                </Border.Shadow>
+
 
                 <StackLayout Spacing="16">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                        <Border Grid.Column="0" 
-                                BackgroundColor="#FFF3E0" 
+                        <Border Grid.Column="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                 StrokeShape="RoundRectangle 8"
                                 Padding="8">
-                            <Label Text="E" 
+                            <Label Text="E"
                                    Style="{StaticResource IconLabel}"
                                    FontSize="20"
                                    FontAttributes="Bold"
-                                   TextColor="#F57C00"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
                         </Border>
-                        
+
                         <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="Estacion de Servicio" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#1A1A1A"/>
-                            <Label Text="Seleccione la EDS donde asignar el tanque" 
-                                   FontSize="12" 
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"/>
+                            <Label Text="Estacion de Servicio"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                            <Label Text="Seleccione la EDS donde asignar el tanque"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                         </StackLayout>
                     </Grid>
 
-                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                            StrokeShape="RoundRectangle 12"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                            StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
-                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}">
+                            Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}">
                         <Picker x:Name="EdsPicker"
                                 Title="? Seleccionar EDS"
                                 ItemsSource="{Binding EdsList}"
                                 ItemDisplayBinding="{Binding Name}"
                                 SelectedItem="{Binding SelectEds, Mode=TwoWay}"
                                 FontSize="14"
-                                TextColor="#1A1A1A"
-                                TitleColor="#666666"
+                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                TitleColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                 BackgroundColor="Transparent"
                                 Margin="16,12"/>
                     </Border>
 
                     <!-- Informacion de EDS seleccionada -->
                     <Border x:Name="EdsInfoCard"
-                            BackgroundColor="#E8F5E8"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                             StrokeShape="RoundRectangle 8"
                             StrokeThickness="1"
-                            Stroke="#C8E6C9"
+                            Stroke="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                             Padding="12"
                             IsVisible="{Binding SelectEds, Converter={StaticResource IsNotNullConverter}}">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                            <Label Grid.Column="0" 
-                                   Text="?" 
+                            <Label Grid.Column="0"
+                                   Text="?"
                                    Style="{StaticResource IconLabel}"
-                                   FontSize="18" 
+                                   FontSize="18"
                                    FontAttributes="Bold"
-                                   TextColor="#2E7D32"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
                             <StackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}" 
-                                       FontSize="13" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#2E7D32"/>
-                                <Label Text="{Binding SelectEds.Address, StringFormat='Direccion: {0}'}" 
-                                       FontSize="12" 
-                                       TextColor="#2E7D32"
+                                <Label Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
+                                <Label Text="{Binding SelectEds.Address, StringFormat='Direccion: {0}'}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                        IsVisible="{Binding SelectEds.Address, Converter={StaticResource IsNotNullOrEmptyConverter}}"/>
                             </StackLayout>
                         </Grid>
@@ -151,83 +147,81 @@
 
             <!-- Seccion Tanque -->
             <Border Grid.Row="2"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 16"
                     Padding="20"
                     StrokeThickness="0">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
-                </Border.Shadow>
+
 
                 <StackLayout Spacing="16">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                        <Border Grid.Column="0" 
-                                BackgroundColor="#E1F5FE" 
+                        <Border Grid.Column="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                 StrokeShape="RoundRectangle 8"
                                 Padding="8">
-                            <Label Text="T" 
+                            <Label Text="T"
                                    Style="{StaticResource IconLabel}"
-                                   FontSize="24" 
+                                   FontSize="24"
                                    FontAttributes="Bold"
-                                   TextColor="#0277BD"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                         </Border>
-                        
+
                         <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="Tanque de Combustible" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#1A1A1A"/>
-                            <Label Text="Seleccione el tanque a asignar a la EDS" 
-                                   FontSize="12" 
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"/>
+                            <Label Text="Tanque de Combustible"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                            <Label Text="Seleccione el tanque a asignar a la EDS"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                         </StackLayout>
                     </Grid>
 
-                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                            StrokeShape="RoundRectangle 12"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                            StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
-                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}">
+                            Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}">
                         <Picker x:Name="TankPicker"
                                 Title="? Seleccionar Tanque"
                                 ItemsSource="{Binding TankList}"
                                 ItemDisplayBinding="{Binding DisplayText}"
                                 SelectedItem="{Binding SelectTank, Mode=TwoWay}"
                                 FontSize="14"
-                                TextColor="#1A1A1A"
-                                TitleColor="#666666"
+                                TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                TitleColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                 BackgroundColor="Transparent"
                                 Margin="16,12"/>
                     </Border>
 
                     <!-- Informacion de Tanque seleccionado -->
                     <Border x:Name="TankInfoCard"
-                            BackgroundColor="#E3F2FD"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 8"
                             StrokeThickness="1"
-                            Stroke="#BBDEFB"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             Padding="12"
                             IsVisible="{Binding SelectTank, Converter={StaticResource IsNotNullConverter}}">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                            <Label Grid.Column="0" 
-                                   Text="T" 
+                            <Label Grid.Column="0"
+                                   Text="T"
                                    Style="{StaticResource IconLabel}"
-                                   FontSize="18" 
+                                   FontSize="18"
                                    FontAttributes="Bold"
-                                   TextColor="#1565C0"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                             <StackLayout Grid.Column="1" Spacing="4">
-                                <Label Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}" 
-                                       FontSize="13" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#1565C0"/>
+                                <Label Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                                     <Label Grid.Column="0"
-                                           Text="{Binding SelectTank.Ability, StringFormat='Capacidad: {0:N0} L'}" 
-                                           FontSize="12" 
-                                           TextColor="#1565C0"/>
+                                           Text="{Binding SelectTank.Ability, StringFormat='Capacidad: {0:N0} L'}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                     <Label Grid.Column="1"
-                                           Text="{Binding SelectTank.Compartment, StringFormat='Compartimientos: {0}'}" 
-                                           FontSize="12" 
-                                           TextColor="#1565C0"/>
+                                           Text="{Binding SelectTank.Compartment, StringFormat='Compartimientos: {0}'}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                 </Grid>
                             </StackLayout>
                         </Grid>
@@ -237,70 +231,68 @@
 
             <!-- Resumen de Asignacion -->
             <Border Grid.Row="3"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 16"
                     Padding="20"
                     StrokeThickness="0"
                     IsVisible="{Binding ShowAssignmentSummary}">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.06"/>
-                </Border.Shadow>
+
 
                 <StackLayout Spacing="16">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                        <Border Grid.Column="0" 
-                                BackgroundColor="#F3E5F5" 
+                        <Border Grid.Column="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                 StrokeShape="RoundRectangle 8"
                                 Padding="8">
-                            <Label Text="R" 
+                            <Label Text="R"
                                    Style="{StaticResource IconLabel}"
-                                   FontSize="20" 
+                                   FontSize="20"
                                    FontAttributes="Bold"
-                                   TextColor="#7B1FA2"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                         </Border>
-                        
+
                         <Label Grid.Column="1"
-                               Text="Resumen de Asignacion" 
-                               FontSize="16" 
-                               FontAttributes="Bold" 
-                               TextColor="#1A1A1A"
+                               Text="Resumen de Asignacion"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                VerticalOptions="Center"/>
                     </Grid>
 
-                    <Border BackgroundColor="#FFF9C4" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                             StrokeShape="RoundRectangle 8"
                             StrokeThickness="1"
-                            Stroke="#F57F17"
+                            Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                             Padding="16">
                         <StackLayout Spacing="8">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Grid.Column="0" 
-                                       Text="E" 
+                                <Label Grid.Column="0"
+                                       Text="E"
                                        Style="{StaticResource IconLabel}"
                                        FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="#F57C00"/>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#F57C00"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SelectEds.Name, StringFormat='EDS: {0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
                             </Grid>
-                            
-                            <BoxView Height="1" BackgroundColor="#FFB74D" Opacity="0.3"/>
-                            
+
+                            <BoxView Height="1" BackgroundColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" Opacity="0.3"/>
+
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                                <Label Grid.Column="0" 
-                                       Text="T" 
+                                <Label Grid.Column="0"
+                                       Text="T"
                                        Style="{StaticResource IconLabel}"
                                        FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="#F57C00"/>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#F57C00"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SelectTank.Number, StringFormat='Tanque #{0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
                             </Grid>
                         </StackLayout>
                     </Border>
@@ -308,24 +300,22 @@
             </Border>
 
             <!-- Botones de Accion -->
-            <StackLayout Grid.Row="4" 
-                         Spacing="12" 
+            <StackLayout Grid.Row="4"
+                         Spacing="12"
                          VerticalOptions="End"
                          Margin="0,20,0,0">
-                
+
                 <!-- Boton Asignar -->
-                <Border BackgroundColor="#4CAF50"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         HeightRequest="54">
-                    <Border.Shadow>
-                        <Shadow Brush="#4CAF50" Offset="0,4" Radius="8" Opacity="0.25"/>
-                    </Border.Shadow>
-                    
+
+
                     <Button x:Name="AssignButton"
                             BackgroundColor="Transparent"
                             Text="Asignar Tanque a EDS"
-                            TextColor="White"
+                            TextColor="{StaticResource OnBrand}"
                             FontSize="16"
                             FontAttributes="Bold"
                             Clicked="Button_Clicked"
@@ -333,30 +323,30 @@
                 </Border>
 
                 <!-- Boton Limpiar -->
-                <Border BackgroundColor="#F5F5F5"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="1"
-                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
-                        HeightRequest="48">
-                    
+                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
+                        MinimumHeightRequest="52">
+
                     <Button x:Name="ClearButton"
                             BackgroundColor="Transparent"
                             Text="Limpiar Seleccion"
-                            TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                             FontSize="14"
                             Clicked="OnClearClicked"/>
                 </Border>
 
                 <!-- Boton Ver Asignaciones -->
-                <Border BackgroundColor="#2196F3"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
-                        HeightRequest="48">
-                    
+                        MinimumHeightRequest="52">
+
                     <Button x:Name="ViewAssignmentsButton"
                             BackgroundColor="Transparent"
                             Text="Ver Asignaciones Actuales"
-                            TextColor="White"
+                            TextColor="{StaticResource OnBrand}"
                             FontSize="14"
                             Clicked="OnViewAssignmentsClicked"/>
                 </Border>

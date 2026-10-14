@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<mct:Popup
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.Components.PopUp.AddCourtTypeOfCollection"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -9,131 +9,126 @@
     x:Name="Root"
     Color="Transparent"
     AutomationId="PopupAddCourtTypeOfCollection">
-    
+
     <mct:Popup.Resources>
         <ResourceDictionary>
             <converters:NumberToWordsConverter x:Key="NumberToWordsConverter" />
         </ResourceDictionary>
     </mct:Popup.Resources>
-    
+
     <!-- Modern Minimalist Container with responsive width -->
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             Margin="20,40"
             MaximumHeightRequest="700"
             HorizontalOptions="FillAndExpand"
             VerticalOptions="Center">
-        <Border.Shadow>
-            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
-        </Border.Shadow>
-        
+
+
         <!-- ✅ NUEVO: Grid principal que contiene tanto el contenido como el loading overlay -->
         <Grid>
             <!-- Contenido Principal -->
-            <Grid RowDefinitions="75,50,*,70" 
+            <Grid RowDefinitions="75,50,*,70"
                   Padding="0"
                   IsVisible="{Binding IsContentVisible}">
-            
+
                 <!-- Clean Header with Blue Theme -->
                 <Border Grid.Row="0"
-                        BackgroundColor="#2196F3"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 20,20,0,0"
                         StrokeThickness="0"
                         Padding="20,20">
-                    
+
                     <Grid ColumnDefinitions="*,40">
                         <!-- Title Section -->
-                        <StackLayout Grid.Column="0" 
-                                     VerticalOptions="Center" 
+                        <StackLayout Grid.Column="0"
+                                     VerticalOptions="Center"
                                      HorizontalOptions="Center"
                                      Spacing="4">
-                            <Label Text="Formas de pago" 
-                                   FontAttributes="Bold" 
-                                   FontSize="20" 
-                                   TextColor="White"
+                            <Label Text="Formas de pago"
+                                   FontAttributes="Bold"
+                                   FontSize="20"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    HorizontalTextAlignment="Center"/>
-                            <Label Text="Configure los métodos de pago" 
-                                   FontSize="12" 
-                                   TextColor="#F5F5F5"
+                            <Label Text="Configure los métodos de pago"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    FontAttributes="None"
                                    HorizontalTextAlignment="Center"/>
                         </StackLayout>
-                        
+
                         <!-- Modern Close Button -->
                         <Border Grid.Column="1"
-                                BackgroundColor="#FFFFFF20"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                 StrokeShape="RoundRectangle 20"
                                 WidthRequest="40" HeightRequest="40">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnCloseTapped"/>
                             </Border.GestureRecognizers>
-                            <Label Text="✕" 
-                                   FontSize="16" 
-                                   TextColor="White"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center" 
+                            <brand:PoliedroIcon Text="✕"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                                   HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
                         </Border>
                     </Grid>
                 </Border>
-                
+
                 <!-- Total Summary Card -->
                 <Border Grid.Row="1"
-                        BackgroundColor="#E3F2FD"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                         Padding="16,12">
-                    <StackLayout Orientation="Horizontal" 
+                    <StackLayout Orientation="Horizontal"
                                  HorizontalOptions="Center"
                                  Spacing="12">
-                        <Border BackgroundColor="#1976D2"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                 StrokeShape="RoundRectangle 15"
                                 WidthRequest="30" HeightRequest="30">
-                            <Label Text="💰" FontSize="14" 
-                                   HorizontalOptions="Center" 
+                            <brand:PoliedroIcon Text="💰" FontSize="14"
+                                   HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
                         </Border>
                         <Label Text="{Binding TotalDelDia, StringFormat='Total del Día: ${0:N0}'}"
-                               FontSize="15"
+                               FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="#1976D2"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                VerticalOptions="Center"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Payment Methods List -->
-                <Border Grid.Row="2" 
-                        BackgroundColor="#FAFCFF"
+                <Border Grid.Row="2"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                         Padding="16,12">
-                    
+
                     <ScrollView>
                         <StackLayout Spacing="12"
                                      BindableLayout.ItemsSource="{Binding PaymentOptions}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <!-- Payment Method Card -->
-                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E8F2FF"
+                                            Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                             StrokeThickness="1"
                                             Padding="16,14">
-                                        <Border.Shadow>
-                                            <Shadow Brush="#2196F3" Offset="0,1" Radius="4" Opacity="0.05"/>
-                                        </Border.Shadow>
+
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                <Setter Property="Stroke" Value="#2196F3"/>
+                                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"/>
                                                 <Setter Property="StrokeThickness" Value="2"/>
-                                                <Setter Property="BackgroundColor" Value="#F0F7FF"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
-                                        
+
                                         <StackLayout Spacing="12">
                                             <!-- Header with checkbox and payment method name -->
                                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                                 <!-- Modern Checkbox -->
                                                 <CheckBox Grid.Column="0"
                                                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                          Color="#2196F3"
+                                                          Color="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                           VerticalOptions="Center">
                                                     <CheckBox.Triggers>
                                                         <DataTrigger TargetType="CheckBox" Binding="{Binding IsPreviouslyPaid}" Value="True">
@@ -147,26 +142,26 @@
                                                              VerticalOptions="Center"
                                                              Spacing="2">
                                                     <Label Text="{Binding Type.Description}"
-                                                           FontSize="15"
+                                                           FontSize="16"
                                                            FontAttributes="Bold"
-                                                           TextColor="#1976D2"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                                     <Label Text="Método de pago"
-                                                           FontSize="11"
-                                                           TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                                 </StackLayout>
                                             </Grid>
 
                                             <!-- Amount Entry - Full Width -->
                                             <StackLayout Spacing="4">
-                                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 8"
-                                                        Stroke="#E0E9F7"
+                                                        Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                         StrokeThickness="1"
                                                         Padding="12,8">
                                                     <Border.Triggers>
                                                         <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                            <Setter Property="BackgroundColor" Value="#F0F7FF"/>
-                                                            <Setter Property="Stroke" Value="#90CAF9"/>
+                                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
                                                             <Setter Property="StrokeThickness" Value="2"/>
                                                         </DataTrigger>
                                                     </Border.Triggers>
@@ -179,10 +174,10 @@
                                                            TextChanged="Amount_TextChanged"
                                                            Focused="Amount_Focused"
                                                            Unfocused="Amount_Unfocused"
-                                                           TextColor="#1976D2"
-                                                           PlaceholderColor="#9E9E9E"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                            BackgroundColor="Transparent"
-                                                           FontSize="13"
+                                                           FontSize="14"
                                                            FontAttributes="Bold">
                                                         <Entry.Triggers>
                                                             <DataTrigger TargetType="Entry" Binding="{Binding IsPreviouslyPaid}" Value="True">
@@ -191,38 +186,38 @@
                                                         </Entry.Triggers>
                                                     </Entry>
                                                 </Border>
-                                                
+
                                                 <!-- Amount Display - Both Currency Format and Words -->
-                                                <StackLayout Orientation="Horizontal" 
+                                                <StackLayout Orientation="Horizontal"
                                                              HorizontalOptions="Center"
                                                              Spacing="8"
                                                              IsVisible="{Binding IsSelected}">
                                                     <StackLayout.Triggers>
                                                         <!-- Only show when there's text and item is selected -->
-                                                        <DataTrigger TargetType="StackLayout" 
-                                                                     Binding="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
+                                                        <DataTrigger TargetType="StackLayout"
+                                                                     Binding="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
                                                                      Value="">
                                                             <Setter Property="IsVisible" Value="False"/>
                                                         </DataTrigger>
                                                     </StackLayout.Triggers>
-                                                
+
                                                     <!-- Currency Format -->
                                                     <Label Text="{Binding Amount, StringFormat='$ {0:N2}'}"
-                                                           FontSize="11"
-                                                           TextColor="#2196F3"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                            FontAttributes="Bold"
                                                            VerticalOptions="Center"/>
-                                                
+
                                                     <!-- Separator -->
                                                     <Label Text="•"
-                                                           FontSize="10"
-                                                           TextColor="#999999"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                            VerticalOptions="Center"/>
-                                                
+
                                                     <!-- Amount in Words -->
                                                     <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
-                                                           FontSize="10"
-                                                           TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                            FontAttributes="Italic"
                                                            VerticalOptions="Center"
                                                            LineBreakMode="TailTruncation"
@@ -231,25 +226,25 @@
                                             </StackLayout>
 
                                             <!-- Description Entry - Full Width -->
-                                            <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                                     StrokeShape="RoundRectangle 8"
-                                                    Stroke="#E0E9F7"
+                                                    Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                     StrokeThickness="1"
                                                     Padding="12,8">
                                                 <Border.Triggers>
                                                     <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="BackgroundColor" Value="#F0F7FF"/>
-                                                        <Setter Property="Stroke" Value="#90CAF9"/>
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
                                                         <Setter Property="StrokeThickness" Value="2"/>
                                                     </DataTrigger>
                                                 </Border.Triggers>
                                                 <Entry Placeholder="Descripción (opcional)"
                                                        IsEnabled="{Binding IsSelected}"
                                                        Text="{Binding Notes, Mode=TwoWay}"
-                                                       TextColor="#1976D2"
-                                                       PlaceholderColor="#9E9E9E"
+                                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                                                       PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        BackgroundColor="Transparent"
-                                                       FontSize="13"
+                                                       FontSize="14"
                                                        MaxLength="100"/>
                                             </Border>
                                         </StackLayout>
@@ -262,46 +257,42 @@
 
                 <!-- Modern Action Buttons -->
                 <Border Grid.Row="3"
-                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 0,0,20,20"
                         Padding="16,12">
-                    
+
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <!-- Clear Button -->
                         <Border Grid.Column="0"
-                                BackgroundColor="#F5F5F5"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                 StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0"
-                                HeightRequest="44">
-                            <Border.Shadow>
-                                <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
-                            </Border.Shadow>
+                                MinimumHeightRequest="52">
+
                             <Button BackgroundColor="Transparent"
                                     Clicked="Clear_All"
-                                    FontSize="15" 
+                                    FontSize="16"
                                     FontAttributes="Bold"
-                                    Text="Borrar" 
-                                    TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
-                                    HeightRequest="44"
+                                    Text="Borrar"
+                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                    MinimumHeightRequest="52"
                                     AutomationId="ButtonClearTypeOfCollection"/>
                         </Border>
-                        
+
                         <!-- Add Button -->
                         <Border Grid.Column="1"
-                                BackgroundColor="#2196F3"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                 StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0"
-                                HeightRequest="44">
-                            <Border.Shadow>
-                                <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
-                            </Border.Shadow>
+                                MinimumHeightRequest="52">
+
                             <Button BackgroundColor="Transparent"
                                     Clicked="Add_Selected"
-                                    FontSize="15" 
+                                    FontSize="16"
                                     FontAttributes="Bold"
-                                    Text="Agregar" 
-                                    TextColor="White"
-                                    HeightRequest="44"
+                                    Text="Agregar"
+                                    TextColor="{StaticResource OnBrand}"
+                                    MinimumHeightRequest="52"
                                     AutomationId="ButtonAddTypeCollection"/>
                         </Border>
                     </Grid>
@@ -310,65 +301,63 @@
 
             <!-- ✅ NUEVO: Loading Overlay - Se muestra encima del contenido -->
             <Grid IsVisible="{Binding IsLoading}"
-                  BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1A1A1A}">
-                
+                  BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
+
                 <!-- Centered Loading Content -->
                 <StackLayout VerticalOptions="Center"
                              HorizontalOptions="Center"
                              Spacing="20"
                              Padding="40">
-                    
+
                     <!-- Loading Spinner Container with modern design -->
-                    <Border BackgroundColor="#2196F3"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                             StrokeShape="RoundRectangle 40"
                             WidthRequest="80"
                             HeightRequest="80"
                             HorizontalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow Brush="#2196F3" Offset="0,4" Radius="12" Opacity="0.3"/>
-                        </Border.Shadow>
-                        
+
+
                         <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                           Color="White"
+                                           Color="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                            WidthRequest="40"
                                            HeightRequest="40"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"/>
                     </Border>
-                    
+
                     <!-- Loading Message -->
-                    <StackLayout Spacing="8" 
+                    <StackLayout Spacing="8"
                                  HorizontalOptions="Center">
                         <Label Text="{Binding LoadingMessage}"
                                FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="#2196F3"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                HorizontalTextAlignment="Center"/>
-                        
+
                         <Label Text="Por favor espere..."
-                               FontSize="13"
-                               TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                HorizontalTextAlignment="Center"
                                FontAttributes="Italic"/>
                     </StackLayout>
-                    
+
                     <!-- Progress dots animation (visual feedback) -->
                     <StackLayout Orientation="Horizontal"
                                  HorizontalOptions="Center"
                                  Spacing="8">
-                        <Ellipse Fill="#2196F3"
+                        <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                  WidthRequest="8"
                                  HeightRequest="8"
                                  Opacity="0.4"/>
-                        <Ellipse Fill="#2196F3"
+                        <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                  WidthRequest="8"
                                  HeightRequest="8"
                                  Opacity="0.6"/>
-                        <Ellipse Fill="#2196F3"
+                        <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                  WidthRequest="8"
                                  HeightRequest="8"
                                  Opacity="0.8"/>
-                        <Ellipse Fill="#2196F3"
+                        <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                  WidthRequest="8"
                                  HeightRequest="8"
                                  Opacity="1"/>

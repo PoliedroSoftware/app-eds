@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Grid
 	x:Class="APP.Eds.Resources.Custom.CustomEntryPin"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:custom="clr-namespace:APP.Eds.Resources.Custom"
 	x:Name="this"
-	HeightRequest="50">
+	MinimumHeightRequest="52">
 	<Border
 		x:Name="EntryBorder"
 		Grid.Row="0"
-		Padding="0,-10,0,-10"
-		BackgroundColor="{StaticResource White}"
-		HeightRequest="50"
-		Stroke="{StaticResource Gray}"
-		StrokeShape="RoundRectangle 6"
+		Padding="12,0"
+		BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+		MinimumHeightRequest="52"
+		Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+		StrokeShape="RoundRectangle 10"
 		StrokeThickness="1">
 		<custom:CustomClassEmpty
 			x:Name="txtEntry"
@@ -25,7 +25,7 @@
 			MaxLength="{Binding Source={x:Reference this}, Path=MaxLength}"
 			Placeholder="{Binding Source={x:Reference this}, Path=Placeholder}"
 			ReturnType="{Binding Source={x:Reference this}, Path=ReturnType}"
-			Style="{StaticResource CustomEntryStyle}"
+			BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
 			Text="{Binding Source={x:Reference this}, Path=Text}"
 			Unfocused="TxtEntry_Unfocused" />
 	</Border>

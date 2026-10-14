@@ -1,4 +1,4 @@
-using APP.Eds.Services.ProductCompartiment;
+ï»¿using APP.Eds.Services.ProductCompartiment;
 using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.ProductCompartiment;
@@ -40,7 +40,7 @@ public partial class ProductCompartimentPostView : ContentPage
 
             if (_productCompartimentService.Stock < 0)
             {
-                await CustomAlert.ShowErrorAsync("El stock inicial no puede ser negativo", "Stock Inválido");
+                await CustomAlert.ShowErrorAsync("El stock inicial no puede ser negativo", "Stock InvÃ¡lido");
                 return;
             }
 
@@ -48,36 +48,36 @@ public partial class ProductCompartimentPostView : ContentPage
             if (_productCompartimentService.Stock > 50000) // reasonable limit
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
-                    $"El stock inicial ({_productCompartimentService.Stock:F2} L) parece muy alto.\n\n¿Confirma que este valor es correcto?",
+                    $"El stock inicial ({_productCompartimentService.Stock:F2} L) parece muy alto.\n\nÂ¿Confirma que este valor es correcto?",
                     "Stock Elevado",
                     "Confirmar",
                     "Revisar");
-                
+
                 if (!confirm) return;
             }
 
             string productName = _productCompartimentService.SelectProduct.Name ?? "N/A";
             int compartmentNumber = _productCompartimentService.SelectCompartiment.Number;
-            
+
             bool confirmAssignment = await CustomAlert.ShowConfirmAsync(
-                $"¿Confirma la asignación del producto '{productName}' al compartimento #{compartmentNumber}?\n\n" +
+                $"Â¿Confirma la asignaciÃ³n del producto '{productName}' al compartimento #{compartmentNumber}?\n\n" +
                 $"Stock inicial: {_productCompartimentService.Stock:F2} L\n\n" +
-                $"Esta asignación establecerá la relación entre el producto y el compartimento.",
-                "Confirmar Asignación",
+                $"Esta asignaciÃ³n establecerÃ¡ la relaciÃ³n entre el producto y el compartimento.",
+                "Confirmar AsignaciÃ³n",
                 "Asignar",
                 "Cancelar");
-                
+
             if (!confirmAssignment) return;
 
             LoadingOverlay.ShowLoading();
             await _productCompartimentService.SaveProductCompartimentDataAsync();
-            
+
             await CustomAlert.ShowSuccessAsync(
-                $"Asignación completada exitosamente:\n\n" +
-                $"• Producto: {productName}\n" +
-                $"• Compartimento: #{compartmentNumber}\n" +
-                $"• Stock Inicial: {_productCompartimentService.Stock:F2} L\n\n" +
-                $"El producto ahora está disponible en este compartimento.",
+                $"AsignaciÃ³n completada exitosamente:\n\n" +
+                $"ï¿½ Producto: {productName}\n" +
+                $"ï¿½ Compartimento: #{compartmentNumber}\n" +
+                $"ï¿½ Stock Inicial: {_productCompartimentService.Stock:F2} L\n\n" +
+                $"El producto ahora estÃ¡ disponible en este compartimento.",
                 "Producto Asignado");
 
             // Clear selections
@@ -92,7 +92,7 @@ public partial class ProductCompartimentPostView : ContentPage
         finally
         {
             LoadingOverlay.HideLoading();
-            
+
             // Re-enable button
             if (sender is Button button)
             {

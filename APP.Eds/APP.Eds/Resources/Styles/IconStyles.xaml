@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:helpers="clr-namespace:APP.Eds.Helpers">
@@ -34,20 +34,20 @@
     </Style>
 
     <!-- Icon Colors -->
-    <Color x:Key="PrimaryIconColor">#1565C0</Color>
-    <Color x:Key="SecondaryIconColor">#F57C00</Color>
-    <Color x:Key="SuccessIconColor">#2E7D32</Color>
-    <Color x:Key="ErrorIconColor">#D32F2F</Color>
-    <Color x:Key="WarningIconColor">#F57C00</Color>
-    <Color x:Key="InfoIconColor">#1565C0</Color>
+    <Color x:Key="PrimaryIconColor">#006EAA</Color>
+    <Color x:Key="SecondaryIconColor">#8F570A</Color>
+    <Color x:Key="SuccessIconColor">#187246</Color>
+    <Color x:Key="ErrorIconColor">#B42318</Color>
+    <Color x:Key="WarningIconColor">#8F570A</Color>
+    <Color x:Key="InfoIconColor">#006EAA</Color>
 
     <!-- Icon Backgrounds -->
-    <Color x:Key="PrimaryIconBackground">#E3F2FD</Color>
-    <Color x:Key="SecondaryIconBackground">#FFF3E0</Color>
-    <Color x:Key="SuccessIconBackground">#E8F5E8</Color>
-    <Color x:Key="ErrorIconBackground">#FFEBEE</Color>
+    <Color x:Key="PrimaryIconBackground">#E8F3FA</Color>
+    <Color x:Key="SecondaryIconBackground">#FFF5DF</Color>
+    <Color x:Key="SuccessIconBackground">#EAF6EF</Color>
+    <Color x:Key="ErrorIconBackground">#FFF0EF</Color>
     <Color x:Key="WarningIconBackground">#FFF8E1</Color>
-    <Color x:Key="InfoIconBackground">#E1F5FE</Color>
+    <Color x:Key="InfoIconBackground">#E8F3FA</Color>
 
     <!-- Fallback Text Icons (for platforms with poor Unicode support) -->
     <x:String x:Key="FallbackFuelIcon">EDS</x:String>

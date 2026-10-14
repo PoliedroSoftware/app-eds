@@ -1,122 +1,118 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.Dispensers.DispensersPostView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestion de Dispensadores"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="16">
-                
+            <VerticalStackLayout Padding="20" Spacing="16">
+
                 <!-- Header Card with Orange Gradient -->
-                <Border BackgroundColor="#FF9800" 
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 16"
                         Padding="20"
                         StrokeThickness="0">
-                    <Border.Shadow>
-                        <Shadow Brush="#FF9800" Offset="0,4" Radius="12" Opacity="0.3"/>
-                    </Border.Shadow>
+
                     <StackLayout>
-                        <Label Text="⛽ Gestion de Dispensadores" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Configure y administre los dispensadores de combustible de cada isla" 
-                               FontSize="14" 
-                               TextColor="#FFE0B2" 
-                               HorizontalOptions="Center"
+                        <Label Text="Gestion de Dispensadores"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Configure y administre los dispensadores de combustible de cada isla"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
+                               HorizontalOptions="Start"
                                Margin="0,5,0,0"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Dispenser Registration Form Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Form Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="🔧" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Configuracion de Nuevo Dispensador" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="🔧" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Configuracion de Nuevo Dispensador"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Dispenser Information Grid -->
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
-                            
+                        <brand:ResponsiveFormGrid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="12">
+
                             <!-- Code -->
                             <StackLayout Grid.Row="0" Grid.Column="0">
-                                <Label Text="Codigo del Dispensador" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Codigo del Dispensador"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Entry Keyboard="Text"
                                            Placeholder="Ej: DISP-001, A-01"
                                            Text="{Binding Code, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryDispenserCode"
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                 </Border>
                             </StackLayout>
 
                             <!-- Number -->
                             <StackLayout Grid.Row="0" Grid.Column="1">
-                                <Label Text="Numero del Dispensador" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Numero del Dispensador"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Entry Keyboard="Numeric"
                                            Placeholder="Numero secuencial"
                                            Text="{Binding Number, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryDispenserNumber"
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                 </Border>
                             </StackLayout>
 
                             <!-- Dispenser Type -->
                             <StackLayout Grid.Row="1" Grid.ColumnSpan="2">
                                 <StackLayout Orientation="Horizontal" Spacing="10">
-                                    <Label Text="Tipo de Dispensador" 
-                                           FontAttributes="Bold" 
-                                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                    <Label Text="Tipo de Dispensador"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            FontSize="14"
                                            VerticalOptions="Center"/>
-                                    <Button Text="+ Nuevo Tipo" 
+                                    <Button Text="+ Nuevo Tipo"
                                             Clicked="OnAddDispenserTypeClicked"
                                             BackgroundColor="Transparent"
-                                            TextColor="#FF9800"
+                                            TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                             FontSize="12"
                                             Padding="6,2"
                                             CornerRadius="12"
-                                            BorderColor="#FF9800"
+                                            BorderColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                             BorderWidth="1"
                                             AutomationId="ButtonAddDispenserType"/>
                                 </StackLayout>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Picker Title="Seleccione tipo de dispensador"
                                             ItemsSource="{Binding DispenserTypeList}"
                                             ItemDisplayBinding="{Binding Description}"
@@ -128,14 +124,14 @@
 
                             <!-- EDS and Island -->
                             <StackLayout Grid.Row="2" Grid.Column="0">
-                                <Label Text="Estacion de Servicio (EDS)" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Estacion de Servicio (EDS)"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Picker Title="Seleccione EDS"
                                             ItemsSource="{Binding EdsList}"
                                             ItemDisplayBinding="{Binding Name}"
@@ -146,14 +142,14 @@
                             </StackLayout>
 
                             <StackLayout Grid.Row="2" Grid.Column="1">
-                                <Label Text="Isla de Combustible" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Isla de Combustible"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Picker Title="Seleccione isla"
                                             ItemsSource="{Binding IslandList}"
                                             ItemDisplayBinding="{Binding Description}"
@@ -165,33 +161,33 @@
 
                             <!-- Hose Configuration -->
                             <StackLayout Grid.Row="3" Grid.Column="0">
-                                <Label Text="Numero de Mangueras" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Numero de Mangueras"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Entry Keyboard="Numeric"
                                            Placeholder="Cantidad de mangueras"
                                            Text="{Binding HoseNumber, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryHoseNumber"
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                 </Border>
                             </StackLayout>
 
                             <!-- Status -->
                             <StackLayout Grid.Row="3" Grid.Column="1">
-                                <Label Text="Estado Operativo" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Estado Operativo"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Picker Title="Estado del dispensador"
                                             ItemsSource="{Binding StatusOptions}"
                                             SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
@@ -202,170 +198,166 @@
 
                             <!-- Additional Configuration -->
                             <StackLayout Grid.Row="4" Grid.ColumnSpan="2">
-                                <Label Text="Configuraciones Adicionales" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Configuraciones Adicionales"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"/>
                                 <StackLayout Orientation="Horizontal" Spacing="20">
                                     <StackLayout Orientation="Horizontal" Spacing="6">
                                         <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
-                                                  Color="#FF9800"
+                                                  Color="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                   AutomationId="CheckBoxIsActive"/>
-                                        <Label Text="Activo para Ventas" 
-                                               FontSize="13" 
-                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
+                                        <Label Text="Activo para Ventas"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
-                                    
+
                                     <StackLayout Orientation="Horizontal" Spacing="6">
                                         <CheckBox IsChecked="{Binding RequiresMaintenance, Mode=TwoWay}"
-                                                  Color="#FF9800"
+                                                  Color="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                   AutomationId="CheckBoxRequiresMaintenance"/>
-                                        <Label Text="Requiere Mantenimiento" 
-                                               FontSize="13" 
-                                               TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
+                                        <Label Text="Requiere Mantenimiento"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                 </StackLayout>
 
                                 <!-- Description/Notes -->
-                                <Label Text="Observaciones/Notas" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Observaciones/Notas"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        FontSize="14"
                                        Margin="0,10,0,5"/>
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#FFE0B2" 
-                                        Padding="4">
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
                                     <Editor Placeholder="Informacion adicional sobre el dispensador..."
                                             Text="{Binding DispenserNotes, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
                                             AutomationId="EditorNotes"
-                                            PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                            PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                             HeightRequest="60"/>
                                 </Border>
                             </StackLayout>
-                        </Grid>
+                        </brand:ResponsiveFormGrid>
 
                         <!-- Action Button -->
-                        <Border BackgroundColor="#FF9800" 
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                 StrokeShape="RoundRectangle 12"
                                 Padding="4"
                                 Margin="0,10,0,0">
-                            <Border.Shadow>
-                                <Shadow Brush="#FF9800" Offset="0,3" Radius="8" Opacity="0.3"/>
-                            </Border.Shadow>
+
                             <Button BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
-                                    Text="⛽ Registrar Dispensador"
-                                    TextColor="White"
+                                    Text="Registrar Dispensador"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="18"
                                     FontAttributes="Bold"
-                                    HeightRequest="50"
+                                    MinimumHeightRequest="52"
                                     AutomationId="ButtonSendData"/>
                         </Border>
                     </VerticalStackLayout>
                 </Border>
 
                 <!-- Dispensers Statistics Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
-                        
+
                         <!-- Stats Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="📊" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Resumen de Dispensadores" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="📊" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Resumen de Dispensadores"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Statistics Grid -->
                         <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
                             <!-- Total Dispensers -->
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     Padding="12"
                                     Grid.Column="0">
                                 <StackLayout Spacing="6">
-                                    <Label Text="Total" 
-                                           FontAttributes="Bold" 
-                                           FontSize="11"
-                                           TextColor="#F57C00"
+                                    <Label Text="Total"
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalDispensers}" 
+                                    <Label Text="{Binding TotalDispensers}"
                                            FontSize="16"
                                            FontAttributes="Bold"
-                                           TextColor="#E65100"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Active Dispensers -->
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     Padding="12"
                                     Grid.Column="1">
                                 <StackLayout Spacing="6">
-                                    <Label Text="Activos" 
-                                           FontAttributes="Bold" 
-                                           FontSize="11"
-                                           TextColor="#388E3C"
+                                    <Label Text="Activos"
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding ActiveDispensers}" 
+                                    <Label Text="{Binding ActiveDispensers}"
                                            FontSize="16"
                                            FontAttributes="Bold"
-                                           TextColor="#2E7D32"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Maintenance Dispensers -->
-                            <Border BackgroundColor="#FFEBEE" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#F44336"
+                                    Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                     Padding="12"
                                     Grid.Column="2">
                                 <StackLayout Spacing="6">
-                                    <Label Text="Mant." 
-                                           FontAttributes="Bold" 
-                                           FontSize="11"
-                                           TextColor="#D32F2F"
+                                    <Label Text="Mant."
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding MaintenanceDispensers}" 
+                                    <Label Text="{Binding MaintenanceDispensers}"
                                            FontSize="16"
                                            FontAttributes="Bold"
-                                           TextColor="#B71C1C"
+                                           TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Total Hoses -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12"
                                     Grid.Column="3">
                                 <StackLayout Spacing="6">
-                                    <Label Text="Mangueras" 
-                                           FontAttributes="Bold" 
-                                           FontSize="10"
-                                           TextColor="#1976D2"
+                                    <Label Text="Mangueras"
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalHoses}" 
+                                    <Label Text="{Binding TotalHoses}"
                                            FontSize="16"
                                            FontAttributes="Bold"
-                                           TextColor="#0D47A1"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
@@ -374,44 +366,42 @@
                 </Border>
 
                 <!-- Dispensers List Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
-                        
+
                         <!-- List Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⛽" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Lista de Dispensadores Configurados" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="⛽" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Lista de Dispensadores Configurados"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Filter Options -->
                         <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                            <Button Text="Todos" 
+                            <Button Text="Todos"
                                     BackgroundColor="{Binding FilterAllColor}"
-                                    TextColor="White"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="12"
                                     Padding="12,6"
                                     CornerRadius="15"
                                     Command="{Binding FilterAllCommand}"/>
-                            <Button Text="Activos" 
+                            <Button Text="Activos"
                                     BackgroundColor="{Binding FilterActiveColor}"
-                                    TextColor="White"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="12"
                                     Padding="12,6"
                                     CornerRadius="15"
                                     Command="{Binding FilterActiveCommand}"/>
-                            <Button Text="Mantenimiento" 
+                            <Button Text="Mantenimiento"
                                     BackgroundColor="{Binding FilterMaintenanceColor}"
-                                    TextColor="White"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="12"
                                     Padding="12,6"
                                     CornerRadius="15"
@@ -419,111 +409,109 @@
                         </StackLayout>
 
                         <!-- Dispensers Collection -->
-                        <CollectionView ItemsSource="{Binding DispensersList}" 
+                        <CollectionView ItemsSource="{Binding DispensersList}"
                                         Margin="0,10,0,0"
                                         AutomationId="CollectionViewDispensers">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="#FEFEFE" 
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                             StrokeShape="RoundRectangle 8"
-                                            Stroke="#E5E7EB"
+                                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                             Margin="0,4"
                                             Padding="16">
-                                        <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.08"/>
-                                        </Border.Shadow>
-                                        
+
+
                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowSpacing="8">
-                                            
+
                                             <!-- Dispenser Icon -->
-                                            <Border BackgroundColor="#FF9800" 
+                                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                     StrokeShape="RoundRectangle 25"
-                                                    WidthRequest="50" 
+                                                    WidthRequest="50"
                                                     HeightRequest="50"
-                                                    Grid.RowSpan="4" 
+                                                    Grid.RowSpan="4"
                                                     Grid.Column="0"
                                                     VerticalOptions="Center">
-                                                <Label Text="⛽" 
-                                                       FontSize="24" 
-                                                       TextColor="White"
+                                                <brand:PoliedroIcon Text="⛽"
+                                                       FontSize="24"
+                                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"/>
                                             </Border>
 
                                             <!-- Dispenser Information -->
                                             <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                                <Label Text="{Binding Code}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
-                                                <Border BackgroundColor="#FFF3E0"
+                                                <Label Text="{Binding Code}" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 10"
                                                         Padding="6,2"
                                                         VerticalOptions="Center">
-                                                    <Label Text="{Binding Number, StringFormat='#{0}'}" 
-                                                           FontSize="10" 
+                                                    <Label Text="{Binding Number, StringFormat='#{0}'}"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#FF9800"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
                                                 </Border>
-                                                <Border BackgroundColor="#E8F5E8"
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 10"
                                                         Padding="6,2"
                                                         VerticalOptions="Center"
                                                         IsVisible="{Binding IsActive, FallbackValue=true}">
-                                                    <Label Text="ACTIVO" 
-                                                           FontSize="9" 
+                                                    <Label Text="ACTIVO"
+                                                           FontSize="9"
                                                            FontAttributes="Bold"
-                                                           TextColor="#4CAF50"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
                                                 </Border>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                                <Label Text="🔧" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding DispenserTypeDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
-                                                <Label Text="•" FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
-                                                <Label Text="{Binding EdsName}" FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"/>
+                                                <brand:PoliedroIcon Text="🔧" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding DispenserTypeDescription}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                                <Label Text="•" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" VerticalOptions="Center"/>
+                                                <Label Text="{Binding EdsName}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </StackLayout>
 
                                             <StackLayout Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                                <Label Text="🏝️" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding IslandDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                                <brand:PoliedroIcon Text="🏝️" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding IslandDescription}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" LineBreakMode="TailTruncation" MaxLines="1"/>
                                             </StackLayout>
 
                                             <Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
                                                 <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="4">
-                                                    <Label Text="🔗" FontSize="11" VerticalOptions="Center"/>
-                                                    <Label Text="{Binding NumberHose}" FontSize="12" TextColor="#FF9800" FontAttributes="Bold"/>
-                                                    <Label Text="mangueras" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" VerticalOptions="Center"/>
+                                                    <brand:PoliedroIcon Text="🔗" FontSize="12" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding NumberHose}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" FontAttributes="Bold"/>
+                                                    <Label Text="mangueras" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" VerticalOptions="Center"/>
                                                 </StackLayout>
-                                                
+
                                                 <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalOptions="End">
-                                                    <Label Text="⚠️" FontSize="11" VerticalOptions="Center" IsVisible="{Binding RequiresMaintenance, FallbackValue=false}"/>
-                                                    <Label Text="Mant. Req." FontSize="11" TextColor="#F44336" VerticalOptions="Center" IsVisible="{Binding RequiresMaintenance, FallbackValue=false}"/>
+                                                    <brand:PoliedroIcon Text="⚠️" FontSize="12" VerticalOptions="Center" IsVisible="{Binding RequiresMaintenance, FallbackValue=false}"/>
+                                                    <Label Text="Mant. Req." FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}" VerticalOptions="Center" IsVisible="{Binding RequiresMaintenance, FallbackValue=false}"/>
                                                 </StackLayout>
                                             </Grid>
 
                                             <!-- Action Buttons -->
                                             <StackLayout Grid.Column="2" Grid.RowSpan="4" VerticalOptions="Center" Spacing="8">
                                                 <!-- Edit Button -->
-                                                <Border BackgroundColor="#FFF3E0" 
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 15"
-                                                        Stroke="#FF9800"
+                                                        Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                         WidthRequest="30" HeightRequest="30">
-                                                    <Button Text="✏️" 
+                                                    <Button Text="✏️"
                                                             BackgroundColor="Transparent"
-                                                            TextColor="#FF9800"
+                                                            TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                             FontSize="12"
                                                             WidthRequest="30" HeightRequest="30"
                                                             CornerRadius="15"
                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDispenserCommand}"
                                                             CommandParameter="{Binding .}"/>
                                                 </Border>
-                                                
+
                                                 <!-- Delete Button -->
-                                                <Border BackgroundColor="#FFEBEE" 
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 15"
-                                                        Stroke="#F44336"
+                                                        Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                         WidthRequest="30" HeightRequest="30">
-                                                    <Button Text="🗑️" 
+                                                    <Button Text="🗑️"
                                                             BackgroundColor="Transparent"
-                                                            TextColor="#F44336"
+                                                            TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                             FontSize="12"
                                                             WidthRequest="30" HeightRequest="30"
                                                             CornerRadius="15"
@@ -537,15 +525,15 @@
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="16">
-                                    <Label Text="⛽" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
-                                    <Label Text="No hay dispensadores configurados" 
-                                           FontSize="16" 
-                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
+                                    <brand:PoliedroIcon Text="⛽" FontSize="48" HorizontalOptions="Center" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                    <Label Text="No hay dispensadores configurados"
+                                           FontSize="16"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalOptions="Center"
                                            FontAttributes="Bold"/>
-                                    <Label Text="Configure el primer dispensador usando el formulario superior" 
-                                           FontSize="14" 
-                                           TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
+                                    <Label Text="Configure el primer dispensador usando el formulario superior"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
@@ -556,10 +544,10 @@
 
                 <!-- Bottom Margin for Better Scrolling -->
                 <BoxView HeightRequest="20" Color="Transparent"/>
-                
+
             </VerticalStackLayout>
         </ScrollView>
-        
+
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"

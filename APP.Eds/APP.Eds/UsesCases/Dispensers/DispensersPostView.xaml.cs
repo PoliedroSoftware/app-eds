@@ -1,4 +1,4 @@
-using APP.Eds.Services.Dispensers;
+ï»¿using APP.Eds.Services.Dispensers;
 using APP.Eds.UsesCases.DispenserType;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
@@ -27,7 +27,7 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicialización");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de InicializaciÃ³n");
         }
         finally
         {
@@ -48,13 +48,13 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_dispensersService.Code))
             {
-                await CustomAlert.ShowErrorAsync("El código del dispensador es obligatorio para el registro", "Código Requerido");
+                await CustomAlert.ShowErrorAsync("El cÃ³digo del dispensador es obligatorio para el registro", "CÃ³digo Requerido");
                 return;
             }
 
             if (_dispensersService.Number <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar un número de dispensador válido (mayor que 0)", "Número Inválido");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un nÃºmero de dispensador vÃ¡lido (mayor que 0)", "NÃºmero InvÃ¡lido");
                 return;
             }
 
@@ -66,7 +66,7 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
 
             if (_dispensersService.SelectedEds == null)
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar la estación de servicio (EDS) donde se ubicará el dispensador", "EDS Requerida");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar la estaciÃ³n de servicio (EDS) donde se ubicarÃ¡ el dispensador", "EDS Requerida");
                 return;
             }
 
@@ -78,7 +78,7 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
 
             if (_dispensersService.HoseNumber <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar un número válido de mangueras (mayor que 0)", "Número de Mangueras Inválido");
+                await CustomAlert.ShowErrorAsync("Debe ingresar un nÃºmero vÃ¡lido de mangueras (mayor que 0)", "NÃºmero de Mangueras InvÃ¡lido");
                 return;
             }
 
@@ -89,9 +89,9 @@ public partial class DispensersPostView : ContentPage, INotifyPropertyChanged
             }
 
             LoadingOverlay?.ShowLoading();
-            
+
             await _dispensersService.SaveDispensersDataAsync();
-            
+
             // Clear form after successful save
             ClearForm();
         }

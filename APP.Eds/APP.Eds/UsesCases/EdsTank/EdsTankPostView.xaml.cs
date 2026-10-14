@@ -1,4 +1,4 @@
-using APP.Eds.Services.EdsTank;
+Ôªøusing APP.Eds.Services.EdsTank;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -14,15 +14,15 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
         InitializeComponent();
         _edsTankService = new EdsTankService();
         BindingContext = _edsTankService;
-        
-        // Configurar eventos de selecciÛn
+
+        // Configurar eventos de selecci√≥n
         _edsTankService.PropertyChanged += OnServicePropertyChanged;
     }
 
     private void OnServicePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         // Actualizar propiedades de la UI cuando cambien las selecciones
-        if (e.PropertyName == nameof(_edsTankService.SelectEds) || 
+        if (e.PropertyName == nameof(_edsTankService.SelectEds) ||
             e.PropertyName == nameof(_edsTankService.SelectTank))
         {
             OnPropertyChanged(nameof(ShowAssignmentSummary));
@@ -30,12 +30,12 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
         }
     }
 
-    // Propiedad para mostrar el resumen de asignaciÛn
-    public bool ShowAssignmentSummary => 
+    // Propiedad para mostrar el resumen de asignaci√≥n
+    public bool ShowAssignmentSummary =>
         _edsTankService?.SelectEds != null && _edsTankService?.SelectTank != null;
 
-    // Propiedad para habilitar el botÛn de asignaciÛn
-    public bool CanAssignTank => 
+    // Propiedad para habilitar el bot√≥n de asignaci√≥n
+    public bool CanAssignTank =>
         _edsTankService?.SelectEds != null && _edsTankService?.SelectTank != null;
 
     private async void Button_Clicked(object sender, EventArgs e)
@@ -53,7 +53,7 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
             if (_edsTankService.SelectEds == null)
             {
                 await CustomAlert.ShowWarningAsync(
-                    "Por favor seleccione una estaciÛn de servicio (EDS) de la lista disponible",
+                    "Por favor seleccione una estaci√≥n de servicio (EDS) de la lista disponible",
                     "EDS No Seleccionada");
                 return;
             }
@@ -66,16 +66,16 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
                 return;
             }
 
-            // Verificar si ya existe una asignaciÛn
+            // Verificar si ya existe una asignaci√≥n
             bool hasExistingAssignment = await _edsTankService.CheckExistingAssignmentAsync();
             if (hasExistingAssignment)
             {
                 bool overwrite = await CustomAlert.ShowConfirmAsync(
-                    $"El tanque #{_edsTankService.SelectTank.Number} ya est· asignado a otra EDS.\n\nøDesea reasignarlo a '{_edsTankService.SelectEds.Name}'?",
-                    "ReasignaciÛn de Tanque",
+                    $"El tanque #{_edsTankService.SelectTank.Number} ya est√° asignado a otra EDS.\n\n¬øDesea reasignarlo a '{_edsTankService.SelectEds.Name}'?",
+                    "Reasignaci√≥n de Tanque",
                     "Reasignar",
                     "Cancelar");
-                
+
                 if (!overwrite) return;
             }
 
@@ -84,15 +84,15 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
             string tankNumber = _edsTankService.SelectTank.Number ?? "N/A";
             double capacity = _edsTankService.SelectTank.Ability;
             int compartments = _edsTankService.SelectTank.Compartment;
-            
+
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"øConfirma la asignaciÛn del siguiente tanque?\n\n" +
+                $"¬øConfirma la asignaci√≥n del siguiente tanque?\n\n" +
                 $"EDS: {edsName}\n" +
                 $"Tanque: #{tankNumber}\n" +
                 $"Capacidad: {capacity:N0} litros\n" +
                 $"Compartimientos: {compartments}\n\n" +
-                $"Esta asignaciÛn habilitar· el tanque para operaciones en la estaciÛn.",
-                "Confirmar AsignaciÛn",
+                $"Esta asignaci√≥n habilitar√° el tanque para operaciones en la estaci√≥n.",
+                "Confirmar Asignaci√≥n",
                 "Asignar",
                 "Cancelar");
 
@@ -100,30 +100,30 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
 
             LoadingOverlay.IsVisible = true;
             await _edsTankService.SaveEdsTankDataAsync();
-            
+
             await CustomAlert.ShowSuccessAsync(
-                $"AsignaciÛn completada exitosamente\n\n" +
-                $"EstaciÛn: {edsName}\n" +
+                $"Asignaci√≥n completada exitosamente\n\n" +
+                $"Estaci√≥n: {edsName}\n" +
                 $"Tanque: #{tankNumber}\n" +
                 $"Capacidad: {capacity:N0} L\n" +
                 $"Compartimientos: {compartments}\n\n" +
-                $"El tanque est· ahora disponible para operaciones en esta estaciÛn de servicio.",
+                $"El tanque est√° ahora disponible para operaciones en esta estaci√≥n de servicio.",
                 "Tanque Asignado");
-                
-            // Limpiar selecciones despuÈs del Èxito
+
+            // Limpiar selecciones despu√©s del ÔøΩxito
             await ClearSelections();
-            
+
         }
         catch (Exception ex)
         {
             await CustomAlert.ShowErrorAsync(
-                $"Error al realizar la asignaciÛn del tanque:\n\n{ex.Message}\n\nPor favor, verifique su conexiÛn e intente nuevamente.",
-                "Error de AsignaciÛn");
+                $"Error al realizar la asignaci√≥n del tanque:\n\n{ex.Message}\n\nPor favor, verifique su conexi√≥n e intente nuevamente.",
+                "Error de Asignaci√≥n");
         }
         finally
         {
             LoadingOverlay.IsVisible = false;
-            
+
             // Re-enable button
             if (sender is Button button)
             {
@@ -138,11 +138,11 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
         try
         {
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                "øEst· seguro de que desea limpiar las selecciones actuales?",
+                "ÔøΩEstÔøΩ seguro de que desea limpiar las selecciones actuales?",
                 "Limpiar Selecciones",
                 "Limpiar",
                 "Cancelar");
-                
+
             if (confirm)
             {
                 await ClearSelections();
@@ -160,15 +160,15 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
         try
         {
             LoadingOverlay.IsVisible = true;
-            
+
             // Cargar y mostrar asignaciones actuales
             var assignments = await _edsTankService.GetCurrentAssignmentsAsync();
-            
+
             if (assignments?.Any() == true)
             {
-                string assignmentsList = string.Join("\n", assignments.Select(a => 
+                string assignmentsList = string.Join("\n", assignments.Select(a =>
                     $"{a.EdsName} - Tanque #{a.TankNumber}"));
-                    
+
                 await CustomAlert.ShowInfoAsync(
                     $"Asignaciones actuales de tanques:\n\n{assignmentsList}",
                     "Asignaciones Actuales");
@@ -194,7 +194,7 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
     {
         _edsTankService.SelectEds = null;
         _edsTankService.SelectTank = null;
-        
+
         // Actualizar propiedades de la UI
         OnPropertyChanged(nameof(ShowAssignmentSummary));
         OnPropertyChanged(nameof(CanAssignTank));
@@ -203,12 +203,12 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        
+
         try
         {
             LoadingOverlay.IsVisible = true;
-            
-            // Cargar datos frescos al aparecer la p·gina
+
+            // Cargar datos frescos al aparecer la p√°gina
             await _edsTankService.RefreshDataAsync();
         }
         catch (Exception ex)
@@ -224,7 +224,7 @@ public partial class EdsTankPostView : ContentPage, INotifyPropertyChanged
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        
+
         // Desconectar eventos para evitar memory leaks
         if (_edsTankService != null)
         {

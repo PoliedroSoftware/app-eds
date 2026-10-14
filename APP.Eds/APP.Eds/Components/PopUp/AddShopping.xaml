@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<mct:Popup
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.Components.PopUp.AddShopping"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -10,48 +10,44 @@
 
     <!-- Main Container with Modern Design -->
     <Border x:Name="PopupBorder"
-            BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 24"
             StrokeThickness="0"
             WidthRequest="400"
             HeightRequest="700"
             AutomationId="FrameAddShopping">
-        <Border.Shadow>
-            <Shadow Brush="Black" Offset="0,8" Radius="24" Opacity="0.15"/>
-        </Border.Shadow>
+
 
         <Grid RowDefinitions="Auto,*,Auto" Padding="0">
-            
+
             <!-- Modern Header -->
             <Border Grid.Row="0"
-                    BackgroundColor="#6A1B9A"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 24,24,0,0"
                     Padding="24,20,24,20">
-                <Border.Shadow>
-                    <Shadow Brush="#6A1B9A" Offset="0,2" Radius="8" Opacity="0.3"/>
-                </Border.Shadow>
-                
+
+
                 <Grid ColumnDefinitions="*,Auto,*">
                     <!-- Header Content -->
-                    <StackLayout Grid.Column="1" 
-                                 HorizontalOptions="Center" 
+                    <StackLayout Grid.Column="1"
+                                 HorizontalOptions="Center"
                                  VerticalOptions="Center"
                                  Spacing="4">
-                        <Label Text="🛒 Nuevo Producto" 
-                               FontSize="22" 
+                        <Label Text="Nuevo Producto"
+                               FontSize="22"
                                FontAttributes="Bold"
-                               TextColor="White"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                HorizontalOptions="Center"
                                AutomationId="LabelAddShopping"/>
-                        <Label Text="Agregue un producto a la compra" 
-                               FontSize="13" 
-                               TextColor="#E1BEE7"
+                        <Label Text="Agregue un producto a la compra"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                HorizontalOptions="Center"/>
                     </StackLayout>
-                    
+
                     <!-- Close Button -->
                     <Border Grid.Column="2"
-                            BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 16"
                             WidthRequest="32" HeightRequest="32"
                             HorizontalOptions="End"
@@ -59,9 +55,9 @@
                             Opacity="0.9">
                         <Button BackgroundColor="Transparent"
                                 Clicked="OnCloseTapped"
-                                FontSize="16" 
-                                Text="✖" 
-                                TextColor="#6A1B9A"
+                                FontSize="16"
+                                Text="✖"
+                                TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                 FontAttributes="Bold"
                                 WidthRequest="32" HeightRequest="32"
                                 CornerRadius="16"
@@ -72,55 +68,53 @@
             </Border>
 
             <!-- Content Area -->
-            <ScrollView Grid.Row="1" 
-                        Padding="20" 
+            <ScrollView Grid.Row="1"
+                        Padding="20"
                         VerticalScrollBarVisibility="Never">
                 <VerticalStackLayout Spacing="20">
-                    
+
                     <!-- Product Selection Card -->
-                    <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                             StrokeShape="RoundRectangle 16"
-                            Stroke="#E3F2FD"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeThickness="2"
                             Padding="20"
                             AutomationId="FrameProductCompartimentPicker">
-                        <Border.Shadow>
-                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
-                        </Border.Shadow>
-                        
+
+
                         <VerticalStackLayout Spacing="12">
                             <!-- Section Header -->
                             <StackLayout Orientation="Horizontal" Spacing="12">
-                                <Border BackgroundColor="#E3F2FD" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                         StrokeShape="RoundRectangle 16"
                                         WidthRequest="32" HeightRequest="32"
                                         VerticalOptions="Center">
-                                    <Label Text="📦" 
-                                           FontSize="16" 
-                                           HorizontalOptions="Center" 
+                                    <brand:PoliedroIcon Text="📦"
+                                           FontSize="16"
+                                           HorizontalOptions="Center"
                                            VerticalOptions="Center"/>
                                 </Border>
-                                
-                                <Label Text="Producto y Compartimento" 
-                                       FontSize="16" 
+
+                                <Label Text="Producto y Compartimento"
+                                       FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Product List Container - Visible cuando hay productos -->
                             <VerticalStackLayout x:Name="PickerContainer" Spacing="8">
                                 <!-- Header -->
                                 <Label Text="Seleccione producto y compartimento"
-                                       FontSize="13"
+                                       FontSize="14"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,4"/>
-                                
+
                                 <!-- Scrollable Product List -->
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#1E1E1E}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                         StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                         StrokeThickness="2"
                                         HeightRequest="320">
                                     <CollectionView x:Name="ProductCompartimentList"
@@ -131,64 +125,62 @@
                                                     AutomationId="CollectionViewProductCompartimentPair">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 8"
-                                                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                                                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                                         StrokeThickness="1"
                                                         Padding="12,10"
                                                         Margin="8,4">
-                                                    <Border.Shadow>
-                                                        <Shadow Brush="Black" Offset="0,1" Radius="2" Opacity="0.05"/>
-                                                    </Border.Shadow>
-                                                    
+
+
                                                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                                                         <!-- Product Icon -->
                                                         <Border Grid.Column="0"
-                                                                BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1E3A5F}"
+                                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                                 StrokeShape="RoundRectangle 12"
                                                                 WidthRequest="32" HeightRequest="32"
                                                                 VerticalOptions="Center">
-                                                            <Label Text="📦"
+                                                            <brand:PoliedroIcon Text="📦"
                                                                    FontSize="16"
                                                                    HorizontalOptions="Center"
                                                                    VerticalOptions="Center"/>
                                                         </Border>
-                                                        
+
                                                         <!-- Product Info -->
                                                         <VerticalStackLayout Grid.Column="1" Spacing="4">
                                                             <Label Text="{Binding ProductName}"
-                                                                   FontSize="15"
+                                                                   FontSize="16"
                                                                    FontAttributes="Bold"
-                                                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                                            <Label FontSize="13"
-                                                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
+                                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                                            <Label FontSize="14"
+                                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                    LineBreakMode="WordWrap">
                                                                 <Label.FormattedText>
                                                                     <FormattedString>
-                                                                        <Span Text="Compartimento " FontAttributes="Bold"/>
+                                                                        <Span Text="Compartimento" FontAttributes="Bold"/>
                                                                         <Span Text="{Binding Number}"/>
-                                                                        <Span Text=" | Capacidad: "/>
+                                                                        <Span Text="| Capacidad:"/>
                                                                         <Span Text="{Binding Operative, StringFormat='{0:N0}'}"/>
-                                                                        <Span Text=" | Stock: "/>
+                                                                        <Span Text="| Stock:"/>
                                                                         <Span Text="{Binding Stock, StringFormat='{0:N0}'}"/>
                                                                     </FormattedString>
                                                                 </Label.FormattedText>
                                                             </Label>
                                                         </VerticalStackLayout>
                                                     </Grid>
-                                                    
+
                                                     <VisualStateManager.VisualStateGroups>
                                                         <VisualStateGroup Name="CommonStates">
                                                             <VisualState Name="Normal">
                                                                 <VisualState.Setters>
-                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#252525}"/>
-                                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"/>
+                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"/>
+                                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
                                                                 </VisualState.Setters>
                                                             </VisualState>
                                                             <VisualState Name="Selected">
                                                                 <VisualState.Setters>
-                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EBF5FF, Dark=#1A2F4A}"/>
-                                                                    <Setter Property="Stroke" Value="#2196F3"/>
+                                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"/>
                                                                     <Setter Property="StrokeThickness" Value="2"/>
                                                                 </VisualState.Setters>
                                                             </VisualState>
@@ -197,47 +189,47 @@
                                                 </Border>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
-                                        
+
                                         <!-- Empty View -->
                                         <CollectionView.EmptyView>
                                             <VerticalStackLayout Padding="20" Spacing="12" VerticalOptions="Center">
-                                                <Label Text="🔍"
+                                                <brand:PoliedroIcon Text="🔍"
                                                        FontSize="32"
                                                        HorizontalOptions="Center"/>
                                                 <Label Text="No hay productos disponibles"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
-                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        HorizontalOptions="Center"/>
                                             </VerticalStackLayout>
                                         </CollectionView.EmptyView>
                                     </CollectionView>
                                 </Border>
                             </VerticalStackLayout>
-                            
+
                             <!-- Empty State Message - Visible cuando NO hay productos -->
                             <Border x:Name="EmptyStateContainer"
-                                    BackgroundColor="#FFF3CD" 
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#F59E0B"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     StrokeThickness="2"
                                     Padding="16"
                                     IsVisible="False">
                                 <StackLayout Spacing="12">
                                     <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
-                                        <Label Text="⚠️" 
-                                               FontSize="24" 
+                                        <brand:PoliedroIcon Text="⚠️"
+                                               FontSize="24"
                                                VerticalOptions="Center"/>
-                                        <Label Text="Sin Productos Disponibles" 
-                                               FontSize="16" 
+                                        <Label Text="Sin Productos Disponibles"
+                                               FontSize="16"
                                                FontAttributes="Bold"
-                                               TextColor="#92400E"
+                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                VerticalOptions="Center"/>
                                     </StackLayout>
                                     <Label x:Name="EmptyStateMessage"
                                            Text="Cargando información..."
-                                           FontSize="13"
-                                           TextColor="#92400E"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            HorizontalTextAlignment="Center"
                                            LineBreakMode="WordWrap"/>
                                 </StackLayout>
@@ -246,56 +238,54 @@
                     </Border>
 
                     <!-- Price Fields Grid -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="16">
-                        
+                    <brand:ResponsiveFormGrid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="16">
+
                         <!-- Purchase Price -->
                         <Border Grid.Column="0" Grid.Row="0"
-                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                 StrokeShape="RoundRectangle 16"
-                                Stroke="#E8F5E8"
+                                Stroke="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                 StrokeThickness="2"
                                 Padding="16"
                                 AutomationId="FramePriceEntry">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
+
+
                             <VerticalStackLayout Spacing="12">
                                 <!-- Field Header -->
                                 <StackLayout Orientation="Horizontal" Spacing="8">
-                                    <Label Text="💰" 
-                                           FontSize="16" 
-                                           TextColor="#4CAF50" 
+                                    <brand:PoliedroIcon Text="💰"
+                                           FontSize="16"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            VerticalOptions="Center"/>
                                     <StackLayout VerticalOptions="Center">
-                                        <Label Text="Precio Compra" 
-                                               FontSize="14" 
+                                        <Label Text="Precio Compra"
+                                               FontSize="14"
                                                FontAttributes="Bold"
-                                               TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                AutomationId="LabelPrice"/>
-                                        <Label Text="Incluye transporte" 
-                                               FontSize="11" 
-                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                        <Label Text="Incluye transporte"
+                                               FontSize="12"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                Margin="0,-2,0,0"/>
                                     </StackLayout>
                                 </StackLayout>
-                                
+
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="1"
-                                        Padding="12,10">
-                                    <Entry x:Name="FirstEntry" 
+                                        Padding="12,0">
+                                    <Entry x:Name="FirstEntry"
                                            Keyboard="Numeric"
-                                           Placeholder="0.00" 
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                           Placeholder="0.00"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            Text="{Binding PurchasePrice, Mode=TwoWay}"
                                            Completed="EntryPurchasePriceCompleted"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryPrice"/>
                                 </Border>
@@ -304,47 +294,45 @@
 
                         <!-- Sell Price -->
                         <Border Grid.Column="1" Grid.Row="0"
-                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                 StrokeShape="RoundRectangle 16"
-                                Stroke="#FFF3E0"
+                                Stroke="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                 StrokeThickness="2"
                                 Padding="16"
                                 AutomationId="FrameSellPriceEntry">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
+
+
                             <VerticalStackLayout Spacing="12">
                                 <!-- Field Header -->
                                 <StackLayout Orientation="Horizontal" Spacing="8">
-                                    <Label Text="🏷️" 
-                                           FontSize="16" 
-                                           TextColor="#FF9800" 
+                                    <brand:PoliedroIcon Text="🏷️"
+                                           FontSize="16"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            VerticalOptions="Center"/>
-                                    <Label Text="Precio Venta" 
-                                           FontSize="14" 
+                                    <Label Text="Precio Venta"
+                                           FontSize="14"
                                            FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            VerticalOptions="Center"
                                            AutomationId="LabelSellPrice"/>
                                 </StackLayout>
-                                
+
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 10"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="1"
-                                        Padding="12,10">
-                                    <Entry x:Name="SecondEntry" 
+                                        Padding="12,0">
+                                    <Entry x:Name="SecondEntry"
                                            Keyboard="Numeric"
-                                           Placeholder="0.00" 
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                           Placeholder="0.00"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            Text="{Binding SellPrice, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="EntrySellPriceCompleted"
                                            BackgroundColor="Transparent"
                                            FontSize="14"
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntrySellPrice"/>
                                 </Border>
@@ -353,68 +341,66 @@
 
                         <!-- Quantity Field (Full Width) -->
                         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
-                                BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                 StrokeShape="RoundRectangle 16"
-                                Stroke="#E3F2FD"
+                                Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                 StrokeThickness="2"
                                 Padding="20"
                                 AutomationId="FrameQuantityEntry">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.05"/>
-                            </Border.Shadow>
-                            
+
+
                             <VerticalStackLayout Spacing="12">
                                 <!-- Field Header -->
                                 <StackLayout Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
-                                    <Label Text="⛽" 
-                                           FontSize="18" 
-                                           TextColor="#2196F3" 
+                                    <brand:PoliedroIcon Text="⛽"
+                                           FontSize="18"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"/>
-                                    <Label Text="Cantidad de Galones" 
-                                           FontSize="16" 
+                                    <Label Text="Cantidad de Galones"
+                                           FontSize="16"
                                            FontAttributes="Bold"
-                                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            VerticalOptions="Center"
                                            AutomationId="LabelQuantity"/>
                                 </StackLayout>
-                                
+
                                 <!-- Entry Container -->
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="16,12">
-                                    <Entry x:Name="ThirdEntry" 
+                                        Padding="12,0">
+                                    <Entry x:Name="ThirdEntry"
                                            Keyboard="Numeric"
-                                           Placeholder="0.000" 
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                           Placeholder="0.000"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            Text="{Binding Quantity, Mode=TwoWay}"
                                            IsEnabled="{Binding SelectedProductCompartimentPair, Converter={StaticResource IsNotNullConverter}}"
                                            Completed="Add_Product"
                                            BackgroundColor="Transparent"
                                            FontSize="16"
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalTextAlignment="Center"
                                            AutomationId="EntryQuantity"/>
                                 </Border>
                             </VerticalStackLayout>
                         </Border>
-                    </Grid>
+                    </brand:ResponsiveFormGrid>
 
                     <!-- Info Card -->
-                    <Border BackgroundColor="#E3F2FD" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 12"
-                            Stroke="#2196F3"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                             Padding="16"
                             Opacity="0.9">
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Label Text="ℹ️" 
-                                   FontSize="16" 
+                            <brand:PoliedroIcon Text="ℹ️"
+                                   FontSize="16"
                                    VerticalOptions="Start"
                                    Margin="0,2,0,0"/>
                             <Label Text="Complete todos los campos para agregar el producto a la compra. El sistema calculará automáticamente el total."
                                    FontSize="12"
-                                   TextColor="#1565C0"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                    VerticalOptions="Center"
                                    HorizontalOptions="FillAndExpand"/>
                         </StackLayout>
@@ -423,27 +409,22 @@
             </ScrollView>
 
             <!-- Action Button -->
-            <Border Grid.Row="2" 
+            <Border Grid.Row="2"
                     Margin="20,0,20,20">
-                <Border BackgroundColor="#6A1B9A"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                         StrokeShape="RoundRectangle 16"
                         StrokeThickness="0"
                         Padding="4">
-                    <Border.Shadow>
-                        <Shadow Brush="#6A1B9A" 
-                                Offset="0,4" 
-                                Radius="12" 
-                                Opacity="0.3"/>
-                    </Border.Shadow>
-                    
-                    <Button x:Name="AddButton" 
+
+
+                    <Button x:Name="AddButton"
                             BackgroundColor="Transparent"
                             Clicked="Add_Product"
-                            FontSize="18" 
+                            FontSize="18"
                             FontAttributes="Bold"
-                            Text="🚀 Agregar a la Compra" 
-                            TextColor="White"
-                            HeightRequest="56"
+                            Text="Agregar a la Compra"
+                            TextColor="{StaticResource OnBrand}"
+                            MinimumHeightRequest="52"
                             CornerRadius="16"
                             AutomationId="ButtonAddProduct"/>
                 </Border>

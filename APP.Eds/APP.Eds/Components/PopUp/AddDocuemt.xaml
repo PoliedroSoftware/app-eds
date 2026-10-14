@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<mct:Popup
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.Components.PopUp.AddDocuemt"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -7,61 +7,58 @@
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
 
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
-            WidthRequest="420" 
+            WidthRequest="420"
             HeightRequest="520">
-        <Border.Shadow>
-            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
-        </Border.Shadow>
 
-        <Grid RowDefinitions="75,*,80" Padding="0">
+
+        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
 
             <!-- Header -->
             <Border Grid.Row="0"
-                    BackgroundColor="#2196F3"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 20,20,0,0"
                     StrokeThickness="0"
                     Padding="20,20">
                 <Grid ColumnDefinitions="*,40">
                     <StackLayout Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
-                        <Label Text="Agregar comprobantes" 
-                               FontAttributes="Bold" 
-                               FontSize="22" 
-                               TextColor="White"
+                        <Label Text="Agregar comprobantes"
+                               FontAttributes="Bold"
+                               FontSize="22"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                HorizontalTextAlignment="Center"/>
-                        <Label Text="Seleccione uno o varios archivos" 
-                               FontSize="13" 
-                               TextColor="#F5F5F5"
+                        <Label Text="Seleccione uno o varios archivos"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                HorizontalTextAlignment="Center"/>
                     </StackLayout>
 
                     <Border Grid.Column="1"
-                            BackgroundColor="#FFFFFF20"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 20"
                             WidthRequest="40" HeightRequest="40">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCloseTapped"/>
                         </Border.GestureRecognizers>
-                        <Label Text="✕" 
-                               FontSize="16" 
-                               TextColor="White"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" 
+                        <brand:PoliedroIcon Text="✕"
+                               FontSize="16"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               HorizontalOptions="Center"
                                VerticalOptions="Center"/>
                     </Border>
                 </Grid>
             </Border>
 
             <!-- Content -->
-            <Border Grid.Row="1" BackgroundColor="#FAFCFF" Padding="18,14">
+            <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}" Padding="18,14">
                 <VerticalStackLayout Spacing="14">
 
                     <!-- Selector -->
-                    <Border BackgroundColor="#F0F7FF"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 12"
-                            Stroke="#90CAF9"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeThickness="2"
                             Padding="18,14">
                         <Border.GestureRecognizers>
@@ -69,59 +66,59 @@
                         </Border.GestureRecognizers>
 
                         <Grid ColumnDefinitions="48,*" ColumnSpacing="10">
-                            <Border BackgroundColor="#2196F3" StrokeShape="RoundRectangle 12" WidthRequest="44" HeightRequest="44">
-                                <Label Text="📁" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}" StrokeShape="RoundRectangle 12" WidthRequest="44" HeightRequest="44">
+                                <brand:PoliedroIcon Text="📁" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Border>
                             <StackLayout Grid.Column="1" VerticalOptions="Center">
-                                <Label Text="Toque para seleccionar archivos" 
-                                       FontSize="14" FontAttributes="Bold" TextColor="#1976D2"/>
-                                <Label Text="PDF, JPG, PNG, DOC, TXT (máx. 5MB c/u)" 
-                                       FontSize="11" TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"/>
+                                <Label Text="Toque para seleccionar archivos"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
+                                <Label Text="PDF, JPG, PNG, DOC, TXT (máx. 5MB c/u)"
+                                       FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </Grid>
                     </Border>
 
                     <!-- Lista previa de selección -->
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" StrokeShape="RoundRectangle 12" Stroke="#E8F2FF" Padding="8,6">
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" Padding="8,6">
                         <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" Padding="6,2">
-                                <Label Text="Archivos seleccionados" FontAttributes="Bold" TextColor="#1976D2"/>
+                                <Label Text="Archivos seleccionados" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                 <Button Text="Eliminar todos"
                                         Grid.Column="1"
                                         IsVisible="{Binding HasSelectedFiles}"
                                         Padding="10,6"
                                         CornerRadius="12"
-                                        BackgroundColor="#FFEBEE"
-                                        TextColor="#C62828"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                         FontSize="12"
                                         Clicked="OnClearSelectedClicked"/>
                             </Grid>
 
                             <CollectionView ItemsSource="{Binding SelectedFiles}" HeightRequest="280">
                                 <CollectionView.EmptyView>
-                                    <Label Text="No hay archivos seleccionados" 
-                                           HorizontalOptions="Center" 
-                                           TextColor="#9E9E9E" 
+                                    <Label Text="No hay archivos seleccionados"
+                                           HorizontalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            Margin="0,10"/>
                                 </CollectionView.EmptyView>
 
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BackgroundColor="#FAFAFA" 
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                                 StrokeShape="RoundRectangle 8"
-                                                Stroke="#EEEEEE"
+                                                Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                                 Padding="10"
                                                 Margin="0,4">
                                             <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="10">
-                                                <Label Text="{Binding Icon}" FontSize="16" VerticalOptions="Center"/>
+                                                <brand:PoliedroIcon Text="{Binding Icon}" FontSize="16" VerticalOptions="Center"/>
                                                 <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="13" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}"/>
-                                                    <Label Text="{Binding SizeText}" FontSize="11" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                                    <Label Text="{Binding SizeText}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                                 </VerticalStackLayout>
-                                                <Button Text="✕" 
+                                                <Button Text="✕"
                                                         Grid.Column="2"
                                                         BackgroundColor="Transparent"
-                                                        TextColor="#F44336"
+                                                        TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                         FontAttributes="Bold"
                                                         Clicked="OnRemoveItemClicked"
                                                         CommandParameter="{Binding .}"/>
@@ -137,19 +134,19 @@
 
             <!-- Actions -->
             <Grid Grid.Row="2" Padding="16,10" ColumnDefinitions="*,*" ColumnSpacing="12"
-                  BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}">
-                <Border BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 12">
+                  BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}">
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" StrokeShape="RoundRectangle 12">
                     <Button BackgroundColor="Transparent"
                             Text="Seleccionar más"
-                            TextColor="#1976D2"
+                            TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                             Clicked="OnSelectFileClicked"/>
                 </Border>
 
-                <Border Grid.Column="1" BackgroundColor="#2196F3" StrokeShape="RoundRectangle 12">
+                <Border Grid.Column="1" BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}" StrokeShape="RoundRectangle 12">
                     <Button BackgroundColor="Transparent"
                             AutomationId="AddButton"
                             Text="{Binding AddButtonText}"
-                            TextColor="White"
+                            TextColor="{StaticResource OnBrand}"
                             FontAttributes="Bold"
                             IsEnabled="{Binding HasSelectedFiles}"
                             Clicked="Add_Dispenser"/>

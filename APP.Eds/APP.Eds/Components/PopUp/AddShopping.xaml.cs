@@ -11,6 +11,7 @@ public partial class AddShopping : Popup
 
     public AddShopping(ShoppingService shoppingService)
     {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
         try
         {
             InitializeComponent();
@@ -19,7 +20,7 @@ public partial class AddShopping : Popup
 
             // Ensure popup is properly sized for different screen sizes
             ConfigurePopupForDevice();
-            
+
             // ✅ Verificar si hay productos disponibles y mostrar el estado apropiado
             UpdateEmptyStateVisibility();
         }
@@ -29,7 +30,7 @@ public partial class AddShopping : Popup
             throw;
         }
     }
-    
+
     /// <summary>
     /// Actualiza la visibilidad del mensaje de estado vacío según los productos disponibles
     /// </summary>
@@ -37,20 +38,20 @@ public partial class AddShopping : Popup
     {
         try
         {
-            bool hasProducts = shoppingService.FilteredProductCompartimentPairs != null && 
+            bool hasProducts = shoppingService.FilteredProductCompartimentPairs != null &&
                               shoppingService.FilteredProductCompartimentPairs.Count > 0;
-            
+
             // Mostrar/ocultar el picker y el mensaje de estado vacío
             if (PickerContainer != null)
                 PickerContainer.IsVisible = hasProducts;
-                
+
             if (EmptyStateContainer != null)
                 EmptyStateContainer.IsVisible = !hasProducts;
-            
+
             // Deshabilitar el botón de agregar si no hay productos
             if (AddButton != null)
                 AddButton.IsEnabled = hasProducts;
-            
+
             // Actualizar el mensaje de estado vacío con información de la EDS
             // Note: SelectedEds should not be null at this point (validated before popup opens)
             // but we check defensively in case the popup is opened through other means
@@ -59,7 +60,7 @@ public partial class AddShopping : Popup
                 string edsName = shoppingService.SelectedEds.Name;
                 EmptyStateMessage.Text = ShoppingValidationMessages.GetNoProductsMessage(edsName);
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"Empty state visibility updated - Has products: {hasProducts}");
         }
         catch (Exception ex)
@@ -284,7 +285,7 @@ public partial class AddShopping : Popup
             if (sender is Button button)
             {
                 button.IsEnabled = true;
-                button.Text = "🛒 Agregar a la Compra";
+                button.Text = "Agregar a la Compra";
             }
         }
     }

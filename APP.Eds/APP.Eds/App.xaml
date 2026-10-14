@@ -3,6 +3,8 @@
              xmlns:local="clr-namespace:APP.Eds"
              xmlns:converters="clr-namespace:APP.Eds.Converters"
              xmlns:posConverters="clr-namespace:APP.Eds.Converters.PointOfSale"
+             xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+             android:Application.WindowSoftInputModeAdjust="Resize"
              x:Class="APP.Eds.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -10,7 +12,7 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <!-- Converters -->
             <converters:MenuIconConverter x:Key="MenuIconConverter" />
             <converters:TimeSpanTo12HourConverter x:Key="TimeSpanTo12HourConverter" />
@@ -20,7 +22,7 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
-            
+
             <!-- Point of Sale Converters -->
             <posConverters:PaymentMethodColorConverter x:Key="PaymentMethodColorConverter" />
             <posConverters:PaymentMethodVisibilityConverter x:Key="PaymentMethodVisibilityConverter" />

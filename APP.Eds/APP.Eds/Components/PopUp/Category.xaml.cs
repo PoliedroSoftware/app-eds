@@ -1,4 +1,4 @@
-using APP.Eds.Services.Navigation;
+﻿using APP.Eds.Services.Navigation;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Views.Popups
@@ -9,14 +9,15 @@ namespace APP.Eds.Views.Popups
         const double HeaderHeight = 100;
         const double MaxFrameHeight = 520;
         const double Padding = 52;
-        
+
         public CategoryPopup(List<MainService.MenuItemModel> items, string categoryTitle)
         {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
             InitializeComponent();
             CategoryTitle.Text = categoryTitle;
             MenuItemsList.ItemsSource = items;
             UpdateHeight(items.Count);
-            
+
             // Inicializar con animación de entrada mejorada
             _ = AnimateEntry();
         }
@@ -26,21 +27,21 @@ namespace APP.Eds.Views.Popups
             // Para altura automática, no establecemos HeightRequest en el Frame
             // El popup se ajustará automáticamente al contenido
             System.Diagnostics.Debug.WriteLine($"Popup auto-sizing for {itemCount} items");
-            
+
             // Si hay muchos items, podríamos mostrar información sobre scroll potencial
             if (itemCount > 8) // Aproximadamente cuando empezaría a necesitar scroll con MaximumHeightRequest="600"
             {
                 System.Diagnostics.Debug.WriteLine($"Popup may need scrolling for {itemCount} items");
             }
-            
+
             // Información de debug sobre la altura esperada
             const double ItemHeight = 58;
             const double HeaderHeight = 85;
             const double Padding = 40;
-            
+
             double expectedContentHeight = (ItemHeight * itemCount) + Padding;
             double expectedTotalHeight = HeaderHeight + expectedContentHeight;
-            
+
             System.Diagnostics.Debug.WriteLine($"Expected total height: {expectedTotalHeight}px for {itemCount} items (max: 600px)");
         }
 
@@ -48,14 +49,14 @@ namespace APP.Eds.Views.Popups
         {
             // Asegurar centrado perfecto antes de la animación
             await EnsureCentering();
-            
+
             // Iniciar con escala pequeña y transparente, sin desplazamiento que pueda afectar el centrado
             Frame.Scale = 0.8;
             Frame.Opacity = 0;
             Frame.TranslationY = 0; // Mantener centrado, sin desplazamiento
             Frame.TranslationX = 0; // Asegurar que esté centrado horizontalmente
             Frame.Rotation = 0; // Sin rotación para mantener centrado
-            
+
             // Animar entrada centrada con efectos más suaves
             await Task.WhenAll(
                 Frame.ScaleTo(1, 400, Easing.SpringOut),
@@ -78,7 +79,7 @@ namespace APP.Eds.Views.Popups
                 {
                     var screenWidth = mainPage.Width;
                     var screenHeight = mainPage.Height;
-                    
+
                     if (screenWidth > 0 && screenHeight > 0)
                     {
                         System.Diagnostics.Debug.WriteLine($"Screen dimensions: {screenWidth}x{screenHeight}");
@@ -111,7 +112,7 @@ namespace APP.Eds.Views.Popups
 
                 await Task.Delay(50);
                 await AnimateExit();
-                
+
                 try
                 {
                     Close();
@@ -139,7 +140,7 @@ namespace APP.Eds.Views.Popups
 #endif
                 }
                 catch { }
-                
+
                 if (sender is Border border)
                 {
                     _ = Task.Run(async () =>
@@ -162,7 +163,7 @@ namespace APP.Eds.Views.Popups
 
                 await Task.Delay(200);
                 await AnimateExit();
-                
+
                 try
                 {
                     Close();

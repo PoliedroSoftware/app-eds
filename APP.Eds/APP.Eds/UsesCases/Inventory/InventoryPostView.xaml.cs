@@ -1,4 +1,4 @@
-using APP.Eds.Models.Inventory;
+﻿using APP.Eds.Models.Inventory;
 using APP.Eds.UsesCases.Inventory;
 using APP.Eds.Components.PopUp;
 using System.Collections.ObjectModel;

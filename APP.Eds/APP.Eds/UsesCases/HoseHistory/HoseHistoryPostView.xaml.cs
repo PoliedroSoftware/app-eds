@@ -1,4 +1,4 @@
-using APP.Eds.Services.HoseHistory;
+ï»¿using APP.Eds.Services.HoseHistory;
 using APP.Eds.Controls;
 using APP.Eds.Components.PopUp;
 
@@ -35,34 +35,34 @@ public partial class HoseHistoryPostView : ContentPage
                 else if (vm.Date.Date < DateTime.Now.Date.AddDays(-30))
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"La fecha seleccionada ({vm.Date:dd/MM/yyyy}) es muy antigua (más de 30 días).\n\n¿Confirma que desea registrar este historial con esta fecha?",
+                        $"La fecha seleccionada ({vm.Date:dd/MM/yyyy}) es muy antigua (mÃ¡s de 30 dÃ­as).\n\nÂ¿Confirma que desea registrar este historial con esta fecha?",
                         "Fecha Antigua",
                         "Confirmar",
                         "Cambiar Fecha");
-                    
+
                     if (!confirm) return;
                 }
 
                 if (vm.AccumulatedAmount <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado válido (mayor que 0)", "Monto Inválido");
+                    await CustomAlert.ShowErrorAsync("Debe especificar un monto acumulado vÃ¡lido (mayor que 0)", "Monto InvÃ¡lido");
                     return;
                 }
 
                 if (vm.AccumulatedAmount > 5000000)
                 {
                     bool confirm = await CustomAlert.ShowConfirmAsync(
-                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
+                        $"El monto acumulado (${vm.AccumulatedAmount:F2}) es muy elevado.\n\nÂ¿Confirma que este valor es correcto?",
                         "Monto Elevado",
                         "Confirmar",
                         "Revisar");
-                    
+
                     if (!confirm) return;
                 }
 
                 if (vm.AccumulatedGallons <= 0)
                 {
-                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados válidos (mayor que 0)", "Galones Inválidos");
+                    await CustomAlert.ShowErrorAsync("Debe especificar galones acumulados vÃ¡lidos (mayor que 0)", "Galones InvÃ¡lidos");
                     return;
                 }
 
@@ -88,29 +88,29 @@ public partial class HoseHistoryPostView : ContentPage
                 if (pricePerGallon < 1000 || pricePerGallon > 20000)
                 {
                     bool confirmPrice = await CustomAlert.ShowConfirmAsync(
-                        $"El precio por galón calculado parece inusual:\n\n" +
-                        $"• Monto: ${vm.AccumulatedAmount:F2}\n" +
-                        $"• Galones: {vm.AccumulatedGallons:F2}\n" +
-                        $"• Precio/Galón: ${pricePerGallon:F0}\n\n" +
-                        $"¿Los valores son correctos?",
+                        $"El precio por galÃ³n calculado parece inusual:\n\n" +
+                        $"ï¿½ Monto: ${vm.AccumulatedAmount:F2}\n" +
+                        $"ï¿½ Galones: {vm.AccumulatedGallons:F2}\n" +
+                        $"ï¿½ Precio/GalÃ³n: ${pricePerGallon:F0}\n\n" +
+                        $"ï¿½Los valores son correctos?",
                         "Precio Inusual",
                         "Continuar",
                         "Revisar");
-                    
+
                     if (!confirmPrice) return;
                 }
 
                 LoadingOverlay.ShowLoading();
                 await vm.SaveHoseHistoryDataAsync();
-                
+
                 await CustomAlert.ShowSuccessAsync(
                     $"Historial de manguera registrado exitosamente:\n\n" +
-                    $"• Fecha: {vm.Date:dd/MM/yyyy}\n" +
-                    $"• Dispensador: {vm.SelectedDispensers.Code}\n" +
-                    $"• Manguera: #{vm.SelectHose.Number}\n" +
-                    $"• Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
-                    $"• Galones: {vm.AccumulatedGallons:F2}\n" +
-                    $"• Precio/Galón: ${pricePerGallon:F0}",
+                    $"ï¿½ Fecha: {vm.Date:dd/MM/yyyy}\n" +
+                    $"ï¿½ Dispensador: {vm.SelectedDispensers.Code}\n" +
+                    $"ï¿½ Manguera: #{vm.SelectHose.Number}\n" +
+                    $"ï¿½ Monto Acumulado: ${vm.AccumulatedAmount:F2}\n" +
+                    $"ï¿½ Galones: {vm.AccumulatedGallons:F2}\n" +
+                    $"ï¿½ Precio/GalÃ³n: ${pricePerGallon:F0}",
                     "Historial Registrado");
 
                 // Clear form fields after successful submission
@@ -150,7 +150,7 @@ public partial class HoseHistoryPostView : ContentPage
             OnPropertyChanged();
         }
     }
-    
+
     public double AccumulatedGallons
     {
         get => _hosehistoryService.AccumulatedGallons;

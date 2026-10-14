@@ -1,4 +1,4 @@
-using APP.Eds.Services.Product;
+﻿using APP.Eds.Services.Product;
 using APP.Eds.Services.Setup;
 using CommunityToolkit.Maui.Views;
 using System.ComponentModel;

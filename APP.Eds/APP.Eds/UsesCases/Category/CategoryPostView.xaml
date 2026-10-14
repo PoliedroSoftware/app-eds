@@ -1,80 +1,80 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.Category.CategoryPostView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="{Binding CategoryManagement}"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="20">
-                
+            <VerticalStackLayout Padding="20" Spacing="20">
+
                 <!-- Header Card with Purple Gradient -->
                 <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
                     <StackLayout Spacing="8">
-                        <Label Text="📂 Gestión de Categorías" 
-                               FontSize="28" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Administre las categorías de combustible" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"/>
+                        <Label Text="Gestión de Categorías"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Administre las categorías de combustible"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               HorizontalOptions="Start"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Category Registration Form Card -->
                 <Border Style="{StaticResource ModernCardStyle}">
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Section Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="🏷️" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="🏷️"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Nueva Categoría" 
-                                       FontSize="20" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Registre una nueva categoría de combustible" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Nueva Categoría"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Registre una nueva categoría de combustible"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
                         <!-- Form Fields -->
                         <VerticalStackLayout Spacing="16">
-                            
+
                             <!-- Category Selection Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="{Binding CategoryTranslation, Mode=TwoWay}" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="{Binding CategoryTranslation, Mode=TwoWay}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="📋" 
-                                               FontSize="18" 
-                                               TextColor="#2196F3" 
+                                        <brand:PoliedroIcon Text="📋"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Picker x:Name="CategoryPicker"
                                                 Title="Seleccione una categoría"
                                                 ItemsSource="{Binding DefaultCategories}"
@@ -82,42 +82,42 @@
                                                 AutomationId="PickerCategorySelection"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
                             </VerticalStackLayout>
-                            
+
                             <!-- Custom Category Input (Visible only when "Personalizado..." is selected) -->
                             <VerticalStackLayout Spacing="8" IsVisible="{Binding IsCustomCategoryVisible}">
-                                <Label Text="Categoría Personalizada" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="Categoría Personalizada"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="✏️" 
-                                               FontSize="18" 
-                                               TextColor="#FF9800" 
+                                        <brand:PoliedroIcon Text="✏️"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Entry x:Name="CustomCategoryEntry"
                                                Keyboard="Text"
                                                Placeholder="{Binding EnterCategory, Mode=TwoWay}"
-                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                Text="{Binding Description, Mode=TwoWay}"
                                                TextChanged="CategoryEntry_TextChanged"
                                                AutomationId="EntryCustomCategoryDescription"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -127,21 +127,21 @@
 
                         <!-- Action Button Section -->
                         <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                            
+
                             <!-- Info Card -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="16"
                                     Opacity="0.9">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="ℹ️" 
-                                           FontSize="16" 
+                                    <brand:PoliedroIcon Text="ℹ️"
+                                           FontSize="16"
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
                                     <Label Text="Seleccione una categoría predeterminada (Subsidiado o Nacional) o cree una categoría personalizada según sus necesidades de gestión."
                                            FontSize="12"
-                                           TextColor="#1565C0"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
@@ -150,13 +150,13 @@
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
                                 <Button Text="{Binding SendData, Mode=TwoWay}"
-                                        TextColor="White" 
+                                        TextColor="{StaticResource OnBrand}"
                                         BackgroundColor="Transparent"
                                         Clicked="Button_Clicked_1"
                                         AutomationId="ButtonSendCategoryData"
                                         FontSize="18"
                                         FontAttributes="Bold"
-                                        HeightRequest="56"
+                                        MinimumHeightRequest="52"
                                         CornerRadius="16"/>
                             </Border>
                         </VerticalStackLayout>
@@ -168,73 +168,73 @@
                     <VerticalStackLayout Spacing="16">
                         <!-- Features Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#F3E5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="✨" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="✨"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Características de las Categorías" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Funcionalidades disponibles" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Características de las Categorías"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Funcionalidades disponibles"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
                         <!-- Features List -->
                         <VerticalStackLayout Spacing="12">
-                            
+
                             <!-- Feature 1 -->
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="✅" FontSize="16" VerticalOptions="Center"/>
+                                    <brand:PoliedroIcon Text="✅" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Solo letras y espacios permitidos"
-                                           FontSize="13"
-                                           TextColor="#2E7D32"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Feature 2 -->
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="📝" FontSize="16" VerticalOptions="Center"/>
+                                    <brand:PoliedroIcon Text="📝" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Categorías predeterminadas y personalizadas"
-                                           FontSize="13"
-                                           TextColor="#F57C00"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Feature 3 -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="🌐" FontSize="16" VerticalOptions="Center"/>
+                                    <brand:PoliedroIcon Text="🌐" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Soporte multiidioma integrado"
-                                           FontSize="13"
-                                           TextColor="#1976D2"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>

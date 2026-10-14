@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <mct:Popup
     x:Class="APP.Eds.Components.PopUp.CustomAlert"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,74 +7,72 @@
     CanBeDismissedByTappingOutsideOfPopup="True"
     Color="Transparent">
 
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 20"
             WidthRequest="340"
             HeightRequest="450"
             VerticalOptions="Center"
             HorizontalOptions="Center">
-        <Border.Shadow>
-            <Shadow Brush="Black" Offset="0,8" Radius="16" Opacity="0.1"/>
-        </Border.Shadow>
+
 
         <Grid RowDefinitions="Auto,*,Auto" Padding="0">
-            
+
             <!-- Header -->
             <Border Grid.Row="0"
                     x:Name="HeaderBorder"
-                    BackgroundColor="#E8A5A5"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                     StrokeShape="RoundRectangle 20,20,0,0"
                     Padding="20,24,20,20">
-                
+
                 <StackLayout HorizontalOptions="Center" Spacing="12">
                     <!-- Icon with better styling -->
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 25"
-                            WidthRequest="50" 
+                            WidthRequest="50"
                             HeightRequest="50"
                             HorizontalOptions="Center"
                             Opacity="0.9">
                         <Label x:Name="IconLabel"
-                               Text="i" 
+                               Text="i"
                                FontSize="32"
                                FontAttributes="Bold"
-                               TextColor="#8B0000"
-                               HorizontalOptions="Center" 
+                               TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                               HorizontalOptions="Center"
                                VerticalOptions="Center"
                                HorizontalTextAlignment="Center"
                                VerticalTextAlignment="Center"/>
                     </Border>
-                    
+
                     <Label x:Name="TitleLabel"
-                           Text="Error" 
-                           FontSize="18" 
+                           Text="Error"
+                           FontSize="18"
                            FontAttributes="Bold"
-                           TextColor="White"
+                           TextColor="{StaticResource OnBrand}"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"/>
                 </StackLayout>
             </Border>
 
             <!-- Message Content with ScrollView -->
-            <ScrollView Grid.Row="1" 
-                        Padding="24,20" 
+            <ScrollView Grid.Row="1"
+                        Padding="24,20"
                         Orientation="Vertical"
                         VerticalScrollBarVisibility="Default">
                 <StackLayout Spacing="16">
                     <Label x:Name="MessageLabel"
-                           Text="Mensaje de alerta" 
+                           Text="Mensaje de alerta"
                            FontSize="16"
                            LineBreakMode="WordWrap"
-                           TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                            HorizontalOptions="FillAndExpand"
                            HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Start"/>
-                    
+
                     <Label x:Name="DetailLabel"
-                           Text="" 
+                           Text=""
                            FontSize="14"
                            LineBreakMode="WordWrap"
-                           TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                            HorizontalOptions="FillAndExpand"
                            HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Start"
@@ -84,45 +82,43 @@
             </ScrollView>
 
             <!-- Buttons -->
-            <StackLayout Grid.Row="2" 
+            <StackLayout Grid.Row="2"
                          Orientation="Horizontal"
                          Spacing="12"
                          Padding="24,16,24,24"
                          HorizontalOptions="Center">
-                
+
                 <Border x:Name="CancelButtonBorder"
-                        BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                         StrokeThickness="1"
                         IsVisible="False"
                         Padding="2">
                     <Button x:Name="CancelButton"
                             BackgroundColor="Transparent"
-                            Text="Cancelar" 
-                            TextColor="#6C757D"
+                            Text="Cancelar"
+                            TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                             FontSize="14"
                             FontAttributes="Bold"
                             WidthRequest="110"
-                            HeightRequest="44"
+                            MinimumHeightRequest="52"
                             Clicked="OnCancelClicked"/>
                 </Border>
-                
+
                 <Border x:Name="ConfirmButtonBorder"
-                        BackgroundColor="#D78787"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         Padding="2">
-                    <Border.Shadow>
-                        <Shadow Brush="#D78787" Offset="0,2" Radius="4" Opacity="0.2"/>
-                    </Border.Shadow>
+
                     <Button x:Name="ConfirmButton"
                             BackgroundColor="Transparent"
-                            Text="OK" 
-                            TextColor="White"
+                            Text="OK"
+                            TextColor="{StaticResource OnBrand}"
                             FontSize="14"
                             FontAttributes="Bold"
                             WidthRequest="110"
-                            HeightRequest="44"
+                            MinimumHeightRequest="52"
                             Clicked="OnConfirmClicked"/>
                 </Border>
             </StackLayout>

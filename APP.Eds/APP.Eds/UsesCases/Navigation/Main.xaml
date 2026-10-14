@@ -1,315 +1,60 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="APP.Eds.UsesCases.Navigation.Main"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="POLIEDRO EDS"
-    BackgroundColor="{StaticResource Gray50}">
-    
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
-            <GradientStop Color="{StaticResource Secondary}" Offset="0.4" />
-            <GradientStop Color="{StaticResource Gray50}" Offset="1.0" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
-    
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="APP.Eds.UsesCases.Navigation.Main" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:brand="clr-namespace:APP.Eds.Controls" Title="Poliedro EDS" BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
     <Grid>
-        <ScrollView>
-            <StackLayout Padding="25,40,25,25" Spacing="15">
-                
-                <!-- Header Section with User Badge -->
-                <Border BackgroundColor="{StaticResource White}" 
-                        StrokeShape="RoundRectangle 20"
-                        StrokeThickness="0" 
-                        Padding="25,20">
-                    <Border.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" 
-                                Offset="0,4" 
-                                Radius="15" 
-                                Opacity="0.15"/>
-                    </Border.Shadow>
-                    <StackLayout Spacing="12">
-                        <!-- Welcome Title -->
-                        <Label Text="¡Bienvenido!" 
-                               FontSize="26" 
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource Primary}"
-                               HorizontalOptions="Center"/>
-                        
-                        <!-- Menu Principal Label -->
-                        <Label Text="Menú Principal" 
-                               FontSize="16"
-                               TextColor="{StaticResource Gray600}"
-                               HorizontalOptions="Center"
-                               AutomationId="LabelMenuPrincipal"/>
-                        
-                        <!-- User Badge - Below Menu Principal -->
-                        <Border BackgroundColor="Transparent"
-                                StrokeShape="RoundRectangle 15"
-                                Stroke="{StaticResource Primary}"
-                                StrokeThickness="2"
-                                Padding="10,6"
-                                HorizontalOptions="Center"
-                                Margin="0,8,0,0">
-                            <HorizontalStackLayout Spacing="6">
-                                <Label Text="👤"
-                                       FontSize="13"
-                                       VerticalOptions="Center"/>
-                                <Label x:Name="UserNameLabel"
-                                       Text="admin"
-                                       FontSize="12"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource Primary}"
-                                       VerticalOptions="Center"/>
+        <CollectionView ItemsSource="{Binding Categories}" SelectionMode="None" Margin="20,0">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="20" Padding="0,24,0,16">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Tu estación, en orden" Style="{StaticResource PoliedroPageTitle}" />
+                            <Label Text="Menú Principal" AutomationId="LabelMenuPrincipal" Style="{StaticResource PoliedroBodySecondary}" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="1" BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="12,8" VerticalOptions="Start">
+                            <HorizontalStackLayout Spacing="8">
+                                <brand:PoliedroIcon Text="👤" VerticalOptions="Center" />
+                                <Label x:Name="UserNameLabel" FontSize="14" MaximumWidthRequest="120" VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </Border>
-                    </StackLayout>
-                </Border>
-
-                <!-- Court Button for Islander -->
-                <Border IsVisible="{Binding IsIslander}"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="{StaticResource Primary}" Offset="0.0" />
-                            <GradientStop Color="{StaticResource Tertiary}" Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Shadow>
-                        <Shadow Brush="{StaticResource Primary}" 
-                                Offset="0,6" 
-                                Radius="12" 
-                                Opacity="0.25"/>
-                    </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavigateToCourtCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="20,15" ColumnDefinitions="Auto,*,Auto">
-                        <Border Grid.Column="0"
-                                BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
-                                StrokeShape="RoundRectangle 8"
-                                WidthRequest="32"
-                                HeightRequest="32"
-                                Margin="0,0,15,0"
-                                VerticalOptions="Center">
-                            <Label Text="C"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="{StaticResource Primary}"
-                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
-                        <Label Grid.Column="1"
-                               Text="Corte del Día"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource White}"
-                               VerticalOptions="Center"/>
-                        <Label Grid.Column="2"
-                               Text=">"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource White}"
-                               VerticalOptions="Center"/>
                     </Grid>
-                </Border>
-                
-                <!-- Menu Categories -->
-                <CollectionView ItemsSource="{Binding Categories}" 
-                                SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="0,8" 
-                                    BackgroundColor="{StaticResource White}"
-                                    StrokeShape="RoundRectangle 15"
-                                    StrokeThickness="1"
-                                    Stroke="{StaticResource Gray200}"
-                                    Padding="20,18"
-                                    AutomationId="FrameCategory">
-                                <Border.Shadow>
-                                    <Shadow Brush="{StaticResource Gray300}" 
-                                            Offset="0,2" 
-                                            Radius="8" 
-                                            Opacity="0.1"/>
-                                </Border.Shadow>
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding ShowPopupCommand}" />
-                                </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="Auto,*,Auto">
-                                    <!-- Icon Container -->
-                                    <Border Grid.Column="0"
-                                            BackgroundColor="{StaticResource Secondary}"
-                                            StrokeShape="RoundRectangle 8"
-                                            StrokeThickness="0"
-                                            WidthRequest="40"
-                                            HeightRequest="40"
-                                            Margin="0,0,15,0">
-                                        <Label Text="{Binding Icon}"
-                                               FontSize="18"
-                                               FontAttributes="Bold"
-                                               FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"/>
-                                    </Border>
-                                    
-                                    <!-- Title -->
-                                    <Label Grid.Column="1"
-                                           Text="{Binding Title}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource Gray900}"
-                                           VerticalOptions="Center"
-                                           AutomationId="LabelCategoryTitle"/>
-                                    
-                                    <!-- Arrow -->
-                                    <Label Grid.Column="2"
-                                           Text=">"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{StaticResource Gray400}"
-                                           VerticalOptions="Center"/>
-                                </Grid>
+                    <Border IsVisible="{Binding IsIslander}" BackgroundColor="{AppThemeBinding Light={StaticResource BrandDeep}, Dark={StaticResource BrandDeepDark}}" StrokeThickness="0" StrokeShape="RoundRectangle 16" Padding="20">
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="Cierre de turno" TextColor="{StaticResource OnBrand}" FontSize="24" FontFamily="OpenSansSemibold" />
+                            <Label Text="Registra las ventas y revisa la información del turno." TextColor="{StaticResource OnBrand}" FontSize="14" />
+                            <Button Text="Preparar cierre" Command="{Binding NavigateToCourtCommand}" Style="{StaticResource PoliedroPrimaryButton}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource PoliedroCard}" Padding="16" Margin="0,0,0,12" AutomationId="FrameCategory">
+                        <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowPopupCommand}" /></Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" MinimumHeightRequest="48">
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="12" VerticalOptions="Center">
+                                <brand:PoliedroIcon Text="{Binding Icon}" />
                             </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <!-- Logout Button -->
-                <Border Margin="0,15,0,0"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#FF5252" Offset="0.0" />
-                            <GradientStop Color="#D32F2F" Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Shadow>
-                        <Shadow Brush="#FF5252" 
-                                Offset="0,4" 
-                                Radius="10" 
-                                Opacity="0.3"/>
-                    </Border.Shadow>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnLogoutClicked" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="20,15" ColumnDefinitions="Auto,*">
-                        <Border Grid.Column="0"
-                                BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
-                                StrokeShape="RoundRectangle 8"
-                                WidthRequest="28"
-                                HeightRequest="28"
-                                Margin="0,0,12,0"
-                                VerticalOptions="Center">
-                            <Label Text="X"
-                                   FontSize="14"
-                                   FontAttributes="Bold"
-                                   TextColor="#FF5252"
-                                   FontFamily="{OnPlatform Android='monospace', iOS='Menlo', Default='Courier New'}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
-                        <Label Grid.Column="1"
-                               Text="Cerrar Sesión"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource White}"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               AutomationId="ButtonLogout"/>
+                            <Label Grid.Column="1" Text="{Binding Title}" FontSize="16" FontFamily="OpenSansSemibold" VerticalOptions="Center" AutomationId="LabelCategoryTitle" />
+                            <Image Grid.Column="2" Source="poliedro_arrow.png" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <VerticalStackLayout Spacing="12" Padding="0,8,0,24">
+                    <Button Text="Cerrar sesión" Clicked="OnLogoutClicked" Style="{StaticResource PoliedroSecondaryButton}" AutomationId="ButtonLogout" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Label x:Name="VersionLabel" Text="{Binding AppVersion}" Style="{StaticResource PoliedroBodySecondary}" VerticalOptions="Center" />
+                        <Button Grid.Column="1" Text="Buscar actualizaciones" Clicked="OnUpdateClicked" Style="{StaticResource PoliedroSecondaryButton}" FontSize="14" />
                     </Grid>
-                </Border>
-
-                <!-- Version and Update Section -->
-                <Border Margin="0,20,0,10"
-                        BackgroundColor="{StaticResource White}"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="1"
-                        Stroke="{StaticResource Gray200}"
-                        Padding="20,15">
-                    <Border.Shadow>
-                        <Shadow Brush="{StaticResource Gray300}" 
-                                Offset="0,2" 
-                                Radius="8" 
-                                Opacity="0.1"/>
-                    </Border.Shadow>
-                    <VerticalStackLayout Spacing="12">
-                        <!-- Version Info -->
-                        <HorizontalStackLayout Spacing="8" 
-                                             HorizontalOptions="Center">
-                            <Label Text="📱"
-                                   FontSize="16"
-                                   VerticalOptions="Center"/>
-                            <Label Text="Versión:"
-                                   FontSize="14"
-                                   TextColor="{StaticResource Gray600}"
-                                   VerticalOptions="Center"/>
-                            <Label x:Name="VersionLabel"
-                                   Text="{Binding AppVersion}"
-                                   FontSize="14"
-                                   FontAttributes="Bold"
-                                   TextColor="{StaticResource Primary}"
-                                   VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-
-                        <!-- Update Button -->
-                        <Border StrokeShape="RoundRectangle 10"
-                                StrokeThickness="0"
-                                BackgroundColor="{StaticResource Primary}">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnUpdateClicked" />
-                            </Border.GestureRecognizers>
-                            <HorizontalStackLayout Spacing="8" 
-                                                 Padding="15,10"
-                                                 HorizontalOptions="Center">
-                                <Label Text="🔄"
-                                       FontSize="16"
-                                       VerticalOptions="Center"/>
-                                <Label Text="Buscar Actualizaciones"
-                                       FontSize="14"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource White}"
-                                       VerticalOptions="Center"/>
-                            </HorizontalStackLayout>
-                        </Border>
-                    </VerticalStackLayout>
-                </Border>
-            </StackLayout>
-        </ScrollView>
-        
-        <!-- Loading Overlay -->
-        <Grid x:Name="LoadingOverlay"
-              BackgroundColor="#80000000"
-              IsVisible="False"
-              VerticalOptions="Fill"
-              HorizontalOptions="Fill"
-              AutomationId="GridLoadingOverlay">
-            <Border BackgroundColor="{StaticResource White}"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="30,25"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
-                <Border.Shadow>
-                    <Shadow Brush="{StaticResource Primary}" 
-                            Offset="0,8" 
-                            Radius="20" 
-                            Opacity="0.3"/>
-                </Border.Shadow>
-                <StackLayout Spacing="15">
-                    <ActivityIndicator IsRunning="True"
-                                       Color="{StaticResource Primary}"
-                                       WidthRequest="40"
-                                       HeightRequest="40"
-                                       HorizontalOptions="Center"
-                                       AutomationId="ActivityIndicatorLoading"/>
-                    <Label Text="Cerrando sesión..."
-                           FontSize="16"
-                           TextColor="{StaticResource Gray700}"
-                           HorizontalOptions="Center"/>
-                </StackLayout>
+                </VerticalStackLayout>
+            </CollectionView.Footer>
+        </CollectionView>
+        <Grid x:Name="LoadingOverlay" BackgroundColor="#80000000" IsVisible="False" AutomationId="GridLoadingOverlay">
+            <Border Style="{StaticResource PoliedroCard}" HorizontalOptions="Center" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="16">
+                    <ActivityIndicator IsRunning="True" AutomationId="ActivityIndicatorLoading" />
+                    <Label Text="Cerrando sesión…" FontSize="16" />
+                </VerticalStackLayout>
             </Border>
         </Grid>
     </Grid>

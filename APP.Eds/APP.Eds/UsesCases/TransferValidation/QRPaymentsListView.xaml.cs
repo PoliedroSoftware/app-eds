@@ -1,4 +1,4 @@
-using APP.Eds.Models.TransferValidation;
+ï»¿using APP.Eds.Models.TransferValidation;
 using APP.Eds.Services.TransferValidation;
 using Microsoft.Maui.Controls.Shapes;
 
@@ -12,10 +12,11 @@ public partial class QRPaymentsListView : ContentPage
 
     public QRPaymentsListView()
     {
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         try
         {
-            Title = "Listado de Pagos QR";
-            BackgroundColor = Color.FromArgb("#F8F9FA");
+            Title = "Pagos QR";
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground;
 
             _service = new TransferValidationService();
             _service.RefreshCommand = new Command(async () => await RefreshDataAsync());
@@ -25,7 +26,7 @@ public partial class QRPaymentsListView : ContentPage
             _loadingIndicator = new ActivityIndicator
             {
                 IsRunning = true,
-                Color = Color.FromArgb("#6A1B9A"),
+                Color = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
                 WidthRequest = 50,
                 HeightRequest = 50,
                 HorizontalOptions = LayoutOptions.Center
@@ -35,7 +36,7 @@ public partial class QRPaymentsListView : ContentPage
             {
                 Text = "Cargando pagos QR...",
                 FontSize = 16,
-                TextColor = Color.FromArgb("#636E72"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 HorizontalOptions = LayoutOptions.Center
             };
 
@@ -47,7 +48,7 @@ public partial class QRPaymentsListView : ContentPage
 
             var loadingBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(20) },
                 Padding = new Thickness(40, 30),
                 HorizontalOptions = LayoutOptions.Center,
@@ -114,10 +115,10 @@ public partial class QRPaymentsListView : ContentPage
     {
         var titleLabel = new Label
         {
-            Text = "Pagos con Código QR",
-            FontSize = 24,
+            Text = "Pagos con CÃ³digo QR",
+            FontSize = 34,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#6A1B9A"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             HorizontalOptions = LayoutOptions.Center
         };
 
@@ -125,7 +126,7 @@ public partial class QRPaymentsListView : ContentPage
         {
             Text = "Validaciones de transferencias realizadas",
             FontSize = 14,
-            TextColor = Color.FromArgb("#636E72"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HorizontalOptions = LayoutOptions.Center
         };
 
@@ -137,7 +138,7 @@ public partial class QRPaymentsListView : ContentPage
 
         return new Border
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(20) },
             StrokeThickness = 0,
             Padding = new Thickness(20),
@@ -158,14 +159,14 @@ public partial class QRPaymentsListView : ContentPage
             ColumnSpacing = 10
         };
 
-        Grid.SetColumn(CreateStatCard("Total", nameof(_service.TotalTransactions), "#6A1B9A"), 0);
-        grid.Children.Add(CreateStatCard("Total", nameof(_service.TotalTransactions), "#6A1B9A"));
+        Grid.SetColumn(CreateStatCard("Total", nameof(_service.TotalTransactions), "#006EAA"), 0);
+        grid.Children.Add(CreateStatCard("Total", nameof(_service.TotalTransactions), "#006EAA"));
 
-        var confirmedCard = CreateStatCard("Confirmadas", nameof(_service.ConfirmedTransactions), "#4CAF50");
+        var confirmedCard = CreateStatCard("Confirmadas", nameof(_service.ConfirmedTransactions), "#187246");
         Grid.SetColumn(confirmedCard, 1);
         grid.Children.Add(confirmedCard);
 
-        var pendingCard = CreateStatCard("Pendientes", nameof(_service.PendingTransactions), "#FF9800");
+        var pendingCard = CreateStatCard("Pendientes", nameof(_service.PendingTransactions), "#8F570A");
         Grid.SetColumn(pendingCard, 2);
         grid.Children.Add(pendingCard);
 
@@ -177,8 +178,8 @@ public partial class QRPaymentsListView : ContentPage
         var titleLabel = new Label
         {
             Text = title,
-            FontSize = 11,
-            TextColor = Color.FromArgb("#636E72"),
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HorizontalOptions = LayoutOptions.Center
         };
 
@@ -186,7 +187,7 @@ public partial class QRPaymentsListView : ContentPage
         {
             FontSize = 22,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb(color),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             HorizontalOptions = LayoutOptions.Center
         };
         valueLabel.SetBinding(Label.TextProperty, bindingPath);
@@ -199,7 +200,7 @@ public partial class QRPaymentsListView : ContentPage
 
         return new Border
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15) },
             Padding = new Thickness(15, 12),
             Content = stack
@@ -211,15 +212,15 @@ public partial class QRPaymentsListView : ContentPage
         var titleLabel = new Label
         {
             Text = "Monto Total Procesado",
-            FontSize = 13,
-            TextColor = Color.FromArgb("#636E72")
+            FontSize = 14,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
 
         var amountLabel = new Label
         {
             FontSize = 24,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#6A1B9A")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
         };
         amountLabel.SetBinding(Label.TextProperty, nameof(_service.FormattedTotalAmount));
 
@@ -232,7 +233,7 @@ public partial class QRPaymentsListView : ContentPage
 
         return new Border
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15) },
             Padding = new Thickness(20, 15),
             Content = stack
@@ -244,8 +245,8 @@ public partial class QRPaymentsListView : ContentPage
         var searchEntry = new Entry
         {
             Placeholder = "Buscar por cliente, ID o confirmador...",
-            BackgroundColor = Color.FromArgb("#F8F9FA"),
-            TextColor = Color.FromArgb("#2D3436"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             FontSize = 14
         };
         searchEntry.SetBinding(Entry.TextProperty, nameof(_service.SearchText));
@@ -254,14 +255,14 @@ public partial class QRPaymentsListView : ContentPage
         {
             Text = "Filtrar:",
             FontSize = 14,
-            TextColor = Color.FromArgb("#636E72"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             VerticalOptions = LayoutOptions.Center
         };
 
         var filterPicker = new Picker
         {
-            BackgroundColor = Color.FromArgb("#F8F9FA"),
-            TextColor = Color.FromArgb("#2D3436"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             FontSize = 14
         };
         filterPicker.SetBinding(Picker.ItemsSourceProperty, nameof(_service.StatusFilterOptions));
@@ -289,11 +290,11 @@ public partial class QRPaymentsListView : ContentPage
 
         return new Border
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15) },
             Padding = new Thickness(15),
             StrokeThickness = 1,
-            Stroke = Color.FromArgb("#E5E7EB"),
+            Stroke = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
             Content = stack
         };
     }
@@ -305,7 +306,7 @@ public partial class QRPaymentsListView : ContentPage
             Text = "Transacciones",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#2D3436"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             Padding = new Thickness(15, 15, 15, 10)
         };
 
@@ -325,11 +326,11 @@ public partial class QRPaymentsListView : ContentPage
 
         return new Border
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15) },
             Padding = 0,
             StrokeThickness = 1,
-            Stroke = Color.FromArgb("#E5E7EB"),
+            Stroke = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
             Content = stack
         };
     }
@@ -340,14 +341,14 @@ public partial class QRPaymentsListView : ContentPage
         {
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#2D3436"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
             LineBreakMode = LineBreakMode.TailTruncation
         };
         customerLabel.SetBinding(Label.TextProperty, nameof(TransferValidationModel.CustomerName));
 
         var statusLabel = new Label
         {
-            FontSize = 11,
+            FontSize = 12,
             FontAttributes = FontAttributes.Bold,
             TextColor = Colors.White
         };
@@ -376,10 +377,10 @@ public partial class QRPaymentsListView : ContentPage
         Grid.SetColumn(statusBorder, 1);
         headerGrid.Children.Add(statusBorder);
 
-        var idValueLabel = new Label { FontSize = 13, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#6A1B9A") };
+        var idValueLabel = new Label { FontSize = 14, FontAttributes = FontAttributes.Bold, TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText };
         idValueLabel.SetBinding(Label.TextProperty, nameof(TransferValidationModel.UniqueId));
 
-        var amountValueLabel = new Label { FontSize = 13, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#2D3436") };
+        var amountValueLabel = new Label { FontSize = 14, FontAttributes = FontAttributes.Bold, TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary };
         amountValueLabel.SetBinding(Label.TextProperty, nameof(TransferValidationModel.FormattedAmount));
 
         var detailsGrid = new Grid
@@ -397,7 +398,7 @@ public partial class QRPaymentsListView : ContentPage
             Spacing = 3,
             Children =
    {
-       new Label { Text = "ID Transacción:", FontSize = 11, TextColor = Color.FromArgb("#636E72") },
+       new Label { Text = "ID Transacciï¿½n:", FontSize = 12, TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary },
   idValueLabel
   }
         };
@@ -406,7 +407,7 @@ public partial class QRPaymentsListView : ContentPage
             Spacing = 3,
             Children =
    {
-   new Label { Text = "Monto:", FontSize = 11, TextColor = Color.FromArgb("#636E72") },
+   new Label { Text = "Monto:", FontSize = 12, TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary },
        amountValueLabel
     }
         };
@@ -415,10 +416,10 @@ public partial class QRPaymentsListView : ContentPage
         Grid.SetColumn(amountStack, 1);
         detailsGrid.Children.Add(amountStack);
 
-        var dateTimeLabel = new Label { FontSize = 12, TextColor = Color.FromArgb("#636E72") };
+        var dateTimeLabel = new Label { FontSize = 12, TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary };
         dateTimeLabel.SetBinding(Label.TextProperty, nameof(TransferValidationModel.FormattedDateTime));
 
-        var confirmedLabel = new Label { FontSize = 12, TextColor = Color.FromArgb("#636E72") };
+        var confirmedLabel = new Label { FontSize = 12, TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary };
         confirmedLabel.SetBinding(Label.TextProperty, new Binding
         {
             Path = nameof(TransferValidationModel.ConfirmedBy),
@@ -455,11 +456,11 @@ public partial class QRPaymentsListView : ContentPage
         return new Border
         {
             Margin = new Thickness(10, 5),
-            BackgroundColor = Color.FromArgb("#FEFEFE"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) },
             Padding = new Thickness(15),
             StrokeThickness = 1,
-            Stroke = Color.FromArgb("#E5E7EB"),
+            Stroke = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
             Content = mainGrid
         };
     }
@@ -469,12 +470,12 @@ public partial class QRPaymentsListView : ContentPage
         var button = new Button
         {
             Text = "Actualizar Datos",
-            BackgroundColor = Color.FromArgb("#6A1B9A"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
             CornerRadius = 15,
-            HeightRequest = 50,
+            MinimumHeightRequest = 52,
             Margin = new Thickness(0, 10, 0, 20)
         };
         button.SetBinding(Button.CommandProperty, nameof(_service.RefreshCommand));

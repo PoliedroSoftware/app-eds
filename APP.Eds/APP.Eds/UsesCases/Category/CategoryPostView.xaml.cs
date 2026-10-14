@@ -1,4 +1,4 @@
-using APP.Eds.Services.Category;
+﻿using APP.Eds.Services.Category;
 using APP.Eds.Components.PopUp;
 using System.Text.RegularExpressions;
 
@@ -7,7 +7,7 @@ namespace APP.Eds.UsesCases.Category;
 public partial class CategoryPostView : ContentPage
 {
     private CategoryService _categoryService;
-    
+
     public CategoryPostView()
 	{
 		InitializeComponent();
@@ -29,7 +29,7 @@ public partial class CategoryPostView : ContentPage
             }
         }
     }
-    
+
     private async void Button_Clicked_1(object sender, EventArgs e)
     {
         try
@@ -69,7 +69,7 @@ public partial class CategoryPostView : ContentPage
             // Clean up and validate format
             string originalDescription = _categoryService.Description;
             _categoryService.Description = _categoryService.Description.Trim();
-            
+
             if (originalDescription != _categoryService.Description)
             {
                 await CustomAlert.ShowInfoAsync("Los espacios extra han sido removidos automáticamente", "Descripción Limpiada");
@@ -84,11 +84,11 @@ public partial class CategoryPostView : ContentPage
 
             LoadingOverlay.ShowLoading();
             bool success = await _categoryService.SaveCategoryDataAsync();
-            
+
             // Only show success message if the operation actually succeeded
             if (success)
             {
-                await CustomAlert.ShowSuccessAsync($"La categor�a '{_categoryService.Description}' ha sido creada exitosamente", "Categor�a Creada");
+                await CustomAlert.ShowSuccessAsync($"La categoría '{_categoryService.Description}' ha sido creada exitosamente", "Categoría Creada");
 
                 // Clear form field after successful submission
                 Description = string.Empty;

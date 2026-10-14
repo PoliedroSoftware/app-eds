@@ -1,4 +1,4 @@
-using APP.Eds.Services.DispenserType;
+锘縰sing APP.Eds.Services.DispenserType;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,7 +8,7 @@ namespace APP.Eds.UsesCases.DispenserType;
 public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
 {
     private DispenserTypeService _dispenserTypeService;
-    
+
     public DispenserTypePostView()
     {
         InitializeComponent();
@@ -31,36 +31,36 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_dispenserTypeService.Description))
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 del tipo de dispensador es obligatoria para el registro", "Descripci髇 Requerida");
+                await CustomAlert.ShowErrorAsync("La descripci贸n del tipo de dispensador es obligatoria para el registro", "Descripci贸n Requerida");
                 return;
             }
 
             // Additional validation for minimum length
             if (_dispenserTypeService.Description.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 debe tener al menos 3 caracteres para ser v醠ida", "Descripci髇 Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripci贸n debe tener al menos 3 caracteres para ser v谩lida", "Descripci贸n Muy Corta");
                 return;
             }
 
             if (_dispenserTypeService.Description.Length > 100)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 no puede exceder 100 caracteres", "Descripci髇 Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripci贸n no puede exceder 100 caracteres", "Descripci贸n Muy Larga");
                 return;
             }
 
             // Check for special characters or inappropriate content
             if (_dispenserTypeService.Description.Trim() != _dispenserTypeService.Description)
             {
-                await CustomAlert.ShowWarningAsync("La descripci髇 contiene espacios al inicio o final que ser醤 removidos autom醫icamente", "Espacios Detectados");
+                await CustomAlert.ShowWarningAsync("La descripci贸n contiene espacios al inicio o final que ser谩n removidos autom谩ticamente", "Espacios Detectados");
                 _dispenserTypeService.Description = _dispenserTypeService.Description.Trim();
             }
 
             LoadingOverlay.ShowLoading();
             await _dispenserTypeService.SaveDispenserTypeDataAsync();
-            
+
             // Clear form after successful save
             Description = string.Empty;
-            
+
             await CustomAlert.ShowSuccessAsync($"El tipo de dispensador '{_dispenserTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
         }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public partial class DispenserTypePostView : ContentPage, INotifyPropertyChanged
         finally
         {
             LoadingOverlay.HideLoading();
-            
+
             // Re-enable and restore button
             if (button != null)
             {

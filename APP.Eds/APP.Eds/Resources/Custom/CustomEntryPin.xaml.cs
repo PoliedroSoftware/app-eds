@@ -1,4 +1,4 @@
-namespace APP.Eds.Resources.Custom;
+﻿namespace APP.Eds.Resources.Custom;
 
 public partial class CustomEntryPin : Grid
 {
@@ -147,13 +147,13 @@ public partial class CustomEntryPin : Grid
     public event FocusEventHandler FocusChanged;
     private void TxtEntry_Focused(object sender, FocusEventArgs e)
     {
-        EntryBorder.Stroke = Color.FromArgb("#6200E8");
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(EntryBorder, Border.StrokeProperty, "BrandTextColor");
         FocusChanged?.Invoke(this, e, true);
     }
 
     private void TxtEntry_Unfocused(object sender, FocusEventArgs e)
     {
-        EntryBorder.Stroke = Colors.Gray;
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(EntryBorder, Border.StrokeProperty, "InputBorderColor");
         FocusChanged?.Invoke(this, e, false);
     }
 

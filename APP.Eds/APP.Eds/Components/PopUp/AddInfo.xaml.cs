@@ -10,9 +10,10 @@ public partial class AddInfo : Popup
 
     public AddInfo(CourtService courtService)
     {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
         InitializeComponent();
         this.courtService = courtService;
-        
+
         // Set BindingContext for proper data binding
         BindingContext = courtService;
     }
@@ -63,14 +64,14 @@ public partial class AddInfo : Popup
 
                 // Save the additional information
                 await courtService.SaveAdditionalInfoAsync(editor.Text.Trim());
-                
+
                 // Show success feedback
                 await CustomAlert.ShowSuccessAsync(
                     $"La información adicional ha sido guardada correctamente:\n\n" +
                     $"• Caracteres guardados: {editor.Text.Trim().Length}\n" +
-                    $"• Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}", 
+                    $"• Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}",
                     "Información Guardada");
-                
+
                 try
                 {
                     Close();

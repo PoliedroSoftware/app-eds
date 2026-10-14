@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <mct:Popup
 	x:Class="APP.Eds.Components.PopUp.OkBusiness"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -10,7 +10,7 @@
 
     <Frame x:Name="Frame"
        Padding="20"
-       BorderColor="#6200E8"
+       BorderColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
        CornerRadius="15"
        HasShadow="True"
        WidthRequest="400" MaximumHeightRequest="300"
@@ -27,23 +27,23 @@
             <!--  Botón Redirigir A Eds  -->
             <Button Grid.Row="1" Grid.Column="0"
                     x:Name="BttnGoToEds"
-                    AutomationId="ButtonGoToEds" 
-                    BackgroundColor="#6200E8"
+                    AutomationId="ButtonGoToEds"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                     Clicked="GoToEds"
                     CornerRadius="10"
-                    FontSize="18" Text="Registrar EDS" TextColor="White"
+                    FontSize="18" Text="Registrar EDS" TextColor="{StaticResource OnBrand}"
                     VerticalOptions="Center"
-                    HeightRequest="40"/>
+                    MinimumHeightRequest="52"/>
 
             <Button Grid.Row="1" Grid.Column="1"
                     x:Name="BttnOkBusiness"
                     AutomationId="ButtonOkBusiness"
-                    BackgroundColor="#6200E8"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                     Clicked="OnCloseTapped"
                     CornerRadius="10"
-                    FontSize="18" Text="Ok" TextColor="White"
+                    FontSize="18" Text="Ok" TextColor="{StaticResource OnBrand}"
                     VerticalOptions="Center"
-                    HeightRequest="40"/>
+                    MinimumHeightRequest="52"/>
 
         </Grid>
     </Frame>

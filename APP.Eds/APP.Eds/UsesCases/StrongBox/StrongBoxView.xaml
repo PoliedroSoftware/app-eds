@@ -1,162 +1,150 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls" xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              x:Class="APP.Eds.UsesCases.StrongBox.StrongBoxView"
              Title="Caja Fuerte"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <VerticalStackLayout Spacing="0">
-                
+
                 <!-- Header moderno con gradiente purpura -->
                 <Border StrokeShape="RoundRectangle 0,0,24,24"
                         StrokeThickness="0"
                         Padding="20,40,20,20"
-                        BackgroundColor="#6A1B9A">
+                        BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}">
                     <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#6A1B9A" Offset="0.0" />
-                            <GradientStop Color="#8E24AA" Offset="0.5" />
-                            <GradientStop Color="#9C27B0" Offset="1.0" />
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                     </Border.Background>
-                    <Border.Shadow>
-                        <Shadow Brush="#6A1B9A" Offset="0,4" Radius="16" Opacity="0.3"/>
-                    </Border.Shadow>
-                    
+
+
                     <StackLayout Spacing="8">
-                        <Label Text="💰 Caja Fuerte" 
-                               FontSize="28" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
+                        <Label Text="Caja Fuerte"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource OnBrand}"
                                HorizontalOptions="Center"/>
-                        <Label Text="Gestione el efectivo disponible de forma segura" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
+                        <Label Text="Gestione el efectivo disponible de forma segura"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                HorizontalOptions="Center"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Contenido principal -->
                 <VerticalStackLayout Padding="20,24,20,20" Spacing="20">
-                    
+
                     <!-- Tarjeta de saldo actual -->
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 16"
                             StrokeThickness="0"
                             Padding="24,20">
-                        <Border.Shadow>
-                            <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.08"/>
-                        </Border.Shadow>
-                        
+
+
                         <VerticalStackLayout Spacing="16">
                             <!-- Header de saldo -->
                             <StackLayout Orientation="Horizontal" Spacing="12">
-                                <Border BackgroundColor="#E8F5E8"
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                         StrokeShape="RoundRectangle 12"
                                         WidthRequest="40" HeightRequest="40"
                                         VerticalOptions="Center">
-                                    <Label Text="💵" FontSize="20" 
-                                           HorizontalOptions="Center" 
+                                    <brand:PoliedroIcon Text="💵" FontSize="20"
+                                           HorizontalOptions="Center"
                                            VerticalOptions="Center"/>
                                 </Border>
-                                <Label Text="Saldo actual:" 
-                                       FontSize="16" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                <Label Text="Saldo actual:"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Monto del saldo -->
                             <Label Text="{Binding CurrentBalance.Saldo, StringFormat='${0:N2}'}"
                                    FontSize="36"
                                    FontAttributes="Bold"
-                                   TextColor="#059669"
+                                   TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                    HorizontalOptions="Center"
                                    Margin="0,8,0,16"/>
-                            
+
                             <!-- Campo de retiro -->
                             <VerticalStackLayout Spacing="12">
-                                <Label Text="Monto a retirar" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
-                                
-                                <Border BackgroundColor="#F9FAFB"
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#D1D5DB"
+                                <Label Text="Monto a retirar"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="1"
-                                        Padding="16,12">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12">
-                                        <Label Text="$" 
-                                               FontSize="18" 
+                                        <Label Text="$"
+                                               FontSize="18"
                                                FontAttributes="Bold"
-                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                VerticalOptions="Center"/>
                                         <Entry Placeholder="0.00"
                                                Keyboard="Numeric"
                                                Text="{Binding WithdrawAmount, Mode=TwoWay}"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#111827"
-                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
                                 </Border>
                             </VerticalStackLayout>
-                            
+
                             <!-- Botones de retiro -->
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                                 <!-- Boton retiro normal -->
                                 <Border Grid.Column="0"
-                                        BackgroundColor="#6A1B9A"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                         StrokeShape="RoundRectangle 12"
                                         Padding="4"
                                         IsEnabled="{Binding CanWithdraw}">
                                     <Border.Triggers>
                                         <DataTrigger TargetType="Border" Binding="{Binding CanWithdraw}" Value="False">
-                                            <Setter Property="BackgroundColor" Value="#9CA3AF"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <Border.Shadow>
-                                        <Shadow Brush="#6A1B9A" Offset="0,3" Radius="8" Opacity="0.3"/>
-                                    </Border.Shadow>
-                                    
-                                    <Button Text="💸 Retirar"
+
+
+                                    <Button Text="Retirar"
                                             Command="{Binding WithdrawCommand}"
                                             BackgroundColor="Transparent"
-                                            TextColor="White"
+                                            TextColor="{StaticResource OnBrand}"
                                             FontSize="14"
                                             FontAttributes="Bold"
-                                            HeightRequest="48"/>
+                                            MinimumHeightRequest="52"/>
                                 </Border>
 
                                 <!-- Boton retirar todo -->
                                 <Border Grid.Column="1"
-                                        BackgroundColor="#DC2626"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                         StrokeShape="RoundRectangle 12"
                                         Padding="4"
                                         IsEnabled="{Binding CanWithdrawAll}">
                                     <Border.Triggers>
                                         <DataTrigger TargetType="Border" Binding="{Binding CanWithdrawAll}" Value="False">
-                                            <Setter Property="BackgroundColor" Value="#9CA3AF"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <Border.Shadow>
-                                        <Shadow Brush="#DC2626" Offset="0,3" Radius="8" Opacity="0.3"/>
-                                    </Border.Shadow>
-                                    
-                                    <Button Text="🏦 Retirar Todo"
+
+
+                                    <Button Text="Retirar Todo"
                                             Command="{Binding WithdrawAllCommand}"
                                             BackgroundColor="Transparent"
-                                            TextColor="White"
+                                            TextColor="{StaticResource OnBrand}"
                                             FontSize="14"
                                             FontAttributes="Bold"
-                                            HeightRequest="48"/>
+                                            MinimumHeightRequest="52"/>
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>
@@ -165,18 +153,18 @@
                     <!-- Seccion de movimientos recientes -->
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#FEF3C7"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 12"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="📋" FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="📋" FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            <Label Text="Movimientos recientes" 
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                            <Label Text="Movimientos recientes"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
@@ -185,34 +173,32 @@
                                         MaximumHeightRequest="400">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="#E5E7EB"
+                                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                             StrokeThickness="1"
                                             Margin="0,0,0,12"
                                             Padding="16">
-                                        <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.06"/>
-                                        </Border.Shadow>
-                                        
+
+
                                         <!-- Gesto tap para todos los movimientos -->
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewCourtDetailCommand}"
                                                                   CommandParameter="{Binding .}"/>
                                         </Border.GestureRecognizers>
-                                        
+
                                         <!-- Efecto visual para indicar que es clickeable -->
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="CORTE">
                                                 <DataTrigger.Setters>
-                                                    <Setter Property="Stroke" Value="#3B82F6"/>
+                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"/>
                                                     <Setter Property="StrokeThickness" Value="2"/>
                                                 </DataTrigger.Setters>
                                             </DataTrigger>
                                         </Border.Triggers>
-                                        
+
                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" RowSpacing="8" ColumnSpacing="12">
-                                            
+
                                             <!-- Icono del tipo de movimiento -->
                                             <Border Grid.RowSpan="4" Grid.Column="0"
                                                     WidthRequest="48" HeightRequest="48"
@@ -220,15 +206,15 @@
                                                     VerticalOptions="Center">
                                                 <Border.Triggers>
                                                     <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="RETIRO">
-                                                        <Setter Property="BackgroundColor" Value="#FEF2F2"/>
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"/>
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Border" Binding="{Binding Type}" Value="CORTE">
-                                                        <Setter Property="BackgroundColor" Value="#F0FDF4"/>
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"/>
                                                     </DataTrigger>
                                                 </Border.Triggers>
-                                                
-                                                <Label FontSize="20" 
-                                                       HorizontalOptions="Center" 
+
+                                                <Label FontSize="20"
+                                                       HorizontalOptions="Center"
                                                        VerticalOptions="Center">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="RETIRO">
@@ -244,13 +230,13 @@
                                             <!-- Tipo y monto -->
                                             <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
                                                 <StackLayout Orientation="Horizontal" Spacing="8">
-                                                    <Label Text="{Binding Type}" 
-                                                           FontSize="16" 
-                                                           FontAttributes="Bold" 
-                                                           TextColor="#111827"/>
-                                                    
+                                                    <Label Text="{Binding Type}"
+                                                           FontSize="16"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+
                                                     <!-- Indicador visual para CORTE clickeable -->
-                                                    <Border BackgroundColor="#E0F2FE"
+                                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                             StrokeShape="RoundRectangle 8"
                                                             Padding="4,2"
                                                             VerticalOptions="Center">
@@ -262,85 +248,85 @@
                                                                 <Setter Property="IsVisible" Value="False"/>
                                                             </DataTrigger>
                                                         </Border.Triggers>
-                                                        <Label Text="👆 Ver detalles" 
-                                                               FontSize="9" 
-                                                               TextColor="#0369A1"
+                                                        <Label Text="Ver detalles"
+                                                               FontSize="9"
+                                                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                                FontAttributes="Bold"/>
                                                     </Border>
                                                 </StackLayout>
-                                                
-                                                <Label Text="{Binding Ammount, StringFormat='Monto: ${0:N2}'}" 
-                                                       FontSize="14" 
-                                                       TextColor="#059669"/>
+
+                                                <Label Text="{Binding Ammount, StringFormat='Monto: ${0:N2}'}"
+                                                       FontSize="14"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
                                             </StackLayout>
 
                                             <!-- Saldo resultante -->
                                             <StackLayout Grid.Row="0" Grid.Column="2" VerticalOptions="Center">
-                                                <Label Text="{Binding Saldo, StringFormat='${0:N2}'}" 
-                                                       FontSize="14" 
-                                                       FontAttributes="Bold" 
-                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                                <Label Text="{Binding Saldo, StringFormat='${0:N2}'}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        HorizontalOptions="End"/>
                                             </StackLayout>
 
                                             <!-- Nota (si existe) -->
-                                            <StackLayout Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+                                            <StackLayout Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                                                          IsVisible="{Binding Note, Converter={StaticResource StringNotEmptyConverter}}">
-                                                <Label Text="{Binding Note, StringFormat='Nota: {0}'}" 
-                                                       FontSize="12" 
-                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                                <Label Text="{Binding Note, StringFormat='Nota: {0}'}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
 
                                             <!-- ID del corte (si existe) -->
-                                            <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+                                            <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                                                          IsVisible="{Binding IdCorte, Converter={StaticResource IsNotNullConverter}}"
-                                                         Orientation="Horizontal" 
+                                                         Orientation="Horizontal"
                                                          Spacing="8">
-                                                <Label Text="🎯" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="{Binding IdCorte, StringFormat='ID Corte: #{0}'}" 
-                                                       FontSize="12" 
-                                                       TextColor="#0369A1"
+                                                <brand:PoliedroIcon Text="🎯" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding IdCorte, StringFormat='ID Corte: #{0}'}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                        FontAttributes="Bold"
                                                        VerticalOptions="Center"/>
                                             </StackLayout>
 
                                             <!-- Fecha y usuario -->
-                                            <StackLayout Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
-                                                         Orientation="Horizontal" 
+                                            <StackLayout Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                                                         Orientation="Horizontal"
                                                          Spacing="16">
-                                                <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
-                                                       FontSize="11" 
-                                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
-                                                <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}" 
-                                                       FontSize="11" 
-                                                       TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
+                                                <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                                <Label Text="{Binding CreatedBy, StringFormat='Por: {0}'}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </StackLayout>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
-                            
+
                             <!-- Estado vacio -->
                             <CollectionView.EmptyView>
-                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" 
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center"
                                              Spacing="16" Padding="32">
-                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                             StrokeShape="RoundRectangle 16"
-                                            Stroke="#E5E7EB"
+                                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                             Padding="32,24">
                                         <StackLayout Spacing="16" HorizontalOptions="Center">
-                                            <Label Text="📋" FontSize="48" 
-                                                   HorizontalOptions="Center" 
-                                                   TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}"/>
-                                            <Label Text="No hay movimientos registrados" 
-                                                   FontSize="16" 
+                                            <brand:PoliedroIcon Text="📋" FontSize="48"
+                                                   HorizontalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                            <Label Text="No hay movimientos registrados"
+                                                   FontSize="16"
                                                    FontAttributes="Bold"
-                                                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                    HorizontalOptions="Center"/>
-                                            <Label Text="Los movimientos de efectivo apareceran aqui" 
-                                                   FontSize="14" 
-                                                   TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#B8B8B8}" 
+                                            <Label Text="Los movimientos de efectivo apareceran aqui"
+                                                   FontSize="14"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                    HorizontalOptions="Center"
                                                    HorizontalTextAlignment="Center"/>
                                         </StackLayout>
@@ -350,20 +336,20 @@
                         </CollectionView>
 
                         <!-- Boton cargar mas -->
-                        <Border BackgroundColor="#F3F4F6"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                 StrokeShape="RoundRectangle 12"
-                                Stroke="#D1D5DB"
+                                Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                 Padding="4">
-                            <Button Text="📄 Cargar mas" 
+                            <Button Text="Cargar mas"
                                     Command="{Binding LoadMoreMovementsCommand}"
                                     BackgroundColor="Transparent"
-                                    TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}"
+                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                     FontSize="14"
                                     FontAttributes="Bold"
-                                    HeightRequest="44"/>
+                                    MinimumHeightRequest="52"/>
                         </Border>
                     </VerticalStackLayout>
-                    
+
                     <!-- Espaciado inferior -->
                     <BoxView HeightRequest="20" BackgroundColor="Transparent"/>
                 </VerticalStackLayout>

@@ -1,4 +1,4 @@
-namespace APP.Eds.Resources.Custom;
+﻿namespace APP.Eds.Resources.Custom;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class CustomEntry : Grid

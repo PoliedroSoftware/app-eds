@@ -1,88 +1,88 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.Provider.ProviderPostView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Proveedores"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="20">
-                
+            <VerticalStackLayout Padding="20" Spacing="20">
+
                 <!-- Header Card with Purple Gradient -->
                 <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
                     <StackLayout Spacing="8">
-                        <Label Text="🚚 Gestión de Proveedores" 
-                               FontSize="28" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Administre los proveedores de combustible" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"/>
+                        <Label Text="Gestión de Proveedores"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Administre los proveedores de combustible"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               HorizontalOptions="Start"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Provider Registration Form Card -->
                 <Border Style="{StaticResource ModernCardStyle}">
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Section Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="🏭" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="🏭"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Nuevo Proveedor" 
-                                       FontSize="20" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Registre un nuevo proveedor de combustible" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Nuevo Proveedor"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Registre un nuevo proveedor de combustible"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
                         <!-- Form Fields -->
                         <VerticalStackLayout Spacing="16">
-                            
+
                             <!-- Provider Name Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Nombre del Proveedor" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="Nombre del Proveedor"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🏷️" 
-                                               FontSize="18" 
-                                               TextColor="#FF9800" 
+                                        <brand:PoliedroIcon Text="🏷️"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Entry Keyboard="Text"
                                                Placeholder="Ingrese el nombre del proveedor"
-                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                Text="{Binding Name, Mode=TwoWay}"
                                                AutomationId="EntryProvider"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -92,21 +92,21 @@
 
                         <!-- Action Button Section -->
                         <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                            
+
                             <!-- Info Card -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="16"
                                     Opacity="0.9">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="ℹ️" 
-                                           FontSize="16" 
+                                    <brand:PoliedroIcon Text="ℹ️"
+                                           FontSize="16"
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
                                     <Label Text="Los proveedores son las empresas que suministran combustible y productos a las estaciones de servicio. Es importante mantener un registro actualizado."
                                            FontSize="12"
-                                           TextColor="#1565C0"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
@@ -114,14 +114,14 @@
 
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
-                                <Button Text="🚀 Guardar Proveedor"
-                                        TextColor="White" 
+                                <Button Text="Guardar Proveedor"
+                                        TextColor="{StaticResource OnBrand}"
                                         BackgroundColor="Transparent"
                                         Clicked="Button_Clicked_1"
                                         AutomationId="ButtonSendData"
                                         FontSize="18"
                                         FontAttributes="Bold"
-                                        HeightRequest="56"
+                                        MinimumHeightRequest="52"
                                         CornerRadius="16"/>
                             </Border>
                         </VerticalStackLayout>
@@ -133,24 +133,24 @@
                     <VerticalStackLayout Spacing="16">
                         <!-- List Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="📋" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="📋"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Lista de Proveedores" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Proveedores registrados en el sistema" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Lista de Proveedores"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Proveedores registrados en el sistema"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -158,49 +158,47 @@
                         <CollectionView ItemsSource="{Binding ProviderList}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BackgroundColor="#FAFAFA" 
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                             StrokeShape="RoundRectangle 12"
-                                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                             Margin="0,4"
                                             Padding="16">
-                                        <Border.Shadow>
-                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.1"/>
-                                        </Border.Shadow>
-                                        
+
+
                                         <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="12">
                                             <!-- Provider Icon -->
-                                            <Border BackgroundColor="#FFF3E0" 
+                                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                     StrokeShape="RoundRectangle 16"
                                                     WidthRequest="40" HeightRequest="40"
                                                     Grid.RowSpan="2" Grid.Column="0"
                                                     VerticalOptions="Start">
-                                                <Label Text="🚚" 
-                                                       FontSize="18" 
-                                                       HorizontalOptions="Center" 
+                                                <brand:PoliedroIcon Text="🚚"
+                                                       FontSize="18"
+                                                       HorizontalOptions="Center"
                                                        VerticalOptions="Center"/>
                                             </Border>
 
                                             <!-- Provider Info -->
                                             <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
-                                                <Label Text="{Binding Name}" 
-                                                       FontSize="16" 
-                                                       FontAttributes="Bold" 
-                                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                                <Label Text="Proveedor de combustible" 
-                                                       FontSize="12" 
-                                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                                <Label Text="{Binding Name}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                                <Label Text="Proveedor de combustible"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             </StackLayout>
 
                                             <!-- Status Indicator -->
-                                            <Border BackgroundColor="#E8F5E8" 
+                                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                     StrokeShape="RoundRectangle 12"
-                                                    Stroke="#4CAF50"
+                                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                     Padding="8,4"
                                                     Grid.Column="2" Grid.Row="0"
                                                     VerticalOptions="Center">
-                                                <Label Text="✓ Activo" 
-                                                       FontSize="10" 
-                                                       TextColor="#2E7D32"
+                                                <Label Text="✓ Activo"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                        FontAttributes="Bold"/>
                                             </Border>
                                         </Grid>

@@ -1,4 +1,4 @@
-<ContentPage 
+﻿<ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="APP.Eds.UsesCases.Inventory.InventoryPostView"
@@ -6,7 +6,7 @@
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     x:Name="ThisPage"
     Title="Inventario"
-    BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -17,122 +17,122 @@
     </ContentPage.Resources>
 
     <AbsoluteLayout>
-        <RefreshView IsRefreshing="{Binding IsRefreshing}" 
+        <RefreshView IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}"
                      AbsoluteLayout.LayoutBounds="0,0,1,1"
                      AbsoluteLayout.LayoutFlags="All">
-            
+
             <ScrollView Padding="16">
                 <StackLayout Spacing="20">
-                    
+
                     <!-- Stats Header -->
-                    <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}" 
-                           HasShadow="False" 
-                           CornerRadius="16" 
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                           HasShadow="False"
+                           CornerRadius="16"
                            Padding="20"
-                           BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}">
+                           BorderColor="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}">
                         <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
-                            
+
                             <!-- Businesses -->
                             <StackLayout Grid.Column="0" HorizontalOptions="Center">
-                                <Label Text="NEG" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#3B82F6, Dark=#60A5FA}" />
-                                <Label Text="Negocios" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" HorizontalOptions="Center" />
-                                <Label Text="{Binding TotalBusinessesText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}" />
+                                <Label Text="NEG" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" />
+                                <Label Text="Negocios" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" HorizontalOptions="Center" />
+                                <Label Text="{Binding TotalBusinessesText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
                             </StackLayout>
-                            
+
                             <!-- EDS -->
                             <StackLayout Grid.Column="1" HorizontalOptions="Center">
-                                <Label Text="EDS" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#059669, Dark=#34D399}" />
-                                <Label Text="Estaciones" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" HorizontalOptions="Center" />
-                                <Label Text="{Binding TotalEdsText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}" />
+                                <Label Text="EDS" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" />
+                                <Label Text="Estaciones" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" HorizontalOptions="Center" />
+                                <Label Text="{Binding TotalEdsText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
                             </StackLayout>
-                            
+
                             <!-- Tanks -->
                             <StackLayout Grid.Column="2" HorizontalOptions="Center">
-                                <Label Text="TNK" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#F59E0B, Dark=#FCD34D}" />
-                                <Label Text="Tanques" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" HorizontalOptions="Center" />
-                                <Label Text="{Binding TotalTanksText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}" />
+                                <Label Text="TNK" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" />
+                                <Label Text="Tanques" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" HorizontalOptions="Center" />
+                                <Label Text="{Binding TotalTanksText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" />
                             </StackLayout>
-                            
+
                             <!-- Stock -->
                             <StackLayout Grid.Column="3" HorizontalOptions="Center">
-                                <Label Text="STK" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#8B5CF6, Dark=#A78BFA}" />
-                                <Label Text="Stock Total" FontSize="11" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" HorizontalOptions="Center" />
-                                <Label Text="{Binding TotalStockText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" 
-                                       TextColor="{AppThemeBinding Light=#059669, Dark=#34D399}" />
+                                <Label Text="STK" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" />
+                                <Label Text="Stock Total" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" HorizontalOptions="Center" />
+                                <Label Text="{Binding TotalStockText}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" />
                             </StackLayout>
                         </Grid>
                     </Frame>
 
                     <!-- Business Collection -->
-                    <CollectionView ItemsSource="{Binding Businesses}" 
+                    <CollectionView ItemsSource="{Binding Businesses}"
                                     AutomationId="CollectionViewBusinesses"
                                     BackgroundColor="Transparent">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout Margin="0,0,0,12">
-                                    
+
                                     <!-- Business Header (Expandible) -->
-                                    <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}" 
-                                           HasShadow="False" 
-                                           CornerRadius="12" 
+                                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                                           HasShadow="False"
+                                           CornerRadius="12"
                                            Padding="0"
-                                           BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}">
-                                        
+                                           BorderColor="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}">
+
                                         <!-- Business Clickable Header -->
                                         <Grid BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ToggleBusinessCommand}"
                                                                       CommandParameter="{Binding}" />
                                             </Grid.GestureRecognizers>
-                                            
+
                                             <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="20,16">
                                                 <!-- Business Icon -->
-                                                <Frame Grid.Column="0" 
-                                                       BackgroundColor="{AppThemeBinding Light=#3B82F6, Dark=#1E40AF}"
+                                                <Frame Grid.Column="0"
+                                                       BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                        HasShadow="False"
                                                        CornerRadius="8"
                                                        Padding="8,4">
-                                                    <Label Text="NEG" FontSize="10" FontAttributes="Bold" 
-                                                           TextColor="White" VerticalOptions="Center" />
+                                                    <Label Text="NEG" FontSize="12" FontAttributes="Bold"
+                                                           TextColor="{StaticResource OnBrand}" VerticalOptions="Center" />
                                                 </Frame>
-                                                
+
                                                 <!-- Business Name -->
-                                                <Label Grid.Column="1" 
-                                                       Text="{Binding BusinessName, Converter={StaticResource NullToEmptyStringConverter}}" 
-                                                       FontAttributes="Bold" 
-                                                       FontSize="16" 
-                                                       TextColor="{AppThemeBinding Light=#1F2937, Dark=#F9FAFB}"
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding BusinessName, Converter={StaticResource NullToEmptyStringConverter}}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                        VerticalOptions="Center"
                                                        Margin="12,0,0,0"
                                                        AutomationId="LabelBusinessName"/>
-                                                
+
 
                                                 <!-- EDS Count -->
                                                 <Frame Grid.Column="2"
-                                                       BackgroundColor="{AppThemeBinding Light=#EFF6FF, Dark=#1E3A8A}"
+                                                       BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                        HasShadow="False"
                                                        CornerRadius="10"
                                                        Padding="8,4"
                                                        Margin="8,0">
                                                     <Label Text="{Binding Eds.Count, Converter={StaticResource SafeCountConverter}, StringFormat='{0} EDS'}"
-                                                           FontSize="10"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="{AppThemeBinding Light=#3B82F6, Dark=#DBEAFE}" />
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" />
                                                 </Frame>
 
                                                 <!-- Expand/Collapse Icon -->
-                                                <Label Grid.Column="3" 
-                                                       FontSize="12" 
+                                                <Label Grid.Column="3"
+                                                       FontSize="12"
                                                        VerticalOptions="Center"
-                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}">
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label" Binding="{Binding IsExpanded}" Value="True">
                                                             <Setter Property="Text" Value="v" />
@@ -148,50 +148,50 @@
 
                                     <!-- EDS Collection (Expandable) -->
                                     <StackLayout IsVisible="{Binding IsExpanded}" Margin="16,0,0,0">
-                                        <CollectionView ItemsSource="{Binding Eds}" 
+                                        <CollectionView ItemsSource="{Binding Eds}"
                                                       AutomationId="CollectionViewEds"
                                                       BackgroundColor="Transparent">
                                             <CollectionView.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackLayout Margin="0,0,0,8">
-                                                        
+
                                                         <!-- EDS Header (Expandible) -->
-                                                        <Frame BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#374151}" 
-                                                               HasShadow="False" 
-                                                               CornerRadius="10" 
+                                                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                                               HasShadow="False"
+                                                               CornerRadius="10"
                                                                Padding="0"
-                                                               BorderColor="{AppThemeBinding Light=#F3F4F6, Dark=#4B5563}">
-                                                            
+                                                               BorderColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
+
                                                             <Grid BackgroundColor="Transparent">
                                                                 <Grid.GestureRecognizers>
                                                                     <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ToggleEdsCommand}"
                                                                                           CommandParameter="{Binding}" />
                                                                 </Grid.GestureRecognizers>
-                                                                
+
                                                                 <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" Padding="16,12">
                                                                     <!-- EDS Icon -->
-                                                                    <Frame Grid.Column="0" 
-                                                                           BackgroundColor="{AppThemeBinding Light=#059669, Dark=#047857}"
+                                                                    <Frame Grid.Column="0"
+                                                                           BackgroundColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                                            HasShadow="False"
                                                                            CornerRadius="6"
                                                                            Padding="6,3">
-                                                                        <Label Text="EDS" FontSize="9" FontAttributes="Bold" 
-                                                                               TextColor="White" VerticalOptions="Center" />
+                                                                        <Label Text="EDS" FontSize="9" FontAttributes="Bold"
+                                                                               TextColor="{StaticResource OnBrand}" VerticalOptions="Center" />
                                                                     </Frame>
-                                                                        
+
                                                                     <!-- EDS Name -->
-                                                                    <Label Grid.Column="1" 
-                                                                           Text="{Binding EdsName, Converter={StaticResource NullToEmptyStringConverter}}" 
-                                                                           FontAttributes="Bold" 
-                                                                           FontSize="14" 
-                                                                           TextColor="{AppThemeBinding Light=#374151, Dark=#D1D5DB}"
+                                                                    <Label Grid.Column="1"
+                                                                           Text="{Binding EdsName, Converter={StaticResource NullToEmptyStringConverter}}"
+                                                                           FontAttributes="Bold"
+                                                                           FontSize="14"
+                                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                            VerticalOptions="Center"
                                                                            Margin="10,0,0,0"
                                                                            AutomationId="LabelEdsName"/>
-                                                                    
+
                                                                     <!-- Tank Count -->
                                                                     <Frame Grid.Column="2"
-                                                                           BackgroundColor="{AppThemeBinding Light=#FEF3C7, Dark=#92400E}"
+                                                                           BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                                            HasShadow="False"
                                                                            CornerRadius="8"
                                                                            Padding="6,3"
@@ -199,12 +199,12 @@
                                                                         <Label Text="{Binding Tanks.Count, Converter={StaticResource SafeCountConverter}, StringFormat='{0} Tanques'}"
                                                                                FontSize="9"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="{AppThemeBinding Light=#92400E, Dark=#FEF3C7}" />
+                                                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" />
                                                                     </Frame>
-                                                                    
+
                                                                     <!-- EDS Total Stock -->
                                                                     <Frame Grid.Column="3"
-                                                                           BackgroundColor="{AppThemeBinding Light=#EDF7ED, Dark=#1B5E20}"
+                                                                           BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                                            HasShadow="False"
                                                                            CornerRadius="8"
                                                                            Padding="6,3"
@@ -212,14 +212,14 @@
                                                                         <Label Text="{Binding TotalStockText}"
                                                                                FontSize="9"
                                                                                FontAttributes="Bold"
-                                                                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#A5D6A7}" />
+                                                                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" />
                                                                     </Frame>
-                                                                    
+
                                                                     <!-- Expand Icon -->
-                                                                    <Label Grid.Column="4" 
-                                                                           FontSize="10" 
+                                                                    <Label Grid.Column="4"
+                                                                           FontSize="12"
                                                                            VerticalOptions="Center"
-                                                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}">
+                                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}">
                                                                         <Label.Triggers>
                                                                             <DataTrigger TargetType="Label" Binding="{Binding IsExpanded}" Value="True">
                                                                                 <Setter Property="Text" Value="v" />
@@ -235,63 +235,63 @@
 
                                                         <!-- Tanks Collection (Expandable) -->
                                                         <StackLayout IsVisible="{Binding IsExpanded}" Margin="16,8,0,0">
-                                                            <CollectionView ItemsSource="{Binding Tanks}" 
+                                                            <CollectionView ItemsSource="{Binding Tanks}"
                                                                           AutomationId="CollectionViewTanks"
                                                                           BackgroundColor="Transparent">
                                                                 <CollectionView.ItemTemplate>
                                                                     <DataTemplate>
                                                                         <StackLayout Margin="0,0,0,8">
-                                                                            
+
                                                                             <!-- Tank Header (Expandible) -->
-                                                                            <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1F2937}" 
-                                                                                   HasShadow="False" 
-                                                                                   CornerRadius="8" 
+                                                                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                                                                                   HasShadow="False"
+                                                                                   CornerRadius="8"
                                                                                    Padding="0"
-                                                                                   BorderColor="{AppThemeBinding Light=#E5E7EB, Dark=#374151}">
-                                                                                
+                                                                                   BorderColor="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}">
+
                                                                                 <Grid BackgroundColor="Transparent">
                                                                                     <Grid.GestureRecognizers>
                                                                                         <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ToggleTankCommand}"
                                                                                                                   CommandParameter="{Binding}" />
                                                                                     </Grid.GestureRecognizers>
-                                                                                    
+
                                                                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" Padding="12,10">
                                                                                         <!-- Tank Icon -->
-                                                                                        <Frame Grid.Column="0" 
-                                                                                               BackgroundColor="{AppThemeBinding Light=#F59E0B, Dark=#D97706}"
+                                                                                        <Frame Grid.Column="0"
+                                                                                               BackgroundColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                                                                HasShadow="False"
                                                                                                CornerRadius="6"
                                                                                                Padding="4,2">
-                                                                                            <Label Text="TNK" FontSize="8" FontAttributes="Bold" 
-                                                                                                   TextColor="White" VerticalOptions="Center" />
+                                                                                            <Label Text="TNK" FontSize="8" FontAttributes="Bold"
+                                                                                                   TextColor="{StaticResource OnBrand}" VerticalOptions="Center" />
                                                                                         </Frame>
-                                                                                        
+
                                                                                         <!-- Tank Name -->
-                                                                                        <Label Grid.Column="1" 
-                                                                                               Text="{Binding TankNumber, Converter={StaticResource NullToEmptyStringConverter}, StringFormat='Tanque {0}'}" 
-                                                                                               FontAttributes="Bold" 
-                                                                                               FontSize="13" 
-                                                                                               TextColor="{AppThemeBinding Light=#374151, Dark=#F3F4F6}"
+                                                                                        <Label Grid.Column="1"
+                                                                                               Text="{Binding TankNumber, Converter={StaticResource NullToEmptyStringConverter}, StringFormat='Tanque {0}'}"
+                                                                                               FontAttributes="Bold"
+                                                                                               FontSize="14"
+                                                                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                                                VerticalOptions="Center"
                                                                                                Margin="8,0,0,0"
                                                                                                AutomationId="LabelTankNumber"/>
-                                                                                        
+
                                                                                         <!-- Current Stock instead of Tank Capacity -->
                                                                                         <Frame Grid.Column="2"
-                                                                                               BackgroundColor="{AppThemeBinding Light=#F0FDF4, Dark=#14532D}"
+                                                                                               BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                                                                HasShadow="False"
                                                                                                CornerRadius="6"
                                                                                                Padding="6,2"
                                                                                                Margin="4,0">
-                                                                                            <Label Text="{Binding CurrentStockText}" 
+                                                                                            <Label Text="{Binding CurrentStockText}"
                                                                                                    FontSize="8"
                                                                                                    FontAttributes="Bold"
-                                                                                                   TextColor="{AppThemeBinding Light=#16A34A, Dark=#22C55E}" />
+                                                                                                   TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" />
                                                                                         </Frame>
-                                                                                        
+
                                                                                         <!-- Product Count -->
                                                                                         <Frame Grid.Column="3"
-                                                                                                   BackgroundColor="{AppThemeBinding Light=#FDF2F8, Dark=#831843}"
+                                                                                                   BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                                                                    HasShadow="False"
                                                                                                    CornerRadius="6"
                                                                                                    Padding="6,2"
@@ -299,14 +299,14 @@
                                                                                                 <Label Text="{Binding Compartments.Count, Converter={StaticResource SafeCountConverter}, StringFormat='{0} Prod'}"
                                                                                                        FontSize="8"
                                                                                                        FontAttributes="Bold"
-                                                                                                       TextColor="{AppThemeBinding Light=#BE185D, Dark=#F9A8D4}" />
+                                                                                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" />
                                                                                             </Frame>
-                                                                                        
+
                                                                                         <!-- Expand Icon -->
-                                                                                        <Label Grid.Column="4" 
-                                                                                               FontSize="10" 
+                                                                                        <Label Grid.Column="4"
+                                                                                               FontSize="12"
                                                                                                VerticalOptions="Center"
-                                                                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}">
+                                                                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}">
                                                                                             <Label.Triggers>
                                                                                                 <DataTrigger TargetType="Label" Binding="{Binding IsExpanded}" Value="True">
                                                                                                     <Setter Property="Text" Value="v" />
@@ -322,66 +322,66 @@
 
                                                                             <!-- Products/Compartments (Expandable) -->
                                                                             <StackLayout IsVisible="{Binding IsExpanded}" Margin="12,4,0,0">
-                                                                                <CollectionView ItemsSource="{Binding Compartments}" 
+                                                                                <CollectionView ItemsSource="{Binding Compartments}"
                                                                                               AutomationId="CollectionViewCompartments"
                                                                                               BackgroundColor="Transparent">
                                                                                     <CollectionView.ItemTemplate>
                                                                                         <DataTemplate>
-                                                                                            <Frame BackgroundColor="{AppThemeBinding Light=#FEFEFE, Dark=#111827}" 
-                                                                                                   HasShadow="False" 
-                                                                                                   CornerRadius="6" 
+                                                                                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                                                                                                   HasShadow="False"
+                                                                                                   CornerRadius="6"
                                                                                                    Padding="12"
                                                                                                    Margin="0,0,0,4"
-                                                                                                   BorderColor="{AppThemeBinding Light=#F3F4F6, Dark=#374151}">
-                                                                                                
+                                                                                                   BorderColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
+
                                                                                                 <Grid ColumnDefinitions="Auto,*,Auto">
-                                                                                                    
+
                                                                                                     <!-- Product Icon + Info -->
                                                                                                     <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalOptions="Center">
-                                                                                                        <Frame BackgroundColor="{AppThemeBinding Light=#8B5CF6, Dark=#7C3AED}"
+                                                                                                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                                                                                HasShadow="False"
                                                                                                                CornerRadius="6"
                                                                                                                Padding="4,2">
-                                                                                                            <Label Text="PROD" FontSize="8" FontAttributes="Bold" 
-                                                                                                                   TextColor="White" VerticalOptions="Center" />
+                                                                                                            <Label Text="PROD" FontSize="8" FontAttributes="Bold"
+                                                                                                                   TextColor="{StaticResource OnBrand}" VerticalOptions="Center" />
                                                                                                         </Frame>
                                                                                                         <StackLayout>
-                                                                                                            <Label Text="{Binding ProductWithType, Converter={StaticResource NullToEmptyStringConverter}}" 
-                                                                                                                   FontAttributes="Bold" 
-                                                                                                                   FontSize="13"
-                                                                                                                   TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}"
+                                                                                                            <Label Text="{Binding ProductWithType, Converter={StaticResource NullToEmptyStringConverter}}"
+                                                                                                                   FontAttributes="Bold"
+                                                                                                                   FontSize="14"
+                                                                                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                                                                                    AutomationId="LabelProduct"/>
-                                                                                                            <StackLayout Orientation="Horizontal" Spacing="4" 
+                                                                                                            <StackLayout Orientation="Horizontal" Spacing="4"
                                                                                                                        IsVisible="{Binding ProductType, Converter={StaticResource NullToVisibilityConverter}}">
-                                                                                                                <Label Text="{Binding ProductTypeDisplay, Converter={StaticResource NullToEmptyStringConverter}}" 
+                                                                                                                <Label Text="{Binding ProductTypeDisplay, Converter={StaticResource NullToEmptyStringConverter}}"
                                                                                                                        FontSize="9"
-                                                                                                                       TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                                                                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                                                                        AutomationId="LabelProductType"/>
-                                                                                                                <Frame BackgroundColor="{AppThemeBinding Light=#F3F4F6, Dark=#374151}" 
-                                                                                                                       HasShadow="False" 
-                                                                                                                       CornerRadius="8" 
+                                                                                                                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                                                                                                       HasShadow="False"
+                                                                                                                       CornerRadius="8"
                                                                                                                        Padding="4,2">
-                                                                                                                    <Label Text="{Binding CompartmentNumber, StringFormat='C{0}'}" 
+                                                                                                                    <Label Text="{Binding CompartmentNumber, StringFormat='C{0}'}"
                                                                                                                            FontSize="8"
                                                                                                                            FontAttributes="Bold"
-                                                                                                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                                                                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                                                                            AutomationId="LabelCompartmentNumber"/>
                                                                                                                 </Frame>
                                                                                                             </StackLayout>
                                                                                                         </StackLayout>
                                                                                                     </StackLayout>
-                                                                                                    
+
                                                                                                     <!-- Stock -->
                                                                                                     <StackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center">
-                                                                                                        <Label Text="{Binding Stock, StringFormat='{0:N0}'}" 
-                                                                                                               FontAttributes="Bold" 
+                                                                                                        <Label Text="{Binding Stock, StringFormat='{0:N0}'}"
+                                                                                                               FontAttributes="Bold"
                                                                                                                FontSize="14"
-                                                                                                               TextColor="{AppThemeBinding Light=#059669, Dark=#34D399}"
+                                                                                                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                                                                                HorizontalOptions="End"
                                                                                                                AutomationId="LabelCompartmentStock"/>
-                                                                                                        <Label Text="Galones" 
+                                                                                                        <Label Text="Galones"
                                                                                                                FontSize="9"
-                                                                                                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                                                                                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                                                                                HorizontalOptions="End"/>
                                                                                                     </StackLayout>
                                                                                                 </Grid>
@@ -407,7 +407,7 @@
                 </StackLayout>
             </ScrollView>
         </RefreshView>
-        
+
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"
                               AbsoluteLayout.LayoutFlags="All"

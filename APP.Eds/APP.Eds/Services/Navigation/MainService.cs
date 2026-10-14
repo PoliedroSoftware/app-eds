@@ -168,7 +168,7 @@
                         new("Negocio", typeof(BusinessPostView), "🏢"),
                         new("EDS", typeof(EdsPostView), "🏪"),
                         new("Caja Fuerte", typeof(StrongBoxView), "💼"),
-                        new("Telefonos", typeof(PhoneRegistrationView), "📱")
+                        new("Teléfonos", typeof(PhoneRegistrationView), "📱")
                     }),
                     new("Configuración Inicial", "🧙‍♂️", NavigateToWizardCommand, isDirectNavigation: true),
                     new("Punto de Venta", "💳", new List<MenuItemModel>
@@ -176,10 +176,10 @@
                         new("Facturación Electrónica", typeof(PointOfSaleView), "📝"),
                         new("Historial de Facturas", typeof(InvoiceHistoryView), "📄")
                     }),
-                    new("Listado de Pagos QR", "💳", NavigateToQRPaymentsCommand, isDirectNavigation: true),
-                    new("Power BI Dashboard", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
+                    new("Pagos QR", "💳", NavigateToQRPaymentsCommand, isDirectNavigation: true),
+                    new("Reportes", "📊", NavigateToPowerBICommand, isDirectNavigation: true),
                     // ✨ NUEVO: Sección IoT con acceso directo al Control de Válvula
-                    new("Control IoT", "🎛️", NavigateToIoTControlCommand, isDirectNavigation: true),
+                    new("Dispositivos", "🎛️", NavigateToIoTControlCommand, isDirectNavigation: true),
                     new("Dispensadores y mangueras", "⛽", new List<MenuItemModel>
                     {
                         new("Dispensadores", typeof(DispensersPostView), "⛽"),

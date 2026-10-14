@@ -1,4 +1,4 @@
-using APP.Eds.Services.Business;
+﻿using APP.Eds.Services.Business;
 using CommunityToolkit.Maui.Views;
 
 namespace APP.Eds.Components.PopUp;
@@ -8,6 +8,7 @@ public partial class OkBusiness : Popup
     private readonly BusinessService businessService;
     public OkBusiness(BusinessService businessService)
 	{
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
 		InitializeComponent();
         this.businessService = businessService;
     }
@@ -22,4 +23,4 @@ public partial class OkBusiness : Popup
         await Task.Delay(200);
         await Shell.Current.GoToAsync("/EdsPostView");
     }
-}   
+}

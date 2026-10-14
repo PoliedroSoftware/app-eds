@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.Court.CourtListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="Cortes"
-    BackgroundColor="#F1F5F9">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <!-- Recursos necesarios (faltaba el convertidor de hora) -->
     <ContentPage.Resources>
@@ -21,23 +21,21 @@
 
         <!-- Professional Header Section -->
         <Border Grid.Row="0"
-                BackgroundColor="#3B82F6" 
+                BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                 StrokeShape="RoundRectangle 0,0,20,20"
                 Padding="20,40,20,20"
                 StrokeThickness="0">
-            <Border.Shadow>
-                <Shadow Brush="#3B82F6" Offset="0,6" Radius="20" Opacity="0.15"/>
-            </Border.Shadow>
+
 
             <StackLayout>
-                <Label Text="📋 Historial de Cortes" 
-                       FontSize="26" 
-                       FontAttributes="Bold" 
-                       TextColor="White" 
+                <Label Text="Historial de Cortes"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource OnBrand}"
                        HorizontalOptions="Center"/>
-                <Label Text="Consulte el historial de cierres de turno registrados" 
-                       FontSize="14" 
-                       TextColor="#DBEAFE" 
+                <Label Text="Consulte el historial de cierres de turno registrados"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                        HorizontalOptions="Center"
                        Margin="0,5,0,0"/>
             </StackLayout>
@@ -45,7 +43,7 @@
 
         <!-- Main Content Area with Enhanced Spacing -->
         <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding CourtList}" 
+                        ItemsSource="{Binding CourtList}"
                         SelectionChanged="OnCourtSelected"
                         SelectionMode="None"
                         BackgroundColor="Transparent">
@@ -53,22 +51,20 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <!-- Enhanced Court Card with Better Differentiation -->
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 16"
-                            Stroke="#E2E8F0"
+                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                             StrokeThickness="1"
                             Padding="0"
                             Margin="16,10,16,10">
-                        <Border.Shadow>
-                            <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
-                        </Border.Shadow>
+
 
                         <!-- Left Color Bar for Visual Separation -->
                         <Grid ColumnDefinitions="6,*">
 
                             <!-- Color-coded Left Border -->
                             <Border Grid.Column="0"
-                                    BackgroundColor="#10B981"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     StrokeShape="RoundRectangle 16,0,0,16"/>
 
                             <!-- Main Content -->
@@ -76,66 +72,65 @@
 
                                 <!-- Header Section with Islander Name -->
                                 <Border Grid.Row="0"
-                                        BackgroundColor="#F8FAFC"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                         StrokeShape="RoundRectangle 0,16,0,0"
                                         Padding="24,20">
 
                                     <Grid ColumnDefinitions="Auto,*,Auto">
                                         <Border Grid.Column="0"
-                                                BackgroundColor="#3B82F6"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                 StrokeShape="RoundRectangle 22"
                                                 WidthRequest="44" HeightRequest="44"
                                                 VerticalOptions="Center">
-                                            <Label Text="👤" 
-                                                   FontSize="20" 
-                                                   HorizontalOptions="Center" 
+                                            <brand:PoliedroIcon Text="👤"
+                                                   FontSize="20"
+                                                   HorizontalOptions="Center"
                                                    VerticalOptions="Center"
-                                                   TextColor="White"/>
+                                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                         </Border>
 
-                                        <StackLayout Grid.Column="1" 
-                                                     VerticalOptions="Center" 
+                                        <StackLayout Grid.Column="1"
+                                                     VerticalOptions="Center"
                                                      Margin="16,0,0,0">
-                                            <Label Text="{Binding Islander}" 
-                                                   FontSize="18" 
-                                                   FontAttributes="Bold" 
-                                                   TextColor="#1E293B"/>
-                                            <Label Text="Islero Responsable" 
-                                                   FontSize="13" 
-                                                   TextColor="#64748B"/>
+                                            <Label Text="{Binding Islander}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                            <Label Text="Islero Responsable"
+                                                   FontSize="14"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                                                <Label Text="🏭" 
-                                                       FontSize="13" 
+                                                <brand:PoliedroIcon Text="🏭"
+                                                       FontSize="14"
                                                        VerticalOptions="Center"/>
-                                                <Label Text="EDS:" 
-                                                       FontSize="12" 
+                                                <Label Text="EDS:"
+                                                       FontSize="12"
                                                        FontAttributes="Bold"
-                                                       TextColor="#64748B"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        VerticalOptions="Center"/>
-                                                <Label Text="{Binding Eds, FallbackValue='Sin asignar', TargetNullValue='Sin asignar'}" 
-                                                       FontSize="12" 
-                                                       TextColor="#475569"
+                                                <Label Text="{Binding Eds, FallbackValue='Sin asignar', TargetNullValue='Sin asignar'}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        VerticalOptions="Center"/>
                                             </StackLayout>
                                         </StackLayout>
 
                                         <!-- Enhanced Status Indicator -->
                                         <Border Grid.Column="2"
-                                                BackgroundColor="#F0FDF4"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#10B981"
+                                                Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                 StrokeThickness="1"
                                                 Padding="12,8"
                                                 VerticalOptions="Center">
                                             <StackLayout Orientation="Horizontal" Spacing="6">
-                                                <Label Text="✓" 
-                                                       FontSize="12" 
-                                                       TextColor="#059669"
-                                                       FontAttributes="Bold"
+                                                <brand:PoliedroIcon Text="✓"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                        VerticalOptions="Center"/>
-                                                <Label Text="Completado" 
-                                                       FontSize="12" 
-                                                       TextColor="#059669"
+                                                <Label Text="Completado"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                        FontAttributes="Bold"
                                                        VerticalOptions="Center"/>
                                             </StackLayout>
@@ -151,57 +146,57 @@
 
                                         <!-- Date Section -->
                                         <Border Grid.Column="0"
-                                                BackgroundColor="#FEF3C7"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 12"
-                                                Stroke="#F59E0B"
+                                                Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                 StrokeThickness="1"
                                                 Padding="16,12">
                                             <StackLayout Spacing="6">
                                                 <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                                                    <Label Text="📅" FontSize="14" VerticalOptions="Center"/>
-                                                    <Label Text="Fecha" 
-                                                           FontSize="12" 
+                                                    <brand:PoliedroIcon Text="📅" FontSize="14" VerticalOptions="Center"/>
+                                                    <Label Text="Fecha"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#92400E"
+                                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
-                                                <Label Text="{Binding DateStarttime, StringFormat='{0:yyyy-MM-dd}'}" 
+                                                <Label Text="{Binding DateStarttime, StringFormat='{0:yyyy-MM-dd}'}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
-                                                       TextColor="#D97706"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                        HorizontalOptions="Center"/>
                                             </StackLayout>
                                         </Border>
 
                                         <!-- Time Section -->
                                         <Border Grid.Column="1"
-                                                BackgroundColor="#EFF6FF"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                 StrokeShape="RoundRectangle 12"
-                                                Stroke="#3B82F6"
+                                                Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                 StrokeThickness="1"
                                                 Padding="16,12">
                                             <StackLayout Spacing="6">
                                                 <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                                                    <Label Text="⏰" FontSize="14" VerticalOptions="Center"/>
-                                                    <Label Text="Horario" 
-                                                           FontSize="12" 
+                                                    <brand:PoliedroIcon Text="⏰" FontSize="14" VerticalOptions="Center"/>
+                                                    <Label Text="Horario"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#1E40AF"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
                                                 <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                                                    <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
-                                                           FontSize="13"
+                                                    <Label Text="{Binding Starttime, Converter={StaticResource TimeSpanTo12HourConverter}}"
+                                                           FontSize="14"
                                                            FontAttributes="Bold"
-                                                           TextColor="#1D4ED8"/>
-                                                    <Label Text="–" 
-                                                           FontSize="13"
-                                                           TextColor="#3B82F6"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
+                                                    <Label Text="–"
+                                                           FontSize="14"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                            FontAttributes="Bold"/>
-                                                    <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}" 
-                                                           FontSize="13"
+                                                    <Label Text="{Binding Endtime, Converter={StaticResource TimeSpanTo12HourConverter}}"
+                                                           FontSize="14"
                                                            FontAttributes="Bold"
-                                                           TextColor="#1D4ED8"/>
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"/>
                                                 </StackLayout>
                                             </StackLayout>
                                         </Border>
@@ -212,28 +207,28 @@
 
                                         <!-- Total Money -->
                                         <Border Grid.Column="0"
-                                                BackgroundColor="#F0FDF4"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 12"
-                                                Stroke="#10B981"
+                                                Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                 StrokeThickness="1"
                                                 Padding="16,12">
                                             <StackLayout Spacing="6">
                                                 <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                                                    <Label Text="💰" FontSize="14" VerticalOptions="Center"/>
-                                                    <Label Text="Total Dinero" 
-                                                           FontSize="12" 
+                                                    <brand:PoliedroIcon Text="💰" FontSize="14" VerticalOptions="Center"/>
+                                                    <Label Text="Total Dinero"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#064E3B"
+                                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
-                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
+                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource CurrencyFormat}}"
                                                        FontSize="16"
                                                        FontAttributes="Bold"
-                                                       TextColor="#059669"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                        HorizontalOptions="Center"/>
-                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                       FontSize="9" 
-                                                       TextColor="#047857" 
+                                                <Label Text="{Binding TotalAccumulatedAmount, Converter={StaticResource NumberToWordsConverter}}"
+                                                       FontSize="9"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                        FontAttributes="Italic"
                                                        LineBreakMode="WordWrap"
                                                        MaxLines="2"
@@ -244,24 +239,24 @@
 
                                         <!-- Total Gallons -->
                                         <Border Grid.Column="1"
-                                                BackgroundColor="#F5F3FF"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                                 StrokeShape="RoundRectangle 12"
-                                                Stroke="#8B5CF6"
+                                                Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                 StrokeThickness="1"
                                                 Padding="16,12">
                                             <StackLayout Spacing="6">
                                                 <StackLayout Orientation="Horizontal" Spacing="8" HorizontalOptions="Center">
-                                                    <Label Text="⛽" FontSize="14" VerticalOptions="Center"/>
-                                                    <Label Text="Galones" 
-                                                           FontSize="12" 
+                                                    <brand:PoliedroIcon Text="⛽" FontSize="14" VerticalOptions="Center"/>
+                                                    <Label Text="Galones"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#581C87"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
-                                                <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N1}'}" 
+                                                <Label Text="{Binding TotalAccumulatedGallons, StringFormat='{0:N1}'}"
                                                        FontSize="16"
                                                        FontAttributes="Bold"
-                                                       TextColor="#7C3AED"
+                                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                        HorizontalOptions="Center"/>
                                             </StackLayout>
                                         </Border>
@@ -270,27 +265,27 @@
 
                                 <!-- Action Section with Professional Footer -->
                                 <Border Grid.Row="2"
-                                        BackgroundColor="#F8FAFC"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                         StrokeShape="RoundRectangle 0,0,0,16"
                                         Padding="24,16">
 
                                     <Grid ColumnDefinitions="*,Auto">
                                         <!-- Performance Indicator -->
-                                        <StackLayout Grid.Column="0" 
-                                                     Orientation="Horizontal" 
+                                        <StackLayout Grid.Column="0"
+                                                     Orientation="Horizontal"
                                                      Spacing="12"
                                                      VerticalOptions="Center">
-                                            <Border BackgroundColor="#FEF3C7"
+                                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                     StrokeShape="RoundRectangle 8"
-                                                    Stroke="#F59E0B"
+                                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                     StrokeThickness="1"
                                                     Padding="8,4">
                                                 <StackLayout Orientation="Horizontal" Spacing="6">
-                                                    <Label Text="📊" FontSize="12" VerticalOptions="Center"/>
-                                                    <Label Text="Rendimiento: Excelente" 
-                                                           FontSize="11"
+                                                    <brand:PoliedroIcon Text="📊" FontSize="12" VerticalOptions="Center"/>
+                                                    <Label Text="Rendimiento: Excelente"
+                                                           FontSize="12"
                                                            FontAttributes="Bold"
-                                                           TextColor="#92400E"
+                                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                            VerticalOptions="Center"/>
                                                 </StackLayout>
                                             </Border>
@@ -298,22 +293,20 @@
 
                                         <!-- Detail Button with Enhanced Design -->
                                         <Border Grid.Column="1"
-                                                BackgroundColor="#3B82F6"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                 StrokeShape="RoundRectangle 24"
-                                                WidthRequest="56" HeightRequest="48"
+                                                WidthRequest="56" MinimumHeightRequest="52"
                                                 VerticalOptions="Center">
-                                            <Border.Shadow>
-                                                <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.2"/>
-                                            </Border.Shadow>
+
 
                                             <Button Text="📋"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCourtDetailCommand}"
                                                     CommandParameter="{Binding}"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="White"
+                                                    TextColor="{StaticResource OnBrand}"
                                                     FontSize="20"
                                                     FontAttributes="Bold"
-                                                    WidthRequest="56" HeightRequest="48"
+                                                    WidthRequest="56" MinimumHeightRequest="52"
                                                     CornerRadius="24"
                                                     HorizontalOptions="Center"
                                                     VerticalOptions="Center"
@@ -330,32 +323,30 @@
             <!-- Enhanced Empty State -->
             <CollectionView.EmptyView>
                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 20"
-                            Stroke="#E2E8F0"
+                            Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                             StrokeThickness="1"
                             Padding="40,32">
-                        <Border.Shadow>
-                            <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
-                        </Border.Shadow>
+
 
                         <StackLayout Spacing="16" HorizontalOptions="Center">
-                            <Border BackgroundColor="#F8FAFC"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 40"
                                     WidthRequest="80" HeightRequest="80">
-                                <Label Text="📋" FontSize="40" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="📋" FontSize="40"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"
-                                       TextColor="#94A3B8"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </Border>
-                            <Label Text="No hay cortes registrados" 
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#475569" 
+                            <Label Text="No hay cortes registrados"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    HorizontalOptions="Center"/>
-                            <Label Text="Los cierres de turno aparecerán aquí una vez que sean registrados en el sistema" 
-                                   FontSize="14" 
-                                   TextColor="#64748B" 
+                            <Label Text="Los cierres de turno aparecerán aquí una vez que sean registrados en el sistema"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    HorizontalOptions="Center"
                                    HorizontalTextAlignment="Center"
                                    MaximumWidthRequest="280"/>

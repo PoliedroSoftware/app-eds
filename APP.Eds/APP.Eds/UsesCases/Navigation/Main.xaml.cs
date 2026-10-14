@@ -1,4 +1,4 @@
-using APP.Eds.Services.Navigation;
+ï»¿using APP.Eds.Services.Navigation;
 using APP.Eds.Services.Authentication;
 
 namespace APP.Eds.UsesCases.Navigation;
@@ -6,82 +6,82 @@ namespace APP.Eds.UsesCases.Navigation;
 public partial class Main : ContentPage
 {
     private BackendSessionManager _sessionManager;
-    
+
     public Main()
     {
         InitializeComponent();
         _sessionManager = new BackendSessionManager();
         BindingContext = new MainService();
-        
-        // Cargar información del usuario en el badge
+
+        // Cargar informaciÃ³n del usuario en el badge
         LoadUserBadge();
-        
-        // Cargar versión de la aplicación
+
+        // Cargar versiÃ³n de la aplicaciÃ³n
         LoadAppVersion();
     }
-    
+
     private void LoadUserBadge()
     {
         try
         {
             // Obtener el nombre de usuario desde las preferencias
             var username = Preferences.Get("Usernamelogin", "Usuario");
-            
+
             // Actualizar el label del nombre de usuario
             if (UserNameLabel != null)
             {
                 UserNameLabel.Text = !string.IsNullOrWhiteSpace(username) ? username : "Usuario";
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"Main.LoadUserBadge: Usuario cargado - {username}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Main.LoadUserBadge: Error cargando información del usuario: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Main.LoadUserBadge: Error cargando informaciÃ³n del usuario: {ex.Message}");
         }
     }
-    
+
     private void LoadAppVersion()
     {
         try
         {
-            // Obtener versión de la aplicación
+            // Obtener versiÃ³n de la aplicaciÃ³n
             var version = AppInfo.Current.VersionString;
             var build = AppInfo.Current.BuildString;
-            
-            // Actualizar el label de versión
+
+            // Actualizar el label de versiÃ³n
             if (VersionLabel != null)
             {
                 VersionLabel.Text = $"v{version} ({build})";
             }
-            
-            System.Diagnostics.Debug.WriteLine($"Main.LoadAppVersion: Versión cargada - {version} ({build})");
+
+            System.Diagnostics.Debug.WriteLine($"Main.LoadAppVersion: VersiÃ³n cargada - {version} ({build})");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Main.LoadAppVersion: Error cargando versión: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Main.LoadAppVersion: Error cargando versiÃ³n: {ex.Message}");
             if (VersionLabel != null)
             {
                 VersionLabel.Text = "v1.0.1";
             }
         }
     }
-    
+
     private async void OnUpdateClicked(object sender, EventArgs e)
     {
         try
         {
             System.Diagnostics.Debug.WriteLine("Main.OnUpdateClicked: Abriendo Google Play Store");
-            
-            // Package name de la aplicación desde el .csproj
+
+            // Package name de la aplicaciÃ³n desde el .csproj
             var packageName = "com.companyname.app.EDS";
-            
+
             // URL del Play Store
             var playStoreUrl = $"https://play.google.com/store/apps/details?id={packageName}";
-            
+
             // Verificar si se puede abrir la URL
             var canOpen = await Launcher.CanOpenAsync(playStoreUrl);
-            
+
             if (canOpen)
             {
                 await Launcher.OpenAsync(new Uri(playStoreUrl));
@@ -91,8 +91,8 @@ public partial class Main : ContentPage
             {
                 // Si no se puede abrir, mostrar mensaje al usuario
                 await DisplayAlert(
-                    "No disponible", 
-                    "No se pudo abrir Google Play Store. Verifica que tengas la aplicación instalada.", 
+                    "No disponible",
+                    "No se pudo abrir Google Play Store. Verifica que tengas la aplicaciÃ³n instalada.",
                     "OK");
                 System.Diagnostics.Debug.WriteLine($"Main.OnUpdateClicked: No se pudo abrir Play Store");
             }
@@ -101,12 +101,12 @@ public partial class Main : ContentPage
         {
             System.Diagnostics.Debug.WriteLine($"Main.OnUpdateClicked: Error - {ex.Message}");
             await DisplayAlert(
-                "Error", 
-                "Ocurrió un error al intentar abrir Google Play Store", 
+                "Error",
+                "OcurriÃ³ un error al intentar abrir Google Play Store",
                 "OK");
         }
     }
-    
+
     private async void OnLogoutClicked(object sender, EventArgs e)
     {
         LoadingOverlay.IsVisible = true;

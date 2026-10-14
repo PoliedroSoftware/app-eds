@@ -1,127 +1,122 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<mct:Popup
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.Components.PopUp.AddInfo"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
-    
+
     <!-- Modern Minimalist Container -->
-    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
-            WidthRequest="380" 
+            WidthRequest="380"
             HeightRequest="500">
-        <Border.Shadow>
-            <Shadow Brush="Black" Offset="0,8" Radius="20" Opacity="0.12"/>
-        </Border.Shadow>
-        
-        <Grid RowDefinitions="75,*,70" Padding="0">
-            
+
+
+        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+
             <!-- Clean Header with Blue Theme -->
             <Border Grid.Row="0"
-                    BackgroundColor="#2196F3"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 20,20,0,0"
                     StrokeThickness="0"
                     Padding="20,20">
-                
+
                 <Grid ColumnDefinitions="*,40">
                     <!-- Title Section -->
-                    <StackLayout Grid.Column="0" 
-                                 VerticalOptions="Center" 
+                    <StackLayout Grid.Column="0"
+                                 VerticalOptions="Center"
                                  HorizontalOptions="Center"
                                  Spacing="4">
-                        <Label Text="Información Adicional" 
-                               FontAttributes="Bold" 
-                               FontSize="22" 
-                               TextColor="White"
+                        <Label Text="Información Adicional"
+                               FontAttributes="Bold"
+                               FontSize="22"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                HorizontalTextAlignment="Center"/>
-                        <Label Text="Agregue detalles importantes del turno" 
-                               FontSize="13" 
-                               TextColor="#F5F5F5"
+                        <Label Text="Agregue detalles importantes del turno"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                FontAttributes="None"
                                HorizontalTextAlignment="Center"/>
                     </StackLayout>
-                    
+
                     <!-- Modern Close Button -->
                     <Border Grid.Column="1"
-                            BackgroundColor="#FFFFFF20"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 20"
                             WidthRequest="40" HeightRequest="40">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCloseTapped"/>
                         </Border.GestureRecognizers>
-                        <Label Text="✕" 
-                               FontSize="16" 
-                               TextColor="White"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" 
+                        <brand:PoliedroIcon Text="✕"
+                               FontSize="16"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               HorizontalOptions="Center"
                                VerticalOptions="Center"/>
                     </Border>
                 </Grid>
             </Border>
 
             <!-- Content Area with Description Input -->
-            <Border Grid.Row="1" 
-                    BackgroundColor="#FAFCFF"
+            <Border Grid.Row="1"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                     Padding="24,20">
-                
+
                 <VerticalStackLayout Spacing="16">
                     <!-- Description Card -->
-                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeShape="RoundRectangle 12"
-                            Stroke="#E8F2FF"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeThickness="1"
                             Padding="20,16">
-                        
+
                         <VerticalStackLayout Spacing="14">
                             <StackLayout Orientation="Horizontal" Spacing="10">
-                                <Border BackgroundColor="#2196F3"
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                         StrokeShape="RoundRectangle 20"
                                         WidthRequest="40" HeightRequest="40">
-                                    <Label Text="📝" FontSize="18" 
-                                           HorizontalOptions="Center" 
+                                    <brand:PoliedroIcon Text="📝" FontSize="18"
+                                           HorizontalOptions="Center"
                                            VerticalOptions="Center"/>
                                 </Border>
-                                <Label Text="Descripción detallada" 
-                                       FontSize="17" 
+                                <Label Text="Descripción detallada"
+                                       FontSize="17"
                                        FontAttributes="Bold"
-                                       TextColor="#1976D2"
+                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
-                            
+
                             <!-- Modern Editor Container -->
-                            <Border BackgroundColor="#FAFCFF"
-                                    StrokeShape="RoundRectangle 12"
-                                    Stroke="#E0E9F7"
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                     StrokeThickness="1"
-                                    Padding="16,12"
+                                    Padding="12,0"
                                     MinimumHeightRequest="240">
-                                <Border.Shadow>
-                                    <Shadow Brush="#2196F3" Offset="0,1" Radius="4" Opacity="0.05"/>
-                                </Border.Shadow>
-                                
+
+
                                 <Editor x:Name="EditorDescription"
                                         AutoSize="TextChanges"
                                         Placeholder="{Binding EnterADescription}"
                                         Text="{Binding AditionalInfoDescription, Mode=TwoWay}"
-                                        TextColor="#1976D2"
-                                        PlaceholderColor="#9E9E9E"
+                                        TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                                        PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                         BackgroundColor="Transparent"
-                                        FontSize="15"
+                                        FontSize="16"
                                         MaxLength="500"
                                         AutomationId="EditorDescription"/>
                             </Border>
-                            
+
                             <!-- Character Counter -->
-                            <StackLayout Orientation="Horizontal" 
+                            <StackLayout Orientation="Horizontal"
                                          HorizontalOptions="End"
                                          Spacing="8">
                                 <Label Text="{Binding Source={x:Reference EditorDescription}, Path=Text.Length, StringFormat='{0}/500 caracteres'}"
-                                       FontSize="11"
-                                       TextColor="#9E9E9E"/>
-                                <Label Text="💡" 
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                <brand:PoliedroIcon Text="💡"
                                        FontSize="12"
                                        VerticalOptions="Center"/>
                             </StackLayout>
@@ -132,51 +127,47 @@
 
             <!-- Modern Action Buttons -->
             <Border Grid.Row="2"
-                    BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                     StrokeShape="RoundRectangle 0,0,20,20"
                     Padding="20,12">
-                
+
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <!-- Cancel Button -->
                     <Border Grid.Column="0"
-                            BackgroundColor="#F5F5F5"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="0"
                             HeightRequest="46">
-                        <Border.Shadow>
-                            <Shadow Brush="#9E9E9E" Offset="0,2" Radius="6" Opacity="0.1"/>
-                        </Border.Shadow>
+
                         <Button BackgroundColor="Transparent"
                                 Clicked="OnCloseTapped"
-                                FontSize="16" 
+                                FontSize="16"
                                 FontAttributes="Bold"
-                                Text="Cancelar" 
-                                TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"
-                                HeightRequest="46"
+                                Text="Cancelar"
+                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                MinimumHeightRequest="52"
                                 AutomationId="ButtonCancelAddInfo"/>
                     </Border>
-                    
+
                     <!-- Save Button -->
                     <Border Grid.Column="1"
-                            BackgroundColor="#2196F3"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="0"
                             HeightRequest="46">
-                        <Border.Shadow>
-                            <Shadow Brush="#2196F3" Offset="0,2" Radius="8" Opacity="0.2"/>
-                        </Border.Shadow>
+
                         <Button BackgroundColor="Transparent"
                                 Clicked="OnSaveTapped"
-                                FontSize="16" 
+                                FontSize="16"
                                 FontAttributes="Bold"
-                                Text="Guardar" 
-                                TextColor="White"
-                                HeightRequest="46"
+                                Text="Guardar"
+                                TextColor="{StaticResource OnBrand}"
+                                MinimumHeightRequest="52"
                                 AutomationId="ButtonSaveAddInfo"/>
                     </Border>
                 </Grid>
             </Border>
-            
+
         </Grid>
     </Border>
 </mct:Popup>

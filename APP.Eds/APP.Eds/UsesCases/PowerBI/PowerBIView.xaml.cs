@@ -1,4 +1,4 @@
-using Microsoft.Maui.Controls;
+ï»¿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Controls.Shapes;
 using System;
@@ -16,7 +16,8 @@ namespace APP.Eds.UsesCases.PowerBI
 
         public PowerBIView()
         {
-            Title = "Power BI Dashboard";
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
+            Title = "Reportes Â· Power BI";
             BuildUI();
             LoadPowerBIDashboard();
         }
@@ -37,7 +38,7 @@ namespace APP.Eds.UsesCases.PowerBI
 
             var loadingBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeShape = new RoundRectangle { CornerRadius = 20 },
                 Padding = new Thickness(30, 25),
                 HorizontalOptions = LayoutOptions.Center,
@@ -48,16 +49,16 @@ namespace APP.Eds.UsesCases.PowerBI
             loadingStack.Children.Add(new ActivityIndicator
             {
                 IsRunning = true,
-                Color = Colors.Purple,
+                Color = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
                 WidthRequest = 40,
                 HeightRequest = 40,
                 HorizontalOptions = LayoutOptions.Center
             });
             loadingStack.Children.Add(new Label
             {
-                Text = "Cargando Dashboard...",
+                Text = "Cargando reportesâ€¦",
                 FontSize = 16,
-                TextColor = Colors.Gray,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 HorizontalOptions = LayoutOptions.Center
             });
 
@@ -71,7 +72,7 @@ namespace APP.Eds.UsesCases.PowerBI
             // Header section
             var headerBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeShape = new RoundRectangle { CornerRadius = 20 },
                 StrokeThickness = 0,
                 Padding = new Thickness(25, 20)
@@ -80,16 +81,16 @@ namespace APP.Eds.UsesCases.PowerBI
             var headerStack = new StackLayout { Spacing = 5 };
             headerStack.Children.Add(new Label
             {
-                Text = "Power BI Dashboard",
+                Text = "Reportes",
                 FontSize = 24,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Colors.Purple
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
             });
             headerStack.Children.Add(new Label
             {
-                Text = "Reportes y analisis de datos en tiempo real",
+                Text = "Consulta los reportes de Power BI",
                 FontSize = 14,
-                TextColor = Colors.Gray
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
             });
             headerBorder.Content = headerStack;
             contentStack.Children.Add(headerBorder);
@@ -97,10 +98,10 @@ namespace APP.Eds.UsesCases.PowerBI
             // Dashboard container
             var dashboardBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeShape = new RoundRectangle { CornerRadius = 15 },
                 StrokeThickness = 1,
-                Stroke = Colors.LightGray,
+                Stroke = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
                 Padding = new Thickness(0)
             };
 
@@ -113,7 +114,7 @@ namespace APP.Eds.UsesCases.PowerBI
 
             _powerBIWebView = new WebView
             {
-                BackgroundColor = Colors.White
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface
             };
             _powerBIWebView.Navigating += OnWebViewNavigating;
             _powerBIWebView.Navigated += OnWebViewNavigated;
@@ -125,10 +126,10 @@ namespace APP.Eds.UsesCases.PowerBI
             // Information section
             var infoBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeShape = new RoundRectangle { CornerRadius = 15 },
                 StrokeThickness = 1,
-                Stroke = Colors.LightGray,
+                Stroke = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
                 Padding = new Thickness(20)
             };
 
@@ -138,31 +139,31 @@ namespace APP.Eds.UsesCases.PowerBI
                 Text = "Informacion del Dashboard",
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Colors.Purple
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
             });
             infoStack.Children.Add(new Label
             {
-                Text = "• Este dashboard muestra datos de ejemplo de Power BI",
+                Text = "ï¿½ Este dashboard muestra datos de ejemplo de Power BI",
                 FontSize = 14,
-                TextColor = Colors.Gray
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
             });
             infoStack.Children.Add(new Label
             {
-                Text = "• Los reportes se actualizan en tiempo real",
+                Text = "ï¿½ Los reportes se actualizan en tiempo real",
                 FontSize = 14,
-                TextColor = Colors.Gray
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
             });
             infoStack.Children.Add(new Label
             {
-                Text = "• Use los controles interactivos para filtrar la informacion",
+                Text = "ï¿½ Use los controles interactivos para filtrar la informacion",
                 FontSize = 14,
-                TextColor = Colors.Gray
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
             });
             infoStack.Children.Add(new Label
             {
-                Text = "• Para reportes personalizados, contacte al administrador",
+                Text = "ï¿½ Para reportes personalizados, contacte al administrador",
                 FontSize = 14,
-                TextColor = Colors.Gray
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
             });
             infoBorder.Content = infoStack;
             contentStack.Children.Add(infoBorder);
@@ -172,7 +173,7 @@ namespace APP.Eds.UsesCases.PowerBI
             {
                 StrokeShape = new RoundRectangle { CornerRadius = 15 },
                 StrokeThickness = 0,
-                BackgroundColor = Colors.Purple,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
                 Margin = new Thickness(0, 10, 0, 20)
             };
 
@@ -274,7 +275,7 @@ namespace APP.Eds.UsesCases.PowerBI
             <div class='spinner'></div>
             <p>Cargando Dashboard de Power BI...</p>
         </div>
-        <iframe 
+        <iframe
             id='powerbi-iframe'
             class='powerbi-frame'
             title='Power BI Dashboard'
@@ -293,31 +294,31 @@ namespace APP.Eds.UsesCases.PowerBI
             </button>
         </div>
     </div>
-    
+
     <script>
         let loadTimeout;
-        
+
         function hideLoading() {{
             document.getElementById('loading').style.display = 'none';
             document.getElementById('powerbi-iframe').style.display = 'block';
             clearTimeout(loadTimeout);
         }}
-        
+
         function showError() {{
             document.getElementById('loading').style.display = 'none';
             document.getElementById('powerbi-iframe').style.display = 'none';
             document.getElementById('error').style.display = 'block';
         }}
-        
+
         function reloadFrame() {{
             document.getElementById('error').style.display = 'none';
             document.getElementById('loading').style.display = 'flex';
             document.getElementById('powerbi-iframe').src = document.getElementById('powerbi-iframe').src;
             loadTimeout = setTimeout(showError, 15000);
         }}
-        
+
         loadTimeout = setTimeout(showError, 15000);
-        
+
         document.getElementById('powerbi-iframe').onerror = function() {{
             showError();
         }};
@@ -343,8 +344,8 @@ namespace APP.Eds.UsesCases.PowerBI
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading Power BI dashboard: {ex.Message}");
-                await DisplayAlert("Error", 
-                    "No se pudo cargar el dashboard de Power BI. Por favor, intente nuevamente.", 
+                await DisplayAlert("Error",
+                    "No se pudo cargar el dashboard de Power BI. Por favor, intente nuevamente.",
                     "OK");
                 HideLoadingOverlay();
             }
@@ -358,7 +359,7 @@ namespace APP.Eds.UsesCases.PowerBI
         private void OnWebViewNavigated(object sender, WebNavigatedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"WebView navigated to: {e.Url}, Result: {e.Result}");
-            
+
             if (e.Result == WebNavigationResult.Success)
             {
                 HideLoadingOverlay();
@@ -368,8 +369,8 @@ namespace APP.Eds.UsesCases.PowerBI
                 System.Diagnostics.Debug.WriteLine($"WebView navigation failed: {e.Result}");
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await DisplayAlert("Error de Conexion", 
-                        "No se pudo cargar el dashboard. Verifique su conexion a internet.", 
+                    await DisplayAlert("Error de Conexion",
+                        "No se pudo cargar el dashboard. Verifique su conexion a internet.",
                         "OK");
                     HideLoadingOverlay();
                 });

@@ -1,72 +1,68 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls" xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Eds.UsesCases.ProductType.ProductTypePostView"
              xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
              Title="Gestión de Tipos de Producto"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="16">
-                
+            <VerticalStackLayout Padding="20" Spacing="16">
+
                 <!-- Header Card -->
-                <Border BackgroundColor="#FF6B35" 
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 16"
                         Padding="20"
                         StrokeThickness="0">
-                    <Border.Shadow>
-                        <Shadow Brush="#FF6B35" Offset="0,4" Radius="12" Opacity="0.3"/>
-                    </Border.Shadow>
+
                     <StackLayout>
-                        <Label Text="🏷️ Gestión de Tipos de Producto" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Configure categorías y clasificaciones de productos" 
-                               FontSize="14" 
-                               TextColor="#FFE4D6" 
-                               HorizontalOptions="Center"
+                        <Label Text="Gestión de Tipos de Producto"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Configure categorías y clasificaciones de productos"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
+                               HorizontalOptions="Start"
                                Margin="0,5,0,0"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Product Type Registration Form Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Form Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="📝" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Nuevo Tipo de Producto" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="📝" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Nuevo Tipo de Producto"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Description Field -->
                         <StackLayout Spacing="8">
-                            <Label Text="Descripción del Tipo de Producto" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                            <Label Text="Descripción del Tipo de Producto"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    FontSize="14"/>
-                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     Padding="4">
-                                <Grid ColumnDefinitions="Auto,*" Padding="12">
-                                    <Label Grid.Column="0" 
-                                           Text="🏷️" 
-                                           FontSize="18" 
-                                           TextColor="#FF6B35" 
+                                <brand:ResponsiveFormGrid ColumnDefinitions="Auto,*" Padding="12">
+                                    <brand:PoliedroIcon Grid.Column="0"
+                                           Text="🏷️"
+                                           FontSize="18"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            VerticalOptions="Center"
                                            Margin="0,0,12,0"/>
                                     <Entry Grid.Column="1"
@@ -75,28 +71,26 @@
                                            Text="{Binding Description, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryProductType"
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            FontSize="16"
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
-                                </Grid>
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                </brand:ResponsiveFormGrid>
                             </Border>
                         </StackLayout>
 
                         <!-- Action Button -->
-                        <Border BackgroundColor="#FF6B35" 
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                 StrokeShape="RoundRectangle 12"
                                 Padding="4"
                                 Margin="0,10,0,0">
-                            <Border.Shadow>
-                                <Shadow Brush="#FF6B35" Offset="0,3" Radius="8" Opacity="0.3"/>
-                            </Border.Shadow>
+
                             <Button BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
-                                    Text="🚀 Crear Tipo de Producto"
-                                    TextColor="White"
+                                    Text="Crear Tipo de Producto"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="18"
                                     FontAttributes="Bold"
-                                    HeightRequest="50"
+                                    MinimumHeightRequest="52"
                                     AutomationId="ButtonSendData"/>
                         </Border>
                     </VerticalStackLayout>
@@ -104,10 +98,10 @@
 
                 <!-- Bottom Margin for Better Scrolling -->
                 <BoxView HeightRequest="20" Color="Transparent"/>
-                
+
             </VerticalStackLayout>
         </ScrollView>
-        
+
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"

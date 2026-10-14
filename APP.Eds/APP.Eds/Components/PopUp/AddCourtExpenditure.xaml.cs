@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using APP.Eds.Models.Court;
 using APP.Eds.Services.Court;
 using CommunityToolkit.Maui.Views;
@@ -11,6 +11,7 @@ public partial class AddCourtExpenditure : Popup
 
     public AddCourtExpenditure(CourtService courtService)
 	{
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
 		InitializeComponent();
         this.courtService = courtService;
         // Fix: Set the BindingContext
@@ -43,7 +44,7 @@ public partial class AddCourtExpenditure : Popup
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, seleccione un tipo de Egreso", "OK");
                 return;
             }
-            
+
             if (courtService.CourtExpenditureAmount <= 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
@@ -70,7 +71,7 @@ public partial class AddCourtExpenditure : Popup
             SecondEntry.IsEnabled = false;
             FirstEntry.Text = string.Empty;
             SecondEntry.Text = string.Empty;
-            
+
             await CloseAsync();
         }
         catch (Exception ex)
@@ -117,7 +118,7 @@ public partial class AddCourtExpenditure : Popup
                 FirstEntry.IsEnabled = true;
                 SecondEntry.IsEnabled = true;
                 FirstEntry.Focus();
-                
+
                 // Fix: Safer cursor positioning
                 if (!string.IsNullOrEmpty(FirstEntry.Text))
                 {
@@ -140,7 +141,7 @@ public partial class AddCourtExpenditure : Popup
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, el egreso debe ser mayor a 0", "OK");
                 return;
             }
-            
+
             SecondEntry.Focus();
         }
         catch (Exception ex)

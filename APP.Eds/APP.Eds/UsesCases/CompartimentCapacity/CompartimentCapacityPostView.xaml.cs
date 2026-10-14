@@ -1,4 +1,4 @@
-using APP.Eds.Components.PopUp;
+﻿using APP.Eds.Components.PopUp;
 using APP.Eds.Services.CompartimentCapacity;
 
 namespace APP.Eds.UsesCases.CompartimentCapacity;
@@ -40,7 +40,7 @@ public partial class CompartimentCapacityPostView : ContentPage
 
             if (_compartimentCapacityService.Default <= 0)
             {
-                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad v�lida mayor que 0", "Capacidad Inv�lida");
+                await CustomAlert.ShowErrorAsync("Debe ingresar una capacidad válida mayor que 0", "Capacidad Inválida");
                 return;
             }
 
@@ -56,9 +56,9 @@ public partial class CompartimentCapacityPostView : ContentPage
             byte capacity = (byte)_compartimentCapacityService.Default;
 
             bool confirm = await CustomAlert.ShowConfirmAsync(
-                $"�Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuraci�n afectar� las operaciones del compartimento.", 
-                "Confirmar Configuraci�n", 
-                "Confirmar", 
+                $"¿Confirma que desea asignar {capacity} L de capacidad al compartimento #{compartmentNumber} del tanque {tankCode}?\n\nEsta configuración afectará las operaciones del compartimento.",
+                "Confirmar Configuración",
+                "Confirmar",
                 "Cancelar");
 
             if (!confirm) return;
@@ -73,7 +73,7 @@ public partial class CompartimentCapacityPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar la configuraci�n de capacidad:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar la configuración de capacidad:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

@@ -1,4 +1,4 @@
-using APP.Eds.Services.StrongBox;
+ï»¿using APP.Eds.Services.StrongBox;
 using Microsoft.Maui.Controls;
 using System.ComponentModel;
 
@@ -13,7 +13,7 @@ public partial class StrongBoxView : ContentPage
         InitializeComponent();
         _strongBoxService = new StrongBoxService();
         BindingContext = _strongBoxService;
-        
+
         // Suscribirse a los cambios de IsLoading para mostrar/ocultar el loading
         _strongBoxService.PropertyChanged += OnStrongBoxServicePropertyChanged;
     }
@@ -24,7 +24,7 @@ public partial class StrongBoxView : ContentPage
         {
             if (_strongBoxService.IsLoading)
             {
-                LoadingOverlay.ShowLoading("Procesando retiro...", "Realizando operación en caja fuerte");
+                LoadingOverlay.ShowLoading("Procesando retiro...", "Realizando operaciÃ³n en caja fuerte");
             }
             else
             {
@@ -35,7 +35,7 @@ public partial class StrongBoxView : ContentPage
         {
             if (_strongBoxService.IsLoadingCourtDetails)
             {
-                LoadingOverlay.ShowLoading("Cargando detalles del corte...", "Obteniendo información detallada del movimiento");
+                LoadingOverlay.ShowLoading("Cargando detalles del corte...", "Obteniendo informaciÃ³n detallada del movimiento");
             }
             else
             {
@@ -53,7 +53,7 @@ public partial class StrongBoxView : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        
+
         // Desuscribirse del evento para evitar memory leaks
         if (_strongBoxService != null)
         {

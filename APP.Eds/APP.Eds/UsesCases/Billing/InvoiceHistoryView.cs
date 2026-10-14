@@ -8,6 +8,7 @@ public partial class InvoiceHistoryView : ContentPage
 
     public InvoiceHistoryView()
     {
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         _viewModel = new InvoiceHistoryViewModel();
         BindingContext = _viewModel;
 
@@ -51,7 +52,7 @@ public partial class InvoiceHistoryView : ContentPage
             Content = new ActivityIndicator
             {
                 IsRunning = true,
-                Color = Colors.White,
+                Color = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             }
@@ -69,9 +70,9 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Margin = new Thickness(16, 8),
             Padding = 16,
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 12,
-            HasShadow = true,
+            HasShadow = false,
             Content = new Grid
             {
                 RowDefinitions =
@@ -92,16 +93,16 @@ public partial class InvoiceHistoryView : ContentPage
           {
      // Fila 1: Número de factura y estado
      CreateHeaderRow(),
-  
+
      // Fila 2: Cliente
      CreateClientRow(),
-        
+
      // Fila 3: Islandero y EDS (NEW)
      CreateIslanderEdsRow(),
 
      // Fila 4: Totales
      CreateTotalsRow(),
-      
+
       // Fila 5: Botones de acción
      CreateActionsRow()
       }
@@ -124,7 +125,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#6200E8"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             VerticalOptions = LayoutOptions.Center
         };
         invoiceLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.FullInvoiceNumber));
@@ -136,17 +137,17 @@ public partial class InvoiceHistoryView : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        var statusIcon = new Label
+        var statusIcon = new global::APP.Eds.Controls.PoliedroIcon
         {
             FontSize = 16,
             VerticalOptions = LayoutOptions.Center
         };
-        statusIcon.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.StatusIcon));
+        statusIcon.SetBinding(global::APP.Eds.Controls.PoliedroIcon.TextProperty, nameof(ElectronicInvoiceModel.StatusIcon));
 
         var statusLabel = new Label
         {
             FontSize = 12,
-            TextColor = Color.FromArgb("#4CAF50"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success,
             FontAttributes = FontAttributes.Bold,
             VerticalOptions = LayoutOptions.Center
         };
@@ -174,7 +175,7 @@ public partial class InvoiceHistoryView : ContentPage
        }
         };
 
-        var icon = new Label
+        var icon = new global::APP.Eds.Controls.PoliedroIcon
         {
             Text = "👤",
             FontSize = 16,
@@ -191,8 +192,8 @@ public partial class InvoiceHistoryView : ContentPage
         var clientLabel = new Label
         {
             Text = "Tercero:",
-            FontSize = 10,
-            TextColor = Color.FromArgb("#999999"),
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold
         };
         clientStack.Add(clientLabel);
@@ -201,21 +202,21 @@ public partial class InvoiceHistoryView : ContentPage
         {
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#333333")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary
         };
         clientName.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.ClientName));
 
         var clientDoc = new Label
         {
             FontSize = 12,
-            TextColor = Color.FromArgb("#666666")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
         clientDoc.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.ClientDocumentNumber));
 
         var dateLabel = new Label
         {
-            FontSize = 11,
-            TextColor = Color.FromArgb("#999999")
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
         dateLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.DateFormatted));
 
@@ -255,7 +256,7 @@ public partial class InvoiceHistoryView : ContentPage
             Spacing = 4
         };
 
-        var islanderIcon = new Label
+        var islanderIcon = new global::APP.Eds.Controls.PoliedroIcon
         {
             Text = "👤",
             FontSize = 12,
@@ -266,7 +267,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Text = "Islandero:",
             FontSize = 9,
-            TextColor = Color.FromArgb("#999999"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold,
             VerticalOptions = LayoutOptions.Center
         };
@@ -276,8 +277,8 @@ public partial class InvoiceHistoryView : ContentPage
 
         var islanderLabel = new Label
         {
-            FontSize = 11,
-            TextColor = Color.FromArgb("#6B7280"),
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             LineBreakMode = LineBreakMode.TailTruncation,
             MaxLines = 1
         };
@@ -299,7 +300,7 @@ public partial class InvoiceHistoryView : ContentPage
             HorizontalOptions = LayoutOptions.End
         };
 
-        var edsIcon = new Label
+        var edsIcon = new global::APP.Eds.Controls.PoliedroIcon
         {
             Text = "🏪",
             FontSize = 12,
@@ -310,7 +311,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Text = "EDS:",
             FontSize = 9,
-            TextColor = Color.FromArgb("#999999"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold,
             VerticalOptions = LayoutOptions.Center
         };
@@ -320,8 +321,8 @@ public partial class InvoiceHistoryView : ContentPage
 
         var edsLabel = new Label
         {
-            FontSize = 11,
-            TextColor = Color.FromArgb("#6B7280"),
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             LineBreakMode = LineBreakMode.TailTruncation,
             MaxLines = 1,
             HorizontalTextAlignment = TextAlignment.End
@@ -360,7 +361,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Text = "Método de Pago:",
             FontSize = 9,
-            TextColor = Color.FromArgb("#999999"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold
         };
 
@@ -378,7 +379,7 @@ public partial class InvoiceHistoryView : ContentPage
         var paymentLabel = new Label
         {
             FontSize = 12,
-            TextColor = Color.FromArgb("#666666")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
         paymentLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.PaymentMethod));
 
@@ -398,7 +399,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Text = "Total:",
             FontSize = 9,
-            TextColor = Color.FromArgb("#999999"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold,
             HorizontalTextAlignment = TextAlignment.End
         };
@@ -407,7 +408,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#6200E8"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             HorizontalOptions = LayoutOptions.End
         };
         totalLabel.SetBinding(Label.TextProperty, nameof(ElectronicInvoiceModel.TotalAmountFormatted));
@@ -440,7 +441,6 @@ public partial class InvoiceHistoryView : ContentPage
         var viewButton = CreateActionButton(
             icon: "📄",
             text: "Ver PDF",
-            backgroundColor: "#6200E8",
             commandBinding: nameof(InvoiceHistoryViewModel.ViewPdfCommand)
         );
         grid.SetColumn(viewButton, 0);
@@ -450,7 +450,6 @@ public partial class InvoiceHistoryView : ContentPage
         var shareButton = CreateActionButton(
             icon: "📤",
             text: "Compartir",
-            backgroundColor: "#4CAF50",
             commandBinding: nameof(InvoiceHistoryViewModel.SharePdfCommand)
         );
         grid.SetColumn(shareButton, 1);
@@ -459,10 +458,9 @@ public partial class InvoiceHistoryView : ContentPage
         // ✨ Credit Note Button
         var creditNoteButton = CreateActionButton(
             icon: "📝",
-            text: "Nota Crédito",
-            backgroundColor: "#FF9800",
+            text: "Nota crédito",
             commandBinding: nameof(InvoiceHistoryViewModel.CreditNoteCommand),
-            fontSize: 9
+            fontSize: 12
         );
 
         // Trigger para deshabilitar si está anulada
@@ -495,18 +493,17 @@ public partial class InvoiceHistoryView : ContentPage
     private Frame CreateActionButton(
         string icon,
         string text,
-        string backgroundColor,
         string commandBinding,
-        int fontSize = 11)
+        int fontSize = 12)
     {
         var container = new Frame
         {
-            BackgroundColor = Color.FromArgb(backgroundColor),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
             Padding = new Thickness(4, 8),
-            HeightRequest = 62,
+            MinimumHeightRequest = 64,
             CornerRadius = 8,
             HasShadow = false,
-            BorderColor = Colors.Transparent
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.InputBorder
         };
 
         var stackLayout = new VerticalStackLayout
@@ -517,12 +514,11 @@ public partial class InvoiceHistoryView : ContentPage
         };
 
         // Icono
-        var iconLabel = new Label
+        var iconLabel = new global::APP.Eds.Controls.PoliedroIcon
         {
             Text = icon,
             FontSize = 20,
-            HorizontalOptions = LayoutOptions.Center,
-            HorizontalTextAlignment = TextAlignment.Center
+            HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(iconLabel);
 
@@ -531,7 +527,7 @@ public partial class InvoiceHistoryView : ContentPage
         {
             Text = text,
             FontSize = fontSize,
-            TextColor = Colors.White,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             FontAttributes = FontAttributes.Bold,
             HorizontalOptions = LayoutOptions.Center,
             HorizontalTextAlignment = TextAlignment.Center,
@@ -564,7 +560,7 @@ public partial class InvoiceHistoryView : ContentPage
             VerticalOptions = LayoutOptions.Center,
             Children =
             {
-      new Label
+      new global::APP.Eds.Controls.PoliedroIcon
  {
     Text = "📄",
        FontSize = 64,
@@ -575,14 +571,14 @@ public partial class InvoiceHistoryView : ContentPage
        Text = "No hay facturas electrónicas",
     FontSize = 18,
      FontAttributes = FontAttributes.Bold,
- TextColor = Color.FromArgb("#666666"),
+ TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
    HorizontalOptions = LayoutOptions.Center
  },
    new Label
  {
    Text = "Las facturas que generes aparecerán aquí",
   FontSize = 14,
-       TextColor = Color.FromArgb("#999999"),
+       TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
       HorizontalOptions = LayoutOptions.Center,
       HorizontalTextAlignment = TextAlignment.Center
        }

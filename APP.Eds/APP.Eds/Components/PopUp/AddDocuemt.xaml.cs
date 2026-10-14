@@ -52,6 +52,7 @@ namespace APP.Eds.Components.PopUp
 
         public AddDocuemt(CourtService courtService)
         {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
             InitializeComponent();
             _courtService = courtService;
             BindingContext = this;
@@ -116,7 +117,7 @@ namespace APP.Eds.Components.PopUp
                 foreach (var r in results)
                 {
                     var ext = Path.GetExtension(r.FileName)?.ToLowerInvariant() ?? "";
-                    
+
                     // Verificar extensión permitida
                     if (!allowedExtensions.Contains(ext))
                     {
@@ -125,7 +126,7 @@ namespace APP.Eds.Components.PopUp
                     }
 
                     var fileSize = new FileInfo(r.FullPath).Length;
-                    
+
                     // Verificar tamaño del archivo individual
                     if (fileSize > MAX_FILE_SIZE_BYTES)
                     {
@@ -177,9 +178,9 @@ namespace APP.Eds.Components.PopUp
                 // Mostrar advertencias sobre archivos que exceden el tamaño permitido
                 if (oversizedFiles.Any())
                 {
-                    var fileList = string.Join("\n", oversizedFiles.Select(f => 
+                    var fileList = string.Join("\n", oversizedFiles.Select(f =>
                         $"  • {f.Name} ({f.Size / (1024.0 * 1024.0):0.##} MB)"));
-                    
+
                     await CustomAlert.ShowWarningAsync(
                         $"⚠️ Archivos Demasiado Grandes\n\n" +
                         $"Los siguientes archivos exceden el límite de {MAX_FILE_SIZE_MB:0.##} MB por archivo y no fueron agregados:\n\n" +
@@ -190,7 +191,7 @@ namespace APP.Eds.Components.PopUp
                         $"• Para documentos: guarde en formato comprimido",
                         "Tamaño de Archivo Excedido");
                 }
-                
+
                 // Mostrar información sobre archivos omitidos por otras razones
                 if (skippedFiles.Any() && !oversizedFiles.Any())
                 {

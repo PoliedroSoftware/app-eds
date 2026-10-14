@@ -12,14 +12,15 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+        global::APP.Eds.Helpers.PoliedroTheme.Initialize(this);
         HandlerInitialize();
-        
-        // Ensure app follows system theme (Light/Dark mode)
-        // UserAppTheme = AppTheme.Unspecified allows system theme to control
-        UserAppTheme = AppTheme.Unspecified;
-        
+
+        // Open with the navy brand presentation approved by the user.
+        // The light palette remains available if system theme selection is restored.
+        UserAppTheme = AppTheme.Dark;
+
         var sessionManager = new BackendSessionManager();
-        
+
         // Limpiar sesión anterior
         sessionManager.ClearSession();
         MainPage = new NavigationPage(new MainPage());
@@ -28,16 +29,13 @@ public partial class App : Application
     protected override void OnStart()
     {
         base.OnStart();
-        // Ensure theme is applied on app start
-        RequestedThemeChanged += OnRequestedThemeChanged;
-        
         // Check for app updates (controlled by Configuration.EnableAutoVersionCheck flag)
         if (Configuration.EnableAutoVersionCheck)
         {
             CheckForUpdates();
         }
     }
-    
+
     /// <summary>
     /// Checks for app updates on Google Play Store and shows version information.
     /// Always displays current version and notifies if an update is available.
@@ -52,14 +50,14 @@ public partial class App : Application
             using var versionCheckService = new VersionCheckService();
             var currentVersion = versionCheckService.GetCurrentVersion();
             var latestVersion = await versionCheckService.GetLatestVersionAsync();
-            
+
             // Ensure UI updates happen on main thread
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 if (!string.IsNullOrEmpty(latestVersion))
                 {
                     var updateAvailable = await versionCheckService.IsUpdateAvailableAsync();
-                    
+
                     if (updateAvailable)
                     {
                         // Update available - show notification with update option
@@ -69,7 +67,7 @@ public partial class App : Application
                             "Actualizar",
                             "Más tarde"
                         );
-                        
+
                         if (shouldUpdate)
                         {
                             // Open Play Store app page
@@ -99,12 +97,12 @@ public partial class App : Application
         {
             // Show error with current version info
             System.Diagnostics.Debug.WriteLine($"Error checking for updates: {ex.Message}");
-            
+
             try
             {
                 using var versionCheckService = new VersionCheckService();
                 var currentVersion = versionCheckService.GetCurrentVersion();
-                
+
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     await AlertService.ShowInfoAsync(
@@ -117,16 +115,6 @@ public partial class App : Application
             {
                 // Silently fail if we can't even show current version
             }
-        }
-    }
-
-    private void OnRequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
-    {
-        // This method will be called when system theme changes
-        // Force a refresh of the current page to apply new theme
-        if (MainPage != null)
-        {
-            MainPage.Handler?.DisconnectHandler();
         }
     }
 

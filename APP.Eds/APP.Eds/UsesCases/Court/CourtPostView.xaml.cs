@@ -99,11 +99,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
     public CourtPostView()
     {
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         try { InitializeComponent(); }
         catch
         {
             Title = "Cierre De Turno";
-            BackgroundColor = Color.FromArgb("#F8F9FA");
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground;
             Content = CreateContent();
         }
 
@@ -156,11 +157,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             {
                 new Label
                 {
-                    Text = "🏪 Cierre De Turno",
+                    Text = "Cierre De Turno",
                     FontSize = 24,
                     FontAttributes = FontAttributes.Bold,
                     HorizontalOptions = LayoutOptions.Center,
-                    TextColor = Colors.Purple
+                    TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
                 }
             }
         };
@@ -349,7 +350,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     cvDisp.ItemsSource = null;
                     cvDisp.IsVisible = false;
                     await Task.Yield();            // cede un frame al UI thread
-                    cvDisp.ItemsSource = _service.CourtDispensers; // ideal: ObservableCollection<> 
+                    cvDisp.ItemsSource = _service.CourtDispensers; // ideal: ObservableCollection<>
                     cvDisp.IsVisible = wasVisible || true;
                 }
             }
@@ -365,7 +366,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     cvPays.ItemsSource = null;
                     cvPays.IsVisible = false;
                     await Task.Yield();
-                    cvPays.ItemsSource = _service.CourtTypeOfCollections; // ideal: ObservableCollection<> 
+                    cvPays.ItemsSource = _service.CourtTypeOfCollections; // ideal: ObservableCollection<>
                     cvPays.IsVisible = wasVisible || true;
                 }
             }
@@ -490,7 +491,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             // permitir agregar formas de pago sin validar ventas
             var check = this.FindByName<CheckBox>("RegisterShiftCheck");
             bool registerShift = check?.IsChecked ?? false;
-            
+
             if (registerShift)
             {
                 // Permitir agregar formas de pago sin requerir ventas cuando se registra turno sin venta
@@ -593,11 +594,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     await _registerShiftUserService.SaveRegisterShiftAsync(showAlert: true);
 
                     try { overlayRegisterShift?.HideLoading(); } catch { }
-                    
+
                     await ResetForNewCloseAsync();
                     return;
                 }
-                
+
                 if (string.Equals(UserRole, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
                     _registerShiftAdminService.IdEds = vm.IdEds;
@@ -623,7 +624,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
                     await _registerShiftAdminService.SaveRegisterShiftAsync(showAlert: true);
 
                     try { overlayRegisterShift?.HideLoading(); } catch { }
-                    
+
                     await ResetForNewCloseAsync();
                     return;
                 }
@@ -822,12 +823,12 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     private string BuildSuccessMessage(double totalAmount, double totalTypeOfCollection, double totalExpenditures)
     {
         var message = new System.Text.StringBuilder();
-        
+
         message.AppendLine("El corte de turno ha sido registrado correctamente en el sistema.");
         message.AppendLine();
         message.AppendLine("📊 RESUMEN DEL CIERRE:");
         message.AppendLine();
-        
+
         // Información de ventas
         if (_service.CourtDispensers?.Any() == true)
         {
@@ -836,13 +837,13 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             message.AppendLine($"   • Total en galones: {_service.GetTotalGallons():N2}");
             message.AppendLine();
         }
-        
+
         // Métodos de pago
         if (_service.CourtTypeOfCollections?.Any() == true)
         {
             message.AppendLine($"💳 Métodos de Pago: {_service.CourtTypeOfCollections.Count} método(s)");
             message.AppendLine($"   • Total recaudado: ${totalTypeOfCollection:N2}");
-            
+
             // Detallar métodos de pago
             foreach (var payment in _service.CourtTypeOfCollections)
             {
@@ -850,7 +851,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             }
             message.AppendLine();
         }
-        
+
         // Gastos
         if (_service.CourtExpenditures?.Any() == true)
         {
@@ -858,20 +859,20 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
             message.AppendLine($"   • Total de gastos: ${totalExpenditures:N2}");
             message.AppendLine();
         }
-        
+
         // Documentos adjuntos
         if (_service.CourtDocuments?.Any() == true)
         {
             message.AppendLine($"📎 Documentos Adjuntos: {_service.CourtDocuments.Count} archivo(s)");
             message.AppendLine();
         }
-        
+
         // Efectivo en caja
         double cash = totalTypeOfCollection - totalExpenditures;
         message.AppendLine("💰 EFECTIVO FINAL:");
         message.AppendLine($"   ${cash:N2}");
         message.AppendLine();
-        
+
         // Validación de cuadratura
         var tolerance = 0.01;
         if (Math.Abs(totalAmount - totalTypeOfCollection) <= tolerance)
@@ -883,11 +884,11 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
         {
             var difference = totalAmount - totalTypeOfCollection;
             message.AppendLine($"⚠️ VALIDACIÓN: Diferencia de ${Math.Abs(difference):N2}");
-            message.AppendLine(difference > 0 
-                ? "   (Ventas mayores a métodos de pago)" 
+            message.AppendLine(difference > 0
+                ? "   (Ventas mayores a métodos de pago)"
                 : "   (Métodos de pago mayores a ventas)");
         }
-        
+
         return message.ToString();
     }
 
@@ -896,7 +897,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
     /// Rehabilita botones y secciones para un NUEVO cierre de turno,
     /// reseteando el servicio y restableciendo las banderas de edición/visibilidad.
     /// </summary>
-    /// 
+    ///
     // ✅ CORREGIDO: Lógica diferente para Admin vs Usuario normal
     public bool AccionesHabilitadas => PuedeEditar && CanAccessFunctionality;
 
@@ -972,7 +973,7 @@ public partial class CourtPostView : ContentPage, INotifyPropertyChanged
 
                     // ✅ CORREGIDO: Sincronizar ambas propiedades
                     IsBusinessSelected = true;  // La propiedad local de la página
-                    
+
                     OnPropertyChanged(nameof(AccionesHabilitadas));
                     OnPropertyChanged(nameof(CanAccessFunctionality));
 

@@ -1,4 +1,4 @@
-using APP.Eds.Components.PopUp;
+﻿using APP.Eds.Components.PopUp;
 using APP.Eds.Services.Shopping;
 using APP.Eds.Constants;
 using CommunityToolkit.Maui.Views;
@@ -12,6 +12,7 @@ public partial class ShoppingPostView : ContentPage
 
     public ShoppingPostView()
     {
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         InitializeComponent();
         _shoppingService = ShoppingService.Instance;
         BindingContext = _shoppingService;
@@ -20,7 +21,7 @@ public partial class ShoppingPostView : ContentPage
     private async void OpenShoppingPopUp(object sender, EventArgs e)
     {
         Button button = sender as Button;
-        
+
         try
         {
             // Disable the button temporarily to prevent double-tap
@@ -41,7 +42,7 @@ public partial class ShoppingPostView : ContentPage
             // ✅ VALIDACIÓN: Verificar que existan productos/compartimentos para el EDS seleccionado
             // Safe to access SelectedEds.Name here because null check passed above (line 33)
             string edsName = _shoppingService.SelectedEds.Name;
-            if (_shoppingService.FilteredProductCompartimentPairs == null || 
+            if (_shoppingService.FilteredProductCompartimentPairs == null ||
                 _shoppingService.FilteredProductCompartimentPairs.Count == 0)
             {
                 await CustomAlert.ShowWarningAsync(
@@ -265,24 +266,24 @@ public partial class ShoppingPostView : ContentPage
                 // Check for duplicate invoice
                 bool isDuplicate = await _shoppingService.CheckInvoiceExistsAsync(entry.Text);
                 _isInvoiceDuplicate = isDuplicate;
-                
+
                 if (isDuplicate)
                 {
                     // Show inline error for duplicate
-                    InvoiceBorder.Stroke = Color.FromArgb("#EF4444"); // Red
+                    InvoiceBorder.Stroke = global::APP.Eds.Helpers.PoliedroTheme.Error; // Red
                     InvoiceHelpIcon.Text = "❌";
-                    InvoiceHelpIcon.TextColor = Color.FromArgb("#EF4444");
+                    InvoiceHelpIcon.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Error;
                     InvoiceHelpText.Text = "Este número de factura ya existe en el sistema";
-                    InvoiceHelpText.TextColor = Color.FromArgb("#EF4444");
+                    InvoiceHelpText.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Error;
                 }
                 else
                 {
                     // Keep the valid state (green)
-                    InvoiceBorder.Stroke = Color.FromArgb("#10B981");
+                    InvoiceBorder.Stroke = global::APP.Eds.Helpers.PoliedroTheme.Success;
                     InvoiceHelpIcon.Text = "✅";
-                    InvoiceHelpIcon.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpIcon.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success;
                     InvoiceHelpText.Text = "Número de factura válido";
-                    InvoiceHelpText.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpText.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success;
                 }
             }
         }
@@ -312,37 +313,37 @@ public partial class ShoppingPostView : ContentPage
             if (sender is Entry entry)
             {
                 string invoiceText = entry.Text ?? string.Empty;
-                
+
                 // Reset duplicate flag when user types
                 _isInvoiceDuplicate = false;
-                
+
                 // Update visual feedback based on invoice length
                 if (string.IsNullOrWhiteSpace(invoiceText))
                 {
                     // Empty state - show neutral help text
-                    InvoiceBorder.Stroke = Color.FromArgb("#DDD6FE");
+                    InvoiceBorder.Stroke = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft;
                     InvoiceHelpIcon.Text = "ℹ️";
-                    InvoiceHelpIcon.TextColor = Color.FromArgb("#6B7280");
+                    InvoiceHelpIcon.TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary;
                     InvoiceHelpText.Text = "El número de factura debe tener al menos 3 caracteres";
-                    InvoiceHelpText.TextColor = Color.FromArgb("#6B7280");
+                    InvoiceHelpText.TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary;
                 }
                 else if (invoiceText.Length < 3)
                 {
                     // Invalid state - show warning
-                    InvoiceBorder.Stroke = Color.FromArgb("#F59E0B");
+                    InvoiceBorder.Stroke = global::APP.Eds.Helpers.PoliedroTheme.Warning;
                     InvoiceHelpIcon.Text = "⚠️";
-                    InvoiceHelpIcon.TextColor = Color.FromArgb("#F59E0B");
+                    InvoiceHelpIcon.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning;
                     InvoiceHelpText.Text = $"Faltan {3 - invoiceText.Length} caracteres para completar el mínimo requerido";
-                    InvoiceHelpText.TextColor = Color.FromArgb("#F59E0B");
+                    InvoiceHelpText.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning;
                 }
                 else
                 {
                     // Valid state - show success (will check for duplicates on Unfocused)
-                    InvoiceBorder.Stroke = Color.FromArgb("#10B981");
+                    InvoiceBorder.Stroke = global::APP.Eds.Helpers.PoliedroTheme.Success;
                     InvoiceHelpIcon.Text = "✅";
-                    InvoiceHelpIcon.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpIcon.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success;
                     InvoiceHelpText.Text = "Número de factura válido";
-                    InvoiceHelpText.TextColor = Color.FromArgb("#10B981");
+                    InvoiceHelpText.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success;
                 }
             }
         }

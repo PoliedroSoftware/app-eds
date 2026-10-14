@@ -1,4 +1,4 @@
-<ContentView
+﻿<ContentView
     x:Class="APP.Eds.UsesCases.LoadingView.LoadingView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
@@ -16,23 +16,19 @@
             VerticalOptions="FillAndExpand"
             Opacity="0.88">
             <Rectangle.Fill>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#F8FAFC" Offset="0.0" />
-                    <GradientStop Color="#E2E8F0" Offset="0.5" />
-                    <GradientStop Color="#CBD5E1" Offset="1.0" />
-                </LinearGradientBrush>
+                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
             </Rectangle.Fill>
         </Rectangle>
 
         <!-- Floating particles -->
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <Ellipse x:Name="Particle1" Fill="#20064FF4" WidthRequest="4" HeightRequest="4" 
+            <Ellipse x:Name="Particle1" Fill="#20064FF4" WidthRequest="4" HeightRequest="4"
                      HorizontalOptions="Start" VerticalOptions="Start" Margin="80,120" Opacity="0.4"/>
-            <Ellipse x:Name="Particle2" Fill="#206366F1" WidthRequest="3" HeightRequest="3" 
+            <Ellipse x:Name="Particle2" Fill="#206366F1" WidthRequest="3" HeightRequest="3"
                      HorizontalOptions="End" VerticalOptions="Start" Margin="0,200,100,0" Opacity="0.3"/>
-            <Ellipse x:Name="Particle3" Fill="#20F59E0B" WidthRequest="5" HeightRequest="5" 
+            <Ellipse x:Name="Particle3" Fill="#20F59E0B" WidthRequest="5" HeightRequest="5"
                      HorizontalOptions="Start" VerticalOptions="End" Margin="150,0,0,180" Opacity="0.5"/>
-            <Ellipse x:Name="Particle4" Fill="#20EF4444" WidthRequest="4" HeightRequest="4" 
+            <Ellipse x:Name="Particle4" Fill="#20EF4444" WidthRequest="4" HeightRequest="4"
                      HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,60,30" Opacity="0.35"/>
         </Grid>
 
@@ -45,17 +41,17 @@
 
             <!-- Enhanced loading spinner -->
             <Grid WidthRequest="84" HeightRequest="84" HorizontalOptions="Center">
-                
+
                 <!-- Outer progress ring -->
-                <Ellipse 
+                <Ellipse
                     Fill="Transparent"
-                    Stroke="#E2E8F0"
+                    Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                     StrokeThickness="4"
                     WidthRequest="84"
                     HeightRequest="84"/>
-                
+
                 <!-- Gradient progress indicator -->
-                <Ellipse 
+                <Ellipse
                     x:Name="ProgressRing"
                     Fill="Transparent"
                     StrokeThickness="4"
@@ -65,60 +61,56 @@
                     StrokeDashOffset="0"
                     Rotation="0">
                     <Ellipse.Stroke>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#6366F1" Offset="0.0" />
-                            <GradientStop Color="#8B5CF6" Offset="0.5" />
-                            <GradientStop Color="#EC4899" Offset="1.0" />
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                     </Ellipse.Stroke>
                 </Ellipse>
-                
+
                 <!-- Middle glow ring -->
-                <Ellipse 
+                <Ellipse
                     Fill="Transparent"
-                    Stroke="#6366F1"
+                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                     StrokeThickness="2"
                     WidthRequest="68"
                     HeightRequest="68"
                     Opacity="0.4"/>
-                
+
                 <!-- Inner subtle ring -->
-                <Ellipse 
+                <Ellipse
                     Fill="Transparent"
-                    Stroke="#8B5CF6"
+                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                     StrokeThickness="1"
                     WidthRequest="52"
                     HeightRequest="52"
                     Opacity="0.6"/>
-                
+
                 <!-- Core activity indicator -->
-                <ActivityIndicator 
+                <ActivityIndicator
                     x:Name="LoadingIndicator"
                     IsRunning="False"
-                    Color="#6366F1"
+                    Color="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                     WidthRequest="24"
                     HeightRequest="24"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
                     AutomationId="ActivityIndicatorLoading"/>
-                       
+
             </Grid>
 
             <!-- Professional loading content -->
             <StackLayout Spacing="14" HorizontalOptions="Center">
-                
+
                 <!-- Primary loading text -->
-                <Label 
+                <Label
                     x:Name="LoadingLabel"
                     Text="Cargando..."
                     FontSize="26"
                     FontAttributes="Bold"
-                    TextColor="#1E293B"
+                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
                     IsVisible="True"
                     AutomationId="LabelLoadingText"/>
-                
+
                 <!-- Elegant progress dots -->
                 <Grid x:Name="ProgressDots" HorizontalOptions="Center" ColumnSpacing="10">
                     <Grid.ColumnDefinitions>
@@ -126,26 +118,26 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <Ellipse x:Name="Dot1" Grid.Column="0" Fill="#CBD5E1" 
+
+                    <Ellipse x:Name="Dot1" Grid.Column="0" Fill="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                            WidthRequest="10" HeightRequest="10"/>
-                    <Ellipse x:Name="Dot2" Grid.Column="1" Fill="#CBD5E1" 
+                    <Ellipse x:Name="Dot2" Grid.Column="1" Fill="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                            WidthRequest="10" HeightRequest="10"/>
-                    <Ellipse x:Name="Dot3" Grid.Column="2" Fill="#CBD5E1" 
+                    <Ellipse x:Name="Dot3" Grid.Column="2" Fill="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                            WidthRequest="10" HeightRequest="10"/>
                 </Grid>
-                
+
                 <!-- Secondary descriptive text -->
-                <Label 
+                <Label
                     x:Name="LoadingDescription"
                     Text="Procesando informacion"
                     FontSize="18"
-                    TextColor="#64748B"
+                    TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
                     Opacity="0.9"
                     Margin="0,6,0,0"/>
-                    
+
                 <!-- Subtle progress indicator -->
                 <Rectangle x:Name="ProgressBar"
                          WidthRequest="180"
@@ -153,12 +145,7 @@
                          HorizontalOptions="Center"
                          Margin="0,12,0,0">
                     <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="Transparent" Offset="0.0" />
-                            <GradientStop Color="#6366F1" Offset="0.3" />
-                            <GradientStop Color="#8B5CF6" Offset="0.7" />
-                            <GradientStop Color="Transparent" Offset="1.0" />
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                     </Rectangle.Fill>
                 </Rectangle>
             </StackLayout>

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup 
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns:brand="clr-namespace:APP.Eds.Controls"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -9,22 +9,17 @@
     AutomationId="PopupCategory">
 
     <Border x:Name="Frame"
-            BackgroundColor="{StaticResource White}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0"
             WidthRequest="340"
             Padding="0"
-            VerticalOptions="Center" 
+            VerticalOptions="Center"
             HorizontalOptions="Center"
             AutomationId="FrameCategory">
-        
+
         <!-- Sombra moderna -->
-        <Border.Shadow>
-            <Shadow Brush="{StaticResource Black}" 
-                    Offset="0,8" 
-                    Radius="32" 
-                    Opacity="0.12"/>
-        </Border.Shadow>
+
 
         <VerticalStackLayout Spacing="0">
 
@@ -33,51 +28,46 @@
                     StrokeThickness="0"
                     Padding="20,16">
                 <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#6A1B9A" Offset="0.0" />
-                        <GradientStop Color="#8E24AA" Offset="0.5" />
-                        <GradientStop Color="#9C27B0" Offset="1.0" />
-                    </LinearGradientBrush>
+                    <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                 </Border.Background>
-                
+
                 <Grid ColumnDefinitions="*, Auto">
                     <StackLayout Grid.Column="0" Spacing="4">
                         <Label x:Name="CategoryTitle"
-                               FontAttributes="Bold" 
+                               FontAttributes="Bold"
                                FontSize="18"
-                               TextColor="{StaticResource White}"
+                               TextColor="{StaticResource OnBrand}"
                                AutomationId="LabelCategoryTitle"/>
                         <Label Text="Seleccione una opcion"
                                FontSize="12"
-                               TextColor="{StaticResource White}"
+                               TextColor="{StaticResource OnBrand}"
                                Opacity="0.85"/>
                     </StackLayout>
 
                     <!-- Boton cerrar mejorado -->
                     <Border Grid.Column="1"
-                            BackgroundColor="Transparent"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 12"
-                            Stroke="{StaticResource White}"
+                            Stroke="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             StrokeThickness="1"
-                            WidthRequest="24" 
+                            WidthRequest="24"
                             HeightRequest="24"
-                            HorizontalOptions="End" 
+                            HorizontalOptions="End"
                             VerticalOptions="Center"
                             Opacity="0.8"
                             AutomationId="ButtonClosePopup">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCloseTapped"/>
                         </Border.GestureRecognizers>
-                        <Label Text="✕"
-                               FontSize="12" 
-                               TextColor="{StaticResource White}"
-                               FontAttributes="Bold"
+                        <brand:PoliedroIcon Text="✕"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"/>
                     </Border>
                 </Grid>
             </Border>
-            
+
             <!-- Contenido principal -->
             <StackLayout Padding="16,12,16,16" Spacing="8">
                 <CollectionView x:Name="MenuItemsList"
@@ -86,40 +76,35 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="0,0,0,8"
-                                    BackgroundColor="{StaticResource White}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                     StrokeShape="RoundRectangle 12"
                                     StrokeThickness="1"
-                                    Stroke="{StaticResource Gray200}"
+                                    Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                     Padding="0"
                                     MinimumHeightRequest="56"
                                     AutomationId="ButtonMenuItem">
-                                
+
                                 <!-- Sombra sutil -->
-                                <Border.Shadow>
-                                    <Shadow Brush="{StaticResource Gray400}" 
-                                            Offset="0,2" 
-                                            Radius="4" 
-                                            Opacity="0.06"/>
-                                </Border.Shadow>
+
 
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding .}" Value="{x:Null}">
                                         <Setter Property="IsVisible" Value="False"/>
                                     </DataTrigger>
                                 </Border.Triggers>
-                                
+
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding NavigateCommand}" 
+                                    <TapGestureRecognizer Command="{Binding NavigateCommand}"
                                                           Tapped="OnMenuItemClicked"/>
                                 </Border.GestureRecognizers>
-                                
+
                                 <!-- Estados visuales para interacciones -->
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
                                         <VisualState Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{StaticResource White}"/>
-                                                <Setter Property="Stroke" Value="{StaticResource Gray200}"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"/>
+                                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
                                                 <Setter Property="Scale" Value="1"/>
                                                 <Setter Property="Opacity" Value="1"/>
                                             </VisualState.Setters>
@@ -128,7 +113,7 @@
                                             <VisualState.Setters>
                                                 <Setter Property="Scale" Value="0.98"/>
                                                 <Setter Property="Opacity" Value="0.7"/>
-                                                <Setter Property="BackgroundColor" Value="{StaticResource Gray50}"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -144,34 +129,31 @@
                                             Margin="0,0,12,0"
                                             VerticalOptions="Center">
                                         <Border.Background>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="#F8F9FA" Offset="0.0" />
-                                                <GradientStop Color="#E9ECEF" Offset="1.0" />
-                                            </LinearGradientBrush>
+                                            <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                                         </Border.Background>
-                                        <Label Text="{Binding Icon}"
+                                        <brand:PoliedroIcon Text="{Binding Icon}"
                                                FontSize="16"
                                                HorizontalOptions="Center"
                                                VerticalOptions="Center"/>
                                     </Border>
-                                    
+
                                     <!-- Contenido texto -->
-                                    <StackLayout Grid.Column="1" 
+                                    <StackLayout Grid.Column="1"
                                                  VerticalOptions="Center"
                                                  Spacing="2">
                                         <Label Text="{Binding Name}"
                                                FontSize="14"
                                                FontAttributes="Bold"
-                                               TextColor="{StaticResource Gray900}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                         <Label Text="{Binding Description}"
-                                               FontSize="11"
-                                               TextColor="{StaticResource Gray600}"
+                                               FontSize="12"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                IsVisible="{Binding HasDescription}"/>
                                     </StackLayout>
-                                    
+
                                     <!-- Indicador de accion -->
                                     <Border Grid.Column="2"
-                                            BackgroundColor="{StaticResource Gray100}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                             StrokeShape="RoundRectangle 8"
                                             StrokeThickness="0"
                                             WidthRequest="24"
@@ -180,7 +162,7 @@
                                         <Label Text="›"
                                                FontSize="14"
                                                FontAttributes="Bold"
-                                               TextColor="{StaticResource Primary}"
+                                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                HorizontalOptions="Center"
                                                VerticalOptions="Center"/>
                                     </Border>

@@ -1,4 +1,4 @@
-using APP.Eds.Services.ProductType;
+锘縰sing APP.Eds.Services.ProductType;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,7 +8,7 @@ namespace APP.Eds.UsesCases.ProductType;
 public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
 {
     private ProductTypeService _productTypeService;
-    
+
     public ProductTypePostView()
     {
         InitializeComponent();
@@ -31,37 +31,37 @@ public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_productTypeService.Description))
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 del tipo de producto es obligatoria para el registro", "Descripci髇 Requerida");
+                await CustomAlert.ShowErrorAsync("La descripci贸n del tipo de producto es obligatoria para el registro", "Descripci贸n Requerida");
                 return;
             }
 
             if (_productTypeService.Description.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 debe tener al menos 3 caracteres para ser v醠ida", "Descripci髇 Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripci贸n debe tener al menos 3 caracteres para ser v谩lida", "Descripci贸n Muy Corta");
                 return;
             }
 
             if (_productTypeService.Description.Length > 100)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 no puede exceder 100 caracteres", "Descripci髇 Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripci贸n no puede exceder 100 caracteres", "Descripci贸n Muy Larga");
                 return;
             }
 
             // Clean up description
             string originalDescription = _productTypeService.Description;
             _productTypeService.Description = _productTypeService.Description.Trim();
-            
+
             if (originalDescription != _productTypeService.Description)
             {
-                await CustomAlert.ShowInfoAsync("Los espacios extra al inicio y final han sido removidos autom醫icamente", "Descripci髇 Limpiada");
+                await CustomAlert.ShowInfoAsync("Los espacios extra al inicio y final han sido removidos autom谩ticamente", "Descripci贸n Limpiada");
             }
 
             LoadingOverlay.ShowLoading();
             await _productTypeService.SaveProductTypeDataAsync();
-            
+
             // Clear form after successful save
             Description = string.Empty;
-            
+
             await CustomAlert.ShowSuccessAsync($"El tipo de producto '{_productTypeService.Description}' ha sido creado exitosamente", "Tipo Creado");
         }
         catch (Exception ex)
@@ -71,7 +71,7 @@ public partial class ProductTypePostView : ContentPage, INotifyPropertyChanged
         finally
         {
             LoadingOverlay.HideLoading();
-            
+
             // Re-enable button
             if (button != null)
             {

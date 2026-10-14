@@ -1,4 +1,4 @@
-using APP.Eds.Services.Copilot;
+Ôªøusing APP.Eds.Services.Copilot;
 using APP.Eds.Controls;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
@@ -23,10 +23,12 @@ namespace APP.Eds.Components.PopUp
 
         public FloatingChatPopup(CopilotService copilotService, string currentStepContext = "")
         {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
             _copilotService = copilotService;
             _currentStepContext = currentStepContext;
 
-         // Crear contenedor de mensajes con mejor configuraciÛn
+         // Crear contenedor de mensajes con mejor configuraci√≥n
    _messagesContainer = new VerticalStackLayout
   {
           Spacing =15,
@@ -35,7 +37,7 @@ namespace APP.Eds.Components.PopUp
 
        _chatScrollView = new ScrollView
        {
-    BackgroundColor = Color.FromArgb("#F8F9FA"),
+    BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
            Padding = new Thickness(10,10),
          Content = _messagesContainer,
      VerticalScrollBarVisibility = ScrollBarVisibility.Always,
@@ -69,7 +71,7 @@ CreateInputArea(out _messageEntry, out _inputGrid, out _sendButton);
         new RowDefinition { Height = GridLength.Auto }  // Input
         }
       };
-       
+
          contentGrid.Add(headerGrid, 0);
     contentGrid.Add(contextBadge, 1);
    contentGrid.Add(_chatScrollView, 2);
@@ -79,10 +81,10 @@ CreateInputArea(out _messageEntry, out _inputGrid, out _sendButton);
    // Main frame con mejor dimensionamiento
 var mainFrame = new Frame
   {
-    BackgroundColor = Colors.White,
+    BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
       CornerRadius = 24,
        Padding = 0,
-         HasShadow = true,
+         HasShadow = false,
    BorderColor = Colors.Transparent,
          WidthRequest = 360,
       HeightRequest = 600,
@@ -108,8 +110,8 @@ var mainFrame = new Frame
 
          var badge = new Frame
             {
-   BackgroundColor = Color.FromArgb("#FFF3E0"),
-   BorderColor = Color.FromArgb("#FFB74D"),
+   BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.WarningSurface,
+   BorderColor = global::APP.Eds.Helpers.PoliedroTheme.Warning,
     CornerRadius = 8,
      Padding = new Thickness(12, 8),
       Margin = new Thickness(15, 10, 15, 0),
@@ -117,7 +119,7 @@ var mainFrame = new Frame
    };
 
         var stack = new HorizontalStackLayout { Spacing = 8 };
-        
+
    stack.Children.Add(new Label
             {
   Text = "??",
@@ -130,7 +132,7 @@ var mainFrame = new Frame
                 Text = $"Contexto: {_currentStepContext}",
           FontSize = 12,
                 FontAttributes = FontAttributes.Bold,
-          TextColor = Color.FromArgb("#E65100"),
+          TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning,
     VerticalOptions = LayoutOptions.Center
             });
 
@@ -142,9 +144,9 @@ var mainFrame = new Frame
         {
        var frame = new Frame
        {
-     BackgroundColor = Colors.White,
+     BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
          Padding = new Thickness(15, 10),
-     BorderColor = Color.FromArgb("#E0E0E0"),
+     BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
     HasShadow = false,
                 CornerRadius = 0
   };
@@ -156,7 +158,7 @@ var stack = new VerticalStackLayout { Spacing = 8 };
          Text = "?? Preguntas sugeridas:",
                 FontSize = 12,
   FontAttributes = FontAttributes.Bold,
-    TextColor = Color.FromArgb("#757575"),
+    TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
            Margin = new Thickness(0, 0, 0, 5)
      };
    stack.Children.Add(titleLabel);
@@ -171,10 +173,10 @@ var stack = new VerticalStackLayout { Spacing = 8 };
 
             var suggestedQuestions = new[]
       {
-        "øCÛmo configuro un tanque?",
-     "øQuÈ son los compartimientos?",
-    "øCÛmo agrego isleros?",
-   "øCu·l es el siguiente paso?"
+        "ÔøΩCÔøΩmo configuro un tanque?",
+     "ÔøΩQuÔøΩ son los compartimientos?",
+    "ÔøΩCÔøΩmo agrego isleros?",
+   "ÔøΩCuÔøΩl es el siguiente paso?"
             };
 
 foreach (var question in suggestedQuestions)
@@ -182,13 +184,13 @@ foreach (var question in suggestedQuestions)
         var button = new Button
            {
       Text = question,
-FontSize = 11,
+FontSize = 12,
          Padding = new Thickness(12, 6),
        Margin = new Thickness(0, 0, 5, 5),
-      BackgroundColor = Color.FromArgb("#F5F5F5"),
-       TextColor = Color.FromArgb("#6A1B9A"),
+      BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+       TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
      CornerRadius = 15,
-                BorderColor = Color.FromArgb("#E0E0E0"),
+                BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
         BorderWidth = 1
     };
   button.Clicked += async (s, e) => await SendQuickQuestion(question);
@@ -230,7 +232,7 @@ FontSize = 11,
         {
          var loadingFrame = new Frame
             {
-   BackgroundColor = Color.FromArgb("#EDE7F6"),
+   BackgroundColor = Color.FromArgb("#E8F3FA"),
                 CornerRadius = 20,
         Padding = new Thickness(15, 10),
      HasShadow = false,
@@ -245,17 +247,17 @@ FontSize = 11,
        innerStack.Children.Add(new ActivityIndicator
             {
       IsRunning = true,
-          Color = Color.FromArgb("#6A1B9A"),
+          Color = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
                 WidthRequest = 20,
   HeightRequest = 20
  });
 
-   // AnimaciÛn de puntos suspensivos
+   // Animaci√≥n de puntos suspensivos
      var typingLabel = new Label
  {
-     Text = "El asistente est· escribiendo",
-            FontSize = 13,
-         TextColor = Color.FromArgb("#6A1B9A"),
+     Text = "El asistente est√° escribiendo",
+            FontSize = 14,
+         TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
                 FontAttributes = FontAttributes.Italic,
              VerticalOptions = LayoutOptions.Center
       };
@@ -265,8 +267,8 @@ FontSize = 11,
        var dotsLabel = new Label
   {
              Text = "...",
-                FontSize = 13,
-          TextColor = Color.FromArgb("#6A1B9A"),
+                FontSize = 14,
+          TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
      VerticalOptions = LayoutOptions.Center
     };
         innerStack.Children.Add(dotsLabel);
@@ -275,7 +277,7 @@ FontSize = 11,
             Device.StartTimer(TimeSpan.FromMilliseconds(500), () =>
 {
     if (!loadingFrame.IsVisible) return true;
-     
+
           var currentText = dotsLabel.Text;
         dotsLabel.Text = currentText.Length >= 3 ? "." : currentText + ".";
              return true;
@@ -297,9 +299,9 @@ FontSize = 11,
       {
       messageEntry = new Entry
       {
-            Placeholder = "Escribe tu pregunta aquÌ...",
-     PlaceholderColor = Color.FromArgb("#9E9E9E"),
-        TextColor = Color.FromArgb("#212121"),
+            Placeholder = "Escribe tu pregunta aqu√≠...",
+     PlaceholderColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
+        TextColor = Color.FromArgb("#132D40"),
     FontSize = 14,
   BackgroundColor = Colors.Transparent,
                 VerticalOptions = LayoutOptions.Center,
@@ -309,10 +311,10 @@ FontSize = 11,
 
  var inputFrame = new Frame
     {
-                BackgroundColor = Color.FromArgb("#F5F5F5"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
        CornerRadius = 24,
        Padding = new Thickness(16, 10),
-            BorderColor = Color.FromArgb("#E0E0E0"),
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
            HeightRequest = 48,
           Content = messageEntry
     };
@@ -320,20 +322,20 @@ FontSize = 11,
       sendButton = new Button
     {
          Text = "?",
-         BackgroundColor = Color.FromArgb("#6A1B9A"),
+         BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
         TextColor = Colors.White,
  FontSize = 20,
      FontAttributes = FontAttributes.Bold,
 CornerRadius = 24,
           WidthRequest = 48,
-             HeightRequest = 48,
+             MinimumHeightRequest = 52,
        Padding = 0
             };
  sendButton.Clicked += OnSendMessage;
 
          inputGrid = new Grid
             {
-        BackgroundColor = Colors.White,
+        BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
      Padding = new Thickness(15, 12),
      ColumnDefinitions =
                 {
@@ -361,13 +363,13 @@ CornerRadius = 24,
         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
              new ColumnDefinition { Width = GridLength.Auto }
               },
-    BackgroundColor = Color.FromArgb("#6A1B9A")
+    BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary
       };
 
             // Gradiente simulado con overlay
         var gradientOverlay = new BoxView
             {
-             BackgroundColor = Color.FromArgb("#20FFFFFF"),
+             BackgroundColor = Color.FromArgb("#E8F3FA"),
            Opacity = 0.1
       };
             headerGrid.Add(gradientOverlay, 0);
@@ -380,9 +382,9 @@ CornerRadius = 24,
        HeightRequest = 48,
       CornerRadius = 24,
     Padding = 0,
-          BackgroundColor = Color.FromArgb("#8E24AA"),
+          BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
    HasShadow = false,
-            BorderColor = Color.FromArgb("#FFFFFF"),
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
    Content = new Label
           {
       Text = "??",
@@ -392,7 +394,7 @@ CornerRadius = 24,
   }
             };
 
-   // InformaciÛn del asistente
+   // Informaci√≥n del asistente
    var titleStack = new VerticalStackLayout
      {
           Margin = new Thickness(12, 0, 0, 0),
@@ -416,30 +418,30 @@ CornerRadius = 24,
      WidthRequest = 8,
           HeightRequest = 8,
     CornerRadius = 4,
-    BackgroundColor = Color.FromArgb("#4CAF50"),
+    BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.Success,
          VerticalOptions = LayoutOptions.Center
             });
 
      statusStack.Children.Add(new Label
   {
-       Text = "En lÌnea ï Respuesta r·pida",
-       FontSize = 11,
- TextColor = Color.FromArgb("#E1BEE7"),
+       Text = "En l√≠nea ÔøΩ Respuesta r√°pida",
+       FontSize = 12,
+ TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
                 VerticalOptions = LayoutOptions.Center
           });
 
  titleStack.Children.Add(statusStack);
 
-     // BotÛn de cerrar mejorado
+     // Bot√≥n de cerrar mejorado
             var closeButton = new Button
  {
              Text = "?",
-                BackgroundColor = Color.FromArgb("#20FFFFFF"),
+                BackgroundColor = Color.FromArgb("#E8F3FA"),
        TextColor = Colors.White,
       FontSize = 22,
  FontAttributes = FontAttributes.Bold,
-           WidthRequest = 40,
-                HeightRequest = 40,
+           MinimumWidthRequest = 48,
+                MinimumHeightRequest = 52,
            CornerRadius = 20,
            Padding = 0
         };
@@ -463,14 +465,14 @@ closeButton.Clicked += (s, e) => Close();
 
             // Mensaje de bienvenida mejorado - FIXED: Better structure
             var welcomeStack = new VerticalStackLayout { Spacing = 8 };
-            
+
             // Greeting
             welcomeStack.Children.Add(new Label
             {
-                Text = "?? °Hola! Bienvenido",
+                Text = "?? ¬°Hola! Bienvenido",
                 FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#1F2937"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 LineBreakMode = LineBreakMode.WordWrap
             });
 
@@ -478,20 +480,20 @@ closeButton.Clicked += (s, e) => Close();
             var introLabel = new Label
             {
                 FontSize = 14,
-                TextColor = Color.FromArgb("#374151"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 LineBreakMode = LineBreakMode.WordWrap,
                 LineHeight = 1.4
             };
-            
+
             var introSpan = new FormattedString();
-            introSpan.Spans.Add(new Span { Text = "Soy tu " });
-            introSpan.Spans.Add(new Span 
-            { 
-                Text = "asistente inteligente de configuraciÛn EDS", 
-                FontAttributes = FontAttributes.Bold, 
-                TextColor = Color.FromArgb("#6A1B9A") 
+            introSpan.Spans.Add(new Span { Text = "Soy tu" });
+            introSpan.Spans.Add(new Span
+            {
+                Text = "asistente inteligente de configuraci√≥n EDS",
+                FontAttributes = FontAttributes.Bold,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
             });
-            introSpan.Spans.Add(new Span { Text = ". Estoy aquÌ para ayudarte en cada paso del proceso." });
+            introSpan.Spans.Add(new Span { Text = ". Estoy aqu√≠ para ayudarte en cada paso del proceso." });
             introLabel.FormattedText = introSpan;
             welcomeStack.Children.Add(introLabel);
 
@@ -499,9 +501,9 @@ closeButton.Clicked += (s, e) => Close();
             welcomeStack.Children.Add(new Label
             {
                 Text = "?? Puedo ayudarte con:",
-                FontSize = 13,
+                FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#1F2937"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 LineBreakMode = LineBreakMode.WordWrap,
                 Margin = new Thickness(0, 8, 0, 4)
             });
@@ -509,10 +511,10 @@ closeButton.Clicked += (s, e) => Close();
             // Capabilities list
             var capabilities = new[]
             {
-                "ConfiguraciÛn de infraestructura",
-                "GestiÛn de tanques y dispensadores",
-                "AsignaciÛn de isleros",
-                "ResoluciÛn de dudas del sistema"
+                "Configuraci√≥n de infraestructura",
+                "Gesti√≥n de tanques y dispensadores",
+                "Asignaci√≥n de isleros",
+                "Resoluci√≥n de dudas del sistema"
             };
 
             foreach (var capability in capabilities)
@@ -520,16 +522,16 @@ closeButton.Clicked += (s, e) => Close();
                 var capabilityStack = new HorizontalStackLayout { Spacing = 8 };
                 capabilityStack.Children.Add(new Label
                 {
-                    Text = "ï",
-                    FontSize = 13,
-                    TextColor = Color.FromArgb("#6A1B9A"),
+                    Text = "ÔøΩ",
+                    FontSize = 14,
+                    TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
                     VerticalOptions = LayoutOptions.Start
                 });
                 capabilityStack.Children.Add(new Label
                 {
                     Text = capability,
-                    FontSize = 13,
-                    TextColor = Color.FromArgb("#374151"),
+                    FontSize = 14,
+                    TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                     LineBreakMode = LineBreakMode.WordWrap,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.FillAndExpand
@@ -543,7 +545,7 @@ closeButton.Clicked += (s, e) => Close();
                 Text = "Haz una pregunta o usa las sugerencias abajo ??",
                 FontSize = 12,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromArgb("#757575"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 LineBreakMode = LineBreakMode.WordWrap,
                 Margin = new Thickness(0, 8, 0, 0)
             });
@@ -562,10 +564,10 @@ closeButton.Clicked += (s, e) => Close();
         {
             return new Frame
             {
-                BackgroundColor = isUser ? Color.FromArgb("#6A1B9A") : Colors.White,
+                BackgroundColor = isUser ? Color.FromArgb("#006EAA") : Colors.White,
                 CornerRadius = 20,
                 Padding = new Thickness(16, 12),
-                BorderColor = isUser ? Colors.Transparent : Color.FromArgb("#E0E0E0"),
+                BorderColor = isUser ? Colors.Transparent : Color.FromArgb("#DFE7EF"),
                 HasShadow = !isUser,
                 HorizontalOptions = isUser ? LayoutOptions.End : LayoutOptions.Start,
                 MaximumWidthRequest = 280,
@@ -589,7 +591,7 @@ closeButton.Clicked += (s, e) => Close();
         Text = name,
       FontSize = 12,
        FontAttributes = FontAttributes.Bold,
-             TextColor = Color.FromArgb("#E1BEE7"),
+             TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
      VerticalOptions = LayoutOptions.Center
   });
 
@@ -608,7 +610,7 @@ closeButton.Clicked += (s, e) => Close();
                HeightRequest = 24,
         CornerRadius = 12,
        Padding = 0,
-                BackgroundColor = Color.FromArgb("#EDE7F6"),
+                BackgroundColor = Color.FromArgb("#E8F3FA"),
           HasShadow = false,
    Content = new Label
          {
@@ -625,7 +627,7 @@ closeButton.Clicked += (s, e) => Close();
       Text = name,
         FontSize = 12,
            FontAttributes = FontAttributes.Bold,
-          TextColor = Color.FromArgb("#6A1B9A"),
+          TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
          VerticalOptions = LayoutOptions.Center
  });
          }
@@ -638,8 +640,8 @@ closeButton.Clicked += (s, e) => Close();
       return new Label
             {
           Text = DateTime.Now.ToString("HH:mm"),
-FontSize = 10,
-         TextColor = Color.FromArgb("#9E9E9E"),
+FontSize = 12,
+         TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
        HorizontalOptions = LayoutOptions.End,
        Margin = new Thickness(0, 5, 0, 0)
             };
@@ -678,7 +680,7 @@ FontSize = 10,
      }
          catch (Exception ex)
  {
-                AddAssistantMessage($"?? Lo siento, ocurriÛ un error:\n\n{ex.Message}\n\nPor favor, intenta de nuevo.");
+                AddAssistantMessage($"?? Lo siento, ocurri√≥ un error:\n\n{ex.Message}\n\nPor favor, intenta de nuevo.");
         }
       finally
    {
@@ -695,7 +697,7 @@ await ScrollToBottom();
     var messageLayout = new VerticalStackLayout { Spacing = 6 };
 
          // Header del usuario
-            var headerLayout = CreateMessageHeader(true, "T˙");
+            var headerLayout = CreateMessageHeader(true, "T√∫");
             messageLayout.Children.Add(headerLayout);
 
        // Mensaje
@@ -712,8 +714,8 @@ await ScrollToBottom();
      var timeLabel = new Label
       {
       Text = DateTime.Now.ToString("HH:mm"),
-          FontSize = 10,
-       TextColor = Color.FromArgb("#E1BEE7"),
+          FontSize = 12,
+       TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
           HorizontalOptions = LayoutOptions.End
       };
  messageLayout.Children.Add(timeLabel);
@@ -753,7 +755,7 @@ await ScrollToBottom();
         {
          Text = message,
    FontSize = 14,
-    TextColor = Color.FromArgb("#424242"),
+    TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
    LineBreakMode = LineBreakMode.WordWrap,
          LineHeight = 1.4
       });
@@ -765,7 +767,7 @@ await ScrollToBottom();
 
           // Timestamp
         var timeLabel = CreateTimestamp();
-            timeLabel.TextColor = Color.FromArgb("#9E9E9E");
+            timeLabel.TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary;
     messageLayout.Children.Add(timeLabel);
 
             messageFrame.Content = messageLayout;
@@ -783,14 +785,14 @@ await ScrollToBottom();
       Margin = new Thickness(0, 5, 0, 0)
         };
 
-       // BotÛn copiar
+       // Bot√≥n copiar
    var copyButton = new Button
             {
   Text = "??",
         FontSize = 14,
          Padding = new Thickness(8, 4),
-                BackgroundColor = Color.FromArgb("#F5F5F5"),
-       TextColor = Color.FromArgb("#6A1B9A"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+       TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
   CornerRadius = 12,
                 BorderWidth = 0
             };
@@ -802,38 +804,38 @@ await ScrollToBottom();
            copyButton.Text = "??";
  };
 
-            // BotÛn feedback positivo
+            // Bot√≥n feedback positivo
     var likeButton = new Button
             {
         Text = "??",
     FontSize = 14,
       Padding = new Thickness(8, 4),
-      BackgroundColor = Color.FromArgb("#F5F5F5"),
-        TextColor = Color.FromArgb("#757575"),
+      BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+        TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
       CornerRadius = 12,
   BorderWidth = 0
             };
   likeButton.Clicked += (s, e) =>
       {
-  likeButton.BackgroundColor = Color.FromArgb("#E8F5E9");
-      likeButton.TextColor = Color.FromArgb("#4CAF50");
+  likeButton.BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.SuccessSurface;
+      likeButton.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Success;
    };
 
-       // BotÛn feedback negativo
+       // Bot√≥n feedback negativo
       var dislikeButton = new Button
       {
         Text = "??",
     FontSize = 14,
       Padding = new Thickness(8, 4),
-         BackgroundColor = Color.FromArgb("#F5F5F5"),
-    TextColor = Color.FromArgb("#757575"),
+         BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
+    TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
      CornerRadius = 12,
      BorderWidth = 0
             };
             dislikeButton.Clicked += (s, e) =>
   {
-         dislikeButton.BackgroundColor = Color.FromArgb("#FFEBEE");
-       dislikeButton.TextColor = Color.FromArgb("#F44336");
+         dislikeButton.BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.ErrorSurface;
+       dislikeButton.TextColor = global::APP.Eds.Helpers.PoliedroTheme.Error;
    };
 
      stack.Children.Add(copyButton);
@@ -859,13 +861,13 @@ messageFrame.Opacity = 0;
        if (_loadingIndicator != null)
  {
 _loadingIndicator.IsVisible = isLoading;
-     
-        // Si est· cargando, agregar al contenedor si no est· ya
+
+        // Si est√° cargando, agregar al contenedor si no est√° ya
        if (isLoading && !_messagesContainer.Children.Contains(_loadingIndicator))
        {
        _messagesContainer.Children.Add(_loadingIndicator);
          }
-  // Si terminÛ de cargar, remover del contenedor
+  // Si termin√≥ de cargar, remover del contenedor
      else if (!isLoading && _messagesContainer.Children.Contains(_loadingIndicator))
                 {
      _messagesContainer.Children.Remove(_loadingIndicator);

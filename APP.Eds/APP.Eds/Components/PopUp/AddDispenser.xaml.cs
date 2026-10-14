@@ -100,7 +100,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
             var currentStock = SelectedHose.ProductEntity.Stock;
             var gallonsSold = (decimal)GallonsDifferenceResult;
-            
+
             return Math.Max(0, currentStock - gallonsSold);
         }
     }
@@ -112,18 +112,18 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             if (SelectedHose?.ProductEntity?.Stock == null)
                 return false;
-            
+
             return SelectedHose.ProductEntity.Stock < 0;
         }
     }
 
     // Properties for loading overlay states
     public bool ShowLoadingOverlay => courtService.IsLoadingHoses || ShowErrorState || ShowEmptyState;
-    
-    public bool ShowErrorState => !courtService.IsLoadingHoses && 
+
+    public bool ShowErrorState => !courtService.IsLoadingHoses &&
                                    !string.IsNullOrEmpty(courtService.HoseLoadError);
-    
-    public bool ShowEmptyState => !courtService.IsLoadingHoses && 
+
+    public bool ShowEmptyState => !courtService.IsLoadingHoses &&
                                    string.IsNullOrEmpty(courtService.HoseLoadError) &&
                                    (courtService.HoseList == null || courtService.HoseList.Count == 0);
 
@@ -131,6 +131,8 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
 
     public AddDispenser(CourtService courtService)
     {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         InitializeComponent();
         this.courtService = courtService;
 
@@ -346,12 +348,12 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
         {
             if (FirstEntry?.Parent is Frame amountFrame)
             {
-                amountFrame.BorderColor = AccumulatedAmount >= LastAccumulatedAmount ? Colors.Green : Colors.Red;
+                global::APP.Eds.Helpers.PoliedroTheme.SetColor(amountFrame, Frame.BorderColorProperty, AccumulatedAmount >= LastAccumulatedAmount ? "SuccessColor" : "ErrorColor");
             }
 
             if (SecondEntry?.Parent is Frame gallonFrame)
             {
-                gallonFrame.BorderColor = AccumulatedGallons >= LastAccumulatedGallons ? Colors.Green : Colors.Red;
+                global::APP.Eds.Helpers.PoliedroTheme.SetColor(gallonFrame, Frame.BorderColorProperty, AccumulatedGallons >= LastAccumulatedGallons ? "SuccessColor" : "ErrorColor");
             }
         });
     }
@@ -472,7 +474,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                     AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                     UpdateAccumulatedColors();
                 }
-                
+
                 OnPropertyChanged(nameof(FutureStock));
             }
             else
@@ -513,7 +515,7 @@ public partial class AddDispenser : Popup, INotifyPropertyChanged
                         AccumulatedGallons = LastAccumulatedGallons + (amountDifference / newSellPrice);
                         UpdateAccumulatedColors();
                     }
-                    
+
                     OnPropertyChanged(nameof(FutureStock));
                 }
                 else

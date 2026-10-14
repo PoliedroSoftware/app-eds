@@ -1,4 +1,4 @@
-using APP.Eds.Services.TypeOfCollection;
+Ôªøusing APP.Eds.Services.TypeOfCollection;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -24,14 +24,14 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
         {
             LoadingOverlay?.ShowLoading();
             await _typeOfCollectionService.InitializeAsync();
-            
+
             // ? NUEVO: Configurar total de ventas desde una fuente externa
             // Ejemplo: obtener desde preferencias, servicio de Court, etc.
             await ConfigureSalesTotalAsync();
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de InicializaciÛn");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos iniciales:\n\n{ex.Message}", "Error de Inicializaci√≥n");
         }
         finally
         {
@@ -40,13 +40,13 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
     }
 
     /// <summary>
-    /// ? NUEVO: MÈtodo para configurar el total de ventas
+    /// ? NUEVO: M√©todo para configurar el total de ventas
     /// </summary>
     private async Task ConfigureSalesTotalAsync()
     {
         try
         {
-            // OpciÛn 1: Obtener desde el servicio de Court si est· disponible
+            // Opci√≥n 1: Obtener desde el servicio de Court si est√° disponible
             // var courtService = DependencyService.Get<CourtService>();
             // if (courtService != null)
             // {
@@ -54,15 +54,15 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
             //     _typeOfCollectionService.SetSalesTotal((decimal)totalVentas);
             // }
 
-            // OpciÛn 2: Obtener desde preferencias
+            // Opci√≥n 2: Obtener desde preferencias
             var savedTotal = Preferences.Get("CurrentSalesTotal", 0.0);
             if (savedTotal > 0)
             {
                 _typeOfCollectionService.SetSalesTotal((decimal)savedTotal);
             }
 
-            // OpciÛn 3: Permitir que el usuario ingrese el total manualmente
-            // Esto se podrÌa implementar con un Entry en la UI
+            // Opci√≥n 3: Permitir que el usuario ingrese el total manualmente
+            // Esto se podr√≠a implementar con un Entry en la UI
         }
         catch (Exception ex)
         {
@@ -83,44 +83,44 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
             // Enhanced validation with professional alerts
             if (_typeOfCollectionService.SelectedPaymentType == null)
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar el tipo de pago que manejar· este mÈtodo", "Tipo de Pago Requerido");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el tipo de pago que manejar√° este m√©todo", "Tipo de Pago Requerido");
                 return;
             }
 
             if (_typeOfCollectionService.SelectedPaymentMethod == null)
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar el mÈtodo de pago especÌfico", "MÈtodo de Pago Requerido");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el m√©todo de pago espec√≠fico", "M√©todo de Pago Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.PaymentName))
             {
-                await CustomAlert.ShowErrorAsync("El nombre del mÈtodo de pago es obligatorio para identificarlo", "Nombre Requerido");
+                await CustomAlert.ShowErrorAsync("El nombre del m√©todo de pago es obligatorio para identificarlo", "Nombre Requerido");
                 return;
             }
 
             if (_typeOfCollectionService.PaymentName.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("El nombre del mÈtodo de pago debe tener al menos 3 caracteres", "Nombre Muy Corto");
+                await CustomAlert.ShowErrorAsync("El nombre del m√©todo de pago debe tener al menos 3 caracteres", "Nombre Muy Corto");
                 return;
             }
 
             if (_typeOfCollectionService.PaymentName.Length > 50)
             {
-                await CustomAlert.ShowErrorAsync("El nombre del mÈtodo de pago no puede exceder 50 caracteres", "Nombre Muy Largo");
+                await CustomAlert.ShowErrorAsync("El nombre del m√©todo de pago no puede exceder 50 caracteres", "Nombre Muy Largo");
                 return;
             }
 
             // Validate payment name characters (allow letters, numbers, spaces, and common symbols)
             if (!Regex.IsMatch(_typeOfCollectionService.PaymentName, @"^[\p{L}\p{N}\s\-_.,()]+$"))
             {
-                await CustomAlert.ShowErrorAsync("El nombre contiene caracteres no v·lidos. Solo se permiten letras, n˙meros, espacios y sÌmbolos b·sicos", "Caracteres Inv·lidos");
+                await CustomAlert.ShowErrorAsync("El nombre contiene caracteres no v√°lidos. Solo se permiten letras, n√∫meros, espacios y s√≠mbolos b√°sicos", "Caracteres Inv√°lidos");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.PaymentProvider))
             {
-                await CustomAlert.ShowErrorAsync("Debe especificar el proveedor o procesador del mÈtodo de pago", "Proveedor Requerido");
+                await CustomAlert.ShowErrorAsync("Debe especificar el proveedor o procesador del m√©todo de pago", "Proveedor Requerido");
                 return;
             }
 
@@ -128,39 +128,39 @@ public partial class TypeOfCollectionPostView : ContentPage, INotifyPropertyChan
             {
                 if (!decimal.TryParse(_typeOfCollectionService.ProcessingFee, out decimal fee) || fee < 0 || fee > 100)
                 {
-                    await CustomAlert.ShowErrorAsync("La comisiÛn debe ser un valor numÈrico entre 0 y 100", "ComisiÛn Inv·lida");
+                    await CustomAlert.ShowErrorAsync("La comisi√≥n debe ser un valor num√©rico entre 0 y 100", "Comisi√≥n Inv√°lida");
                     return;
                 }
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.SelectedStatus))
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar el estado del mÈtodo de pago (Activo/Inactivo)", "Estado Requerido");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar el estado del m√©todo de pago (Activo/Inactivo)", "Estado Requerido");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_typeOfCollectionService.Description))
             {
-                await CustomAlert.ShowErrorAsync("Debe agregar observaciones o notas descriptivas del mÈtodo de pago", "DescripciÛn Requerida");
+                await CustomAlert.ShowErrorAsync("Debe agregar observaciones o notas descriptivas del m√©todo de pago", "Descripci√≥n Requerida");
                 return;
             }
 
             if (_typeOfCollectionService.Description.Length < 10)
             {
-                await CustomAlert.ShowErrorAsync("La descripciÛn debe ser m·s detallada (mÌnimo 10 caracteres)", "DescripciÛn Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripci√≥n debe ser m√°s detallada (m√≠nimo 10 caracteres)", "Descripci√≥n Muy Corta");
                 return;
             }
 
             LoadingOverlay?.ShowLoading();
-            
+
             await _typeOfCollectionService.SaveTypeOfCollectionDataAsync();
-            
+
             // Clear form after successful save
             ClearForm();
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al guardar el mÈtodo de pago:\n\n{ex.Message}", "Error del Sistema");
+            await CustomAlert.ShowErrorAsync($"Error al guardar el m√©todo de pago:\n\n{ex.Message}", "Error del Sistema");
         }
         finally
         {

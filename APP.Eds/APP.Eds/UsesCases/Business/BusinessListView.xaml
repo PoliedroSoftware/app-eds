@@ -1,72 +1,67 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="APP.Eds.UsesCases.Business.BusinessListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestion de Negocios"
-    BackgroundColor="#F1F5F9">
-    
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
+
     <Grid RowDefinitions="140,*,Auto">
-        
+
         <!-- Professional Header Section -->
         <Border Grid.Row="0"
                 StrokeThickness="0"
                 Padding="20,40,20,20">
             <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#667EEA" Offset="0.0" />
-                    <GradientStop Color="#764BA2" Offset="1.0" />
-                </LinearGradientBrush>
+                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
             </Border.Background>
-            <Border.Shadow>
-                <Shadow Brush="#764BA2" Offset="0,8" Radius="20" Opacity="0.15"/>
-            </Border.Shadow>
-            
+
+
             <Grid RowDefinitions="Auto,Auto,Auto">
                 <!-- Title and Icon -->
                 <StackLayout Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalOptions="Center">
                     <Border BackgroundColor="Transparent"
                             StrokeShape="RoundRectangle 20"
                             StrokeThickness="2"
-                            Stroke="{StaticResource White}"
+                            Stroke="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                             WidthRequest="40" HeightRequest="40"
                             VerticalOptions="Center">
-                        <Label Text="??" FontSize="20" 
-                               HorizontalOptions="Center" 
+                        <Label Text="??" FontSize="20"
+                               HorizontalOptions="Center"
                                VerticalOptions="Center"/>
                     </Border>
-                    <Label Text="Gestion de Negocios" 
-                           FontSize="26" 
-                           FontAttributes="Bold" 
-                           TextColor="White" 
+                    <Label Text="Gestion de Negocios"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource OnBrand}"
                            VerticalOptions="Center"/>
                 </StackLayout>
-                
+
                 <!-- Subtitle -->
-                <Label Grid.Row="1" 
-                       Text="Administre sus unidades de negocio" 
-                       FontSize="14" 
-                       TextColor="#E0E7FF" 
+                <Label Grid.Row="1"
+                       Text="Administre sus unidades de negocio"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                        HorizontalOptions="Center"
                        Margin="0,8,0,0"/>
-                
+
                 <!-- Business count indicator -->
                 <Border Grid.Row="2"
                         BackgroundColor="Transparent"
                         StrokeShape="RoundRectangle 15"
                         StrokeThickness="1"
-                        Stroke="{StaticResource White}"
+                        Stroke="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         Opacity="0.8"
                         Padding="16,8"
                         HorizontalOptions="Center"
                         Margin="0,12,0,0">
                     <StackLayout Orientation="Horizontal" Spacing="8">
-                        <Label Text="??" FontSize="14" TextColor="White" VerticalOptions="Center"/>
+                        <Label Text="??" FontSize="14" TextColor="{StaticResource OnBrand}" VerticalOptions="Center"/>
                         <Label Text="{Binding BusinessList.Count, StringFormat='Total: {0} negocios'}"
-                               FontSize="13"
+                               FontSize="14"
                                FontAttributes="Bold"
-                               TextColor="White"
+                               TextColor="{StaticResource OnBrand}"
                                VerticalOptions="Center"/>
                     </StackLayout>
                 </Border>
@@ -74,40 +69,38 @@
         </Border>
 
         <!-- Main Content Area -->
-        <RefreshView Grid.Row="1" 
+        <RefreshView Grid.Row="1"
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
-            <CollectionView ItemsSource="{Binding BusinessList}" 
+            <CollectionView ItemsSource="{Binding BusinessList}"
                             SelectionChanged="OnBusinessSelected"
                             BackgroundColor="Transparent">
-                
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <!-- Enhanced Business Card -->
-                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                 StrokeShape="RoundRectangle 20"
-                                Stroke="#E2E8F0"
+                                Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                 StrokeThickness="1"
                                 Padding="0"
                                 Margin="20,10,20,10">
-                            <Border.Shadow>
-                                <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
-                            </Border.Shadow>
-                            
+
+
                             <!-- Left Color Bar for Visual Separation -->
                             <Grid ColumnDefinitions="6,*">
-                                
+
                                 <!-- Color-coded Left Border -->
                                 <Border Grid.Column="0"
-                                        BackgroundColor="#3B82F6"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                         StrokeShape="RoundRectangle 20,0,0,20"/>
-                                
+
                                 <!-- Main Content -->
                                 <Grid Grid.Column="1" RowDefinitions="*,Auto">
-                                    
+
                                     <!-- Content Section -->
                                     <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="24,20">
-                                        
+
                                         <!-- Business Icon -->
                                         <Border Grid.Column="0"
                                                 StrokeShape="RoundRectangle 25"
@@ -115,72 +108,67 @@
                                                 VerticalOptions="Center"
                                                 Margin="0,0,16,0">
                                             <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#667EEA" Offset="0.0" />
-                                                    <GradientStop Color="#764BA2" Offset="1.0" />
-                                                </LinearGradientBrush>
+                                                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                                             </Border.Background>
-                                            <Label Text="??" 
-                                                   FontSize="24" 
-                                                   HorizontalOptions="Center" 
+                                            <Label Text="??"
+                                                   FontSize="24"
+                                                   HorizontalOptions="Start"
                                                    VerticalOptions="Center"/>
                                         </Border>
-                                        
+
                                         <!-- Business Info -->
-                                        <StackLayout Grid.Column="1" 
+                                        <StackLayout Grid.Column="1"
                                                      VerticalOptions="Center"
                                                      Spacing="8">
-                                            <Label Text="{Binding Name}" 
-                                                   FontSize="20" 
-                                                   FontAttributes="Bold" 
-                                                   TextColor="#1E293B"
+                                            <Label Text="{Binding Name}"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                                    LineBreakMode="TailTruncation"/>
-                                            
+
                                             <StackLayout Orientation="Horizontal" Spacing="12">
                                                 <!-- ID Badge -->
-                                                <Border BackgroundColor="#FEF3C7"
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 12"
-                                                        Stroke="#F59E0B"
+                                                        Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                         StrokeThickness="1"
                                                         Padding="8,4">
                                                     <StackLayout Orientation="Horizontal" Spacing="4">
-                                                        <Label Text="#" FontSize="12" TextColor="#92400E" FontAttributes="Bold" VerticalOptions="Center"/>
-                                                        <Label Text="{Binding IdBusiness}" 
+                                                        <Label Text="#" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" FontAttributes="Bold" VerticalOptions="Center"/>
+                                                        <Label Text="{Binding IdBusiness}"
                                                                FontSize="12"
                                                                FontAttributes="Bold"
-                                                               TextColor="#92400E"
+                                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                                VerticalOptions="Center"/>
                                                     </StackLayout>
                                                 </Border>
-                                                
+
                                                 <!-- Status Badge -->
-                                                <Border BackgroundColor="#F0FDF4"
+                                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                                         StrokeShape="RoundRectangle 12"
-                                                        Stroke="#10B981"
+                                                        Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                         StrokeThickness="1"
                                                         Padding="8,4">
                                                     <StackLayout Orientation="Horizontal" Spacing="4">
-                                                        <Label Text="?" FontSize="10" TextColor="#059669" VerticalOptions="Center"/>
-                                                        <Label Text="Activo" 
+                                                        <Label Text="?" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" VerticalOptions="Center"/>
+                                                        <Label Text="Activo"
                                                                FontSize="12"
                                                                FontAttributes="Bold"
-                                                               TextColor="#059669"
+                                                               TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                                                VerticalOptions="Center"/>
                                                     </StackLayout>
                                                 </Border>
                                             </StackLayout>
                                         </StackLayout>
-                                        
+
                                         <!-- Action Button -->
                                         <Border Grid.Column="2"
-                                                BackgroundColor="#3B82F6"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                                 StrokeShape="RoundRectangle 12"
-                                                WidthRequest="40" HeightRequest="40"
+                                                WidthRequest="40" MinimumHeightRequest="52"
                                                 VerticalOptions="Center">
-                                            <Border.Shadow>
-                                                <Shadow Brush="#3B82F6" Offset="0,2" Radius="8" Opacity="0.2"/>
-                                            </Border.Shadow>
-                                            
+
+
                                             <Button Text=">"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewBusinessDetailCommand}"
                                                     CommandParameter="{Binding}"
@@ -195,42 +183,42 @@
 
                                     <!-- Action Footer -->
                                     <Border Grid.Row="1"
-                                            BackgroundColor="#F8FAFC"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                             StrokeShape="RoundRectangle 0,0,0,20"
                                             Padding="24,12">
-                                        
+
                                         <Grid ColumnDefinitions="*,Auto,Auto">
                                             <!-- Info -->
-                                            <StackLayout Grid.Column="0" 
-                                                         Orientation="Horizontal" 
+                                            <StackLayout Grid.Column="0"
+                                                         Orientation="Horizontal"
                                                          Spacing="8"
                                                          VerticalOptions="Center">
                                                 <Label Text="??" FontSize="12" VerticalOptions="Center"/>
-                                                <Label Text="Toque para ver detalles y gestionar" 
-                                                       FontSize="11"
-                                                       TextColor="#64748B"
+                                                <Label Text="Toque para ver detalles y gestionar"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                        VerticalOptions="Center"/>
                                             </StackLayout>
-                                            
+
                                             <!-- Edit Button -->
                                             <Button Grid.Column="1"
                                                     Text="Edit"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditBusinessCommand}"
                                                     CommandParameter="{Binding}"
-                                                    BackgroundColor="#FEF3C7"
-                                                    TextColor="#92400E"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                     FontSize="12"
                                                     WidthRequest="36" HeightRequest="36"
                                                     CornerRadius="18"
                                                     Margin="0,0,8,0"/>
-                                            
+
                                             <!-- Options Button -->
                                             <Button Grid.Column="2"
                                                     Text="Opt"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.BusinessOptionsCommand}"
                                                     CommandParameter="{Binding}"
-                                                    BackgroundColor="#EFF6FF"
-                                                    TextColor="#1D4ED8"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                     FontSize="12"
                                                     WidthRequest="36" HeightRequest="36"
                                                     CornerRadius="18"/>
@@ -241,67 +229,57 @@
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                
+
                 <!-- Enhanced Empty State -->
                 <CollectionView.EmptyView>
                     <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="32">
-                        <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                 StrokeShape="RoundRectangle 24"
-                                Stroke="#E2E8F0"
+                                Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                 StrokeThickness="1"
                                 Padding="48,40">
-                            <Border.Shadow>
-                                <Shadow Brush="#1E293B" Offset="0,4" Radius="16" Opacity="0.08"/>
-                            </Border.Shadow>
-                            
+
+
                             <StackLayout Spacing="20" HorizontalOptions="Center">
                                 <Border StrokeShape="RoundRectangle 50"
                                         WidthRequest="100" HeightRequest="100">
                                     <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#F8FAFC" Offset="0.0" />
-                                            <GradientStop Color="#E2E8F0" Offset="1.0" />
-                                        </LinearGradientBrush>
+                                        <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                                     </Border.Background>
-                                    <Label Text="??" FontSize="48" 
-                                           HorizontalOptions="Center" 
+                                    <Label Text="??" FontSize="48"
+                                           HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            Opacity="0.6"/>
                                 </Border>
-                                
+
                                 <StackLayout Spacing="12">
-                                    <Label Text="No hay negocios registrados" 
-                                           FontSize="22" 
-                                           FontAttributes="Bold" 
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}" 
+                                    <Label Text="No hay negocios registrados"
+                                           FontSize="22"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="Comience creando su primer negocio para administrar sus estaciones de servicio" 
-                                           FontSize="14" 
-                                           TextColor="{AppThemeBinding Light=#6B7280, Dark=#B8B8B8}" 
+                                    <Label Text="Comience creando su primer negocio para administrar sus estaciones de servicio"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"
                                            MaximumWidthRequest="300"
                                            LineHeight="1.4"/>
                                 </StackLayout>
-                                
+
                                 <Button Text="+ Crear Primer Negocio"
                                         Command="{Binding CreateBusinessCommand}"
                                         FontAttributes="Bold"
                                         FontSize="16"
-                                        TextColor="White"
+                                        TextColor="{StaticResource OnBrand}"
                                         CornerRadius="20"
                                         WidthRequest="220"
-                                        HeightRequest="50"
+                                        MinimumHeightRequest="52"
                                         Margin="0,12,0,0">
                                     <Button.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                            <GradientStop Color="#667EEA" Offset="0.0" />
-                                            <GradientStop Color="#764BA2" Offset="1.0" />
-                                        </LinearGradientBrush>
+                                        <SolidColorBrush Color="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}" />
                                     </Button.Background>
-                                    <Button.Shadow>
-                                        <Shadow Brush="#667EEA" Offset="0,4" Radius="12" Opacity="0.3"/>
-                                    </Button.Shadow>
+
                                 </Button>
                             </StackLayout>
                         </Border>
@@ -312,23 +290,21 @@
 
         <!-- Floating Action Button -->
         <Border Grid.Row="2"
-                BackgroundColor="#3B82F6"
+                BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                 StrokeShape="RoundRectangle 28"
                 WidthRequest="56" HeightRequest="56"
                 HorizontalOptions="End"
                 VerticalOptions="End"
                 Margin="20,0,20,20">
-            <Border.Shadow>
-                <Shadow Brush="#3B82F6" Offset="0,6" Radius="16" Opacity="0.3"/>
-            </Border.Shadow>
-            
+
+
             <Button Text="+"
                     Command="{Binding CreateBusinessCommand}"
                     BackgroundColor="Transparent"
-                    TextColor="White"
+                    TextColor="{StaticResource OnBrand}"
                     FontSize="28"
                     FontAttributes="Bold"
-                    WidthRequest="56" HeightRequest="56"
+                    WidthRequest="56" MinimumHeightRequest="52"
                     CornerRadius="28"
                     AutomationId="ButtonAddBusiness"/>
         </Border>

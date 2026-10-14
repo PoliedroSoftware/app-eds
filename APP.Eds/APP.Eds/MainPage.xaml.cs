@@ -11,11 +11,11 @@ namespace APP.Eds
     public partial class MainPage : ContentPage
     {
         private readonly BackendAuthService _authService;
-        
+
         // WhatsApp support configuration
         private const string WHATSAPP_SUPPORT_NUMBER = "573154286798"; // +57 315 428 6798 (Poliedro Software - Soporte)
         private const string WHATSAPP_SUPPORT_MESSAGE = "Hola, necesito ayuda con la App EDS.";
-        
+
         public MainPage()
         {
             _authService = new BackendAuthService(Configuration.BaseUrl);
@@ -61,7 +61,7 @@ namespace APP.Eds
 
                 // Guardar el token del backend
                 TokenHelper.SaveToken(loginResponse.AccessToken);
-                
+
                 // Guardar refresh token si existe
                 if (!string.IsNullOrEmpty(loginResponse.RefreshToken))
                 {
@@ -118,7 +118,7 @@ namespace APP.Eds
         private List<string> ExtractRolesFromToken(string token)
         {
             var roles = new List<string>();
-            
+
             try
             {
                 var tokenParts = token.Split('.');
@@ -174,8 +174,8 @@ namespace APP.Eds
         {
             ErrorLabel.Text = message;
             ErrorIcon.Text = icon;
-            ErrorSection.BackgroundColor = Color.FromArgb(backgroundColor);
-            ErrorLabel.TextColor = Color.FromArgb(textColor);
+            global::APP.Eds.Helpers.PoliedroTheme.SetColor(ErrorSection, VisualElement.BackgroundColorProperty, "ErrorSurfaceColor");
+            global::APP.Eds.Helpers.PoliedroTheme.SetColor(ErrorLabel, Label.TextColorProperty, "ErrorColor");
             ErrorSection.IsVisible = true;
         }
 
@@ -193,6 +193,13 @@ namespace APP.Eds
         private void UsernameEntry_Completed(object sender, EventArgs e)
         {
             PasswordEntry.Focus();
+        }
+
+        private void OnShowPasswordClicked(object sender, EventArgs e)
+        {
+            PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
+            if (sender is Button button)
+                button.Text = PasswordEntry.IsPassword ? "Mostrar contraseña" : "Ocultar contraseña";
         }
 
         private void OnRememberMeTapped(object sender, EventArgs e)

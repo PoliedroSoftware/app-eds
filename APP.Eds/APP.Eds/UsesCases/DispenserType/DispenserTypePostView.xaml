@@ -1,73 +1,69 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.DispenserType.DispenserTypePostView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Tipos de Dispensador"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="16">
-                
+            <VerticalStackLayout Padding="20" Spacing="16">
+
                 <!-- Header Card -->
-                <Border BackgroundColor="#2196F3" 
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 16"
                         Padding="20"
                         StrokeThickness="0">
-                    <Border.Shadow>
-                        <Shadow Brush="#2196F3" Offset="0,4" Radius="12" Opacity="0.3"/>
-                    </Border.Shadow>
+
                     <StackLayout>
-                        <Label Text="⛽ Gestión de Tipos de Dispensador" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Configure categorías y especificaciones de dispensadores" 
-                               FontSize="14" 
-                               TextColor="#BBDEFB" 
-                               HorizontalOptions="Center"
+                        <Label Text="Gestión de Tipos de Dispensador"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Configure categorías y especificaciones de dispensadores"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               HorizontalOptions="Start"
                                Margin="0,5,0,0"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Dispenser Type Registration Form Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Form Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⛽" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Nuevo Tipo de Dispensador" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="⛽" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Nuevo Tipo de Dispensador"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Description Field -->
                         <StackLayout Spacing="8">
-                            <Label Text="Descripción del Tipo de Dispensador" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                            <Label Text="Descripción del Tipo de Dispensador"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                    FontSize="14"/>
-                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#BBDEFB" 
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     Padding="4">
-                                <Grid ColumnDefinitions="Auto,*" Padding="12">
-                                    <Label Grid.Column="0" 
-                                           Text="⛽" 
-                                           FontSize="18" 
-                                           TextColor="#2196F3" 
+                                <brand:ResponsiveFormGrid ColumnDefinitions="Auto,*" Padding="12">
+                                    <brand:PoliedroIcon Grid.Column="0"
+                                           Text="⛽"
+                                           FontSize="18"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            Margin="0,0,12,0"/>
                                     <Entry Grid.Column="1"
@@ -76,91 +72,87 @@
                                            Text="{Binding Description, Mode=TwoWay}"
                                            BackgroundColor="Transparent"
                                            AutomationId="EntryDispenserType"
-                                           PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            FontSize="16"
-                                           TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"/>
-                                </Grid>
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                </brand:ResponsiveFormGrid>
                             </Border>
                         </StackLayout>
 
                         <!-- Info Card -->
-                        <Border BackgroundColor="#E3F2FD" 
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                 StrokeShape="RoundRectangle 8"
-                                Stroke="#2196F3"
+                                Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                 Padding="16"
                                 Opacity="0.9">
                             <StackLayout Orientation="Horizontal" Spacing="12">
-                                <Label Text="💡" 
-                                       FontSize="16" 
+                                <brand:PoliedroIcon Text="💡"
+                                       FontSize="16"
                                        VerticalOptions="Start"
                                        Margin="0,2,0,0"/>
                                 <Label Text="Los tipos de dispensador ayudan a categorizar y organizar los equipos de dispensado en su sistema. Ejemplos: Multisurtidor, Surtidor Simple, Auto-Servicio, Premium."
                                        FontSize="12"
-                                       TextColor="#1565C0"
+                                       TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                        VerticalOptions="Center"
                                        HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
                         </Border>
 
                         <!-- Action Button -->
-                        <Border BackgroundColor="#2196F3" 
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                 StrokeShape="RoundRectangle 12"
                                 Padding="4"
                                 Margin="0,10,0,0">
-                            <Border.Shadow>
-                                <Shadow Brush="#2196F3" Offset="0,3" Radius="8" Opacity="0.3"/>
-                            </Border.Shadow>
+
                             <Button BackgroundColor="Transparent"
                                     Clicked="Button_Clicked_1"
-                                    Text="🚀 Crear Tipo de Dispensador"
-                                    TextColor="White"
+                                    Text="Crear Tipo de Dispensador"
+                                    TextColor="{StaticResource OnBrand}"
                                     FontSize="18"
                                     FontAttributes="Bold"
-                                    HeightRequest="50"
+                                    MinimumHeightRequest="52"
                                     AutomationId="ButtonSendDispenserType"/>
                         </Border>
                     </VerticalStackLayout>
                 </Border>
 
                 <!-- Example Types Card -->
-                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="0"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
-                        
+
                         <!-- Examples Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="💡" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="Ejemplos de Tipos de Dispensador" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="💡" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="Ejemplos de Tipos de Dispensador"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
                         <!-- Examples Grid -->
                         <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="12" ColumnSpacing="12">
-                            
+
                             <!-- Multisurtidor -->
                             <Border Grid.Row="0" Grid.Column="0"
-                                    BackgroundColor="#E3F2FD"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12">
                                 <StackLayout Spacing="4">
-                                    <Label Text="⛽" FontSize="20" HorizontalOptions="Center"/>
-                                    <Label Text="Multisurtidor" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#1976D2"
+                                    <brand:PoliedroIcon Text="⛽" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Multisurtidor"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="Múltiples productos, 4-8 mangueras" 
-                                           FontSize="11" 
-                                           TextColor="#2196F3"
+                                    <Label Text="Múltiples productos, 4-8 mangueras"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
@@ -168,20 +160,20 @@
 
                             <!-- Surtidor Simple -->
                             <Border Grid.Row="0" Grid.Column="1"
-                                    BackgroundColor="#E8F5E8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     Padding="12">
                                 <StackLayout Spacing="4">
-                                    <Label Text="⛽" FontSize="20" HorizontalOptions="Center"/>
-                                    <Label Text="Surtidor Simple" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#2E7D32"
+                                    <brand:PoliedroIcon Text="⛽" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Surtidor Simple"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="Un producto, 1-2 mangueras" 
-                                           FontSize="11" 
-                                           TextColor="#4CAF50"
+                                    <Label Text="Un producto, 1-2 mangueras"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
@@ -189,20 +181,20 @@
 
                             <!-- Auto-Servicio -->
                             <Border Grid.Row="1" Grid.Column="0"
-                                    BackgroundColor="#F3E5F5"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9C27B0"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12">
                                 <StackLayout Spacing="4">
-                                    <Label Text="🤖" FontSize="20" HorizontalOptions="Center"/>
-                                    <Label Text="Auto-Servicio" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#7B1FA2"
+                                    <brand:PoliedroIcon Text="🤖" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Auto-Servicio"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="Dispensado automático" 
-                                           FontSize="11" 
-                                           TextColor="#9C27B0"
+                                    <Label Text="Dispensado automático"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
@@ -210,20 +202,20 @@
 
                             <!-- Premium -->
                             <Border Grid.Row="1" Grid.Column="1"
-                                    BackgroundColor="#FFF3E0"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     Padding="12">
                                 <StackLayout Spacing="4">
-                                    <Label Text="⭐" FontSize="20" HorizontalOptions="Center"/>
-                                    <Label Text="Premium" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#F57C00"
+                                    <brand:PoliedroIcon Text="⭐" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="Premium"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="Características avanzadas" 
-                                           FontSize="11" 
-                                           TextColor="#FF9800"
+                                    <Label Text="Características avanzadas"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            HorizontalOptions="Center"
                                            HorizontalTextAlignment="Center"/>
                                 </StackLayout>
@@ -234,10 +226,10 @@
 
                 <!-- Bottom Margin for Better Scrolling -->
                 <BoxView HeightRequest="20" Color="Transparent"/>
-                
+
             </VerticalStackLayout>
         </ScrollView>
-        
+
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
                               AbsoluteLayout.LayoutBounds="0,0,1,1"

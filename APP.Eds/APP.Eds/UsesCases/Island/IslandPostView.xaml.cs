@@ -1,4 +1,4 @@
-using APP.Eds.Services.Island;
+锘縰sing APP.Eds.Services.Island;
 using APP.Eds.Components.PopUp;
 
 namespace APP.Eds.UsesCases.Island;
@@ -6,7 +6,7 @@ namespace APP.Eds.UsesCases.Island;
 public partial class IslandPostView : ContentPage
 {
     private IslandService _islandService;
-    
+
     public IslandPostView()
     {
         InitializeComponent();
@@ -22,14 +22,14 @@ public partial class IslandPostView : ContentPage
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al navegar hacia atr醩:\n\n{ex.Message}", "Error de Navegaci髇");
+            await CustomAlert.ShowErrorAsync($"Error al navegar hacia atr谩s:\n\n{ex.Message}", "Error de Navegaci贸n");
         }
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        
+
         // Refresh islands list when page appears
         if (_islandService != null)
         {
@@ -43,19 +43,19 @@ public partial class IslandPostView : ContentPage
         {
             if (string.IsNullOrWhiteSpace(vm.Description))
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 de la isla es obligatoria para el registro", "Descripci髇 Requerida");
+                await CustomAlert.ShowErrorAsync("La descripci贸n de la isla es obligatoria para el registro", "Descripci贸n Requerida");
                 return;
             }
 
             if (vm.Description.Length < 3)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 debe tener al menos 3 caracteres", "Descripci髇 Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripci贸n debe tener al menos 3 caracteres", "Descripci贸n Muy Corta");
                 return;
             }
 
             if (vm.Description.Length > 200)
             {
-                await CustomAlert.ShowErrorAsync("La descripci髇 no puede exceder los 200 caracteres", "Descripci髇 Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripci贸n no puede exceder los 200 caracteres", "Descripci贸n Muy Larga");
                 return;
             }
 

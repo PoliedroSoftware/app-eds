@@ -1,4 +1,4 @@
-using APP.Eds.Services.Phone;
+﻿using APP.Eds.Services.Phone;
 
 namespace APP.Eds.UsesCases.Phone;
 
@@ -16,10 +16,10 @@ public partial class PhoneRegistrationView : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        
+
         try
         {
-            // Cualquier inicializaci�n adicional si es necesaria
+            // Cualquier inicialización adicional si es necesaria
             await Task.CompletedTask;
         }
         catch (Exception ex)

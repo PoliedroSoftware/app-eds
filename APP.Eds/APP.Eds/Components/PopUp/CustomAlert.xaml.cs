@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Views;
+ï»¿using CommunityToolkit.Maui.Views;
 using System.Diagnostics;
 
 namespace APP.Eds.Components.PopUp;
@@ -18,8 +18,10 @@ public partial class CustomAlert : Popup
 
     public CustomAlert(string title, string message, string confirmText = "OK", string cancelText = null, AlertType alertType = AlertType.Error)
     {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         InitializeComponent();
-        
+
         SetupAlert(title, message, confirmText, cancelText, alertType);
         _taskCompletionSource = new TaskCompletionSource<bool>();
     }
@@ -63,25 +65,25 @@ public partial class CustomAlert : Popup
             var estimatedCharactersPerLine = 40; // Approximate characters per line
             var wordsWrappedLines = Math.Ceiling((double)content.Length / estimatedCharactersPerLine);
             var totalEstimatedLines = Math.Max(lines, (int)wordsWrappedLines);
-            
+
             // Base heights for different sections
             const int headerHeight = 140;
             const int buttonHeight = 84;
             const int basePadding = 60;
             const int lineHeight = 24;
-            
+
             // Calculate content height
             var contentHeight = Math.Max(120, totalEstimatedLines * lineHeight);
             var totalHeight = headerHeight + contentHeight + buttonHeight + basePadding;
-            
+
             // Set reasonable bounds based on screen size
             var screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density;
             var maxAllowedHeight = (int)(screenHeight * 0.8); // 80% of screen height
             var minHeight = 300;
             var maxHeight = Math.Min(600, maxAllowedHeight);
-            
+
             var finalHeight = Math.Max(minHeight, Math.Min(maxHeight, totalHeight));
-            
+
             // Apply the calculated height to the main border
             if (Content is Border mainBorder)
             {
@@ -101,44 +103,19 @@ public partial class CustomAlert : Popup
 
     private void ConfigureAlertType(AlertType alertType)
     {
-        switch (alertType)
+        var (surface, foreground, symbol) = alertType switch
         {
-            case AlertType.Error:
-                HeaderBorder.BackgroundColor = Color.FromArgb("#E8A5A5");
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#D78787");
-                IconLabel.Text = "!";
-                IconLabel.FontSize = 32;
-                IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#8B0000");
-                break;
-                
-            case AlertType.Warning:
-                HeaderBorder.BackgroundColor = Color.FromArgb("#F5E6A3");
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#E8D078");
-                IconLabel.Text = "!";
-                IconLabel.FontSize = 32;
-                IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#B8860B");
-                break;
-                
-            case AlertType.Info:
-                HeaderBorder.BackgroundColor = Color.FromArgb("#A8C8E1");
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#7FB3D3");
-                IconLabel.Text = "i";
-                IconLabel.FontSize = 32;
-                IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#2F4F4F");
-                break;
-                
-            case AlertType.Success:
-                HeaderBorder.BackgroundColor = Color.FromArgb("#B8E6B8");
-                ConfirmButtonBorder.BackgroundColor = Color.FromArgb("#90D690");
-                IconLabel.Text = "OK";  // Usando texto simple "OK" para máxima compatibilidad
-                IconLabel.FontSize = 20;
-                IconLabel.FontAttributes = FontAttributes.Bold;
-                IconLabel.TextColor = Color.FromArgb("#006400");
-                break;
-        }
+            AlertType.Error => ("ErrorSurfaceColor", "ErrorColor", "!"),
+            AlertType.Warning => ("WarningSurfaceColor", "WarningColor", "!"),
+            AlertType.Success => ("SuccessSurfaceColor", "SuccessColor", "OK"),
+            _ => ("BrandSoftColor", "BrandTextColor", "i")
+        };
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(HeaderBorder, VisualElement.BackgroundColorProperty, surface);
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(ConfirmButtonBorder, VisualElement.BackgroundColorProperty, "BrandPrimaryColor");
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(IconLabel, Label.TextColorProperty, foreground);
+        IconLabel.Text = symbol;
+        IconLabel.FontSize = alertType == AlertType.Success ? 20 : 32;
+        IconLabel.FontAttributes = FontAttributes.Bold;
     }
 
     public void SetDetailMessage(string detail)
@@ -147,7 +124,7 @@ public partial class CustomAlert : Popup
         {
             DetailLabel.Text = detail;
             DetailLabel.IsVisible = true;
-            
+
             // Re-adjust size when detail is added
             AdjustPopupSize(MessageLabel.Text + "\n\n" + detail);
         }
@@ -200,7 +177,7 @@ public partial class CustomAlert : Popup
                     _taskCompletionSource?.TrySetResult(false);
                 }
             });
-            
+
             return _taskCompletionSource.Task;
         }
         catch (Exception ex)
@@ -217,7 +194,7 @@ public partial class CustomAlert : Popup
         {
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Task.Delay(100); 
+                await Task.Delay(100);
                 try
                 {
                     Close();
@@ -247,19 +224,19 @@ public partial class CustomAlert : Popup
         await alert.ShowAsync();
     }
 
-    public static async Task ShowInfoAsync(string message, string title = "Información")
+    public static async Task ShowInfoAsync(string message, string title = "InformaciÃ³n")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Info);
         await alert.ShowAsync();
     }
 
-    public static async Task ShowSuccessAsync(string message, string title = "Éxito")
+    public static async Task ShowSuccessAsync(string message, string title = "ï¿½xito")
     {
         var alert = new CustomAlert(title, message, "OK", null, AlertType.Success);
         await alert.ShowAsync();
     }
 
-    public static async Task<bool> ShowConfirmAsync(string message, string title = "Confirmar", string confirmText = "Sí", string cancelText = "No")
+    public static async Task<bool> ShowConfirmAsync(string message, string title = "Confirmar", string confirmText = "SÃ­", string cancelText = "No")
     {
         var alert = new CustomAlert(title, message, confirmText, cancelText, AlertType.Warning);
         return await alert.ShowAsync();

@@ -15,6 +15,7 @@ public partial class PointOfSaleView : ContentPage
 
     public PointOfSaleView()
     {
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         var pointOfSaleService = Application.Current?.Handler?.MauiContext?.Services?.GetService<IPointOfSaleService>()
     ?? new PointOfSaleService();
         var whatsAppMessageService = Application.Current?.Handler?.MauiContext?.Services?.GetService<IWhatsAppMessageService>()
@@ -23,7 +24,7 @@ public partial class PointOfSaleView : ContentPage
         BindingContext = _viewModel;
 
         Title = "Punto de Venta";
-        BackgroundColor = Color.FromArgb("#F8FAFC");
+        BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground;
 
         CreateContent();
     }
@@ -58,11 +59,11 @@ public partial class PointOfSaleView : ContentPage
     {
         var frame = new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 16,
-            HasShadow = true,
+            HasShadow = false,
             Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#E2E8F0")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var stackLayout = new StackLayout
@@ -73,10 +74,10 @@ public partial class PointOfSaleView : ContentPage
         // Header
         var headerLabel = new Label
         {
-            Text = "👤 Cliente",
+            Text = "Cliente",
             FontSize = 20,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HorizontalOptions = LayoutOptions.Start,
             Margin = new Thickness(0, 0, 0, 8)
         };
@@ -85,11 +86,11 @@ public partial class PointOfSaleView : ContentPage
         // Selected client display with search integrated
         var clientDisplayFrame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#F8FAFC"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
             CornerRadius = 12,
             HasShadow = false,
             Padding = new Thickness(16, 12),
-            BorderColor = Color.FromArgb("#3B82F6")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary
         };
 
         var clientStack = new StackLayout
@@ -102,7 +103,7 @@ public partial class PointOfSaleView : ContentPage
         {
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             LineBreakMode = LineBreakMode.WordWrap
         };
         selectedClientLabel.SetBinding(Label.TextProperty, "ClientButtonText");
@@ -113,7 +114,7 @@ public partial class PointOfSaleView : ContentPage
         // Separator line (visible cuando hay cliente)
         var separator = new BoxView
         {
-            Color = Color.FromArgb("#E2E8F0"),
+            Color = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
             HeightRequest = 1,
             Margin = new Thickness(0, 4, 0, 4)
         };
@@ -124,9 +125,9 @@ public partial class PointOfSaleView : ContentPage
         // Search section
         var searchLabel = new Label
         {
-            Text = "🔍 Buscar por Número de Documento:",
-            FontSize = 13,
-            TextColor = Color.FromArgb("#6B7280"),
+            Text = "Buscar por Número de Documento:",
+            FontSize = 14,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Bold
         };
         clientStack.Add(searchLabel);
@@ -144,10 +145,10 @@ public partial class PointOfSaleView : ContentPage
         var searchEntry = new Entry
         {
             Placeholder = "Ej: 123456789",
-            FontSize = 15,
-            BackgroundColor = Colors.White,
-            TextColor = Color.FromArgb("#374151"),
-            PlaceholderColor = Color.FromArgb("#9CA3AF"),
+            FontSize = 16,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
+            PlaceholderColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HeightRequest = 45
         };
         searchEntry.SetBinding(Entry.TextProperty, "ClientSearchText");
@@ -159,7 +160,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Buscar",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#3B82F6"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             CornerRadius = 10,
             WidthRequest = 90,
@@ -176,7 +177,7 @@ public partial class PointOfSaleView : ContentPage
         // Loading indicator
         var activityIndicator = new ActivityIndicator
         {
-            Color = Color.FromArgb("#3B82F6"),
+            Color = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             IsRunning = false,
             HeightRequest = 25
         };
@@ -187,10 +188,10 @@ public partial class PointOfSaleView : ContentPage
         // ⭐ NUEVO: Botón para crear tercero desde RUT
         var createClientButton = new Button
         {
-            Text = "📄 Crear Tercero desde RUT",
+            Text = "Crear Tercero desde RUT",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#10B981"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             CornerRadius = 10,
             HeightRequest = 45,
@@ -202,9 +203,9 @@ public partial class PointOfSaleView : ContentPage
         // Hint label
         var hintLabel = new Label
         {
-            Text = "💡 Busca en persona jurídica (empresas) y naturales (personas)",
-            FontSize = 11,
-            TextColor = Color.FromArgb("#6B7280"),
+            Text = "Busca en persona jurídica (empresas) y naturales (personas)",
+            FontSize = 12,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             FontAttributes = FontAttributes.Italic,
             HorizontalOptions = LayoutOptions.Start
         };
@@ -254,11 +255,11 @@ public partial class PointOfSaleView : ContentPage
     {
         var frame = new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 16,
-            HasShadow = true,
+            HasShadow = false,
             Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#E2E8F0")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var stackLayout = new StackLayout
@@ -271,7 +272,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Productos",
             FontSize = 24,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(header);
@@ -294,12 +295,12 @@ public partial class PointOfSaleView : ContentPage
         {
             var productFrame = new Frame
             {
-                BackgroundColor = Color.FromArgb("#3B82F6"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 CornerRadius = 16,
-                HasShadow = true,
+                HasShadow = false,
                 Padding = new Thickness(14),
-                HeightRequest = 90,
-                BorderColor = Color.FromArgb("#2563EB")
+                MinimumHeightRequest = 104,
+                BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
             };
 
             var tapGesture = new TapGestureRecognizer();
@@ -320,9 +321,9 @@ public partial class PointOfSaleView : ContentPage
             // Cart indicator badge - positioned at the top
             var cartIndicatorFrame = new Frame
             {
-                BackgroundColor = Color.FromArgb("#FFD700"), // Gold background
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText, // Gold background
                 CornerRadius = 8, // Smaller circle
-                HasShadow = true,
+                HasShadow = false,
                 Padding = new Thickness(0),
                 WidthRequest = 16,
                 HeightRequest = 16,
@@ -343,10 +344,10 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Colors.White,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 HorizontalOptions = LayoutOptions.Center,
-                MaxLines = 1,
-                LineBreakMode = LineBreakMode.TailTruncation,
+                MaxLines = 2,
+                LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalTextAlignment = TextAlignment.Center
             };
             nameLabel.SetBinding(Label.TextProperty, "Name");
@@ -355,7 +356,7 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Colors.White,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 HorizontalOptions = LayoutOptions.Center,
                 HorizontalTextAlignment = TextAlignment.Center
             };
@@ -363,8 +364,8 @@ public partial class PointOfSaleView : ContentPage
 
             var stockLabel = new Label
             {
-                FontSize = 10,
-                TextColor = Colors.White,
+                FontSize = 12,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 HorizontalOptions = LayoutOptions.Center,
                 Opacity = 0.9,
                 HorizontalTextAlignment = TextAlignment.Center
@@ -391,7 +392,7 @@ public partial class PointOfSaleView : ContentPage
             // Add border effect when in cart
             var borderFrame = new Frame
             {
-                BorderColor = Color.FromArgb("#FFD700"), // Gold border
+                BorderColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText, // Gold border
                 BackgroundColor = Colors.Transparent,
                 HasShadow = false,
                 CornerRadius = 16,
@@ -406,6 +407,11 @@ public partial class PointOfSaleView : ContentPage
             return outerContainer;
         });
 
+        collectionView.SizeChanged += (_, _) =>
+        {
+            if (collectionView.ItemsLayout is GridItemsLayout layout && collectionView.Width > 0)
+                layout.Span = Math.Clamp((int)(collectionView.Width / 160), 1, 4);
+        };
         collectionView.ItemTemplate = productTemplate;
         stackLayout.Add(collectionView);
 
@@ -417,11 +423,11 @@ public partial class PointOfSaleView : ContentPage
     {
         var frame = new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 16,
-            HasShadow = true,
+            HasShadow = false,
             Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#E2E8F0")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var stackLayout = new StackLayout
@@ -435,7 +441,7 @@ public partial class PointOfSaleView : ContentPage
             Text = "Carrito de Compras",
             FontSize = 22,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HorizontalOptions = LayoutOptions.Center
         };
         stackLayout.Add(header);
@@ -452,12 +458,12 @@ public partial class PointOfSaleView : ContentPage
         {
             var cartFrame = new Frame
             {
-                BackgroundColor = Color.FromArgb("#F1F5F9"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
                 CornerRadius = 12,
                 HasShadow = false,
                 Padding = new Thickness(16, 14),
                 Margin = new Thickness(0, 0, 0, 12),
-                BorderColor = Color.FromArgb("#E2E8F0")
+                BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
             };
 
             // Main container with vertical layout
@@ -467,7 +473,7 @@ public partial class PointOfSaleView : ContentPage
             };
 
             // Top row: Input and controls
-            var topGrid = new Grid
+            var topGrid = new global::APP.Eds.Controls.ResponsiveFormGrid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
                 {
@@ -483,10 +489,10 @@ public partial class PointOfSaleView : ContentPage
             {
                 Keyboard = Keyboard.Numeric,
                 FontSize = 20,
-                BackgroundColor = Colors.White,
-                TextColor = Color.FromArgb("#1F2937"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 Placeholder = "Monto",
-                PlaceholderColor = Color.FromArgb("#9CA3AF"),
+                PlaceholderColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 HeightRequest = 50,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -526,9 +532,9 @@ public partial class PointOfSaleView : ContentPage
             // Wrap the entry in a border for better visibility
             var entryBorder = new Border
             {
-                BackgroundColor = Colors.White,
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
                 StrokeThickness = 2,
-                Stroke = Color.FromArgb("#E5E7EB"),
+                Stroke = global::APP.Eds.Helpers.PoliedroTheme.InputBorder,
                 StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Padding = new Thickness(12, 0),
                 Content = totalAmountEntry,
@@ -541,18 +547,23 @@ public partial class PointOfSaleView : ContentPage
                 }
             };
 
-            topGrid.SetColumn(entryBorder, 0);
-            topGrid.Add(entryBorder);
+            var amountField = new VerticalStackLayout
+            {
+                Spacing = 8,
+                Children = { new Label { Text = "Monto (COP)", FontSize = 14 }, entryBorder }
+            };
+            topGrid.SetColumn(amountField, 0);
+            topGrid.Add(amountField);
 
             // Gallons display (calculated)
             var gallonsLabel = new Label
             {
                 FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#059669"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
-                BackgroundColor = Color.FromArgb("#DCFCE7"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
                 Padding = new Thickness(12, 8),
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center
@@ -562,9 +573,9 @@ public partial class PointOfSaleView : ContentPage
             // Wrap gallons label in a border for better appearance
             var gallonsBorder = new Border
             {
-                BackgroundColor = Color.FromArgb("#DCFCE7"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
                 StrokeThickness = 1,
-                Stroke = Color.FromArgb("#16A34A"),
+                Stroke = global::APP.Eds.Helpers.PoliedroTheme.Success,
                 StrokeShape = new RoundRectangle { CornerRadius = 8 },
                 Padding = new Thickness(0),
                 Content = gallonsLabel
@@ -580,7 +591,7 @@ public partial class PointOfSaleView : ContentPage
                 FontAttributes = FontAttributes.Bold,
                 WidthRequest = 45,
                 HeightRequest = 45,
-                BackgroundColor = Color.FromArgb("#EF4444"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.ErrorFill,
                 TextColor = Colors.White,
                 CornerRadius = 22,
                 Padding = new Thickness(0),
@@ -598,7 +609,7 @@ public partial class PointOfSaleView : ContentPage
             // Separator line
             var separator = new BoxView
             {
-                Color = Color.FromArgb("#E2E8F0"),
+                Color = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder,
                 HeightRequest = 1,
                 HorizontalOptions = LayoutOptions.Fill,
                 Margin = new Thickness(0, 4, 0, 4)
@@ -615,7 +626,7 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#374151"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -628,7 +639,7 @@ public partial class PointOfSaleView : ContentPage
             var priceLabel = new Label
             {
                 FontSize = 12,
-                TextColor = Color.FromArgb("#6B7280"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
                 HorizontalOptions = LayoutOptions.Start
             };
             priceLabel.SetBinding(Label.TextProperty, new Binding("UnitPrice", stringFormat: "Precio: ${0:N0} por galón"));
@@ -640,12 +651,12 @@ public partial class PointOfSaleView : ContentPage
             // Money section (Currency and Words)
             var moneyFrame = new Frame
             {
-                BackgroundColor = Color.FromArgb("#FEF3C7"),
+                BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.WarningSurface,
                 CornerRadius = 8,
                 HasShadow = false,
                 Padding = new Thickness(12, 8),
                 Margin = new Thickness(0, 4, 0, 0),
-                BorderColor = Color.FromArgb("#F59E0B")
+                BorderColor = global::APP.Eds.Helpers.PoliedroTheme.Warning
             };
 
             var moneyStack = new StackLayout
@@ -658,7 +669,7 @@ public partial class PointOfSaleView : ContentPage
             {
                 FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#92400E"),
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning,
                 HorizontalOptions = LayoutOptions.Start
             };
             currencyLabel.SetBinding(Label.TextProperty, "TotalAmountCurrency");
@@ -667,8 +678,8 @@ public partial class PointOfSaleView : ContentPage
             // Amount in words
             var wordsLabel = new Label
             {
-                FontSize = 11,
-                TextColor = Color.FromArgb("#92400E"),
+                FontSize = 12,
+                TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning,
                 HorizontalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.WordWrap,
                 FontAttributes = FontAttributes.Italic
@@ -702,11 +713,11 @@ public partial class PointOfSaleView : ContentPage
     {
         var frame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#10B981"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
             CornerRadius = 16,
-            HasShadow = true,
+            HasShadow = false,
             Padding = new Thickness(20),
-            BorderColor = Color.FromArgb("#059669")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var stackLayout = new StackLayout { Spacing = 8 };
@@ -725,7 +736,7 @@ public partial class PointOfSaleView : ContentPage
         {
             Text = "Subtotal:",
             FontSize = 16,
-            TextColor = Colors.White
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary
         };
         subtotalGrid.SetColumn(subtotalLabel, 0);
         subtotalGrid.Add(subtotalLabel);
@@ -734,7 +745,7 @@ public partial class PointOfSaleView : ContentPage
         {
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.White
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary
         };
         subtotalValue.SetBinding(Label.TextProperty, new Binding("SubTotal", stringFormat: "${0:N0}"));
         subtotalGrid.SetColumn(subtotalValue, 1);
@@ -745,7 +756,7 @@ public partial class PointOfSaleView : ContentPage
         // Separator
         var separator = new BoxView
         {
-            Color = Colors.White,
+            Color = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             HeightRequest = 1,
             Margin = new Thickness(0, 8),
             Opacity = 0.5
@@ -764,19 +775,19 @@ public partial class PointOfSaleView : ContentPage
 
         var totalLabel = new Label
         {
-            Text = "TOTAL:",
+            Text = "Total",
             FontSize = 22,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.White
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary
         };
         totalGrid.SetColumn(totalLabel, 0);
         totalGrid.Add(totalLabel);
 
         var totalValue = new Label
         {
-            FontSize = 22,
+            FontSize = 34,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Colors.White
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextPrimary
         };
         totalValue.SetBinding(Label.TextProperty, new Binding("Total", stringFormat: "${0:N0}"));
         totalGrid.SetColumn(totalValue, 1);
@@ -807,10 +818,10 @@ public partial class PointOfSaleView : ContentPage
 
         var whatsappLabel = new Label
         {
-            Text = "📱 WhatsApp para enviar factura:",
+            Text = "WhatsApp para enviar factura:",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"), // ✅ Changed to dark gray (was white)
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary, // ✅ Changed to dark gray (was white)
             HorizontalOptions = LayoutOptions.Start
         };
         stackLayout.Add(whatsappLabel);
@@ -819,9 +830,9 @@ public partial class PointOfSaleView : ContentPage
         {
             Placeholder = "Ej: 3154286798",
             FontSize = 16,
-            BackgroundColor = Colors.White,
-            TextColor = Color.FromArgb("#374151"),
-            PlaceholderColor = Color.FromArgb("#9CA3AF"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
+            PlaceholderColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             HeightRequest = 50,
             Keyboard = Keyboard.Telephone,
             ClearButtonVisibility = ClearButtonVisibility.WhileEditing
@@ -869,10 +880,10 @@ public partial class PointOfSaleView : ContentPage
             Text = "Facturar", // ✅ Changed from "Procesar Pago" to "Facturar"
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#059669"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             CornerRadius = 12,
-            HeightRequest = 55
+            MinimumHeightRequest = 52
         };
         processButton.SetBinding(Button.CommandProperty, "ProcessPaymentCommand");
         processButton.SetBinding(Button.IsEnabledProperty, "CanCompleteTransaction");

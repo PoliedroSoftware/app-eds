@@ -1,4 +1,4 @@
-using APP.Eds.Components.PopUp;
+ï»¿using APP.Eds.Components.PopUp;
 using APP.Eds.Helpers;
 using APP.Eds.Models.Client;
 using APP.Eds.Models.Rut;
@@ -226,9 +226,11 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
 
     public CreateClientFromRutPopup()
     {
+        global::APP.Eds.Helpers.PoliedroPopupSizing.Watch(this);
+        global::APP.Eds.Helpers.PoliedroTheme.Watch(this);
         _clientService = new ClientService();
         _rutParserService = new RutParserService(TokenHelper.LoadToken());
-        
+
         InitializeComponent();
         BindingContext = this;
     }
@@ -245,10 +247,10 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
 
         var mainFrame = new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 20,
             Padding = new Thickness(24),
-            HasShadow = true
+            HasShadow = false
         };
 
         var stackLayout = new StackLayout
@@ -271,19 +273,19 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = "Crear Tercero desde RUT",
             FontSize = 24,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             VerticalOptions = LayoutOptions.Center
         };
         headerGrid.Add(headerLabel, 0, 0);
 
         var closeButton = new Button
         {
-            Text = "×",
+            Text = "ï¿½",
             FontSize = 24,
             BackgroundColor = Colors.Transparent,
-            TextColor = Color.FromArgb("#6B7280"),
-            WidthRequest = 40,
-            HeightRequest = 40,
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
+            MinimumWidthRequest = 48,
+            MinimumHeightRequest = 52,
             CornerRadius = 20,
             FontAttributes = FontAttributes.Bold
         };
@@ -298,10 +300,10 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = "Seleccionar RUT PDF",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#3B82F6"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             CornerRadius = 12,
-            HeightRequest = 50
+            MinimumHeightRequest = 52
         };
         loadRutButton.Clicked += OnLoadRutClicked;
         loadRutButton.SetBinding(Button.IsEnabledProperty, new Binding("IsNotLoading"));
@@ -310,10 +312,10 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         // Loading indicator
         var loadingFrame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EFF6FF"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
             CornerRadius = 12,
             Padding = new Thickness(16),
-            BorderColor = Color.FromArgb("#3B82F6")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary
         };
         loadingFrame.SetBinding(Frame.IsVisibleProperty, "IsLoading");
 
@@ -325,7 +327,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
 
         var activityIndicator = new ActivityIndicator
         {
-            Color = Color.FromArgb("#3B82F6"),
+            Color = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             HeightRequest = 40
         };
         activityIndicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsLoading");
@@ -336,7 +338,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = "Procesando RUT...",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#3B82F6"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             HorizontalOptions = LayoutOptions.Center
         };
         loadingStack.Add(loadingLabel);
@@ -363,10 +365,10 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         // Client Type Selector - IMPROVED
         var typeFrame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#F8FAFC"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
             CornerRadius = 12,
             Padding = new Thickness(16),
-            BorderColor = Color.FromArgb("#E2E8F0")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var typeStack = new StackLayout { Spacing = 12 };
@@ -376,7 +378,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = "Tipo de Tercero:",
             FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#374151")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
         typeStack.Add(typeLabel);
 
@@ -396,27 +398,27 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
             CornerRadius = 10,
-            HeightRequest = 50
+            MinimumHeightRequest = 52
         };
         naturalButton.SetBinding(Button.BackgroundColorProperty, new Binding("IsNaturalSelected",
-            converter: new FuncConverter<bool, Color>(selected => selected ? Color.FromArgb("#10B981") : Color.FromArgb("#E5E7EB"))));
+            converter: new FuncConverter<bool, Color>(selected => selected ? Color.FromArgb("#006EAA") : Color.FromArgb("#DFE7EF"))));
         naturalButton.SetBinding(Button.TextColorProperty, new Binding("IsNaturalSelected",
-            converter: new FuncConverter<bool, Color>(selected => selected ? Colors.White : Color.FromArgb("#6B7280"))));
+            converter: new FuncConverter<bool, Color>(selected => selected ? Colors.White : Color.FromArgb("#546779"))));
         naturalButton.Clicked += (s, e) => SelectedClientType = "Natural";
         typeGrid.Add(naturalButton, 0, 0);
 
         var legalButton = new Button
         {
-            Text = "Persona Jurídica",
+            Text = "Persona JurÃ­dica",
             FontSize = 14,
             FontAttributes = FontAttributes.Bold,
             CornerRadius = 10,
-            HeightRequest = 50
+            MinimumHeightRequest = 52
         };
         legalButton.SetBinding(Button.BackgroundColorProperty, new Binding("IsLegalSelected",
-            converter: new FuncConverter<bool, Color>(selected => selected ? Color.FromArgb("#6366F1") : Color.FromArgb("#E5E7EB"))));
+            converter: new FuncConverter<bool, Color>(selected => selected ? Color.FromArgb("#006EAA") : Color.FromArgb("#DFE7EF"))));
         legalButton.SetBinding(Button.TextColorProperty, new Binding("IsLegalSelected",
-            converter: new FuncConverter<bool, Color>(selected => selected ? Colors.White : Color.FromArgb("#6B7280"))));
+            converter: new FuncConverter<bool, Color>(selected => selected ? Colors.White : Color.FromArgb("#546779"))));
         legalButton.Clicked += (s, e) => SelectedClientType = "Legal";
         typeGrid.Add(legalButton, 1, 0);
 
@@ -425,13 +427,13 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         dataStack.Add(typeFrame);
 
         // EXPANDED: Identification Section
-        dataStack.Add(CreateSectionHeader("Datos de Identificación"));
+        dataStack.Add(CreateSectionHeader("Datos de IdentificaciÃ³n"));
         dataStack.Add(CreateReadOnlyField("Tipo de Documento:", "DocumentType"));
-        dataStack.Add(CreateReadOnlyField("Número de Documento:", "DocumentNumber"));
+        dataStack.Add(CreateReadOnlyField("NÃºmero de Documento:", "DocumentNumber"));
         dataStack.Add(CreateReadOnlyField("NIT:", "Nit"));
 
         // EXPANDED: Personal Information Section
-        dataStack.Add(CreateSectionHeader("Información Personal"));
+        dataStack.Add(CreateSectionHeader("InformaciÃ³n Personal"));
         dataStack.Add(CreateEditableField("Nombre Completo:", "FullName"));
         dataStack.Add(CreateReadOnlyField("Primer Nombre:", "FirstName"));
         dataStack.Add(CreateReadOnlyField("Segundo Nombre:", "MiddleName"));
@@ -439,19 +441,19 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         dataStack.Add(CreateReadOnlyField("Segundo Apellido:", "SecondLastName"));
 
         // EXPANDED: Contact Information Section
-        dataStack.Add(CreateSectionHeader("Información de Contacto"));
+        dataStack.Add(CreateSectionHeader("InformaciÃ³n de Contacto"));
         dataStack.Add(CreateEditableField("Email:", "Email"));
 
         // EXPANDED: Address Section
-        dataStack.Add(CreateSectionHeader("Información de Ubicación"));
-        dataStack.Add(CreateReadOnlyField("Dirección:", "Address"));
+        dataStack.Add(CreateSectionHeader("InformaciÃ³n de UbicaciÃ³n"));
+        dataStack.Add(CreateReadOnlyField("DirecciÃ³n:", "Address"));
         dataStack.Add(CreateReadOnlyField("Ciudad:", "City"));
         dataStack.Add(CreateReadOnlyField("Departamento:", "Department"));
-        dataStack.Add(CreateReadOnlyField("Código Postal:", "PostalCode"));
+        dataStack.Add(CreateReadOnlyField("CÃ³digo Postal:", "PostalCode"));
 
         // EXPANDED: Business Information Section
-        dataStack.Add(CreateSectionHeader("Información Comercial"));
-        dataStack.Add(CreateMultilineField("Actividades Económicas:", "EconomicActivities"));
+        dataStack.Add(CreateSectionHeader("InformaciÃ³n Comercial"));
+        dataStack.Add(CreateMultilineField("Actividades EconÃ³micas:", "EconomicActivities"));
         dataStack.Add(CreateMultilineField("Responsabilidades Fiscales:", "Responsibilities"));
 
         dataFrame.Content = dataStack;
@@ -463,10 +465,10 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = "Crear Tercero",
             FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            BackgroundColor = Color.FromArgb("#10B981"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary,
             TextColor = Colors.White,
             CornerRadius = 12,
-            HeightRequest = 55,
+            MinimumHeightRequest = 52,
             Margin = new Thickness(0, 10, 0, 0)
         };
         createButton.Clicked += OnCreateClientClicked;
@@ -483,11 +485,11 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
     {
         var frame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#EFF6FF"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
             CornerRadius = 8,
             Padding = new Thickness(12, 10),
             HasShadow = false,
-            BorderColor = Color.FromArgb("#DBEAFE"),
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.BrandSoft,
             Margin = new Thickness(0, 8, 0, 4)
         };
 
@@ -505,17 +507,17 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         var icon = new Label
         {
             FontSize = 18,
-            TextColor = Color.FromArgb("#1E40AF"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             VerticalOptions = LayoutOptions.Center
         };
 
-        if (text.Contains("Identificación"))
+        if (text.Contains("IdentificaciÃ³n"))
             icon.Text = "?";
         else if (text.Contains("Personal"))
             icon.Text = "?";
         else if (text.Contains("Contacto"))
             icon.Text = "?";
-        else if (text.Contains("Ubicación"))
+        else if (text.Contains("UbicaciÃ³n"))
             icon.Text = "?";
         else if (text.Contains("Comercial"))
             icon.Text = "?";
@@ -525,9 +527,9 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         var label = new Label
         {
             Text = text,
-            FontSize = 15,
+            FontSize = 16,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#1E40AF"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText,
             VerticalOptions = LayoutOptions.Center
         };
 
@@ -541,11 +543,11 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
     {
         var frame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#F9FAFB"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.PageBackground,
             CornerRadius = 8,
             Padding = new Thickness(12),
             HasShadow = false,
-            BorderColor = Color.FromArgb("#E5E7EB")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.SubtleBorder
         };
 
         var stack = new StackLayout { Spacing = 4 };
@@ -555,14 +557,14 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = labelText,
             FontSize = 12,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#6B7280")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary
         };
         stack.Add(label);
 
         var valueLabel = new Label
         {
             FontSize = 14,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             LineBreakMode = LineBreakMode.WordWrap
         };
         valueLabel.SetBinding(Label.TextProperty, bindingPath);
@@ -576,11 +578,11 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
     {
         var frame = new Frame
         {
-            BackgroundColor = Colors.White,
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.CardSurface,
             CornerRadius = 8,
             Padding = new Thickness(12),
             HasShadow = false,
-            BorderColor = Color.FromArgb("#3B82F6")
+            BorderColor = global::APP.Eds.Helpers.PoliedroTheme.BrandPrimary
         };
 
         var stack = new StackLayout { Spacing = 4 };
@@ -590,14 +592,14 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = labelText,
             FontSize = 12,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#3B82F6")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.BrandText
         };
         stack.Add(label);
 
         var entry = new Entry
         {
             FontSize = 14,
-            TextColor = Color.FromArgb("#374151"),
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.TextSecondary,
             BackgroundColor = Colors.Transparent
         };
         entry.SetBinding(Entry.TextProperty, bindingPath);
@@ -611,11 +613,11 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
     {
         var frame = new Frame
         {
-            BackgroundColor = Color.FromArgb("#FFFBEB"),
+            BackgroundColor = global::APP.Eds.Helpers.PoliedroTheme.WarningSurface,
             CornerRadius = 8,
             Padding = new Thickness(12),
             HasShadow = false,
-            BorderColor = Color.FromArgb("#FDE68A")
+            BorderColor = Color.FromArgb("#FFF5DF")
         };
 
         var stack = new StackLayout { Spacing = 4 };
@@ -625,14 +627,14 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             Text = labelText,
             FontSize = 12,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#92400E")
+            TextColor = global::APP.Eds.Helpers.PoliedroTheme.Warning
         };
         stack.Add(label);
 
         var valueLabel = new Label
         {
-            FontSize = 13,
-            TextColor = Color.FromArgb("#78350F"),
+            FontSize = 14,
+            TextColor = Color.FromArgb("#8F570A"),
             LineBreakMode = LineBreakMode.WordWrap
         };
         valueLabel.SetBinding(Label.TextProperty, bindingPath);
@@ -678,8 +680,8 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             if (_rutData == null)
             {
                 await CustomAlert.ShowErrorAsync(
-                    "No se pudo extraer la información del RUT.\n\n" +
-                    "Verifique que el archivo sea un RUT válido de la DIAN.",
+                    "No se pudo extraer la informaciÃ³n del RUT.\n\n" +
+                    "Verifique que el archivo sea un RUT vÃ¡lido de la DIAN.",
                     "Error al Procesar RUT");
                 IsLoading = false;
                 return;
@@ -692,8 +694,8 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             {
                 var useExisting = await Application.Current.MainPage.DisplayAlert(
                     "Cliente Ya Existe",
-                    $"El cliente '{existingClient.Name}' con documento {existingClient.DocumentNumber} ya está registrado.\n\n" +
-                    "¿Desea usar este cliente existente?",
+                    $"El cliente '{existingClient.Name}' con documento {existingClient.DocumentNumber} ya estÃ¡ registrado.\n\n" +
+                    "Â¿Desea usar este cliente existente?",
                     "Usar Existente",
                     "Cancelar");
 
@@ -727,8 +729,8 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             // Format economic activities
             if (_rutData.EconomicActivities != null && _rutData.EconomicActivities.Any())
             {
-                EconomicActivities = string.Join("\n", _rutData.EconomicActivities.Select(a => 
-                    $"• {a.Code}: {a.Description}"));
+                EconomicActivities = string.Join("\n", _rutData.EconomicActivities.Select(a =>
+                    $"ï¿½ {a.Code}: {a.Description}"));
             }
             else
             {
@@ -738,8 +740,8 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             // Format responsibilities
             if (_rutData.Responsibilities != null && _rutData.Responsibilities.Any())
             {
-                Responsibilities = string.Join("\n", _rutData.Responsibilities.Select(r => 
-                    $"• {r.Code}: {r.Description}"));
+                Responsibilities = string.Join("\n", _rutData.Responsibilities.Select(r =>
+                    $"ï¿½ {r.Code}: {r.Description}"));
             }
             else
             {
@@ -750,7 +752,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
 
             await CustomAlert.ShowSuccessAsync(
                 $"RUT Cargado Exitosamente\n\n" +
-                $"Se han extraído todos los datos del RUT:\n\n" +
+                $"Se han extraÃ­do todos los datos del RUT:\n\n" +
                 $"Documento: {_rutData.DocumentNumber}\n" +
                 $"Nombre: {_rutData.FullName.Display}\n" +
                 $"Email: {_rutData.Email}\n" +
@@ -758,7 +760,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
                 $"Actividades: {_rutData.EconomicActivities?.Count ?? 0}\n" +
                 $"Responsabilidades: {_rutData.Responsibilities?.Count ?? 0}\n\n" +
                 $"Revise todos los datos y seleccione el tipo de tercero.",
-                "Datos Extraídos");
+                "Datos ExtraÃ­dos");
         }
         catch (Exception ex)
         {
@@ -786,7 +788,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(Email))
         {
             await CustomAlert.ShowErrorAsync(
-                "El email es obligatorio.\n\nPor favor, ingrese un email válido.",
+                "El email es obligatorio.\n\nPor favor, ingrese un email vÃ¡lido.",
                 "Email Requerido");
             return;
         }
@@ -832,7 +834,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             {
                 await CustomAlert.ShowSuccessAsync(
                     $"Tercero Creado Exitosamente\n\n" +
-                    $"Tipo: {(SelectedClientType == "Natural" ? "Persona Natural" : "Persona Jurídica")}\n" +
+                    $"Tipo: {(SelectedClientType == "Natural" ? "Persona Natural" : "Persona JurÃ­dica")}\n" +
                     $"Nombre: {_rutData.FullName.Display}\n" +
                     $"Documento: {_rutData.DocumentNumber}\n" +
                     $"Email: {Email}\n\n" +
@@ -845,7 +847,7 @@ public partial class CreateClientFromRutPopup : Popup, INotifyPropertyChanged
             {
                 await CustomAlert.ShowErrorAsync(
                     "No se pudo crear el tercero en el servidor.\n\n" +
-                    "Verifique su conexión e intente nuevamente.\n" +
+                    "Verifique su conexiÃ³n e intente nuevamente.\n" +
                     "Si el problema persiste, contacte al administrador.",
                     "Error al Crear");
             }

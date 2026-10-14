@@ -1,4 +1,4 @@
-using APP.Eds.Services.Expenditures;
+ï»¿using APP.Eds.Services.Expenditures;
 using APP.Eds.Components.PopUp;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,7 +8,7 @@ namespace APP.Eds.UsesCases.Expenditures;
 public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
 {
     private ExpendituresService _expendituresService;
-    
+
     public ExpendituresPostView()
     {
         InitializeComponent();
@@ -26,7 +26,7 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            await CustomAlert.ShowErrorAsync($"Error al cargar los datos de gastos:\n\n{ex.Message}", "Error de Inicialización");
+            await CustomAlert.ShowErrorAsync($"Error al cargar los datos de gastos:\n\n{ex.Message}", "Error de InicializaciÃ³n");
         }
         finally
         {
@@ -47,7 +47,7 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
             // Enhanced validation with professional alerts
             if (string.IsNullOrWhiteSpace(_expendituresService.SelectedCategory))
             {
-                await CustomAlert.ShowErrorAsync("Debe seleccionar una categoría para clasificar el gasto", "Categoría Requerida");
+                await CustomAlert.ShowErrorAsync("Debe seleccionar una categorÃ­a para clasificar el gasto", "CategorÃ­a Requerida");
                 return;
             }
 
@@ -59,52 +59,52 @@ public partial class ExpendituresPostView : ContentPage, INotifyPropertyChanged
 
             if (!decimal.TryParse(_expendituresService.Amount, out decimal amount) || amount <= 0)
             {
-                await CustomAlert.ShowErrorAsync("El monto debe ser un número válido mayor que cero", "Monto Inválido");
+                await CustomAlert.ShowErrorAsync("El monto debe ser un nÃºmero vÃ¡lido mayor que cero", "Monto InvÃ¡lido");
                 return;
             }
 
             if (amount > 1000000)
             {
                 bool confirm = await CustomAlert.ShowConfirmAsync(
-                    $"El monto ingresado (${amount:F2}) es muy elevado.\n\n¿Confirma que este valor es correcto?",
+                    $"El monto ingresado (${amount:F2}) es muy elevado.\n\nÂ¿Confirma que este valor es correcto?",
                     "Monto Elevado",
                     "Confirmar",
                     "Revisar");
-                
+
                 if (!confirm) return;
             }
 
             if (string.IsNullOrWhiteSpace(_expendituresService.Description))
             {
-                await CustomAlert.ShowErrorAsync("Debe proporcionar una descripción detallada del gasto", "Descripción Requerida");
+                await CustomAlert.ShowErrorAsync("Debe proporcionar una descripciÃ³n detallada del gasto", "DescripciÃ³n Requerida");
                 return;
             }
 
             if (_expendituresService.Description.Length < 5)
             {
-                await CustomAlert.ShowErrorAsync("La descripción debe tener al menos 5 caracteres para ser informativa", "Descripción Muy Corta");
+                await CustomAlert.ShowErrorAsync("La descripciÃ³n debe tener al menos 5 caracteres para ser informativa", "DescripciÃ³n Muy Corta");
                 return;
             }
 
             if (_expendituresService.Description.Length > 200)
             {
-                await CustomAlert.ShowErrorAsync("La descripción no puede exceder 200 caracteres", "Descripción Muy Larga");
+                await CustomAlert.ShowErrorAsync("La descripciÃ³n no puede exceder 200 caracteres", "DescripciÃ³n Muy Larga");
                 return;
             }
 
             LoadingOverlay?.ShowLoading();
-            
+
             await _expendituresService.SaveExpendituresDataAsync();
-            
+
             // Show success message with details
             await CustomAlert.ShowSuccessAsync(
                 $"Gasto registrado exitosamente:\n\n" +
-                $"• Categoría: {_expendituresService.SelectedCategory}\n" +
-                $"• Monto: ${amount:F2}\n" +
-                $"• Descripción: {_expendituresService.Description}\n" +
-                $"• Fecha: {_expendituresService.ExpenseDate:dd/MM/yyyy}",
+                $"ï¿½ CategorÃ­a: {_expendituresService.SelectedCategory}\n" +
+                $"ï¿½ Monto: ${amount:F2}\n" +
+                $"ï¿½ DescripciÃ³n: {_expendituresService.Description}\n" +
+                $"ï¿½ Fecha: {_expendituresService.ExpenseDate:dd/MM/yyyy}",
                 "Gasto Registrado");
-            
+
             // Clear form after successful save
             ClearForm();
         }

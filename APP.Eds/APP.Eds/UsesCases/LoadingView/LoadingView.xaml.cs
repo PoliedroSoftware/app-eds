@@ -26,7 +26,7 @@ namespace APP.Eds.UsesCases.LoadingView
                 LoadingOverlay.IsVisible = true;
                 LoadingIndicator.IsRunning = true;
                 LoadingLabel.IsVisible = true;
-                
+
                 // Start entrance animation asynchronously - no await to avoid blocking
                 _ = Task.Run(async () =>
                 {
@@ -42,7 +42,7 @@ namespace APP.Eds.UsesCases.LoadingView
                         System.Diagnostics.Debug.WriteLine($"Error in entrance animation: {ex.Message}");
                     }
                 });
-                
+
                 // Start continuous animations
                 StartContinuousAnimations();
             }
@@ -170,7 +170,7 @@ namespace APP.Eds.UsesCases.LoadingView
                                     System.Diagnostics.Debug.WriteLine($"Error in spinner animation: {ex.Message}");
                                 }
                             });
-                            
+
                             if (token.IsCancellationRequested) break;
                             await Task.Delay(50, token);
                         }
@@ -203,7 +203,7 @@ namespace APP.Eds.UsesCases.LoadingView
                                     System.Diagnostics.Debug.WriteLine($"Error in dot animation: {ex.Message}");
                                 }
                             });
-                            
+
                             if (token.IsCancellationRequested) break;
                             await Task.Delay(1500, token);
                         }
@@ -241,7 +241,7 @@ namespace APP.Eds.UsesCases.LoadingView
                                     System.Diagnostics.Debug.WriteLine($"Error in progress bar animation: {ex.Message}");
                                 }
                             });
-                            
+
                             if (token.IsCancellationRequested) break;
                             await Task.Delay(500, token);
                         }
@@ -273,30 +273,30 @@ namespace APP.Eds.UsesCases.LoadingView
 
                 if (dot1 != null)
                 {
-                    dot1.Fill = Color.FromArgb("#6366F1");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot1, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "BrandPrimaryColor");
                     await Task.WhenAll(dot1.ScaleTo(1.4, 150), dot1.FadeTo(1, 150));
                     await Task.WhenAll(dot1.ScaleTo(1.0, 150), dot1.FadeTo(0.3, 150));
-                    dot1.Fill = Color.FromArgb("#CBD5E1");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot1, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "SubtleBorderColor");
                 }
 
                 await Task.Delay(200);
 
                 if (dot2 != null)
                 {
-                    dot2.Fill = Color.FromArgb("#8B5CF6");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot2, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "BrandPrimaryColor");
                     await Task.WhenAll(dot2.ScaleTo(1.4, 150), dot2.FadeTo(1, 150));
                     await Task.WhenAll(dot2.ScaleTo(1.0, 150), dot2.FadeTo(0.3, 150));
-                    dot2.Fill = Color.FromArgb("#CBD5E1");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot2, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "SubtleBorderColor");
                 }
 
                 await Task.Delay(200);
 
                 if (dot3 != null)
                 {
-                    dot3.Fill = Color.FromArgb("#EC4899");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot3, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "BrandPrimaryColor");
                     await Task.WhenAll(dot3.ScaleTo(1.4, 150), dot3.FadeTo(1, 150));
                     await Task.WhenAll(dot3.ScaleTo(1.0, 150), dot3.FadeTo(0.3, 150));
-                    dot3.Fill = Color.FromArgb("#CBD5E1");
+                    global::APP.Eds.Helpers.PoliedroTheme.SetColor(dot3, Microsoft.Maui.Controls.Shapes.Shape.FillProperty, "SubtleBorderColor");
                 }
             }
             catch (Exception ex)
@@ -364,7 +364,7 @@ namespace APP.Eds.UsesCases.LoadingView
         protected override void OnParentSet()
         {
             base.OnParentSet();
-            
+
             // Clean up when view is removed
             if (Parent == null)
             {

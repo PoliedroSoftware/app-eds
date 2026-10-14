@@ -1,4 +1,4 @@
-<ContentPage
+﻿<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.Court.CourtPostView"
     x:Name="CortePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -8,7 +8,7 @@
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     xmlns:converters="clr-namespace:APP.Eds.Converters"
     Title="{Binding ShiftClosing}"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -19,149 +19,143 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <AbsoluteLayout>
-        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="16">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0" x:Name="MainContent">
+            <VerticalStackLayout Padding="20" Spacing="16">
 
                 <!-- Header Card with Purple Gradient -->
-                <Border BackgroundColor="#6A1B9A" 
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 16"
                         Padding="20"
                         StrokeThickness="0">
-                    <Border.Shadow>
-                        <Shadow Brush="#6A1B9A" Offset="0,4" Radius="12" Opacity="0.3"/>
-                    </Border.Shadow>
+
                     <StackLayout>
-                        <Label Text="🏪 Cierre De Turno" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Complete la información del turno" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"
+                        <Label Text="Cierre De Turno"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Complete la información del turno"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               HorizontalOptions="Start"
                                Margin="0,5,0,0"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Business Selection Card -->
                 <Border x:Name="Business"
-                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                         StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding IsNotIslanderLogin}">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="🏢" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="{Binding Business}" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="🏢" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="{Binding Business}"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Grid ColumnDefinitions="100, *" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
+                        <brand:ResponsiveFormGrid ColumnDefinitions="100, *" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
                             <!-- Business -->
-                            <Label Text="Negocio" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
-                                   VerticalOptions="Center" 
+                            <Label Text="Negocio"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   VerticalOptions="Center"
                                    Grid.Row="0" Grid.Column="0"/>
-                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                     Grid.Row="0" Grid.Column="1">
                                 <Picker Title="{Binding SelectaBusiness}"
                                         AutomationId="BusinessPicker"
-                                        ItemDisplayBinding="{Binding Name}" 
+                                        ItemDisplayBinding="{Binding Name}"
                                         ItemsSource="{Binding BusinessList}"
-                                        SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}" 
+                                        SelectedItem="{Binding SelectedBusiness, Mode=TwoWay}"
                                         SelectedIndexChanged="OnBusinessSelected"
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>
                             </Border>
 
                             <!-- EDS -->
-                            <Label 
-                                   Text="EDS" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
-                                   VerticalOptions="Center" 
+                            <Label
+                                   Text="EDS"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   VerticalOptions="Center"
                                    Grid.Row="1" Grid.Column="0"/>
-                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                     Grid.Row="1" Grid.Column="1">
                                 <Picker Title="{Binding SelectaEds}"
                                         AutomationId="EdsPicker"
-                                        ItemDisplayBinding="{Binding Name}" 
+                                        ItemDisplayBinding="{Binding Name}"
                                         ItemsSource="{Binding EdsSelectList}"
-                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}" 
-                                        SelectedIndexChanged="OnEdsSelected" 
+                                        SelectedItem="{Binding SelectedEds, Mode=TwoWay}"
+                                        SelectedIndexChanged="OnEdsSelected"
                                         IsEnabled="{Binding IsBusinessSelected}"
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>
                             </Border>
 
                             <!-- Islander -->
-                            <Label Text="Islero" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
-                                   VerticalOptions="Center" 
+                            <Label Text="Islero"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   VerticalOptions="Center"
                                    Grid.Row="2" Grid.Column="0"/>
-                            <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#2C2C2C}" 
-                                    StrokeShape="RoundRectangle 8"
-                                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                     Grid.Row="2" Grid.Column="1">
                                 <Picker Title="{Binding SelectAnIslander}"
                                         AutomationId="IslanderPicker"
-                                        ItemDisplayBinding="{Binding Name}" 
+                                        ItemDisplayBinding="{Binding Name}"
                                         ItemsSource="{Binding IslanderSelectList}"
-                                        SelectedItem="{Binding SelectedIslander, Mode=TwoWay}" 
+                                        SelectedItem="{Binding SelectedIslander, Mode=TwoWay}"
                                         SelectedIndexChanged="OnIslanderSelected"
                                         IsEnabled="{Binding IsEdsSelected}"
                                         BackgroundColor="Transparent"
                                         Margin="12,8"/>
                             </Border>
-                        </Grid>
+                        </brand:ResponsiveFormGrid>
                     </VerticalStackLayout>
                 </Border>
 
                 <!-- Time Card -->
-                <Border x:Name="Time" 
-                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                <Border x:Name="Time"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                         StrokeThickness="1"
                         Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⏰" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="{Binding Time}" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="⏰" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="{Binding Time}"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                         <!-- Selector de EDS (solo User y si tiene >1) -->
                         <Border x:Name="EdsUser"
-                                BackgroundColor="#F8F9FA"
-                                StrokeShape="RoundRectangle 8"
-                                Stroke="#DDD6FE"
-                                Padding="12">
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                Padding="12,0">
                             <VerticalStackLayout Spacing="6">
                                     <Label Text="Selecciona EDS"
                                            FontAttributes="Bold"
-                                           TextColor="#636E72"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                 <Picker Title="Seleccione EDS"
                                             ItemDisplayBinding="{Binding Name}"
                                             AutomationId="EdsUserPicker"
@@ -174,41 +168,41 @@
                             </VerticalStackLayout>
                         </Border>
 
-                        <!--Texto informativo cuando solo hay 1 EDS 
+                        <!--Texto informativo cuando solo hay 1 EDS
                         <StackLayout IsVisible="{Binding Source={x:Reference CortePage}, Path=BindingContext.ShowEdsPicker, Converter={StaticResource InverseBoolConverter}}">
                             <Label Text="{Binding Source={x:Reference CortePage}, Path=BindingContext.EdsName}"
-                                   TextColor="#636E72"
-                                   FontAttributes="Italic"/> 
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                                   FontAttributes="Italic"/>
                         </StackLayout>-->
 
-                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
+                        <brand:ResponsiveFormGrid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="16" ColumnSpacing="12">
                             <!-- Date -->
                             <StackLayout Grid.Row="0" Grid.Column="0">
-                                <Label Text="Fecha" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Fecha"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#FFF3CD" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#F39C12" 
-                                        Padding="8">
-                                    <DatePicker x:Name="datePicker" 
-                                                AutomationId="DatePicker" 
-                                                Date="{Binding DateStarttime, Mode=TwoWay}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
+                                    <DatePicker x:Name="datePicker"
+                                                AutomationId="DatePicker"
+                                                Date="{Binding DateStarttime, Mode=TwoWay}"
                                                 MinimumDate="1900-01-01"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E67E22"/>
+                                                TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"/>
                                 </Border>
                                 <!-- Checkbox para registrar turno sin ventas -->
                                 <StackLayout Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
                                     <CheckBox x:Name="RegisterShiftCheck"
                                               IsChecked="{Binding Source={x:Reference CortePage}, Path=IsRegisterShiftChecked, Mode=TwoWay}"
-                                              Color="#6A1B9A"
+                                              Color="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                               CheckedChanged="OnRegisterShiftCheckChanged"/>
                                     <Label Text="Registrar turno sin ventas"
                                            FontSize="12"
-                                           TextColor="#636E72"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            VerticalTextAlignment="Center"/>
                                 </StackLayout>
 
@@ -216,189 +210,187 @@
 
                             <!-- Start Time -->
                             <StackLayout Grid.Row="0" Grid.Column="1">
-                                <Label Text="Hora Inicio" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Hora Inicio"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#D4EDDA" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#27AE60" 
-                                        Padding="8">
-                                    <TimePicker AutomationId="StartTimePicker" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
+                                    <TimePicker AutomationId="StartTimePicker"
                                                 Time="{Binding Starttime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#27AE60"/>
+                                                TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"/>
                                 </Border>
                             </StackLayout>
 
                             <!-- End Time -->
                             <StackLayout Grid.Row="0" Grid.Column="2">
-                                <Label Text="Hora Fin" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}" 
+                                <Label Text="Hora Fin"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                        HorizontalOptions="Center"/>
-                                <Border BackgroundColor="#F8D7DA" 
-                                        StrokeShape="RoundRectangle 8"
-                                        Stroke="#E74C3C" 
-                                        Padding="8">
-                                    <TimePicker AutomationId="EndTimePicker" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                        Padding="12,0">
+                                    <TimePicker AutomationId="EndTimePicker"
                                                 Time="{Binding Endtime, Mode=TwoWay}"
                                                 BackgroundColor="Transparent"
                                                 HorizontalOptions="Center"
-                                                TextColor="#E74C3C"/>
+                                                TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"/>
                                 </Border>
                             </StackLayout>
-                        </Grid>
+                        </brand:ResponsiveFormGrid>
                     </VerticalStackLayout>
                 </Border>
 
                 <!-- Cash Count Card -->
                 <Border x:Name="CashCount"
-                        BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#3D3D3D}"
+                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                         StrokeThickness="1"
                         Padding="20"
                         IsVisible="{Binding ShouldShowCashCountSection}">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.1"/>
-                    </Border.Shadow>
+
                     <VerticalStackLayout Spacing="16">
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="💰" FontSize="20" VerticalOptions="Center"/>
-                            <Label Text="{Binding CashCount}" 
-                                   FontAttributes="Bold" 
-                                   FontSize="18" 
-                                   TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                            <brand:PoliedroIcon Text="💰" FontSize="20" VerticalOptions="Center"/>
+                            <Label Text="{Binding CashCount}"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
 
-                        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="16">
+                        <brand:ResponsiveFormGrid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="16">
                             <!-- Sales in Money -->
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="0">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding SalesInMoney}" 
-                                           FontAttributes="Bold" 
-                                           FontSize="12"
-                                           TextColor="#2E7D32"
-                                           HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalAmount, Converter={StaticResource CurrencyFormat}}" 
-                                           FontSize="18"
+                                    <Label Text="{Binding SalesInMoney}"
                                            FontAttributes="Bold"
-                                           TextColor="#1B5E20"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="{Binding TotalAmount, Converter={StaticResource CurrencyFormat}}"
+                                           FontSize="34"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Sales in Gallons -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="16"
                                     Grid.Row="0" Grid.Column="1">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding SalesInGallons}" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding SalesInGallons}"
+                                           FontAttributes="Bold"
                                            FontSize="12"
-                                           TextColor="#1976D2"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalGallons, Converter={StaticResource DecimalFormat}}" 
+                                    <Label Text="{Binding TotalGallons, Converter={StaticResource DecimalFormat}}"
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#0D47A1"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Expenses -->
-                            <Border BackgroundColor="#FFEBEE" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#F44336"
+                                    Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="0">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding Expenses}" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding Expenses}"
+                                           FontAttributes="Bold"
                                            FontSize="12"
-                                           TextColor="#D32F2F"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalExpenditure, Converter={StaticResource CurrencyFormat}}" 
+                                    <Label Text="{Binding TotalExpenditure, Converter={StaticResource CurrencyFormat}}"
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#B71C1C"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Collections -->
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     Padding="16"
                                     Grid.Row="1" Grid.Column="1">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding Collections}" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding Collections}"
+                                           FontAttributes="Bold"
                                            FontSize="12"
-                                           TextColor="#F57C00"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalTypeOfCollection, Converter={StaticResource CurrencyFormat}}" 
+                                    <Label Text="{Binding TotalTypeOfCollection, Converter={StaticResource CurrencyFormat}}"
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#E65100"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Total and Distintic -->
-                            <Border BackgroundColor="#F3E5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9C27B0"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="0">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding TotalForTheDay}" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding TotalForTheDay}"
+                                           FontAttributes="Bold"
                                            FontSize="12"
-                                           TextColor="#7B1FA2"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Label Text="{Binding TotalSales, Converter={StaticResource CurrencyFormat}}" 
+                                    <Label Text="{Binding TotalSales, Converter={StaticResource CurrencyFormat}}"
                                            FontSize="18"
                                            FontAttributes="Bold"
-                                           TextColor="#4A148C"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                            HorizontalOptions="Center"/>
                                 </StackLayout>
                             </Border>
 
-                            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2C2C2C}" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="{AppThemeBinding Light=#9E9E9E, Dark=#3D3D3D}"
+                                    Stroke="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                     Padding="16"
                                     Grid.Row="2" Grid.Column="1">
                                 <StackLayout Spacing="8">
-                                    <Label Text="{Binding DistinticDescription}" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding DistinticDescription}"
+                                           FontAttributes="Bold"
                                            FontSize="12"
-                                           TextColor="{AppThemeBinding Light=#616161, Dark=#B8B8B8}"
+                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                            HorizontalOptions="Center"/>
-                                    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#2C2C2C}"
-                                            StrokeShape="RoundRectangle 6"
-                                            Stroke="{AppThemeBinding Light=#BDBDBD, Dark=#3D3D3D}"
-                                            Padding="8">
-                                        <Entry Keyboard="Numeric" 
-                                               Placeholder="Ingrese distintivo" 
+                                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
+                                            StrokeShape="RoundRectangle 10"
+                                            Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
+                                            Padding="12,0">
+                                        <Entry Keyboard="Numeric"
+                                               Placeholder="Ingrese distintivo"
                                                Text="{Binding Distintic, Mode=TwoWay}"
                                                BackgroundColor="Transparent"
                                                HorizontalTextAlignment="Center"/>
                                     </Border>
                                 </StackLayout>
                             </Border>
-                        </Grid>
+                        </brand:ResponsiveFormGrid>
                     </VerticalStackLayout>
                 </Border>
 
@@ -415,17 +407,17 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#E8F5E8" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#4CAF50"
+                            Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                             Padding="16"
                             Margin="0,0,0,8">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                            <Label Text="⛽" FontSize="18" VerticalOptions="Center"/>
-                            <Label Text="Ventas por mangueras" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" 
-                                   TextColor="#2E7D32"
+                            <brand:PoliedroIcon Text="⛽" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="Ventas por mangueras"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -433,64 +425,62 @@
                     <CollectionView ItemsSource="{Binding CourtDispensers}" x:Name="CourtDispensers">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                         Margin="0,4"
                                         Padding="16">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
-                                    </Border.Shadow>
+
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
-                                            <Label Text="🔧" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
-                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="#1976D2" VerticalOptions="Center"/>
+                                            <brand:PoliedroIcon Text="🔧" FontSize="16" VerticalOptions="Center"/>
+                                            <Label Text="Manguera #" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" VerticalOptions="Center"/>
+                                            <Label Text="{Binding NumberName}" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Money Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Monto acumulado" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
+                                                <Label Text="Monto acumulado" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding AccumulatedAmount, Converter={StaticResource CurrencyFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en dinero" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                <Label Text="Venta en dinero" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding AmountDifferenceResult, Converter={StaticResource CurrencyFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Gallons Section -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="2" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Galones acumulados" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}" 
-                                                       FontSize="14" TextColor="#FF9800" FontAttributes="Bold"/>
+                                                <Label Text="Galones acumulados" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding AccumulatedGallons, Converter={StaticResource DecimalFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Venta en galones" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}" 
-                                                       FontSize="14" TextColor="#9C27B0" FontAttributes="Bold"/>
+                                                <Label Text="Venta en galones" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding GallonsDifferenceResult, Converter={StaticResource DecimalFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
-                                                WidthRequest="40" HeightRequest="40"
+                                                Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                                                WidthRequest="40" MinimumHeightRequest="52"
                                                 Grid.Column="1" Grid.RowSpan="5"
                                                 VerticalOptions="Center">
-                                            <Button Text="✕" 
+                                            <Button Text="✕"
                                                     AutomationId="DeleteDispenserButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
-                                                    WidthRequest="40" HeightRequest="40"
+                                                    WidthRequest="40" MinimumHeightRequest="52"
                                                     CornerRadius="20"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDispenserCommand}"
                                                     CommandParameter="{Binding .}"/>
@@ -514,17 +504,17 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#E3F2FD" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#2196F3"
+                            Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                             Padding="16"
                             Margin="0,0,0,8">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                            <Label Text="💳" FontSize="18" VerticalOptions="Center"/>
-                            <Label Text="Formas de pago" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" 
-                                   TextColor="#1976D2"
+                            <brand:PoliedroIcon Text="💳" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="Formas de pago"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -532,59 +522,57 @@
                     <CollectionView ItemsSource="{Binding CourtTypeOfCollections}" x:Name="CourtTypeOfCollections">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                         Margin="0,4"
                                         Padding="16">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
-                                    </Border.Shadow>
+
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
-                                            <Label Text="💰" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
+                                            <brand:PoliedroIcon Text="💰" FontSize="16" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de cobro" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Método" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding TypeOfCollectionName}" 
-                                                       FontSize="14" TextColor="#2196F3" FontAttributes="Bold"/>
+                                                <Label Text="Método" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding TypeOfCollectionName}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#4CAF50" FontAttributes="Bold"/>
-                                                <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}" 
-                                                       FontSize="10" TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}" FontAttributes="Italic"
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding Amount, Converter={StaticResource NumberToWordsConverter}}"
+                                                       FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Italic"
                                                        LineBreakMode="WordWrap"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                            <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Description}"
+                                                   FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
-                                                WidthRequest="40" HeightRequest="40"
+                                                Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                                                WidthRequest="40" MinimumHeightRequest="52"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
-                                            <Button Text="✕" 
+                                            <Button Text="✕"
                                                     AutomationId="DeleteCollectionButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
-                                                    WidthRequest="40" HeightRequest="40"
+                                                    WidthRequest="40" MinimumHeightRequest="52"
                                                     CornerRadius="20"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCollectionCommand}"
                                                     CommandParameter="{Binding .}"/>
@@ -598,19 +586,19 @@
 
                 <!-- Documents Section (no se oculta por la tarea) -->
                 <StackLayout x:Name="AddedDocuments" IsVisible="{Binding VisibleDocuments}">
-                    <Border BackgroundColor="#FFF3E0" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#FF9800"
+                            Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                             Padding="12"
                             Margin="0,0,0,8"
                             IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Start" Grid.Column="0">
-                                <Label Text="📄" FontSize="18" VerticalOptions="Center"/>
-                                <Label Text="Comprobantes" 
-                                       FontAttributes="Bold" 
-                                       FontSize="16" 
-                                       TextColor="#F57C00"
+                                <brand:PoliedroIcon Text="📄" FontSize="18" VerticalOptions="Center"/>
+                                <Label Text="Comprobantes"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
 
@@ -618,8 +606,8 @@
                                     Text="Eliminar todos"
                                     Padding="10,6"
                                     CornerRadius="12"
-                                    BackgroundColor="#FFEBEE"
-                                    TextColor="#C62828"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
+                                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                     FontSize="12"
                                     Clicked="OnRemoveAllDocumentsClicked"
                                     IsVisible="{Binding CourtDocuments, Converter={StaticResource CountToBoolConverter}}"/>
@@ -629,37 +617,35 @@
                     <CollectionView ItemsSource="{Binding CourtDocuments}" x:Name="CourtDocuments">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                         Margin="0,4"
                                         Padding="16">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
-                                    </Border.Shadow>
+
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" RowSpacing="8">
                                         <!-- Document Info -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
-                                            <Label Text="📎" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
-                                            <Label Text="{Binding DocumentName}" 
-                                                   FontSize="14" TextColor="#FF9800" FontAttributes="Bold" VerticalOptions="Center"/>
+                                            <brand:PoliedroIcon Text="📎" FontSize="16" VerticalOptions="Center"/>
+                                            <Label Text="Comprobante" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" VerticalOptions="Center"/>
+                                            <Label Text="{Binding DocumentName}"
+                                                   FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" FontAttributes="Bold" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
-                                                WidthRequest="40" HeightRequest="40"
+                                                Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                                                WidthRequest="40" MinimumHeightRequest="52"
                                                 Grid.Column="1" Grid.Row="0"
                                                 VerticalOptions="Center">
-                                            <Button Text="✕" 
+                                            <Button Text="✕"
                                                     AutomationId="DeleteDocumentButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
-                                                    WidthRequest="40" HeightRequest="40"
+                                                    WidthRequest="40" MinimumHeightRequest="52"
                                                     CornerRadius="20"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDocumentCommand}"
                                                     CommandParameter="{Binding .}"/>
@@ -684,18 +670,18 @@
                         </DataTrigger>
                     </StackLayout.Triggers>
 
-                    <Border BackgroundColor="#FFEBEE" 
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                             StrokeShape="RoundRectangle 8"
-                            Stroke="#F44336"
+                            Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                             Padding="16"
                             Margin="0,0,0,8"
                             IsVisible="{Binding CourtExpenditures, Converter={StaticResource CountToBoolConverter}}">
                         <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                            <Label Text="💸" FontSize="18" VerticalOptions="Center"/>
-                            <Label Text="Gastos" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" 
-                                   TextColor="#D32F2F"
+                            <brand:PoliedroIcon Text="💸" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="Gastos"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
                     </Border>
@@ -703,56 +689,54 @@
                     <CollectionView ItemsSource="{Binding CourtExpenditures}" x:Name="CourtExpenditures">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#252525}" 
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardSurface}, Dark={StaticResource CardSurfaceDark}}"
                                         StrokeShape="RoundRectangle 8"
-                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3D3D3D}"
+                                        Stroke="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"
                                         Margin="0,4"
                                         Padding="16">
-                                    <Border.Shadow>
-                                        <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.1"/>
-                                    </Border.Shadow>
+
                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <!-- Header -->
                                         <StackLayout Orientation="Horizontal" Spacing="8" Grid.Row="0" Grid.Column="0">
-                                            <Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
-                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#424242, Dark=#B8B8B8}" VerticalOptions="Center"/>
+                                            <brand:PoliedroIcon Text="🏪" FontSize="16" VerticalOptions="Center"/>
+                                            <Label Text="Tipo de gasto" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}" VerticalOptions="Center"/>
                                         </StackLayout>
 
                                         <!-- Type and Amount -->
                                         <Grid ColumnDefinitions="*,*" Grid.Row="1" Grid.Column="0" ColumnSpacing="16">
                                             <StackLayout Grid.Column="0">
-                                                <Label Text="Tipo" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding ExpenditureName}" 
-                                                       FontSize="14" TextColor="#F44336" FontAttributes="Bold"/>
+                                                <Label Text="Tipo" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding ExpenditureName}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                             <StackLayout Grid.Column="1">
-                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}" 
-                                                       FontSize="14" TextColor="#D32F2F" FontAttributes="Bold"/>
+                                                <Label Text="Monto" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding Amount, Converter={StaticResource CurrencyFormat}}"
+                                                       FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}" FontAttributes="Bold"/>
                                             </StackLayout>
                                         </Grid>
 
                                         <!-- Description -->
                                         <StackLayout Grid.Row="2" Grid.Column="0">
-                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light=#666, Dark=#B8B8B8}" FontAttributes="Bold"/>
-                                            <Label Text="{Binding Description}" 
-                                                   FontSize="13" TextColor="{AppThemeBinding Light=#757575, Dark=#B8B8B8}"/>
+                                            <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Description}"
+                                                   FontSize="14" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                         </StackLayout>
 
                                         <!-- Delete Button -->
-                                        <Border BackgroundColor="#FFEBEE" 
+                                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource ErrorSurface}, Dark={StaticResource ErrorSurfaceDark}}"
                                                 StrokeShape="RoundRectangle 20"
-                                                Stroke="#F44336"
-                                                WidthRequest="40" HeightRequest="40"
+                                                Stroke="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
+                                                WidthRequest="40" MinimumHeightRequest="52"
                                                 Grid.Column="1" Grid.RowSpan="3"
                                                 VerticalOptions="Center">
-                                            <Button Text="✕" 
+                                            <Button Text="✕"
                                                     AutomationId="DeleteExpenseButton"
                                                     BackgroundColor="Transparent"
-                                                    TextColor="#F44336"
+                                                    TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                                     FontSize="16"
                                                     FontAttributes="Bold"
-                                                    WidthRequest="40" HeightRequest="40"
+                                                    WidthRequest="40" MinimumHeightRequest="52"
                                                     CornerRadius="20"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteExpenseCommand}"
                                                     CommandParameter="{Binding .}"/>
@@ -765,7 +749,7 @@
                 </StackLayout>
 
                 <!-- Main Action Buttons Section -->
-                <VerticalStackLayout Spacing="16" x:Name="Button" Margin="0,0,0,110">
+                <VerticalStackLayout Spacing="16" x:Name="Button" Margin="0,0,0,20">
 
                     <!-- Required Actions Card -->
                     <Border Style="{StaticResource RequiredActionsCardStyle}"
@@ -774,11 +758,11 @@
                         <VerticalStackLayout Spacing="16">
                             <!-- Header -->
                             <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
-                                <Label Text="⚠️" FontSize="20" VerticalOptions="Center"/>
+                                <brand:PoliedroIcon Text="⚠️" FontSize="20" VerticalOptions="Center"/>
                                 <Label Text="Acciones Obligatorias"
                                        FontAttributes="Bold"
                                        FontSize="16"
-                                       TextColor="#D32F2F"
+                                       TextColor="{AppThemeBinding Light={StaticResource Error}, Dark={StaticResource ErrorDark}}"
                                        VerticalOptions="Center"/>
                             </StackLayout>
 
@@ -796,15 +780,15 @@
                                     FontAttributes="Bold"
                                     Padding="16,12"
                                     CornerRadius="12"
-                                    BackgroundColor="#4CAF50"
-                                    TextColor="White">
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
+                                    TextColor="{StaticResource OnBrand}">
                                     <Button.Triggers>
                                         <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
                                                  Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
                                                  Value="False">
-                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                         <!-- Trigger para cuando se envió el corte -->
@@ -812,8 +796,8 @@
                                                  Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
                                                  Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
-                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
@@ -828,15 +812,15 @@
                                     FontAttributes="Bold"
                                     Padding="16,12"
                                     CornerRadius="12"
-                                    BackgroundColor="#2196F3"
-                                    TextColor="White">
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
+                                    TextColor="{StaticResource OnBrand}">
                                     <Button.Triggers>
                                         <!-- ✅ Trigger para cuando está deshabilitado -->
                                         <DataTrigger TargetType="Button"
                                                  Binding="{Binding Source={x:Reference CortePage}, Path=CanAccessFunctionality}"
                                                  Value="False">
-                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                         <!-- Trigger para cuando se envió el corte -->
@@ -844,8 +828,8 @@
                                                  Binding="{Binding Source={x:Reference CortePage}, Path=AccionesHabilitadas}"
                                                  Value="False">
                                             <Setter Property="IsEnabled" Value="False"/>
-                                            <Setter Property="BackgroundColor" Value="#E0E0E0"/>
-                                            <Setter Property="TextColor" Value="#9E9E9E"/>
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                                             <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                     </Button.Triggers>
@@ -861,10 +845,10 @@
                     <Border Style="{StaticResource PrimarySendButtonStyle}"
                             Margin="0,8">
 
-                        <Button x:Name="SendData" 
+                        <Button x:Name="SendData"
                                 AutomationId="SendDataButton"
                                 Text="{Binding SendData}"
-                                TextColor="White" 
+                                TextColor="{StaticResource OnBrand}"
                                 BackgroundColor="Transparent"
                                 Clicked="Button_Clicked"
                                 FontSize="22"
@@ -874,7 +858,7 @@
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button" Binding="{Binding IsTotalSalesValid}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
-                                    <Setter Property="TextColor" Value="#BDBDBD" />
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SubtleBorder}, Dark={StaticResource SubtleBorderDark}}" />
                                 </DataTrigger>
                                 <!-- Deshabilitar tras enviar -->
                                 <DataTrigger TargetType="Button"
@@ -892,10 +876,9 @@
         <!-- Enhanced Bottom Navigation Menu -->
         <Border x:Name="BottomNavContainer"
                 Style="{StaticResource EnhancedBottomNavContainerStyle}"
-                AbsoluteLayout.LayoutBounds="0,1,1,95"
-                AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional">
+                Grid.Row="1">
 
-            <Grid ColumnDefinitions="*,*,*,*" Padding="12,16,12,24" RowDefinitions="Auto,Auto">
+            <Grid ColumnDefinitions="*,*,*,*" Padding="8,12" RowDefinitions="Auto,Auto">
                 <!-- (sin cambios, el bloqueo lo hace el code-behind) -->
 
                 <!-- Upload Document Button -->
@@ -903,33 +886,33 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnDocumentTapped"/>
                     </Grid.GestureRecognizers>
-                    <Ellipse Fill="#FFF3E0" 
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                              Style="{StaticResource NavCircleIndicatorStyle}"
                              x:Name="DocumentCircle">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Document">
-                                <Setter Property="Fill" Value="#FF9800"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                                <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                <Setter Property="Scale" Value="1"/>
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="📄" FontSize="22" HorizontalOptions="Center"/>
-                        <Label Text="Docs" 
-                               FontSize="10" 
+                        <brand:PoliedroIcon Text="📄" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Comprobantes"
+                               FontSize="12"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#F57C00"
-                               x:Name="DocumentLabel">
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               x:Name="DocumentLabel" HorizontalTextAlignment="Center">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Document">
-                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                     <Setter Property="FontSize" Value="11"/>
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    <Ellipse Fill="#FF9800"
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                              Style="{StaticResource NavDotIndicatorStyle}"
                              x:Name="DocumentDot">
                         <Ellipse.Triggers>
@@ -945,33 +928,33 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnExpenseTapped"/>
                     </Grid.GestureRecognizers>
-                    <Ellipse Fill="#F3E5F5" 
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                              Style="{StaticResource NavCircleIndicatorStyle}"
                              x:Name="ExpenseCircle">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                <Setter Property="Fill" Value="#9C27B0"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                                <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                <Setter Property="Scale" Value="1"/>
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="💸" FontSize="22" HorizontalOptions="Center"/>
-                        <Label Text="Gastos" 
-                               FontSize="10" 
+                        <brand:PoliedroIcon Text="💸" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Gastos"
+                               FontSize="12"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#9C27B0"
-                               x:Name="ExpenseLabel">
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               x:Name="ExpenseLabel" HorizontalTextAlignment="Center">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Expense">
-                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                     <Setter Property="FontSize" Value="11"/>
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    <Ellipse Fill="#9C27B0"
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Expense">
@@ -986,32 +969,32 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnInfoTapped"/>
                     </Grid.GestureRecognizers>
-                    <Ellipse Fill="#E8EAF6" 
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                              Style="{StaticResource NavCircleIndicatorStyle}">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
-                                <Setter Property="Fill" Value="#3F51B5"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                                <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                <Setter Property="Scale" Value="1"/>
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="💬" FontSize="22" HorizontalOptions="Center"/>
-                        <Label Text="Info" 
-                               FontSize="10" 
+                        <brand:PoliedroIcon Text="💬" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Observaciones"
+                               FontSize="12"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#3F51B5"
-                               x:Name="InfoLabel">
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               x:Name="InfoLabel" HorizontalTextAlignment="Center">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="Info">
-                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                     <Setter Property="FontSize" Value="11"/>
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    <Ellipse Fill="#3F51B5"
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="Info">
@@ -1026,32 +1009,32 @@
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnHistoryTapped"/>
                     </Grid.GestureRecognizers>
-                    <Ellipse Fill="#E8F5E8" 
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                              Style="{StaticResource NavCircleIndicatorStyle}">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
-                                <Setter Property="Fill" Value="#4CAF50"/>
-                                <Setter Property="Scale" Value="1.15"/>
+                                <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"/>
+                                <Setter Property="Scale" Value="1"/>
                             </DataTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
                     <StackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="📜" FontSize="22" HorizontalOptions="Center"/>
-                        <Label Text="Lista" 
-                               FontSize="10" 
+                        <brand:PoliedroIcon Text="📜" FontSize="22" HorizontalOptions="Center"/>
+                        <Label Text="Cierres"
+                               FontSize="12"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="#4CAF50"
-                               x:Name="HistoryLabel">
+                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
+                               x:Name="HistoryLabel" HorizontalTextAlignment="Center">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding ActiveNavItem}" Value="History">
-                                    <Setter Property="TextColor" Value="White"/>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
                                     <Setter Property="FontSize" Value="11"/>
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
                     </StackLayout>
-                    <Ellipse Fill="#4CAF50"
+                    <Ellipse Fill="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                              Style="{StaticResource NavDotIndicatorStyle}">
                         <Ellipse.Triggers>
                             <DataTrigger TargetType="Ellipse" Binding="{Binding ActiveNavItem}" Value="History">
@@ -1069,7 +1052,6 @@
 
         <!-- Loading Overlay -->
         <controls:LoadingView x:Name="LoadingOverlay"
-                              AbsoluteLayout.LayoutBounds="0,0,1,1"
-                              AbsoluteLayout.LayoutFlags="All"/>
-    </AbsoluteLayout>
+                              Grid.RowSpan="2"/>
+    </Grid>
 </ContentPage>

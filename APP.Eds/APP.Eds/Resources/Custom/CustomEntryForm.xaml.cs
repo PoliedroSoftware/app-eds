@@ -1,4 +1,4 @@
-namespace APP.Eds.Resources.Custom;
+﻿namespace APP.Eds.Resources.Custom;
 
 public partial class CustomEntryForm : Grid
 {
@@ -116,17 +116,17 @@ public partial class CustomEntryForm : Grid
     public event FocusEventHandler FocusChanged;
     private void TxtEntry_Focused(object sender, FocusEventArgs e)
     {
-        EntryBorder.Stroke = Color.FromArgb("#6200E8");
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(EntryBorder, Border.StrokeProperty, "BrandTextColor");
         FocusChanged?.Invoke(this, e, false);
     }
 
     private void TxtEntry_Unfocused(object sender, FocusEventArgs e)
     {
-        EntryBorder.Stroke = Colors.Gray;
+        global::APP.Eds.Helpers.PoliedroTheme.SetColor(EntryBorder, Border.StrokeProperty, "InputBorderColor");
         FocusChanged?.Invoke(this, e, false);
     }
 
-    // Agregar propiedad HorizontalOptions aqu�
+    // Agregar propiedad HorizontalOptions aquí
     public static readonly BindableProperty HorizontalOptionsProperty = BindableProperty.Create(
         propertyName: nameof(HorizontalOptions), // Nombre de la propiedad
         returnType: typeof(LayoutOptions), // Tipo de dato

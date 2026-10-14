@@ -1,80 +1,80 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns:brand="clr-namespace:APP.Eds.Controls"
     x:Class="APP.Eds.UsesCases.CompartimentCapacity.CompartimentCapacityPostView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:APP.Eds.UsesCases.LoadingView"
     Title="Gestión de Capacidad del Compartimento"
-    BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
 
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" x:Name="MainContent">
-            <VerticalStackLayout Padding="16" Spacing="20">
-                
+            <VerticalStackLayout Padding="20" Spacing="20">
+
                 <!-- Header Card with Purple Gradient -->
                 <Border Style="{StaticResource HeaderCardStyle}" Margin="0,8,0,0">
                     <StackLayout Spacing="8">
-                        <Label Text="⚡ Gestión de Capacidad del Compartimento" 
-                               FontSize="28" 
-                               FontAttributes="Bold" 
-                               TextColor="White" 
-                               HorizontalOptions="Center"/>
-                        <Label Text="Configure las capacidades de los compartimentos" 
-                               FontSize="14" 
-                               TextColor="#E1BEE7" 
-                               HorizontalOptions="Center"/>
+                        <Label Text="Gestión de Capacidad del Compartimento"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
+                               HorizontalOptions="Start"/>
+                        <Label Text="Configure las capacidades de los compartimentos"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
+                               HorizontalOptions="Start"/>
                     </StackLayout>
                 </Border>
 
                 <!-- Capacity Configuration Form Card -->
                 <Border Style="{StaticResource ModernCardStyle}">
                     <VerticalStackLayout Spacing="20">
-                        
+
                         <!-- Section Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="⚙️" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="⚙️"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Nueva Configuración" 
-                                       FontSize="20" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Asigne capacidades a los compartimentos" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Nueva Configuración"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Asigne capacidades a los compartimentos"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
                         <!-- Form Fields -->
                         <VerticalStackLayout Spacing="16">
-                            
+
                             <!-- Tank Selection Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Seleccionar Tanque" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="Seleccionar Tanque"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="🛢️" 
-                                               FontSize="18" 
-                                               TextColor="#6A1B9A" 
+                                        <brand:PoliedroIcon Text="🛢️"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Picker Title="Seleccione un tanque"
                                                 ItemsSource="{Binding CapacityList}"
                                                 ItemDisplayBinding="{Binding Code}"
@@ -82,7 +82,7 @@
                                                 AutomationId="PickerCapacity"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -91,23 +91,23 @@
 
                             <!-- Compartment Selection Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Seleccionar Compartimento" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="Seleccionar Compartimento"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#3D3D3D}"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="📦" 
-                                               FontSize="18" 
-                                               TextColor="#2196F3" 
+                                        <brand:PoliedroIcon Text="📦"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Picker Title="Seleccione un compartimento"
                                                 ItemsSource="{Binding CompartimentList}"
                                                 ItemDisplayBinding="{Binding Number}"
@@ -115,7 +115,7 @@
                                                 AutomationId="PickerCompartiment"
                                                 BackgroundColor="Transparent"
                                                 FontSize="16"
-                                                TextColor="{AppThemeBinding Light=#374151, Dark=#E8E8E8}"
+                                                TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -124,31 +124,31 @@
 
                             <!-- Capacity Value Field -->
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Capacidad del Compartimento" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"
+                                <Label Text="Capacidad del Compartimento"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"
                                        Margin="4,0,0,0"/>
-                                       
-                                <Border BackgroundColor="#FFF3E0" 
-                                        StrokeShape="RoundRectangle 12"
-                                        Stroke="#FF9800"
+
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{AppThemeBinding Light={StaticResource InputBorder}, Dark={StaticResource InputBorderDark}}"
                                         StrokeThickness="2"
-                                        Padding="0">
+                                        Padding="12,0">
                                     <StackLayout Orientation="Horizontal" Spacing="12" Padding="16,12">
-                                        <Label Text="📏" 
-                                               FontSize="18" 
-                                               TextColor="#FF9800" 
+                                        <brand:PoliedroIcon Text="📏"
+                                               FontSize="18"
+                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                VerticalOptions="Center"/>
-                                        
+
                                         <Entry Keyboard="Numeric"
                                                Placeholder="Ingrese la capacidad en litros"
-                                               PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"
+                                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"
                                                Text="{Binding Default, Mode=TwoWay}"
                                                AutomationId="EntryDefault"
                                                BackgroundColor="Transparent"
                                                FontSize="16"
-                                               TextColor="#F57C00"
+                                               TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                                VerticalOptions="Center"
                                                HorizontalOptions="FillAndExpand"/>
                                     </StackLayout>
@@ -158,21 +158,21 @@
 
                         <!-- Action Button Section -->
                         <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                            
+
                             <!-- Info Card -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 12"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="16"
                                     Opacity="0.9">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
-                                    <Label Text="ℹ️" 
-                                           FontSize="16" 
+                                    <brand:PoliedroIcon Text="ℹ️"
+                                           FontSize="16"
                                            VerticalOptions="Start"
                                            Margin="0,2,0,0"/>
                                     <Label Text="La capacidad del compartimento define el valor por defecto que se utilizará para cálculos de inventario y gestión de combustible en el sistema."
                                            FontSize="12"
-                                           TextColor="#1565C0"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
@@ -181,13 +181,13 @@
                             <!-- Register Button -->
                             <Border Style="{StaticResource PrimarySendButtonStyle}">
                                 <Button Text="Enviar Datos"
-                                        TextColor="White" 
+                                        TextColor="{StaticResource OnBrand}"
                                         BackgroundColor="Transparent"
                                         Clicked="Button_Clicked"
                                         AutomationId="ButtonSendData"
                                         FontSize="18"
                                         FontAttributes="Bold"
-                                        HeightRequest="56"
+                                        MinimumHeightRequest="52"
                                         CornerRadius="16"/>
                             </Border>
                         </VerticalStackLayout>
@@ -199,89 +199,89 @@
                     <VerticalStackLayout Spacing="16">
                         <!-- Guidelines Header -->
                         <StackLayout Orientation="Horizontal" Spacing="12">
-                            <Border BackgroundColor="#F3E5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 20"
                                     WidthRequest="40" HeightRequest="40"
                                     VerticalOptions="Center">
-                                <Label Text="📋" 
-                                       FontSize="20" 
-                                       HorizontalOptions="Center" 
+                                <brand:PoliedroIcon Text="📋"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="Guía de Configuración" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold" 
-                                       TextColor="{AppThemeBinding Light=#2D3436, Dark=#E8E8E8}"/>
-                                <Label Text="Pasos para configurar correctamente" 
-                                       FontSize="12" 
-                                       TextColor="{AppThemeBinding Light=#636E72, Dark=#B8B8B8}"/>
+                                <Label Text="Guía de Configuración"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource TextPrimaryDark}}"/>
+                                <Label Text="Pasos para configurar correctamente"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
                             </StackLayout>
                         </StackLayout>
 
                         <!-- Guidelines List -->
                         <VerticalStackLayout Spacing="12">
-                            
+
                             <!-- Step 1 -->
-                            <Border BackgroundColor="#E8F5E8" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource SuccessSurface}, Dark={StaticResource SuccessSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#4CAF50"
+                                    Stroke="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
                                     <Label Text="1️⃣" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Seleccione el tanque que contiene el compartimento"
-                                           FontSize="13"
-                                           TextColor="#2E7D32"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource Success}, Dark={StaticResource SuccessDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Step 2 -->
-                            <Border BackgroundColor="#E3F2FD" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#2196F3"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
                                     <Label Text="2️⃣" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Elija el compartimento específico a configurar"
-                                           FontSize="13"
-                                           TextColor="#1976D2"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Step 3 -->
-                            <Border BackgroundColor="#FFF3E0" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#FF9800"
+                                    Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
                                     <Label Text="3️⃣" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Ingrese el valor de capacidad por defecto en litros"
-                                           FontSize="13"
-                                           TextColor="#F57C00"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
                             </Border>
 
                             <!-- Step 4 -->
-                            <Border BackgroundColor="#F3E5F5" 
+                            <Border BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoft}, Dark={StaticResource BrandSoftDark}}"
                                     StrokeShape="RoundRectangle 8"
-                                    Stroke="#9C27B0"
+                                    Stroke="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark={StaticResource BrandPrimaryDark}}"
                                     Padding="12"
                                     Opacity="0.8">
                                 <StackLayout Orientation="Horizontal" Spacing="12">
                                     <Label Text="4️⃣" FontSize="16" VerticalOptions="Center"/>
                                     <Label Text="Confirme los datos y envíe la configuración"
-                                           FontSize="13"
-                                           TextColor="#7B1FA2"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource BrandText}, Dark={StaticResource BrandTextDark}}"
                                            VerticalOptions="Center"
                                            HorizontalOptions="FillAndExpand"/>
                                 </StackLayout>
@@ -291,41 +291,41 @@
                 </Border>
 
                 <!-- Requirements Card -->
-                <Border BackgroundColor="#FFF3CD" 
+                <Border BackgroundColor="{AppThemeBinding Light={StaticResource WarningSurface}, Dark={StaticResource WarningSurfaceDark}}"
                         StrokeShape="RoundRectangle 12"
-                        Stroke="#FFC107"
+                        Stroke="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                         Padding="16">
                     <StackLayout Spacing="12">
                         <!-- Warning Header -->
                         <StackLayout Orientation="Horizontal" Spacing="10">
-                            <Label Text="⚠️" FontSize="18" VerticalOptions="Center"/>
-                            <Label Text="Requisitos Importantes" 
-                                   FontSize="16" 
+                            <brand:PoliedroIcon Text="⚠️" FontSize="18" VerticalOptions="Center"/>
+                            <Label Text="Requisitos Importantes"
+                                   FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="#8A6914"
+                                   TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                    VerticalOptions="Center"/>
                         </StackLayout>
-                        
+
                         <!-- Requirements List -->
                         <StackLayout Spacing="8">
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="•" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" VerticalOptions="Start"/>
                                 <Label Text="El tanque debe estar previamente registrado en el sistema"
-                                       FontSize="12" TextColor="#8A6914" 
+                                       FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                        VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
-                            
+
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="•" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" VerticalOptions="Start"/>
                                 <Label Text="El compartimento debe existir y estar vinculado al tanque"
-                                       FontSize="12" TextColor="#8A6914" 
+                                       FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                        VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
-                            
+
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <Label Text="•" FontSize="14" TextColor="#8A6914" VerticalOptions="Start"/>
+                                <Label Text="•" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}" VerticalOptions="Start"/>
                                 <Label Text="La capacidad debe ser un valor positivo mayor que cero"
-                                       FontSize="12" TextColor="#8A6914" 
+                                       FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Warning}, Dark={StaticResource WarningDark}}"
                                        VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
                             </StackLayout>
                         </StackLayout>
